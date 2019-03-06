@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class Test_1_6 {
     public static void main(String[] args) {
 
-        System.setProperty("webdriver.gecko.driver", "/home/david/Descargas/test/geckodriver");
+        System.setProperty("webdriver.gecko.driver", "geckodriver");
         WebDriver driver = new FirefoxDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
         //Login

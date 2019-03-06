@@ -6,8 +6,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.concurrent.TimeUnit;
-
 //Create a user agent 1 -> connect and be a minute at rest.
 // Format of the user name Agente1rcNverXYZ, where N is the number of the RC and XYZ is the version
 
@@ -15,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class Test_1_5 {
     public static void main(String[] args) {
 
-        System.setProperty("webdriver.gecko.driver", "/home/david/Descargas/test/geckodriver");
+        System.setProperty("webdriver.gecko.driver", "geckodriver");
         WebDriver driver = new FirefoxDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
         //Login

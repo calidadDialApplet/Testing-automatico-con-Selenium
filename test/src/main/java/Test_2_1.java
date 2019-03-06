@@ -6,13 +6,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.Set;
-
 
 public class Test_2_1 {
     public static void main(String[] args) {
         //Login
-        System.setProperty("webdriver.gecko.driver", "/home/david/Descargas/test/geckodriver");
+        System.setProperty("webdriver.gecko.driver", "geckodriver");
         WebDriver driver = new FirefoxDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
 
