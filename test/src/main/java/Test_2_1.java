@@ -115,6 +115,7 @@ public class Test_2_1 {
         WebElement typologyActions = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[1]/div[2]/table/tbody/tr[1]/td[4]/a/img"));
         typologyActions.click();
 
+
         String windowHandleBefore = driver.getWindowHandle();
 
         WebElement newTypologyField = driver.findElement(By.id("new-typology-field"));
@@ -164,17 +165,15 @@ public class Test_2_1 {
 
         WebElement close = driver.findElement(By.id("cancel-subtypologies"));
         close.click();
-        //driver.switchTo().window(windowHandleBefore);
-
         driver.switchTo().defaultContent();
 
-        //////////////// SEGUNDA TIPOLOGIA   PROBAR GET WINDOW HANDLES
-        //waiting.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[name='new-typology-field']")));
-        WebElement newTypologyField2 = driver.findElement(By.cssSelector("input[name='new-typology-field']"));
+        //////////////// SECOND TYPOLOGY
+        driver.navigate().refresh();
+        WebElement newTypologyField2 = driver.findElement(By.xpath("//*[@id=\"new-typology-field\"]"));
         newTypologyField2.sendKeys("NO INTERESA");
-        /*WebElement addNewTypologyField2 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/thead/tr[2]/td[2]/a/img"));
+        WebElement addNewTypologyField2 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/thead/tr[2]/td[2]/a/img"));
         addNewTypologyField2.click();
-        WebElement editNewTypologyField2 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/tbody/tr/td[2]/a[1]/img"));
+        WebElement editNewTypologyField2 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/tbody/tr[2]/td[2]/a[1]/img"));
         editNewTypologyField2.click();
 
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("fancybox-frame")));
@@ -214,6 +213,28 @@ public class Test_2_1 {
         saveSubTypologies6.click();
 
         WebElement close2 = driver.findElement(By.id("cancel-subtypologies"));
-        close2.click();*/
+        close2.click();
+
+        ///////THIRD TYPOLOGY
+        driver.navigate().refresh();
+        WebElement newTypologyField3 = driver.findElement(By.xpath("//*[@id=\"new-typology-field\"]"));
+        newTypologyField3.sendKeys("PENDIENTE");
+        WebElement addNewTypologyField3 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/thead/tr[2]/td[2]/a/img"));
+        addNewTypologyField3.click();
+        WebElement editNewTypologyField3 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/tbody/tr[3]/td[2]/a[1]/img"));
+        editNewTypologyField3.click();
+
+        waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("fancybox-frame")));
+        driver.switchTo().frame("fancybox-frame");
+
+        WebElement newSubTypologyName7 = driver.findElement(By.id("new-subtypology-name"));
+        newSubTypologyName7.sendKeys("AGENDADA");
+        WebElement addNewSubTypology7 = driver.findElement(By.xpath("/html/body/table[1]/thead/tr[2]/td[6]/a/img"));
+        addNewSubTypology7.click();
+        WebElement saveSubTypologies7 = driver.findElement(By.id("save-subtypologies"));
+        saveSubTypologies7.click();
+
+        WebElement close3 = driver.findElement(By.id("cancel-subtypologies"));
+        close3.click();
     }
 }
