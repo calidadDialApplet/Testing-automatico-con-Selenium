@@ -2,11 +2,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.Set;
+import java.util.Vector;
 
 
 public class Test_2_1 {
@@ -24,17 +25,17 @@ public class Test_2_1 {
 
         WebElement entry = driver.findElement(By.id("login"));
         entry.click();
-        //Apartado showflow
+        //Showflow view
         WebElement showflow = driver.findElement(By.id("SHOWFLOW"));
         showflow.click();
-        //Crear showflow nuevo
+        //New Showflow
         WebElement newShowflow = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div/div/div[1]/p[2]/a"));
         newShowflow.click();
-        //Nombre del showflow
+        //Showflow Name
         WebElement showflowName = driver.findElement(By.id("workflow-name"));
         showflowName.sendKeys("ShowflowrcNver7816");
-        //Se pueden configurar más parámetros como la empresa...etc
-        //confirmar showflow
+        //You can configurate more parameters like company...etc
+        //Confirm showflow
         WebElement sendShowflow = driver.findElement(By.id("workflow-send"));
         sendShowflow.click();
 
@@ -47,15 +48,20 @@ public class Test_2_1 {
         ok.click();
 
 
-        //driver.findElement(By.xpath("'//a[@class="fancybox-item fancybox-close"]'")).click();
-
-
         //Configure contact fields
+        Vector<String> contactFieldsName = new Vector<String>() ;
+        contactFieldsName.add("contact-field-name");
+        contactFieldsName.add("contact-field-phone");
+        int contactFieldsCounter = 2; //Name and Phone are selected by default
         WebElement city = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[21]/td[1]/input"));
         city.click();
+        contactFieldsName.add("contact-field-city");
+        contactFieldsCounter++;
 
         WebElement country = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[22]/td[1]/input"));
         country.click();
+        contactFieldsName.add("contact-field-country");
+        contactFieldsCounter++;
 
         WebElement aux1 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[24]/td[1]/input"));
         aux1.click();
@@ -69,6 +75,8 @@ public class Test_2_1 {
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[24]/td[8]/select[1]")));
         Select aux1OptionsGroup = new Select(driver.findElement(By.cssSelector("select[class='optiongroup active']")));
         aux1OptionsGroup.selectByValue("6");
+        contactFieldsCounter++;
+        contactFieldsName.add("contact-field-aux1");
 
         WebElement saveAndGo = driver.findElement(By.id("save-fields-and-go"));
         saveAndGo.click();
@@ -79,14 +87,24 @@ public class Test_2_1 {
         ok2.click();
 
         //Showflow fields
+        Vector<String> showflowsFieldsName = new Vector<String>() ;
+        int showflowsFieldsCount = 0;
         WebElement question = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/thead/tr[2]/td[1]/input"));
         question.sendKeys("¿Cual es su comida favorita?");
         WebElement addQuestionButton = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/thead/tr[2]/td[10]/a/img"));
         addQuestionButton.click();
+        WebElement questionp = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[1]"));
+        showflowsFieldsName.add("workflow-field-"+questionp.getAttribute("data-fieldid"));
+        showflowsFieldsCount++;
+
+
         WebElement question2 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/thead/tr[2]/td[1]/input"));
         question2.sendKeys("¿Cuantos primos tienes?");
         WebElement addQuestionButton2 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/thead/tr[2]/td[10]/a/img"));
         addQuestionButton2.click();
+        WebElement questionpagain = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[1]"));
+        showflowsFieldsName.add("workflow-field-"+questionpagain.getAttribute("data-fieldid"));
+        showflowsFieldsCount++;
 
         WebElement saveAndGo2 = driver.findElement(By.id("save-fields-and-go"));
         saveAndGo2.click();
@@ -115,8 +133,6 @@ public class Test_2_1 {
         WebElement typologyActions = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[1]/div[2]/table/tbody/tr[1]/td[4]/a/img"));
         typologyActions.click();
 
-
-        String windowHandleBefore = driver.getWindowHandle();
 
         WebElement newTypologyField = driver.findElement(By.id("new-typology-field"));
         newTypologyField.sendKeys("MAQUINA");
@@ -174,6 +190,7 @@ public class Test_2_1 {
         WebElement addNewTypologyField2 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/thead/tr[2]/td[2]/a/img"));
         addNewTypologyField2.click();
         WebElement editNewTypologyField2 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/tbody/tr[2]/td[2]/a[1]/img"));
+        //The index of the last tr, indicates the row of the table and is incremental with the number of typologies
         editNewTypologyField2.click();
 
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("fancybox-frame")));
@@ -236,5 +253,132 @@ public class Test_2_1 {
 
         WebElement close3 = driver.findElement(By.id("cancel-subtypologies"));
         close3.click();
+
+        ////////FOUTH TYPOLOGY
+        driver.navigate().refresh();
+        WebElement newTypologyField4 = driver.findElement(By.xpath("//*[@id=\"new-typology-field\"]"));
+        newTypologyField4.sendKeys("VENTA");
+        WebElement addNewTypologyField4 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/thead/tr[2]/td[2]/a/img"));
+        addNewTypologyField4.click();
+        WebElement editNewTypologyField4 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/tbody/tr[4]/td[2]/a[1]/img"));
+        editNewTypologyField4.click();
+
+        waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("fancybox-frame")));
+        driver.switchTo().frame("fancybox-frame");
+
+        WebElement newSubTypologyName8 = driver.findElement(By.id("new-subtypology-name"));
+        newSubTypologyName8.sendKeys("ADSL");
+        Select newSubTypologyResult7 = new Select(driver.findElement(By.id("new-subtypology-result")));
+        newSubTypologyResult7.selectByValue("POSITIVE");
+        WebElement addNewSubTypology8 = driver.findElement(By.xpath("/html/body/table[1]/thead/tr[2]/td[6]/a/img"));
+        addNewSubTypology8.click();
+        WebElement saveSubTypologies8 = driver.findElement(By.id("save-subtypologies"));
+        saveSubTypologies8.click();
+
+        WebElement newSubTypologyName9 = driver.findElement(By.id("new-subtypology-name"));
+        newSubTypologyName9.sendKeys("MOVIL");
+        Select newSubTypologyResult8 = new Select(driver.findElement(By.id("new-subtypology-result")));
+        newSubTypologyResult8.selectByValue("POSITIVE");
+        WebElement addNewSubTypology9 = driver.findElement(By.xpath("/html/body/table[1]/thead/tr[2]/td[6]/a/img"));
+        addNewSubTypology9.click();
+        WebElement saveSubTypologies9 = driver.findElement(By.id("save-subtypologies"));
+        saveSubTypologies9.click();
+
+        WebElement close4 = driver.findElement(By.id("cancel-subtypologies"));
+        close4.click();
+
+        driver.navigate().refresh();
+        //Import typologies by csv
+        WebElement examineButton = driver.findElement(By.id("csvfile"));
+        examineButton.sendKeys("/home/david/Escritorio/Tipologias.csv"); /////////CHANGE TO V2: make a file in project with csv and put absolute route
+        WebElement submitButton = driver.findElement(By.id("submitcsv"));
+        submitButton.click();
+
+        WebElement saveTypologies = driver.findElement(By.id("save-typologies"));
+        saveTypologies.click();
+
+        waiting.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div[class='sweet-alert showSweetAlert visible']")));
+        WebElement sweetAlert5 = driver.findElement(By.cssSelector("div[class='sweet-alert showSweetAlert visible']"));
+        WebElement ok5 = sweetAlert5.findElement(By.className("sa-confirm-button-container"));
+        ok5.click();
+
+        //Configure pages
+        WebElement configurePages = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div/div/div[4]/p[1]/a"));
+        configurePages.click();
+        //First Page
+        WebElement firstPageName = driver.findElement(By.id("page-name"));
+        firstPageName.sendKeys("Pagina Inicial");
+        WebElement initialPage = driver.findElement(By.id("page-initial"));
+        initialPage.click();
+        WebElement addPage = driver.findElement(By.cssSelector("img[src='imagenes/add2.png']"));
+        addPage.click();
+        WebElement editFirstPage = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table/tbody/tr[1]/td[5]/a[3]/img "));
+        editFirstPage.click();
+
+        //Switch to iframe of page editor
+        waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("showflow_page_editor")));
+        driver.switchTo().frame("showflow_page_editor");
+
+        WebElement insertElementField = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[1]/ul/li[5]/a/div/div[1]"));
+
+        insertElementField.click();
+        WebElement nameField = driver.findElement(By.id(""+contactFieldsName.firstElement()));
+        contactFieldsName.remove(0);
+        WebElement placeField = driver.findElement(By.xpath("/html/body/div[2]/div[3]/ul[1]/li/div"));
+        Actions moveField = new Actions(driver);
+        moveField.dragAndDrop(nameField,placeField).build().perform();
+
+
+
+        for(int i = 2; i< contactFieldsCounter+1; i++) {
+            insertElementField.click();
+            WebElement field = driver.findElement(By.id(""+contactFieldsName.firstElement()));
+            contactFieldsName.remove(0);
+            WebElement elementField = driver.findElement(By.xpath("/html/body/div[2]/div[3]/ul[1]/li["+i+"]/div"));
+            Actions movesField = new Actions(driver);
+            movesField.dragAndDrop(field,elementField).build().perform();
+        }
+
+        driver.switchTo().defaultContent();
+        WebElement backButton = driver.findElement(By.cssSelector("img[src='imagenes/menus/back.png']"));
+        backButton.click();
+
+        //Final Page
+        WebElement finalPageName = driver.findElement(By.id("page-name"));
+        finalPageName.sendKeys("Pagina Final");
+        WebElement finalPage = driver.findElement(By.id("page-final"));
+        finalPage.click();
+        WebElement addPage2 = driver.findElement(By.cssSelector("img[src='imagenes/add2.png']"));
+        addPage2.click();
+        WebElement editLastPage = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table/tbody/tr[2]/td[5]/a[3]/img"));
+        editLastPage.click();
+
+        //Switch to iframe of page editor
+        waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("showflow_page_editor")));
+        driver.switchTo().frame("showflow_page_editor");
+
+        WebElement insertElementFieldLP = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[1]/ul/li[5]/a/div/div[1]"));
+        insertElementFieldLP.click();
+        WebElement workflowFields = driver.findElement(By.id("workflow-fields"));
+        workflowFields.click();
+        WebElement firsShowFlowField = driver.findElement(By.id(""+showflowsFieldsName.firstElement()));
+        showflowsFieldsName.remove(0);
+        WebElement firstPlaceShowFlowField = driver.findElement(By.xpath("/html/body/div[2]/div[3]/ul[1]/li/div"));
+        Actions moveShowFlowField = new Actions(driver);
+        moveShowFlowField.dragAndDrop(firsShowFlowField,firstPlaceShowFlowField).build().perform();
+
+
+        for(int i = 2; i< showflowsFieldsCount+1; i++) {
+            insertElementFieldLP.click();
+            WebElement field = driver.findElement(By.id(""+showflowsFieldsName.firstElement()));
+            showflowsFieldsName.remove(0);
+            WebElement elementField = driver.findElement(By.xpath("/html/body/div[2]/div[3]/ul[1]/li["+i+"]/div"));
+            Actions movesField = new Actions(driver);
+            movesField.dragAndDrop(field,elementField).build().perform();
+        }
+
+        driver.switchTo().defaultContent();
+        WebElement backButtonAgain = driver.findElement(By.cssSelector("img[src='imagenes/menus/back.png']"));
+        backButtonAgain.click();
     }
 }

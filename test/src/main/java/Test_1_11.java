@@ -19,19 +19,19 @@ public class Test_1_11 {
 
         WebElement entry = driver.findElement(By.id("login"));
         entry.click();
-        //Pestaña Admin
+        //Admin tab
         WebElement adminButton = driver.findElement(By.id("ADMIN"));
         adminButton.click();
-        //Usuarios
+        //Users
         WebElement users = driver.findElement(By.xpath("/html/body/div[2]/div[1]/h3[2]"));
         users.click();
-        //ConfigurarUsuarios
+        //Configure Users
         WebElement configureUsers = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[2]/div/div[1]/p[1]/a"));
         configureUsers.click();
-        //Nuevo Usuario
+        //New User
         WebElement createUser = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div[4]/div[1]/div/table/tbody/tr/td[2]/a"));
         createUser.click();
-        //Rellenar campos del primer formulario
+        //Fill form fields
         WebElement username = driver.findElement(By.id("username"));
         username.sendKeys("Agente6rcNver7816");
 
@@ -49,10 +49,10 @@ public class Test_1_11 {
 
         WebElement accept = driver.findElement(By.id("submit"));
         accept.click();
-        //Pestañas para agente creado
+        //Tabs for new agent
         WebElement send = driver.findElement(By.name("send_tabs"));
         send.click();
-        //Grupos de agentes, añadir a AGENTE3RCNver7816
+        //Agent group, add AGENTE3RCNver7816
         WebElement group = driver.findElement(By.id("g68"));
         group.click();
 
@@ -62,7 +62,7 @@ public class Test_1_11 {
         WebElement submit2 = driver.findElement(By.id("submit"));
         submit2.click();
 
-        //Grupos de coordinador
+        //Groups coordinator
         WebElement newSubmit = driver.findElement(By.id("submit"));
         newSubmit.click();
 

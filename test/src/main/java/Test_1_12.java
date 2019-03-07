@@ -21,19 +21,19 @@ public class Test_1_12 {
 
         WebElement entry = driver.findElement(By.id("login"));
         entry.click();
-        //Pestaña Admin
+        //Admin Tab
         WebElement adminButton = driver.findElement(By.id("ADMIN"));
         adminButton.click();
-        //Usuarios
+        //Users
         WebElement users = driver.findElement(By.xpath("/html/body/div[2]/div[1]/h3[2]"));
         users.click();
-        //ConfigurarUsuarios
+        //Configure Users
         WebElement configureUsers = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[2]/div/div[1]/p[1]/a"));
         configureUsers.click();
-        //Importar usuarios CSV
+        //Import users by CSV
         WebElement importUsersCSV = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div[4]/div[1]/div/table/tbody/tr/td[3]/a/img"));
         importUsersCSV.click();
-        //Boton Examinar
+        //Examine Button
         //Tener en cuenta la ruta del fichero y que el mismo fichero no contenga errores
         WebElement examine = driver.findElement(By.name("userfile"));
         examine.sendKeys("/home/david/Escritorio/Importación Usuarios.csv");
