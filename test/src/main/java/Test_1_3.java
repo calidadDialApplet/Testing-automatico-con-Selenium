@@ -2,7 +2,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -14,7 +13,7 @@ import java.util.List;
 public class Test_1_3 {
     public static void main(String[] args) {
 //Go to http://pruebas7.dialcata.com/dialapplet-web/
-        System.setProperty("webdriver.gecko.driver", "/home/david/Descargas/test/geckodriver");
+        System.setProperty("webdriver.gecko.driver", "geckodriver");
         WebDriver driver = new FirefoxDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
 
@@ -48,7 +47,15 @@ public class Test_1_3 {
             WebElement currentId = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div[3]/div/table/tbody/tr["+i+"]/td[1]"));
             ids[i] = Integer.parseInt(currentId.getText());
         }
-        int currentMax = Arrays.stream(ids).max().getAsInt();
+
+        int currentMax = 0;
+
+        if(Arrays.stream(ids).max().isPresent())
+        {
+            currentMax = Arrays.stream(ids).max().getAsInt();
+        }
+
+        else System.out.println("Algo ha ido MAL !");
 
         String uniqueID = ""+Math.random();
         String name = "AGENTE1Y2rcNver7816";
@@ -70,7 +77,20 @@ public class Test_1_3 {
             WebElement currentId = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div[3]/div/table/tbody/tr["+i+"]/td[1]"));
             ids2[i] = Integer.parseInt(currentId.getText());
         }
-        int newMax = Arrays.stream(ids2).max().getAsInt();
+
+        int newMax = 0;
+
+        if(Arrays.stream(ids2).max().isPresent())
+        {
+            newMax = Arrays.stream(ids2).max().getAsInt();
+        }
+
+        else System.out.println("Algo ha ido MAL !");
+
+
+        if(currentMax < newMax) System.out.println("Prueba creación grupo agentes finalizada con éxito !\nGenerado grupo con ID: "+newMax);
+        else System.out.println("Algo ha petado, repasar");
+
 
         /*
         //Transfer users to new group
@@ -101,10 +121,6 @@ public class Test_1_3 {
         //Take all ids of the agent groups of tabla principal and find the max value,
         // this value is the id of our new AgentGroup
 
-
-
-        if(currentMax < newMax) System.out.println("Prueba creación grupo agentes finalizada con éxito !\nGenerado grupo con ID: "+newMax);
-        else System.out.println("Algo ha petado, repasar");
 
         //driver.close();
     }

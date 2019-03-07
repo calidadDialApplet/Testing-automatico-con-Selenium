@@ -2,7 +2,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.concurrent.TimeUnit;
 
 public class Test_1_10 {
     public static void main(String[] args) {
@@ -20,23 +23,23 @@ public class Test_1_10 {
 
         WebElement entry = driver.findElement(By.id("login"));
         entry.click();
-        //Admin tab
+        //Pestaña Admin
         WebElement adminButton = driver.findElement(By.id("ADMIN"));
         adminButton.click();
-        //Users
+        //Usuarios
         WebElement users = driver.findElement(By.xpath("/html/body/div[2]/div[1]/h3[2]"));
         users.click();
-        //Configure Users
+        //ConfigurarUsuarios
         WebElement configureUsers = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[2]/div/div[1]/p[1]/a"));
         configureUsers.click();
-        //New Usuario
+        //Nuevo Usuario
         WebElement createUser = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div[4]/div[1]/div/table/tbody/tr/td[2]/a"));
         createUser.click();
-        //Fill form fields
+        //Rellenar campos del primer formulario
         WebElement username = driver.findElement(By.id("username"));
         username.sendKeys("Agente5rcNver7816");
 
-        //Secure mode
+        //Modo seguro
         WebElement secureMode = driver.findElement(By.id("securemode"));
         secureMode.click();
 
@@ -52,16 +55,16 @@ public class Test_1_10 {
 
         WebElement accept = driver.findElement(By.id("submit"));
         accept.click();
-        //Agent created tabs
+        //Pestañas para agente creado
         WebElement send = driver.findElement(By.name("send_tabs"));
         send.click();
-        //Agent groups, add AGENTE3RCNver7816
+        //Grupos de agentes, añadir a AGENTE3RCNver7816
         WebElement group = driver.findElement(By.id("g68"));
         group.click();
 
         WebElement submit = driver.findElement(By.name("submit-page-one"));
         submit.click();
-        //Other services and call modes
+        //Otros servicios y modos de llamada
         WebElement submit2 = driver.findElement(By.name("submit-page-two"));
         submit2.click();
 

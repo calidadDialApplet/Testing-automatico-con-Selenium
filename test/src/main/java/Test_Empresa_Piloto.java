@@ -8,7 +8,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class Test_Empresa_Piloto {
     public static void main(String[] args) {
 
-        System.setProperty("webdriver.gecko.driver", "/home/david/Descargas/test/geckodriver");
+        System.setProperty("webdriver.gecko.driver", "geckodriver");
         WebDriver driver = new FirefoxDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
         //Login
