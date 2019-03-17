@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Test_1_8 {
+
     public static void main(String[] args) {
 
         System.setProperty("webdriver.gecko.driver", "geckodriver");
@@ -44,8 +45,6 @@ public class Test_1_8 {
 
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("fancybox-frame")));
         driver.switchTo().frame("fancybox-frame");
-
-
 
         WebElement leftColumn = driver.findElement(By.xpath("//*[@id=\"leftCol\"]"));
         WebElement agent = leftColumn.findElement(By.xpath("/html/body/form/div/div[3]/div/div[1]/div/ul/li[4]"));

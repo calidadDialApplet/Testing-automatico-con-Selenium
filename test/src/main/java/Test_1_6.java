@@ -8,16 +8,16 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.concurrent.TimeUnit;
 
-
-//WORK IN PROCESS
+// Create user and login
 
 public class Test_1_6 {
+
     public static void main(String[] args) {
 
         System.setProperty("webdriver.gecko.driver", "geckodriver");
         WebDriver driver = new FirefoxDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
-        //Login
+        // Login
         WebElement user = driver.findElement(By.id("adminusername"));
         user.sendKeys("admin");
 
@@ -26,19 +26,19 @@ public class Test_1_6 {
 
         WebElement entry = driver.findElement(By.id("login"));
         entry.click();
-        //Ventana Admin
+        // Admin window
         WebElement adminButton = driver.findElement(By.id("ADMIN"));
         adminButton.click();
-        //Usuarios
+        // Users
         WebElement users = driver.findElement(By.xpath("/html/body/div[2]/div[1]/h3[2]"));
         users.click();
-        //Configurar usuarios
+        // Configure users
         WebElement configureUsers = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[2]/div/div[1]/p[1]/a"));
         configureUsers.click();
-        //Crear nuevo usuario
+        // Create new user
         WebElement createUser = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div[4]/div[1]/div/table/tbody/tr/td[2]/a"));
         createUser.click();
-        //Rellenar formulario y crear agente
+        // Fill create user form
         WebElement username = driver.findElement(By.id("username"));
         username.sendKeys("Agente2rcNver7816");
 
@@ -63,7 +63,7 @@ public class Test_1_6 {
         WebElement submit2 = driver.findElement(By.name("submit-page-two"));
         submit2.click();
 
-        //Conectarse como agente
+        // Conneting as the created agent
         driver.get("https://pruebas7.dialcata.com/clienteweb/login.php");
 
         WebElement usernameWebClient = driver.findElement(By.id("userName"));
@@ -83,8 +83,7 @@ public class Test_1_6 {
 
         WebDriverWait waiting = new WebDriverWait(driver, 20);
 
-
-        //CAMBIAR EL TAKE A BREAK POR MANTENERSE EN PRETURNO
+        // TODO: Dont go to break
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));
         WebElement takeABreak = driver.findElement(By.className("headerButton"));
         takeABreak.click();

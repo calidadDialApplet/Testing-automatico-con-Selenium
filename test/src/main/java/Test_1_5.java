@@ -6,17 +6,17 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-//Create a user agent 1 -> connect and be a minute at rest.
+// Create a user agent 1 -> connect and be a minute at rest.
 // Format of the user name Agente1rcNverXYZ, where N is the number of the RC and XYZ is the version
 
-
 public class Test_1_5 {
+
     public static void main(String[] args) {
 
         System.setProperty("webdriver.gecko.driver", "geckodriver");
         WebDriver driver = new FirefoxDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
-        //Login
+        // Login
         WebElement user = driver.findElement(By.id("adminusername"));
         user.sendKeys("admin");
 
@@ -25,19 +25,19 @@ public class Test_1_5 {
 
         WebElement entry = driver.findElement(By.id("login"));
         entry.click();
-        //Admin window
+        // Admin window
         WebElement adminButton = driver.findElement(By.id("ADMIN"));
         adminButton.click();
-        //Users
+        // Users
         WebElement users = driver.findElement(By.xpath("/html/body/div[2]/div[1]/h3[2]"));
         users.click();
-        //Configure users
+        // Configure users
         WebElement configureUsers = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[2]/div/div[1]/p[1]/a"));
         configureUsers.click();
-        //New User
+        // New User
         WebElement createUser = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div[4]/div[1]/div/table/tbody/tr/td[2]/a"));
         createUser.click();
-        //Create new Agent
+        // Create new Agent
         String name ="Agente1Nver7816";
         String uniqueID = ""+Math.floor(1000 + Math.random() * 9999);
         uniqueID = uniqueID.substring(0,3);
@@ -66,7 +66,7 @@ public class Test_1_5 {
         WebElement submit2 = driver.findElement(By.name("submit-page-two"));
         submit2.click();
 
-        //Login as Agente1rcNver7816
+        // Login as Agente1rcNver7816
         driver.get("https://pruebas7.dialcata.com/clienteweb/login.php");
 
         WebElement usernameWebClient = driver.findElement(By.id("userName"));
@@ -83,10 +83,10 @@ public class Test_1_5 {
 
         WebElement enter = driver.findElement(By.id("login"));
         enter.click();
-        //Wait to take a rest button
+        // Wait to take a rest button
         WebDriverWait waiting = new WebDriverWait(driver, 20);
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));
-        //Take a rest
+        // Take a rest
         WebElement takeABreak = driver.findElement(By.className("headerButton"));
         takeABreak.click();
 

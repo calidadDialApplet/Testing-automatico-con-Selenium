@@ -9,13 +9,12 @@ import org.yaml.snakeyaml.util.ArrayUtils;
 import java.util.*;
 
 
-//Create a group called GruporcNverXYZ and add the agents that have been created with the pilot
+// Create a group called GruporcNverXYZ and add the agents that have been created before
 
 public class Test_1_2 {
     public static void main(String[] args) {
 
-
-        //Go to http://pruebas7.dialcata.com/dialapplet-web/
+        // Go to http://pruebas7.dialcata.com/dialapplet-web/
         System.setProperty("webdriver.gecko.driver", "geckodriver");
         WebDriver driver = new FirefoxDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
@@ -28,13 +27,13 @@ public class Test_1_2 {
 
         WebElement entry = driver.findElement(By.id("login"));
         entry.click();
-        //Click on Admin button
+        // Click on Admin tab
         WebElement adminButton = driver.findElement(By.id("ADMIN"));
         adminButton.click();
-        //Click on users button in left side of the page
+        // Click on "Users" left menu
         WebElement users = driver.findElement(By.xpath("/html/body/div[2]/div[1]/h3[2]"));
         users.click();
-        //Click on Modify agent groups button in left side of the page
+        // Click on Modify agent groups button in left menu
         WebElement modAgentsGroups = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[2]/div/div[2]/p/a"));
         modAgentsGroups.click();
 
@@ -57,10 +56,10 @@ public class Test_1_2 {
         name = name.concat(uniqueID);
         WebElement groupName = driver.findElement(By.id("new_groupname"));
         groupName.sendKeys(name);
-        //Click on add button
+        // Click on add button
         WebElement newGroup = driver.findElement(By.cssSelector("img[src='imagenes/add2.png']"));
         newGroup.click();
-        //Taking ID of new Group
+        // Taking ID of new Group
         driver.switchTo().defaultContent();
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contenido")));
         WebElement containerTable2 = driver.findElement(By.id("contenido"));
@@ -73,35 +72,30 @@ public class Test_1_2 {
             ids2[i] = Integer.parseInt(currentId.getText());
         }
         int newMax = Arrays.stream(ids2).max().getAsInt();
-        //Transfer users to new group
+        // Transfer users to new group
         WebElement gestUsers = driver.findElement(By.xpath("//*[@id=\"users-"+newMax+"\"]"));
         gestUsers.click();
 
-
-        //Waiting to load fancy-box
+        // Waiting to load fancy-box
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("fancybox-frame")));
-        //Change driver to fancy-box
+        // Change driver to fancy-box
         driver.switchTo().frame("fancybox-frame");
-        //Take left column(users column)
+        // Take left column(users column)
         WebElement leftColumn = driver.findElement(By.xpath("//*[@id=\"leftCol\"]"));
-        //Select a Agent
+        // Select a Agent
         WebElement agent = leftColumn.findElement(By.xpath("/html/body/form/div/div[1]/div/div[1]/div/ul/li[4]"));
-        //Take right column(group users)
+        // Take right column(group users)
         WebElement groupSpace = driver.findElement(By.xpath("//*[@id=\"rightList\"]"));
-        //Make the drag and drop action
+        // Make the drag and drop action
         Actions moveAgent = new Actions(driver);
         moveAgent.dragAndDrop(agent,groupSpace).build().perform();
-        //CLick on send button to finish the modification
+        // Click on send button to finish the modification
         WebElement send = driver.findElement(By.xpath("/html/body/form/div/p[3]/input"));
         send.click();
 
-
-
-        //Checking that the test works correctly
-        //Take all ids of the agent groups of tabla principal and find the max value,
+        // Checking that the test works correctly
+        // Take all ids of the agent groups of tabla principal and find the max value,
         // this value is the id of our new AgentGroup
-
-
 
         if(currentMax < newMax) System.out.println("Prueba creación grupo agentes finalizada con éxito !\nGenerado grupo con ID: "+newMax);
         else System.out.println("Algo ha petado, repasar");

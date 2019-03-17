@@ -4,13 +4,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 
-//Create a user coordinator + agent. Format of the user name CoordrcNverXYZ,
+// Create a user coordinator + agent. Format of the username CoordrcNverXYZ,
 // where N is the number of the RC and XYZ is the version.
-// We assign you to the telemarketing service(Assign a default service in the code)
+// Assign user to the telemarketing service we created before
 
 public class Test_1_4 {
         public static void main(String[] args) {
-
 
             System.setProperty("webdriver.gecko.driver", "geckodriver");
             WebDriver driver = new FirefoxDriver();
@@ -50,29 +49,29 @@ public class Test_1_4 {
 
             WebElement userPass2 = driver.findElement(By.id("pass2"));
             userPass2.sendKeys("contraseña1234");
-            //Set coordinator role
+            // Set coordinator role
             WebElement coordinator = driver.findElement(By.id("iscoordinator"));
             coordinator.click();
-            //Set agent role
+            // Set agent role
             WebElement agent = driver.findElement(By.id("isagent"));
             agent.click();
-            //Click on submit button
+            // Click on submit button
             WebElement accept = driver.findElement(By.id("submit"));
             accept.click();
-            //Configure tabs (default configuration)
+            // Configure tabs (default configuration)
             WebElement send = driver.findElement(By.name("send_tabs"));
             send.click();
-            //Configure agent groups(default configuration)
+            // Configure agent groups(default configuration)
             WebElement submit = driver.findElement(By.name("submit-page-one"));
             submit.click();
-            //Configure agent services(DialappletDemoDavid service)
+            // Configure agent services(DialappletDemoDavid service)
             WebElement service = driver.findElement(By.id("s94"));
             service.click();
             WebElement callerMode = driver.findElement(By.id("c336"));
             callerMode.click();
             WebElement submit2 = driver.findElement(By.name("submit-page-two"));
             submit2.click();
-            //Configure agent groups as coordinator(default configuration)
+            // Configure agent groups as coordinator(default configuration)
             WebElement submit3 = driver.findElement(By.name("submit"));
             submit3.click();
 

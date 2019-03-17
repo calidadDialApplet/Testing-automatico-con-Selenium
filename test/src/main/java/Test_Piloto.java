@@ -5,11 +5,11 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+// Creates test service: Seleniumtelemarketing
+
 public class Test_Piloto{
+
     public static void main(String[] args) {
-
-
-        //CREACION DEL SERVICIO:Seleniumtelemarketing
 
         System.setProperty("webdriver.gecko.driver", "geckodriver");
         WebDriver driver = new FirefoxDriver();
@@ -37,7 +37,7 @@ public class Test_Piloto{
 
         WebDriverWait waiting = new WebDriverWait(driver, 20);
         waiting.until(ExpectedConditions.visibilityOfElementLocated(By.id("user-id-122")));
-        //Add users to service
+        // Add users to service
         WebElement user1 = driver.findElement(By.id("user-id-122"));
         user1.click();
 
@@ -49,19 +49,19 @@ public class Test_Piloto{
 
         WebElement next = driver.findElement(By.id("next"));
         next.click();
-        //Coordinadores window, drag and drop not implemented
+        // Coordinators tab, drag and drop not implemented
         WebElement next2 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/p[2]/input[2]"));
         next2.click();
-        //Datos de contacto window, drag and drop not implemented
+        // Contact data tab, drag and drop not implemented
         WebElement next3 = driver.findElement(By.id("submit-btn"));
         next3.click();
-        //Cliente web window
+        // Web client tab
         WebElement submit = driver.findElement(By.id("submit"));
         submit.click();
-        //Confirmar servicio window
+        // Confirm service tab
         WebElement confirm = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/p/input[1]"));
         confirm.click();
-        //Importar contactos Window
+        // Import contacts tab
         WebElement next4 = driver.findElement(By.xpath("//*[@id=\"next\"]"));
         next4.click();
     }

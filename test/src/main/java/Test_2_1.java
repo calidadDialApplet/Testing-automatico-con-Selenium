@@ -10,11 +10,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.Set;
 import java.util.Vector;
 
+//
 
 public class Test_2_1 {
+
     public static void main(String[] args) {
         //Login
-        System.setProperty("webdriver.gecko.driver", "/home/david/Descargas/test/geckodriver");
+        System.setProperty("webdriver.gecko.driver", "geckodriver");
         WebDriver driver = new FirefoxDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
 
@@ -26,17 +28,17 @@ public class Test_2_1 {
 
         WebElement entry = driver.findElement(By.id("login"));
         entry.click();
-        //Showflow view
+        // Showflow tab
         WebElement showflow = driver.findElement(By.id("SHOWFLOW"));
         showflow.click();
-        //New Showflow
+        // New Showflow
         WebElement newShowflow = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div/div/div[1]/p[2]/a"));
         newShowflow.click();
-        //Showflow Name
+        // Showflow Name
         WebElement showflowName = driver.findElement(By.id("workflow-name"));
         showflowName.sendKeys("ShowflowrcNver7816");
-        //You can configurate more parameters like company...etc
-        //Confirm showflow
+        // You can configurate more parameters like company...etc
+        // Confirm showflow
         WebElement sendShowflow = driver.findElement(By.id("workflow-send"));
         sendShowflow.click();
 
@@ -48,8 +50,7 @@ public class Test_2_1 {
         WebElement ok = sweetAlert.findElement(By.className("confirm"));
         ok.click();
 
-
-        //Configure contact fields
+        // Configure contact fields
         Vector<String> contactFieldsName = new Vector<String>() ;
         contactFieldsName.add("contact-field-name");
         contactFieldsName.add("contact-field-phone");
@@ -87,7 +88,7 @@ public class Test_2_1 {
         WebElement ok2 = sweetAlert2.findElement(By.className("sa-confirm-button-container"));
         ok2.click();
 
-        //Showflow fields
+        // Showflow fields
         Vector<String> showflowsFieldsName = new Vector<String>() ;
         int showflowsFieldsCount = 0;
         WebElement question = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/thead/tr[2]/td[1]/input"));
@@ -97,7 +98,6 @@ public class Test_2_1 {
         WebElement questionp = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[1]"));
         showflowsFieldsName.add("workflow-field-"+questionp.getAttribute("data-fieldid"));
         showflowsFieldsCount++;
-
 
         WebElement question2 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/thead/tr[2]/td[1]/input"));
         question2.sendKeys("¿Cuantos primos tienes?");
@@ -115,7 +115,7 @@ public class Test_2_1 {
         WebElement ok3 = sweetAlert3.findElement(By.className("sa-confirm-button-container"));
         ok3.click();
 
-        //Configuration action fields
+        // Configuration action fields
         WebElement tipology = driver.findElement(By.id("action-id-1"));
         tipology.click();
 
@@ -134,15 +134,12 @@ public class Test_2_1 {
         WebElement typologyActions = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[1]/div[2]/table/tbody/tr[1]/td[4]/a/img"));
         typologyActions.click();
 
-
         WebElement newTypologyField = driver.findElement(By.id("new-typology-field"));
         newTypologyField.sendKeys("MAQUINA");
         WebElement addNewTypologyField = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/thead/tr[2]/td[2]/a/img"));
         addNewTypologyField.click();
         WebElement editNewTypologyField = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/tbody/tr/td[2]/a[1]/img"));
         editNewTypologyField.click();
-
-
 
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("fancybox-frame")));
         driver.switchTo().frame("fancybox-frame");
@@ -191,7 +188,7 @@ public class Test_2_1 {
         WebElement addNewTypologyField2 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/thead/tr[2]/td[2]/a/img"));
         addNewTypologyField2.click();
         WebElement editNewTypologyField2 = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/tbody/tr[2]/td[2]/a[1]/img"));
-        //The index of the last tr, indicates the row of the table and is incremental with the number of typologies
+        // The index of the last tr, indicates the row of the table and is incremental with the number of typologies
         editNewTypologyField2.click();
 
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("fancybox-frame")));
@@ -233,7 +230,7 @@ public class Test_2_1 {
         WebElement close2 = driver.findElement(By.id("cancel-subtypologies"));
         close2.click();
 
-        ///////THIRD TYPOLOGY
+        /////// THIRD TYPOLOGY
         driver.navigate().refresh();
         WebElement newTypologyField3 = driver.findElement(By.xpath("//*[@id=\"new-typology-field\"]"));
         newTypologyField3.sendKeys("PENDIENTE");
@@ -255,7 +252,7 @@ public class Test_2_1 {
         WebElement close3 = driver.findElement(By.id("cancel-subtypologies"));
         close3.click();
 
-        ////////FOUTH TYPOLOGY
+        //////// FOURTH TYPOLOGY
         driver.navigate().refresh();
         WebElement newTypologyField4 = driver.findElement(By.xpath("//*[@id=\"new-typology-field\"]"));
         newTypologyField4.sendKeys("VENTA");
@@ -289,7 +286,7 @@ public class Test_2_1 {
         close4.click();
 
         driver.navigate().refresh();
-        //Import typologies by csv
+        // Import typologies by csv
         WebElement examineButton = driver.findElement(By.id("csvfile"));
         examineButton.sendKeys("/home/david/Escritorio/Tipologias.csv"); /////////CHANGE TO V2: make a file in project with csv and put absolute route
         WebElement submitButton = driver.findElement(By.id("submitcsv"));
@@ -303,10 +300,10 @@ public class Test_2_1 {
         WebElement ok5 = sweetAlert5.findElement(By.className("sa-confirm-button-container"));
         ok5.click();
 
-        //Configure pages
+        // Configure pages
         WebElement configurePages = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div/div/div[4]/p[1]/a"));
         configurePages.click();
-        //First Page
+        // First Page
         WebElement firstPageName = driver.findElement(By.id("page-name"));
         firstPageName.sendKeys("Pagina Inicial");
         WebElement initialPage = driver.findElement(By.id("page-initial"));
@@ -316,7 +313,7 @@ public class Test_2_1 {
         WebElement editFirstPage = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table/tbody/tr[1]/td[5]/a[3]/img "));
         editFirstPage.click();
 
-        //Switch to iframe of page editor
+        // Switch to iframe of page editor
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("showflow_page_editor")));
         driver.switchTo().frame("showflow_page_editor");
 
@@ -328,8 +325,6 @@ public class Test_2_1 {
         WebElement placeField = driver.findElement(By.xpath("/html/body/div[2]/div[3]/ul[1]/li/div"));
         Actions moveField = new Actions(driver);
         moveField.dragAndDrop(nameField,placeField).build().perform();
-
-
 
         for(int i = 2; i< contactFieldsCounter+1; i++) {
             insertElementField.click();
@@ -346,7 +341,7 @@ public class Test_2_1 {
         WebElement backButton = driver.findElement(By.cssSelector("img[src='imagenes/menus/back.png']"));
         backButton.click();
 
-        //Intermedia Page
+        // Middle Page
         WebElement midPageName = driver.findElement(By.id("page-name"));
         midPageName.sendKeys("Pagina Intermedia");
         WebElement addPageAgainAgain = driver.findElement(By.cssSelector("img[src='imagenes/add2.png']"));
@@ -354,7 +349,7 @@ public class Test_2_1 {
         WebElement editMidPage = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table/tbody/tr[2]/td[5]/a[3]/img"));
         editMidPage.click();
 
-        //Switch to iframe of page editor
+        // Switch to iframe of page editor
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("showflow_page_editor")));
         driver.switchTo().frame("showflow_page_editor");
 
@@ -371,7 +366,7 @@ public class Test_2_1 {
         WebElement backButtonAgain = driver.findElement(By.cssSelector("img[src='imagenes/menus/back.png']"));
         backButtonAgain.click();
 
-        //Final Page
+        // Final Page
         WebElement finalPageName = driver.findElement(By.id("page-name"));
         finalPageName.sendKeys("Pagina Final");
         WebElement finalPage = driver.findElement(By.id("page-final"));
@@ -381,7 +376,7 @@ public class Test_2_1 {
         WebElement editLastPage = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table/tbody/tr[3]/td[5]/a[3]/img"));
         editLastPage.click();
 
-        //Switch to iframe of page editor
+        // Switch to iframe of page editor
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("showflow_page_editor")));
         driver.switchTo().frame("showflow_page_editor");
 
@@ -394,7 +389,6 @@ public class Test_2_1 {
         WebElement firstPlaceShowFlowField = driver.findElement(By.xpath("/html/body/div[2]/div[3]/ul[1]/li/div"));
         Actions moveShowFlowField = new Actions(driver);
         moveShowFlowField.dragAndDrop(firsShowFlowField,firstPlaceShowFlowField).build().perform();
-
 
         for(int i = 2; i< showflowsFieldsCount+1; i++) {
             insertElementFieldLP.click();
@@ -410,20 +404,11 @@ public class Test_2_1 {
         WebElement backButtonAgainAgain = driver.findElement(By.cssSelector("img[src='imagenes/menus/back.png']"));
         backButtonAgainAgain.click();
 
-        //Configure Union Pages
+        // Configure Union Pages
         WebElement configureUnionPagesButton = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div/div/div[4]/p[2]/a"));
         configureUnionPagesButton.click();
-        //Simple union page, Initial U Mid
-        Select originField = new Select(driver.findElement(By.id("add-input-field")));
-        originField.selectByIndex(1);
 
-        WebElement nameValue = driver.findElement(By.id("input-match-value"));
-        nameValue.sendKeys("Antonio");
-
-        WebElement addUnion = driver.findElement(By.cssSelector("img[src='imagenes/add2.png']"));
-        addUnion.click();
-
-        //Simple union page, Mid U Final
+        // Simple union page, Mid U Final
         Select originPage = new Select(driver.findElement(By.id("add-input-page")));
         originPage.selectByIndex(1);
 
@@ -438,8 +423,7 @@ public class Test_2_1 {
         WebElement addUnionAgain = driver.findElement(By.cssSelector("img[src='imagenes/add2.png']"));
         addUnionAgain.click();
 
-
-        //Clone ShowFlow
+        // Clone ShowFlow
         WebElement cloneButton = driver.findElement(By.id("clone_showflow"));
         cloneButton.click();
 
@@ -456,7 +440,7 @@ public class Test_2_1 {
 
         //driver.navigate().refresh();
 
-        //Return to showflow panel
+        // Return to showflow panel
         WebElement showflowPanel = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div/div/div[1]/p[1]/a"));
         showflowPanel.click();
     }

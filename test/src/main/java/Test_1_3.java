@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.Arrays;
 import java.util.List;
 
-//Create a group of agents called AGENT1Y2rcNverXYZ, where N is the number of the RC and XYZ is the version.
+// Create a group of agents called AGENT1Y2rcNverXYZ, where N is the number of the RC and XYZ is the version.
 
 public class Test_1_3 {
     public static void main(String[] args) {

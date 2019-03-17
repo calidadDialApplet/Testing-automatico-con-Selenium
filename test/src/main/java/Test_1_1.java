@@ -4,7 +4,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 
-//Connect with the user admin that user and start performing operations.
+// Connect with the user admin that user and start performing operations.
 
 
 public class Test_1_1 {
