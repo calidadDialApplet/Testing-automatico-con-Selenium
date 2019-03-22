@@ -9,25 +9,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class Test_1_1 {
     public static void main(String[] args) {
-
-        //Go to http://pruebas7.dialcata.com/dialapplet-web/
-        System.setProperty("webdriver.gecko.driver", "geckodriver");
-        WebDriver driver = new FirefoxDriver();
+        WebDriver driver = SeleniumDAO.initializeDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
-
-        WebElement user = driver.findElement(By.id("adminusername"));
-
-        user.sendKeys("admin");
-
-        WebElement pass = driver.findElement(By.id("adminpassword"));
-
-        pass.sendKeys("admin");
-
-        WebElement loggin = driver.findElement(By.id("login"));
-
-        loggin.click();
-
-        //Close the browser
-        //driver.close();
+        Main.login("admin", "admin",driver);
     }
 }

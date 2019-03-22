@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.Set;
+import java.util.HashMap;
 import java.util.Vector;
 
 //
@@ -15,7 +15,7 @@ import java.util.Vector;
 public class Test_2_1 {
 
     public static void main(String[] args) {
-        //Login
+        // Login
         System.setProperty("webdriver.gecko.driver", "geckodriver");
         WebDriver driver = new FirefoxDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
@@ -36,8 +36,8 @@ public class Test_2_1 {
         newShowflow.click();
         // Showflow Name
         WebElement showflowName = driver.findElement(By.id("workflow-name"));
-        showflowName.sendKeys("ShowflowrcNver7816");
-        // You can configurate more parameters like company...etc
+        showflowName.sendKeys("ShowflowRCNver7816");
+        // You can configure more parameters like company...etc
         // Confirm showflow
         WebElement sendShowflow = driver.findElement(By.id("workflow-send"));
         sendShowflow.click();
@@ -71,9 +71,18 @@ public class Test_2_1 {
         WebElement aux1Name =  driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[24]/td[2]/input[2]"));
         aux1Name.sendKeys("Es cliente");
 
-        Select aux1Type = new Select(driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[24]/td[3]/select")));
-        aux1Type.selectByValue("select");
 
+        Select aux1Type = SeleniumDAO.findSelectElementBy("xpath","/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[24]/td[3]/select", driver);
+                //new Select(driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[24]/td[3]/select")));
+        aux1Type.selectByValue("select");
+        //////////////////////////////// TEST
+        HashMap<Integer,String> hmap = SeleniumDAO.getSelectOptions(aux1Type);
+        for(Integer value: hmap.keySet()){
+            String key = value.toString();
+            String option = hmap.get(value);
+            System.out.println(key+" " + option);
+        }
+        ///////////////////////////////////////////
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[24]/td[8]/select[1]")));
         Select aux1OptionsGroup = new Select(driver.findElement(By.cssSelector("select[class='optiongroup active']")));
         aux1OptionsGroup.selectByValue("6");
@@ -430,18 +439,20 @@ public class Test_2_1 {
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("fancybox-frame")));
         driver.switchTo().frame("fancybox-frame");
 
-        WebElement cloneSowflow = driver.findElement(By.id("cloneShowflow"));
-        cloneSowflow.click();
-
+        WebElement cloneShowflow = driver.findElement(By.id("cloneShowflow"));
+        cloneShowflow.click();
+        /*
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div[class='sweet-alert showSweetAlert visible']")));
         WebElement sweetAlert6 = driver.findElement(By.cssSelector("div[class='sweet-alert showSweetAlert visible']"));
-        WebElement ok6 = sweetAlert6.findElement(By.className("sa-confirm-button-container"));
+        WebElement ok6 = sweetAlert6.findElement(By.className("confirm"));
         ok6.click();
-
-        //driver.navigate().refresh();
+        */
+        driver.navigate().refresh();
 
         // Return to showflow panel
-        WebElement showflowPanel = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div/div/div[1]/p[1]/a"));
+        //WebElement showflowPanel = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div/div/div[1]/p[1]/a"));
+        WebElement showflowPanel = driver.findElement(By.cssSelector("a[href='showflowPanel.php']"));
         showflowPanel.click();
+
     }
 }

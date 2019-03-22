@@ -15,34 +15,27 @@ public class Test_1_2 {
     public static void main(String[] args) {
 
         // Go to http://pruebas7.dialcata.com/dialapplet-web/
-        System.setProperty("webdriver.gecko.driver", "geckodriver");
-        WebDriver driver = new FirefoxDriver();
+        WebDriver driver = SeleniumDAO.initializeDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
 
-        WebElement user = driver.findElement(By.id("adminusername"));
-        user.sendKeys("admin");
-
-        WebElement pass = driver.findElement(By.id("adminpassword"));
-        pass.sendKeys("admin");
-
-        WebElement entry = driver.findElement(By.id("login"));
-        entry.click();
+        Main.login("admin", "admin", driver);
         // Click on Admin tab
-        WebElement adminButton = driver.findElement(By.id("ADMIN"));
-        adminButton.click();
+        WebElement adminTab = SeleniumDAO.selectElementBy("id","ADMIN", driver);
+        SeleniumDAO.click(adminTab);
         // Click on "Users" left menu
-        WebElement users = driver.findElement(By.xpath("/html/body/div[2]/div[1]/h3[2]"));
-        users.click();
+        WebElement users = SeleniumDAO.selectElementBy("xpath", "/html/body/div[2]/div[1]/h3[2]",driver);
+        SeleniumDAO.click(users);
         // Click on Modify agent groups button in left menu
-        WebElement modAgentsGroups = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[2]/div/div[2]/p/a"));
-        modAgentsGroups.click();
+        WebElement modAgentsGroups = SeleniumDAO.selectElementBy("xpath", "/html/body/div[2]/div[1]/div[2]/div/div[2]/p/a", driver);
+        SeleniumDAO.click(modAgentsGroups);
 
         WebDriverWait waiting = new WebDriverWait(driver, 20);
 
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contenido")));
-        WebElement containerTable = driver.findElement(By.id("contenido"));
-        WebElement table = containerTable.findElement(By.className("tabla-principal"));
-        List<WebElement> listOfRows = table.findElements(By.tagName("tr"));
+        WebElement containerTableFirstSearch = SeleniumDAO.selectElementBy("id", "contenido",driver);
+        WebElement tableFirstSearch = SeleniumDAO.selectElementBy("className", "tabla-principal", containerTableFirstSearch);
+
+        List<WebElement> listOfRows = tableFirstSearch.findElements(By.tagName("tr"));
         int rows = listOfRows.size();
         int[] ids = new int[rows];
         for(int i = 1; i<rows-1; i++){
@@ -51,20 +44,22 @@ public class Test_1_2 {
         }
         int currentMax = Arrays.stream(ids).max().getAsInt();
 
-        String uniqueID = ""+Math.random();
+        String uniqueID = UtilsDAO.generateUnicID();
         String name = "GruporcNver7816";
         name = name.concat(uniqueID);
-        WebElement groupName = driver.findElement(By.id("new_groupname"));
+
+        WebElement groupName = SeleniumDAO.selectElementBy("id","new_groupname",driver);
         groupName.sendKeys(name);
         // Click on add button
-        WebElement newGroup = driver.findElement(By.cssSelector("img[src='imagenes/add2.png']"));
-        newGroup.click();
+        WebElement newGroup = SeleniumDAO.selectElementBy("cssSelector", "img[src='imagenes/add2.png']",driver);
+        SeleniumDAO.click(newGroup);
         // Taking ID of new Group
-        driver.switchTo().defaultContent();
+        SeleniumDAO.switchToDefaultContent(driver);
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contenido")));
-        WebElement containerTable2 = driver.findElement(By.id("contenido"));
-        WebElement table2 = containerTable2.findElement(By.className("tabla-principal"));
-        List<WebElement> listOfRows2 = table2.findElements(By.tagName("tr"));
+
+        WebElement containerTableSecondSearch = SeleniumDAO.selectElementBy("id", "contenido",driver);
+        WebElement tableSecondSearch = SeleniumDAO.selectElementBy("className","tabla-principal", containerTableSecondSearch);
+        List<WebElement> listOfRows2 = tableSecondSearch.findElements(By.tagName("tr"));
         int rows2 = listOfRows2.size();
         int[] ids2 = new int[rows2];
         for(int i = 1; i<rows2-1; i++){
@@ -73,25 +68,23 @@ public class Test_1_2 {
         }
         int newMax = Arrays.stream(ids2).max().getAsInt();
         // Transfer users to new group
-        WebElement gestUsers = driver.findElement(By.xpath("//*[@id=\"users-"+newMax+"\"]"));
-        gestUsers.click();
-
-        // Waiting to load fancy-box
-        waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("fancybox-frame")));
-        // Change driver to fancy-box
-        driver.switchTo().frame("fancybox-frame");
+        WebElement gestUsers = SeleniumDAO.selectElementBy("xpath","//*[@id=\"users-"+newMax+"\"]",driver);
+        SeleniumDAO.click(gestUsers);
+        // Waiting to load fancy-box and change driver to fancy-box
+        SeleniumDAO.switchToFrame("fancybox-frame", driver);
         // Take left column(users column)
-        WebElement leftColumn = driver.findElement(By.xpath("//*[@id=\"leftCol\"]"));
+        WebElement leftColumn = SeleniumDAO.selectElementBy("xpath", "//*[@id=\"leftCol\"]",driver);
         // Select a Agent
-        WebElement agent = leftColumn.findElement(By.xpath("/html/body/form/div/div[1]/div/div[1]/div/ul/li[4]"));
+        WebElement agent = SeleniumDAO.selectElementBy("xpath","/html/body/form/div/div[1]/div/div[1]/div/ul/li[4]",leftColumn);
         // Take right column(group users)
-        WebElement groupSpace = driver.findElement(By.xpath("//*[@id=\"rightList\"]"));
+        WebElement groupSpace =  SeleniumDAO.selectElementBy("xpath", "//*[@id=\"rightList\"]",driver);
         // Make the drag and drop action
-        Actions moveAgent = new Actions(driver);
-        moveAgent.dragAndDrop(agent,groupSpace).build().perform();
+        //Actions moveAgent = new Actions(driver);
+        //moveAgent.dragAndDrop(agent,groupSpace).build().perform();
+        SeleniumDAO.dragAndDropAction(agent,groupSpace,driver);
         // Click on send button to finish the modification
-        WebElement send = driver.findElement(By.xpath("/html/body/form/div/p[3]/input"));
-        send.click();
+        WebElement send = SeleniumDAO.selectElementBy("xpath","/html/body/form/div/p[3]/input",driver);
+        SeleniumDAO.click(send);
 
         // Checking that the test works correctly
         // Take all ids of the agent groups of tabla principal and find the max value,
