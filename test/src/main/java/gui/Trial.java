@@ -12,6 +12,7 @@ public class Trial {
    private String lastType;
    private boolean firstTime, firstTime2, firstTimeDragAndDrop;
 
+   private ComboBox actionType;
    private ComboBox selectElementBy;
    private ComboBox selectPlaceBy;
    private TextField firstValueArgs;
@@ -23,33 +24,35 @@ public class Trial {
         this.gridParent = gridParent;
         this.rowIndex = rowIndex;
 
-        ComboBox<String> actionType = new ComboBox<>();
+        actionType = new ComboBox<>();
         actionType.setItems(FXCollections.observableArrayList(H2DAO.getTypeAction()));
+        //actionType.getSelectionModel().selectFirst();
+        //lastType = "Click";
         gridParent.addRow(rowIndex, actionType);
         actionType.setItems(FXCollections.observableArrayList(H2DAO.getTypeAction()));
             actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
 
-            switch (actionType.getValue()) {
+            switch (actionType.getValue().toString()) {
                 case "Click":
                     firstTime = true;
                     System.out.println(lastType);
-                    System.out.println("" + gridParent.getChildren());
                     if(firstTime2) {
                         switch (lastType){
                             case "Click":
-                                gridParent.getChildren().removeAll(firstValueArgs,selectElementBy);
+                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
                                 break;
                             case "DragAndDrop":
                                 gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs);
                                 break;
                             case "Selector":
-                                gridParent.getChildren().removeAll(firstValueArgs,selectElementBy);
+                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
                                 break;
                             case "default":
                                 break;
                         }
                     }
+                    lastType = "Click";
                     selectElementBy = new ComboBox();
                     selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
@@ -63,31 +66,27 @@ public class Trial {
                         firstTime = false;
                         firstTime2 = true;
                     });
-                    System.out.println(gridParent.getChildren());
-                    lastType = "Click";
                     break;
                 case "DragAndDrop":
                     firstTime = true;
                     System.out.println(lastType);
                     firstTimeDragAndDrop = true;
-                    System.out.println("" + gridParent.getChildren());
                     if(firstTime2) {
                         switch (lastType){
                             case "Click":
-                                gridParent.getChildren().removeAll(firstValueArgs,selectElementBy);
+                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
                                 break;
                             case "DragAndDrop":
-                                gridParent.getChildren().removeAll(firstValueArgs,selectElementBy,selectPlaceBy,secondValueArgs);
+                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs);
                                 break;
                             case "Selector":
-                                gridParent.getChildren().removeAll(firstValueArgs,selectElementBy);
+                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
                                 break;
                             case "default":
                                 break;
                         }
                     }
                     lastType = "DragAndDrop";
-                    System.out.println(gridParent.getChildren());
                     selectElementBy = new ComboBox();
                     selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
@@ -98,7 +97,7 @@ public class Trial {
                             firstValueArgs = new TextField();
                             gridParent.addRow(rowIndex, firstValueArgs);
                             selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                            selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
+                            //selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                             gridParent.addRow(rowIndex, selectPlaceBy);
                             firstTimeDragAndDrop = false;
                             selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
@@ -112,30 +111,27 @@ public class Trial {
                             });
                         }
                     });
-                    System.out.println(gridParent.getChildren());
-                    //lastType = "DragAndDrop";
                     break;
                 case "Selector":
                     firstTime = true;
                     System.out.println(lastType);
-                    System.out.println("" + gridParent.getChildren());
                     if(firstTime2) {
                         switch (lastType){
                             case "Click":
-                                gridParent.getChildren().removeAll(firstValueArgs,selectElementBy);
+                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
                                 break;
                             case "DragAndDrop":
-                                gridParent.getChildren().removeAll(firstValueArgs,selectElementBy,selectPlaceBy,secondValueArgs);
+                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs);
                                 break;
                             case "Selector":
-                                gridParent.getChildren().removeAll(firstValueArgs,selectElementBy);
+                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
                                 break;
                             case "default":
                                 break;
                         }
 
                     }
-                    System.out.println(gridParent.getChildren());
+                    lastType = "Selector";
                     selectElementBy = new ComboBox();
                     selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
@@ -148,41 +144,14 @@ public class Trial {
                         firstTime = false;
                         firstTime2 = true;
                     });
-                    System.out.println(gridParent.getChildren());
-                    lastType = "Selector";
                     break;
-                case "default":
-
+                default:
                     break;
             }
         });
     }
-   /*
-    @Override
-    public String toString() {
 
-        String result= "" + trialType ;
-
-        switch (trialType)
-        {
-            case "Click":
-                result = result.concat(
-                        " By " + trialSelectBy +
-                        " " + trialFirstArgs);
-                break;
-            case "DragAndDrop":
-                result =  result.concat( '\'' +
-                        " By " + trialSelectBy + '\'' +
-                        " " + trialFirstArgs + '\'' +
-                        " By " + trialSecondSelectBy + '\'' +
-                        " " + trialSecondArgs);
-                break;
-            case "Selector":
-                result = result.concat(
-                        " By " + trialSelectBy  +
-                        " " + trialFirstArgs);
-                break;
-        }
-        return result;
-    }*/
+    public ComboBox getActionType() {
+        return actionType;
+    }
 }

@@ -15,9 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 
 import java.net.URL;
-import java.util.HashSet;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 
 public class MainController implements Initializable {
@@ -36,247 +34,51 @@ public class MainController implements Initializable {
     @FXML
     private GridPane gridPaneTrialList;
 
-    @FXML
-    private ComboBox<String> comboBoxNewAction;
-
-   /* @FXML
-    private TableView<Trial> tableViewTest;
-
-    @FXML
-    private TableColumn<Trial, String> tableColumnTestCol;
-    */
     private boolean firstTime;
     private boolean firstTimeDragAndDrop;
-    boolean firstTime2 = false;
-    private String lastType;
 
-    private ComboBox<String> newAction;
-    private ComboBox<String> selectBy;
-    private String firstArgs;
-    private ComboBox<String> secondSelectBy;
-    private String secondArgs;
-
-
+    private List<Trial> trialList;
 
     private int rowIndex = 0;
-    /*
-    @FXML
-    private TableColumn<Trial, ComboBox> tableColumnSelectedByCol;
 
-    ObservableList<Trial> list = FXCollections.observableArrayList();
-    */
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
         //tableColumnTestCol.setCellValueFactory( (param) -> new SimpleStringProperty( param.getValue().toString()));
-
-
-        comboBoxNewAction.setItems(FXCollections.observableArrayList(H2DAO.getTypeAction()));
-        comboBoxNewAction.valueProperty().addListener((observable, oldValue, newValue) ->
-        {
-
-            switch (comboBoxNewAction.getValue())
-            {
-                case "Click":
-                    firstTime = true;
-                    gridPaneTrialList.getChildren().remove(1,gridPaneTrialList.getChildren().size());
-                    ComboBox<String> selectElementBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                    gridPaneTrialList.addRow(0, selectElementBy);
-                        selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
-                        {
-
-                            if(firstTime)
-                            {
-                                TextField firstValueArgs = new TextField();
-                                gridPaneTrialList.addRow( 0, firstValueArgs);
-                            }
-                            firstTime = false;
-                        });
-                    break;
-                case "DragAndDrop":
-                    firstTime = true;
-                    firstTimeDragAndDrop = true;
-                    gridPaneTrialList.getChildren().remove(1,gridPaneTrialList.getChildren().size());
-                    ComboBox<String> selectElementDragableBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                    gridPaneTrialList.addRow(0, selectElementDragableBy);
-                    selectElementDragableBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
-                    {
-
-                        if(firstTimeDragAndDrop)
-                        {
-                            TextField firstValueArgs = new TextField();
-                            gridPaneTrialList.addRow(0, firstValueArgs);
-                            ComboBox<String> selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                            gridPaneTrialList.addRow(0, selectPlaceBy);
-                            firstTimeDragAndDrop = false;
-                            selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
-                            {
-
-                                if(firstTime)
-                                {
-                                    TextField secondValueArgs = new TextField();
-                                    gridPaneTrialList.addRow(0, secondValueArgs);
-                                }
-                                firstTime = false;
-                            });
-                        }
-                    });
-                    break;
-                case "Selector":
-                    firstTime = true;
-                    gridPaneTrialList.getChildren().remove(1,gridPaneTrialList.getChildren().size());
-                    ComboBox<String> selectSelectorBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                    gridPaneTrialList.addRow(0,selectSelectorBy);
-                    selectSelectorBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
-                    {
-
-                        if(firstTime)
-                        {
-                            TextField firstValueArgs = new TextField();
-                            gridPaneTrialList.addRow( 0, firstValueArgs);
-                        }
-                        firstTime = false;
-                    });
-                    break;
-
-            }
-
-        });
+        trialList = new ArrayList<>();
     }
 
     public void addActionRow()
     {
-            rowIndex++;
             Trial newaction = new Trial(gridPaneTrialList,rowIndex);
-
-            /*ComboBox<String> newAction = new ComboBox<>();
-            gridPaneTrialList.addRow(rowIndex, newAction);
-            newAction.setItems(FXCollections.observableArrayList(H2DAO.getTypeAction()));
-            newAction.valueProperty().addListener((observable, oldValue, newValue) ->
-            {
-
-                switch (newAction.getValue()) {
-                    case "Click":
-                        firstTime = true;
-                        System.out.println(lastType);
-                        System.out.println("" + gridPaneTrialList.getChildren());
-                        if(firstTime2) {
-                                switch (lastType){
-                                    case "Id":
-                                        gridPaneTrialList.getChildren().remove(gridPaneTrialList.getChildren().size() - 2, gridPaneTrialList.getChildren().size());
-                                        break;
-                                    case "DragAndDrop":
-                                        gridPaneTrialList.getChildren().remove(gridPaneTrialList.getChildren().size() - 4, gridPaneTrialList.getChildren().size());
-                                        break;
-                                    case "Selector":
-                                        gridPaneTrialList.getChildren().remove(gridPaneTrialList.getChildren().size() - 2, gridPaneTrialList.getChildren().size());
-                                        break;
-                                }
-                        }
-                        ComboBox<String> selectElementBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                        gridPaneTrialList.addRow(rowIndex, selectElementBy);
-                        selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
-                        {
-
-                            if (firstTime) {
-                                TextField firstValueArgs = new TextField();
-                                gridPaneTrialList.addRow(rowIndex, firstValueArgs);
-                            }
-                            firstTime = false;
-                            firstTime2 = true;
-                        });
-                        System.out.println(gridPaneTrialList.getChildren());
-                        lastType = "Click";
-                        break;
-                    case "DragAndDrop":
-                        firstTime = true;
-                        System.out.println(lastType);
-                        firstTimeDragAndDrop = true;
-                        System.out.println("" + gridPaneTrialList.getChildren());
-                        if(firstTime2) {
-                                switch (lastType){
-                                    case "Id":
-                                        gridPaneTrialList.getChildren().remove(gridPaneTrialList.getChildren().size() - 2, gridPaneTrialList.getChildren().size());
-                                        break;
-                                    case "DragAndDrop":
-                                        gridPaneTrialList.getChildren().remove(gridPaneTrialList.getChildren().size() - 4, gridPaneTrialList.getChildren().size());
-                                        break;
-                                    case "Selector":
-                                        gridPaneTrialList.getChildren().remove(gridPaneTrialList.getChildren().size() - 2, gridPaneTrialList.getChildren().size());
-                                        break;
-                                }
-                        }
-                        System.out.println(gridPaneTrialList.getChildren());
-                        ComboBox<String> selectElementDragableBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                        gridPaneTrialList.addRow(rowIndex, selectElementDragableBy);
-                        selectElementDragableBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
-                        {
-
-                            if (firstTimeDragAndDrop) {
-                                TextField firstValueArgs = new TextField();
-                                gridPaneTrialList.addRow(rowIndex, firstValueArgs);
-                                ComboBox<String> selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                                gridPaneTrialList.addRow(rowIndex, selectPlaceBy);
-                                firstTimeDragAndDrop = false;
-                                selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
-                                {
-                                    if (firstTime) {
-                                        TextField secondValueArgs = new TextField();
-                                        gridPaneTrialList.addRow(rowIndex, secondValueArgs);
-                                    }
-                                    firstTime = false;
-                                    firstTime2 = true;
-                                });
-                            }
-                        });
-                        System.out.println(gridPaneTrialList.getChildren());
-                        lastType = "DragAndDrop";
-                        break;
-                    case "Selector":
-                        firstTime = true;
-                        System.out.println(lastType);
-                        System.out.println("" + gridPaneTrialList.getChildren());
-                        if(firstTime2) {
-                            switch (lastType){
-                                case "Id":
-                                    gridPaneTrialList.getChildren().remove(gridPaneTrialList.getChildren().size() - 2, gridPaneTrialList.getChildren().size());
-                                    break;
-                                case "DragAndDrop":
-                                    gridPaneTrialList.getChildren().remove(gridPaneTrialList.getChildren().size() - 4, gridPaneTrialList.getChildren().size());
-                                    break;
-                                case "Selector":
-                                    gridPaneTrialList.getChildren().remove(gridPaneTrialList.getChildren().size() - 2, gridPaneTrialList.getChildren().size());
-                                    break;
-                            }
-
-                        }
-                        System.out.println(gridPaneTrialList.getChildren());
-                        ComboBox<String> selectSelectorBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                        gridPaneTrialList.addRow(rowIndex, selectSelectorBy);
-                        selectSelectorBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
-                        {
-                            if (firstTime) {
-                                TextField firstValueArgs = new TextField();
-                                gridPaneTrialList.addRow(rowIndex, firstValueArgs);
-                            }
-                            firstTime = false;
-                            firstTime2 = true;
-                        });
-                        System.out.println(gridPaneTrialList.getChildren());
-                        lastType = "Selector";
-                        break;
-                    case "default":
-
-                        break;
-                }
-            });
-        */
+            trialList.add(newaction);
+            rowIndex++;
     }
 
    public void deleteActionRow()
    {
-       //tableViewTest.getItems().removeAll(tableViewTest.getSelectionModel().getSelectedItem());
+       /*Trial lastAction = trialList.get(trialList.size());
+        switch (lastAction.getActionType().getValue().toString()){
+            case "Id":
+                gridPaneTrialList.getChildren().remove(gridPaneTrialList.getChildren().size()-3, gridPaneTrialList.getChildren().size()-1);
+                break;
+            case "DragAndDrop":
+                gridPaneTrialList.getChildren().remove(gridPaneTrialList.getChildren().size()-5, gridPaneTrialList.getChildren().size()-1);
+                break;
+            case "Selector":
+                gridPaneTrialList.getChildren().remove(gridPaneTrialList.getChildren().size()-3, gridPaneTrialList.getChildren().size()-1);
+                break;
+            default:
+                break;
+        }*/
+       //gridPaneTrialList.getChildren().remove(gridPaneTrialList.getChildren().size()-1);
+
+   }
+
+   public void deleteAll(){
+        gridPaneTrialList.getChildren().remove(0, gridPaneTrialList.getChildren().size());
+        rowIndex = 0;
    }
 
 }
