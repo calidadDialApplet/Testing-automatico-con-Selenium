@@ -1,10 +1,6 @@
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.yaml.snakeyaml.util.ArrayUtils;
 
 import java.util.*;
 
@@ -18,7 +14,7 @@ public class Test_1_2 {
         WebDriver driver = SeleniumDAO.initializeDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
 
-        Main.login("admin", "admin", driver);
+        Main.loginDialappletWeb("admin", "admin", driver);
         // Click on Admin tab
         WebElement adminTab = SeleniumDAO.selectElementBy("id","ADMIN", driver);
         SeleniumDAO.click(adminTab);
@@ -39,12 +35,12 @@ public class Test_1_2 {
         int rows = listOfRows.size();
         int[] ids = new int[rows];
         for(int i = 1; i<rows-1; i++){
-            WebElement currentId = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div[3]/div/table/tbody/tr["+i+"]/td[1]"));
+            WebElement currentId = SeleniumDAO.selectElementBy("xpath", "/html/body/div[2]/div[3]/div[2]/div[3]/div/table/tbody/tr["+i+"]/td[1]", driver);
             ids[i] = Integer.parseInt(currentId.getText());
         }
         int currentMax = Arrays.stream(ids).max().getAsInt();
 
-        String uniqueID = UtilsDAO.generateUnicID();
+        String uniqueID = Utils.generateUniqueID();
         String name = "GruporcNver7816";
         name = name.concat(uniqueID);
 
@@ -73,7 +69,7 @@ public class Test_1_2 {
         // Waiting to load fancy-box and change driver to fancy-box
         SeleniumDAO.switchToFrame("fancybox-frame", driver);
         // Take left column(users column)
-        WebElement leftColumn = SeleniumDAO.selectElementBy("xpath", "//*[@id=\"leftCol\"]",driver);
+        WebElement leftColumn = SeleniumDAO.selectElementBy("id", "leftList",driver);
         // Select a Agent
         WebElement agent = SeleniumDAO.selectElementBy("xpath","/html/body/form/div/div[1]/div/div[1]/div/ul/li[4]",leftColumn);
         // Take right column(group users)

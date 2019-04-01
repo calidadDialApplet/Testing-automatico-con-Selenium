@@ -1,7 +1,8 @@
 import java.util.Random;
 
-public class UtilsDAO {
-    public static String generateUnicID(){
+public class Utils {
+
+    public static String generateUniqueID(){
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
         while (sb.length() < 6) {

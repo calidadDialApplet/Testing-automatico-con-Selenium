@@ -8,7 +8,6 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class SeleniumDAO {
 
@@ -17,6 +16,7 @@ public class SeleniumDAO {
         WebDriver driver = new FirefoxDriver();
         return driver;
     }
+
     public static WebElement selectElementBy(String mode, String args, WebDriver driver){
 
         WebElement elementReturned = null;
@@ -37,6 +37,12 @@ public class SeleniumDAO {
             case "className":
                 WebElement elementClickedByClassName = driver.findElement(By.className(args));
                 elementReturned = elementClickedByClassName;
+                break;
+            case "name":
+                WebElement elementClickedByName = driver.findElement(By.name(args));
+                elementReturned = elementClickedByName;
+                break;
+            case "default":
                 break;
         }
 
@@ -69,6 +75,10 @@ public class SeleniumDAO {
             case "className":
                 WebElement elementClickedByClassName = element.findElement(By.className(args));
                 elementReturned = elementClickedByClassName;
+                break;
+            case "name":
+                WebElement elementClickedByName = element.findElement(By.name(args));
+                elementReturned = elementClickedByName;
                 break;
         }
 
@@ -154,14 +164,6 @@ public class SeleniumDAO {
 
         return elementReturned;
     }
-    /*public static List<String> getSelectOptions(Select selector){
-        List<String> selectorOptions = null;
-        for(int i = 0; i < selector.getOptions().size(); i++){
-            selectorOptions.add(selector.getOptions().get(i).getText());
-            selector.getOptions().
-        }
-        return selectorOptions;
-    }*/
     public static HashMap<Integer, String> getSelectOptions(Select selector){
         HashMap<Integer, String> hmap = new HashMap<Integer,String>();
         for(int i = 0; i < selector.getOptions().size(); i++){

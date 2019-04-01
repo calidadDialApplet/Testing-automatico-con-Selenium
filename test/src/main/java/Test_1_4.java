@@ -1,7 +1,5 @@
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
 
 // Create a user coordinator + agent. Format of the username CoordrcNverXYZ,
@@ -11,76 +9,69 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 public class Test_1_4 {
         public static void main(String[] args) {
 
-            System.setProperty("webdriver.gecko.driver", "geckodriver");
-            WebDriver driver = new FirefoxDriver();
+            WebDriver driver = SeleniumDAO.initializeDriver();
             driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
 
-            WebElement user = driver.findElement(By.id("adminusername"));
-            user.sendKeys("admin");
+            Main.loginDialappletWeb("admin","admin",driver);
+            // Click on Admin tab
+            WebElement adminTab = SeleniumDAO.selectElementBy("id","ADMIN", driver);
+            SeleniumDAO.click(adminTab);
+            // Click on "Users" left menu
+            WebElement users = SeleniumDAO.selectElementBy("xpath", "/html/body/div[2]/div[1]/h3[2]",driver);
+            SeleniumDAO.click(users);
 
-            WebElement pass = driver.findElement(By.id("adminpassword"));
-            pass.sendKeys("admin");
+            WebElement configureUsers = SeleniumDAO.selectElementBy("xpath", "/html/body/div[2]/div[1]/div[2]/div/div[1]/p[1]/a", driver);
+            SeleniumDAO.click(configureUsers);
 
-            WebElement entry = driver.findElement(By.id("login"));
-            entry.click();
-
-            WebElement adminButton = driver.findElement(By.id("ADMIN"));
-            adminButton.click();
-
-            WebElement users = driver.findElement(By.xpath("/html/body/div[2]/div[1]/h3[2]"));
-            users.click();
-
-            WebElement configureUsers = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[2]/div/div[1]/p[1]/a"));
-            configureUsers.click();
-
-            WebElement createUser = driver.findElement(By.xpath("/html/body/div[2]/div[3]/div[2]/div[4]/div[1]/div/table/tbody/tr/td[2]/a"));
-            createUser.click();
+            WebElement createUser = SeleniumDAO.selectElementBy("xpath","/html/body/div[2]/div[3]/div[2]/div[4]/div[1]/div/table/tbody/tr/td[2]/a", driver);
+            SeleniumDAO.click(createUser);
 
 
             String name ="CoordrcNver7816";
-            String uniqueID = ""+Math.floor(1000 + Math.random() * 9999);
+            String uniqueID = Utils.generateUniqueID();
             uniqueID = uniqueID.substring(0,4);
             name = name.concat(uniqueID);
-            WebElement username = driver.findElement(By.id("username"));
+
+            WebElement username = SeleniumDAO.selectElementBy("id", "username", driver);
             username.sendKeys(name);
 
-            WebElement userPass = driver.findElement(By.id("pswd"));
+            WebElement userPass = SeleniumDAO.selectElementBy("id", "pswd", driver);
             userPass.sendKeys("contraseña1234");
 
-            WebElement userPass2 = driver.findElement(By.id("pass2"));
-            userPass2.sendKeys("contraseña1234");
+            WebElement confirmUserPass = SeleniumDAO.selectElementBy("id","pass2", driver);
+            confirmUserPass.sendKeys("contraseña1234");
             // Set coordinator role
-            WebElement coordinator = driver.findElement(By.id("iscoordinator"));
-            coordinator.click();
+            WebElement coordinator = SeleniumDAO.selectElementBy("id", "iscoordinator", driver);
+            SeleniumDAO.click(coordinator);
             // Set agent role
-            WebElement agent = driver.findElement(By.id("isagent"));
-            agent.click();
+            WebElement agent = SeleniumDAO.selectElementBy("id", "isagent", driver);
+            SeleniumDAO.click(agent);
             // Click on submit button
-            WebElement accept = driver.findElement(By.id("submit"));
-            accept.click();
+            WebElement accept = SeleniumDAO.selectElementBy("id", "submit", driver);
+            SeleniumDAO.click(accept);
             // Configure tabs (default configuration)
-            WebElement send = driver.findElement(By.name("send_tabs"));
-            send.click();
+            WebElement send = SeleniumDAO.selectElementBy("name", "send_tabs", driver);
+            SeleniumDAO.click(send);
             // Configure agent groups(default configuration)
-            WebElement submit = driver.findElement(By.name("submit-page-one"));
-            submit.click();
+            WebElement submit = SeleniumDAO.selectElementBy("name", "submit-page-one", driver);
+            SeleniumDAO.click(submit);
             // Configure agent services(DialappletDemoDavid service)
-            WebElement service = driver.findElement(By.id("s94"));
-            service.click();
-            WebElement callerMode = driver.findElement(By.id("c336"));
-            callerMode.click();
-            WebElement submit2 = driver.findElement(By.name("submit-page-two"));
-            submit2.click();
+            WebElement service = SeleniumDAO.selectElementBy("id", "s94", driver);
+            SeleniumDAO.click(service);
+            WebElement callerMode = SeleniumDAO.selectElementBy("id", "c336", driver);
+            SeleniumDAO.click(callerMode);
+            WebElement submitSecondPage = SeleniumDAO.selectElementBy("name", "submit-page-two",driver);
+            SeleniumDAO.click(submitSecondPage);
             // Configure agent groups as coordinator(default configuration)
-            WebElement submit3 = driver.findElement(By.name("submit"));
-            submit3.click();
+            WebElement submitThirdPage = SeleniumDAO.selectElementBy("name", "submit", driver);
+            SeleniumDAO.click(submitThirdPage);
 
 
             driver.navigate().to("http://pruebas7.dialcata.com/dialapplet-web/edit-user.php?username="+name+"&");
-            WebElement agent2 = driver.findElement(By.id("isagent"));
-            boolean firstCondition = agent2.isSelected();
-            WebElement coordinator2 = driver.findElement(By.id("iscoordinator"));
-            boolean secondCondition = coordinator2.isSelected();
+            WebElement agentTest = SeleniumDAO.selectElementBy("id", "isagent", driver);
+            boolean firstCondition = agentTest.isSelected();
+            WebElement coordinatorTest = SeleniumDAO.selectElementBy("id", "iscoordinator", driver);
+            boolean secondCondition = coordinatorTest.isSelected();
             if(firstCondition && secondCondition) System.out.println("Prueba creación usuario agente y coordinador finalizada con éxito!");
             else System.out.println("Algo ha petado, repasar");
 
