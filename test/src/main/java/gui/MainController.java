@@ -1,6 +1,7 @@
 package gui;
 
 
+import javafx.application.Application;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -38,6 +39,9 @@ public class MainController implements Initializable {
 
     @FXML
     private ComboBox<String> comboBoxNewAction;
+
+    @FXML
+    private MenuItem menuItemClose;
 
    /* @FXML
     private TableView<Trial> tableViewTest;
@@ -277,6 +281,12 @@ public class MainController implements Initializable {
    public void deleteActionRow()
    {
        //tableViewTest.getItems().removeAll(tableViewTest.getSelectionModel().getSelectedItem());
+   }
+
+   public void totalClose()
+   {
+       System.out.println("Muero porque me matas");
+       System.exit(1);
    }
 
 }
