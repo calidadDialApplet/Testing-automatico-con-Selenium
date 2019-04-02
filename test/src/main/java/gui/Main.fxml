@@ -26,7 +26,7 @@
                     <items>
                         <MenuItem fx:id="menuItemImport" text="Import" />
                         <MenuItem fx:id="menuItemExport" mnemonicParsing="true" text="Export" />
-                        <MenuItem fx:id="menuItemClose" mnemonicParsing="true" text="Close" />
+                        <MenuItem fx:id="menuItemClose" mnemonicParsing="true" onAction="#totalClose" text="Close" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="true" text="Edit">
