@@ -1,24 +1,16 @@
 package gui;
 
 
-import javafx.application.Application;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import javafx.util.Callback;
+import javafx.stage.StageStyle;
 
 import java.net.URL;
-import java.util.HashSet;
+import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 
 public class MainController implements Initializable {
@@ -285,8 +277,21 @@ public class MainController implements Initializable {
 
    public void totalClose()
    {
-       System.out.println("Muero porque me matas");
-       System.exit(1);
+       Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+       alert.setTitle("¿Nos dejas?");
+       alert.setHeaderText("¿Alguien lee esto?");
+
+       Optional<ButtonType> result = alert.showAndWait();
+       if(result.get() == ButtonType.OK)
+       {
+           System.out.println("Muero porque me matas");
+           System.exit(0);
+       }
+       else
+       {
+           System.out.println("Sigo vivo un día más");
+       }
+
    }
 
 }
