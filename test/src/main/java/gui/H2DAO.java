@@ -8,7 +8,9 @@ public class H2DAO {
         ArrayList<String> typeActions = new ArrayList<>();
         typeActions.add("Click");
         typeActions.add("DragAndDrop");
-        typeActions.add("Selector");
+        //typeActions.add("Selector");
+        typeActions.add("WriteTo");
+        typeActions.add("ReadFrom");
         return typeActions;
     }
     public static ArrayList<String> getSelectElementBy(){

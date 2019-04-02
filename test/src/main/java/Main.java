@@ -13,8 +13,6 @@ import org.openqa.selenium.support.ui.Select;
 
 public class Main extends Application {
 
-
-
         public static void main(String[] args) {
                 launch(args);
         }
@@ -26,6 +24,7 @@ public class Main extends Application {
                 primaryStage.setScene(new Scene(root, 800, 480));
                 primaryStage.show();
         }
+
         public static void loginDialappletWeb(String name, String password, WebDriver driver){
                 WebElement user = driver.findElement(By.id("adminusername"));
                 user.sendKeys(name);
@@ -40,13 +39,13 @@ public class Main extends Application {
                 }
 
         }
+
         public static void loginWebClient(String name, String password, int tlfOption, WebDriver driver){
                 WebElement usernameWebClient = SeleniumDAO.selectElementBy("id","userName",driver);
                 usernameWebClient.sendKeys(name);
 
                 WebElement passWebClient = SeleniumDAO.selectElementBy("id","passwordBridge",driver);
                 passWebClient.sendKeys(password);
-
 
                 Select tlf = SeleniumDAO.findSelectElementBy("id","selectType",driver);
                 SeleniumDAO.selectOption("index",""+tlfOption, tlf);
