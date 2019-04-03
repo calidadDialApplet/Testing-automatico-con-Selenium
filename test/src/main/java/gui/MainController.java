@@ -41,6 +41,9 @@ public class MainController implements Initializable {
     {
         //tableColumnTestCol.setCellValueFactory( (param) -> new SimpleStringProperty( param.getValue().toString()));
         trialList = new ArrayList<>();
+        // My try to get the ListView expanded to fit parent AnchorPane
+        testList.setScaleX(100);
+        testList.setScaleY(100);
     }
 
     public void addActionRow()
@@ -130,5 +133,24 @@ public class MainController implements Initializable {
         Trial currentAction = new Trial("Click","Id","","Id","");
         currentAction.executeTrial();
         System.out.println("Funciona");
+    }
+
+    // Close app method
+    public void totalClose()
+    {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("¿Nos dejas?");
+        alert.setHeaderText("Se perderán todos los cambios no guardados");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == ButtonType.OK)
+        {
+            System.out.println("Adiós mundo cruel");
+            System.exit(0);
+        }
+        else
+        {
+            System.out.println("Muerte esquivada una vez más");
+        }
     }
 }
