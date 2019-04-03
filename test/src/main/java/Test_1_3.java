@@ -1,3 +1,6 @@
+import main.Main;
+import main.SeleniumDAO;
+import main.Utils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

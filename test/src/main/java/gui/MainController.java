@@ -6,6 +6,8 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 
 import javafx.scene.layout.GridPane;
+import main.SeleniumDAO;
+import org.openqa.selenium.WebDriver;
 
 
 import java.net.URL;
@@ -32,8 +34,15 @@ public class MainController implements Initializable {
     private boolean firstTimeDragAndDrop;
 
     private List<Trial> trialList;
+    private List<Trial> procesedList;
 
     private int rowIndex = 0;
+
+    String comboBoxActionType = "";
+    String comboBoxSelectElementBy = "";
+    String textFieldFirstValueArgs = "";
+    String comboBoxSelectPlaceBy = "";
+    String textFieldSecondValueArgs = "";
 
 
     @Override
@@ -41,6 +50,7 @@ public class MainController implements Initializable {
     {
         //tableColumnTestCol.setCellValueFactory( (param) -> new SimpleStringProperty( param.getValue().toString()));
         trialList = new ArrayList<>();
+        procesedList = new ArrayList<>();
         // My try to get the ListView expanded to fit parent AnchorPane
         testList.setScaleX(100);
         testList.setScaleY(100);
@@ -85,56 +95,57 @@ public class MainController implements Initializable {
     public void processTable()
     {
         int iterator = 0;
-        String comboBoxActionType = "";
-        String comboBoxSelectElementBy = "";
-        String textFieldFirstValueArgs = "";
-        String comboBoxSelectPlaceBy = "";
-        String textFieldSecondValueArgs = "";
-        /*
-        List<String> comboBoxList = new ArrayList<>();
-        List<String> textFieldList = new ArrayList<>();
-
-        textFieldList.add(textFieldFirstValueArgs);
-        textFieldList.add(textFieldSecondValueArgs);
-
-        comboBoxList.add(comboBoxActionType);
-        comboBoxList.add(comboBoxSelectElementBy);
-        comboBoxList.add(comboBoxSelectPlaceBy);
-        */
-        List<Node> rowTrial = new ArrayList<>();
         while(iterator<rowIndex)
         {
+            int i = 0;
+            int j = 0;
              for(Node child : gridPaneTrialList.getChildren())
              {
                 if (gridPaneTrialList.getRowIndex(child) == iterator)
                 {
 
-                    if (child instanceof ComboBox)
+                    if (child instanceof ComboBox && i == 0)
                     {
-                        String result = ((ComboBox) child).getValue().toString();
-                        System.out.println(result);
+                         comboBoxActionType = ((ComboBox) child).getValue().toString();
+                         i++;
+                    } else if(child instanceof ComboBox && i == 1)
+                    {
+                        comboBoxSelectElementBy = ((ComboBox) child).getValue().toString();
+                        i++;
+                    } else if(child instanceof ComboBox && i == 2)
+                    {
+                        comboBoxSelectPlaceBy = ((ComboBox) child).getValue().toString();
                     }
-                    if (child instanceof TextField)
+                    if (child instanceof TextField && j == 0)
                     {
+                        textFieldFirstValueArgs = ((TextField) child).getText();
+                        j++;
+                    } else if(child instanceof TextField && j == 1)
+                    {
+                        textFieldSecondValueArgs = ((TextField) child).getText();
 
-                        String result = ((TextField) child).getText();
-                        System.out.println(result);
                     }
                 }
              }
-             //System.out.println(comboBoxActionType);
-             //System.out.println(comboBoxSelectElementBy);
-             //System.out.println(comboBoxSelectPlaceBy);
-             //System.out.println(textFieldFirstValueArgs);
-             //System.out.println(textFieldSecondValueArgs);
-             //currentAction.executeTrial();
-                     iterator++;
+             Trial currentAction = new Trial(comboBoxActionType,comboBoxSelectElementBy,textFieldFirstValueArgs,comboBoxSelectPlaceBy,textFieldSecondValueArgs);
+             procesedList.add(currentAction);
+             iterator++;
+             i = 0;
+             j = 0;
         }
-        Trial currentAction = new Trial("Click","Id","","Id","");
-        currentAction.executeTrial();
-        System.out.println("Funciona");
+            executeTest(procesedList);
     }
 
+    public void executeTest(List<Trial> procesedTable)
+    {
+        WebDriver driver = SeleniumDAO.initializeDriver();
+        driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
+        for(int i = 0; i < procesedTable.size(); i++)
+        {
+            Trial currentAction = procesedTable.get(i);
+            currentAction.executeTrial(driver);
+        }
+    }
     // Close app method
     public void totalClose()
     {

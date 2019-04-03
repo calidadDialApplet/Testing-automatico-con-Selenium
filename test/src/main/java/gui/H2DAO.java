@@ -8,18 +8,18 @@ public class H2DAO {
         ArrayList<String> typeActions = new ArrayList<>();
         typeActions.add("Click");
         typeActions.add("DragAndDrop");
-        //typeActions.add("Selector");
         typeActions.add("WriteTo");
         typeActions.add("ReadFrom");
+        typeActions.add("Waiting");
         return typeActions;
     }
     public static ArrayList<String> getSelectElementBy(){
         ArrayList<String> selectElementsBy = new ArrayList<>();
-        selectElementsBy.add("Id");
-        selectElementsBy.add("Xpath");
-        selectElementsBy.add("CssSelector");
-        selectElementsBy.add("ClassName");
-        selectElementsBy.add("Name");
+        selectElementsBy.add("id");
+        selectElementsBy.add("xpath");
+        selectElementsBy.add("cssSelector");
+        selectElementsBy.add("className");
+        selectElementsBy.add("name");
         return selectElementsBy;
     }
 }

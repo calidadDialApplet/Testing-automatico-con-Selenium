@@ -1,15 +1,21 @@
+package main;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import java.util.Optional;
 
-// Main entrypoint, GUI initialization, etc.
+
+// main.Main entrypoint, GUI initialization, etc.
 
 public class Main extends Application {
 
@@ -19,10 +25,11 @@ public class Main extends Application {
 
         @Override
         public void start(Stage primaryStage) throws Exception{
-                Parent root = FXMLLoader.load(getClass().getResource("gui/Main.fxml"));
+                Parent root = FXMLLoader.load(getClass().getResource("/gui/Main.fxml"));
                 primaryStage.setTitle("WEB UI Tester");
                 primaryStage.setScene(new Scene(root, 800, 480));
                 primaryStage.show();
+                primaryStage.setOnCloseRequest( event -> alertClose());
         }
 
         public static void loginDialappletWeb(String name, String password, WebDriver driver){
@@ -56,6 +63,23 @@ public class Main extends Application {
 
                 WebElement enter = driver.findElement(By.id("login"));
                 enter.click();
+        }
+
+        public static void alertClose(){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("¿Nos dejas?");
+                alert.setHeaderText("Se perderán todos los cambios no guardados");
+                Optional<ButtonType> result = alert.showAndWait();
+
+                if (result.get() == ButtonType.OK)
+                {
+                        System.out.println("Adiós mundo cruel");
+                        System.exit(0);
+                }
+                else
+                {
+                        System.out.println("Muerte esquivada una vez más");
+                }
         }
 }
 

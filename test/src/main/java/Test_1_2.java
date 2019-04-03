@@ -1,3 +1,6 @@
+import main.Main;
+import main.SeleniumDAO;
+import main.Utils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;

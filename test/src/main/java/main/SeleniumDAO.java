@@ -1,3 +1,5 @@
+package main;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -42,7 +44,7 @@ public class SeleniumDAO {
                 WebElement elementClickedByName = driver.findElement(By.name(args));
                 elementReturned = elementClickedByName;
                 break;
-            case "default":
+            default:
                 break;
         }
 
@@ -79,6 +81,8 @@ public class SeleniumDAO {
             case "name":
                 WebElement elementClickedByName = element.findElement(By.name(args));
                 elementReturned = elementClickedByName;
+                break;
+            default:
                 break;
         }
 
@@ -126,6 +130,8 @@ public class SeleniumDAO {
                 Select elementClickedByClassName = new Select(driver.findElement(By.className(args)));
                 elementReturned = elementClickedByClassName;
                 break;
+            default:
+                break;
         }
 
         if(elementReturned == null)
@@ -155,6 +161,8 @@ public class SeleniumDAO {
                 Select elementClickedByClassName = new Select(element.findElement(By.className(args)));
                 elementReturned = elementClickedByClassName;
                 break;
+            default:
+                break;
         }
 
         if(elementReturned == null)
@@ -181,6 +189,28 @@ public class SeleniumDAO {
                 break;
             case "visibleText":
                 selector.selectByVisibleText(args);
+                break;
+            default:
+                break;
+        }
+    }
+    public static void writeInTo(WebElement element, String value){
+        element.sendKeys(value);
+    }
+    public static void doWaiting(int seconds, String elementBy, String args, WebDriver driver){
+        WebDriverWait waiting = new WebDriverWait(driver, seconds);
+        switch (elementBy){
+            case "id":
+                waiting.until(ExpectedConditions.presenceOfElementLocated(By.id(args)));
+                break;
+            case "xpath":
+                waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath(args)));
+                break;
+            case "cssSelector":
+                waiting.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(args)));
+                break;
+            case "className":
+                waiting.until(ExpectedConditions.presenceOfElementLocated(By.className(args)));
                 break;
         }
     }

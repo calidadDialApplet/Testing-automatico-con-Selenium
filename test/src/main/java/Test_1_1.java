@@ -1,4 +1,6 @@
 
+import main.Main;
+import main.SeleniumDAO;
 import org.openqa.selenium.WebDriver;
 
 
