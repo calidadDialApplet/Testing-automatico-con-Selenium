@@ -33,8 +33,8 @@ public class MainController implements Initializable {
     private boolean firstTime;
     private boolean firstTimeDragAndDrop;
 
-    private List<Trial> trialList;
-    private List<Trial> procesedList;
+    private List<Action> actionList;
+    private List<Action> procesedList;
 
     private int rowIndex = 0;
 
@@ -49,7 +49,7 @@ public class MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources)
     {
         //tableColumnTestCol.setCellValueFactory( (param) -> new SimpleStringProperty( param.getValue().toString()));
-        trialList = new ArrayList<>();
+        actionList = new ArrayList<>();
         procesedList = new ArrayList<>();
         // My try to get the ListView expanded to fit parent AnchorPane
         testList.setScaleX(100);
@@ -58,13 +58,13 @@ public class MainController implements Initializable {
 
     public void addActionRow()
     {
-            Trial newaction = new Trial(gridPaneTrialList,rowIndex);
-            trialList.add(newaction);
+            Action newAction = new Action(gridPaneTrialList,rowIndex);
+            actionList.add(newAction);
             rowIndex++;
     }
 
-   public void deleteActionRow()
-   {
+    public void deleteActionRow()
+    {
        List<Node> deleteNodes = new ArrayList<>();
        for (Node child : gridPaneTrialList.getChildren())
        {
@@ -75,10 +75,10 @@ public class MainController implements Initializable {
        }
        gridPaneTrialList.getChildren().removeAll(deleteNodes);
        rowIndex--;
-   }
+    }
 
-   public void deleteAll()
-   {
+    public void deleteAll()
+    {
        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
        alert.setTitle("Confirmar Eliminación");
        alert.setHeaderText("Se perderán todos los datos");
@@ -92,22 +92,63 @@ public class MainController implements Initializable {
            // ... user chose CANCEL or closed the dialog
        }
    }
-    public void processTable()
+   public void processTable()
+   {
+        procesedList.clear();
+        goThroughTable();
+        executeTest(procesedList);
+   }
+
+   public void executeTest(List<Action> actionList)
+   {
+        WebDriver driver = SeleniumDAO.initializeDriver();
+        driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
+        for(int i = 0; i < actionList.size(); i++)
+        {
+            Action currentAction = actionList.get(i);
+            currentAction.executeTrial(driver);
+        }
+   }
+    // Close app method
+   public void totalClose()
+   {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("¿Nos dejas?");
+        alert.setHeaderText("Se perderán todos los cambios no guardados");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == ButtonType.OK)
+        {
+            System.out.println("Adiós mundo cruel");
+            System.exit(0);
+        }
+        else
+        {
+            System.out.println("Muerte esquivada una vez más");
+        }
+   }
+    public void saveTest()
     {
+        procesedList.clear();
+        goThroughTable();
+        H2DAO.saveTrial(procesedList);
+    }
+
+    public void goThroughTable(){
         int iterator = 0;
         while(iterator<rowIndex)
         {
             int i = 0;
             int j = 0;
-             for(Node child : gridPaneTrialList.getChildren())
-             {
+            for(Node child : gridPaneTrialList.getChildren())
+            {
                 if (gridPaneTrialList.getRowIndex(child) == iterator)
                 {
 
                     if (child instanceof ComboBox && i == 0)
                     {
-                         comboBoxActionType = ((ComboBox) child).getValue().toString();
-                         i++;
+                        comboBoxActionType = ((ComboBox) child).getValue().toString();
+                        i++;
                     } else if(child instanceof ComboBox && i == 1)
                     {
                         comboBoxSelectElementBy = ((ComboBox) child).getValue().toString();
@@ -126,42 +167,12 @@ public class MainController implements Initializable {
 
                     }
                 }
-             }
-             Trial currentAction = new Trial(comboBoxActionType,comboBoxSelectElementBy,textFieldFirstValueArgs,comboBoxSelectPlaceBy,textFieldSecondValueArgs);
-             procesedList.add(currentAction);
-             iterator++;
-             i = 0;
-             j = 0;
-        }
-            executeTest(procesedList);
-    }
-
-    public void executeTest(List<Trial> procesedTable)
-    {
-        WebDriver driver = SeleniumDAO.initializeDriver();
-        driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
-        for(int i = 0; i < procesedTable.size(); i++)
-        {
-            Trial currentAction = procesedTable.get(i);
-            currentAction.executeTrial(driver);
-        }
-    }
-    // Close app method
-    public void totalClose()
-    {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("¿Nos dejas?");
-        alert.setHeaderText("Se perderán todos los cambios no guardados");
-        Optional<ButtonType> result = alert.showAndWait();
-
-        if (result.get() == ButtonType.OK)
-        {
-            System.out.println("Adiós mundo cruel");
-            System.exit(0);
-        }
-        else
-        {
-            System.out.println("Muerte esquivada una vez más");
+            }
+            Action currentAction = new Action(comboBoxActionType,comboBoxSelectElementBy,textFieldFirstValueArgs,comboBoxSelectPlaceBy,textFieldSecondValueArgs);
+            procesedList.add(currentAction);
+            iterator++;
+            i = 0;
+            j = 0;
         }
     }
 }

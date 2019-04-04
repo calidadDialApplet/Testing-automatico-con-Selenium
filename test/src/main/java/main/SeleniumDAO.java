@@ -197,6 +197,7 @@ public class SeleniumDAO {
     public static void writeInTo(WebElement element, String value){
         element.sendKeys(value);
     }
+
     public static void doWaiting(int seconds, String elementBy, String args, WebDriver driver){
         WebDriverWait waiting = new WebDriverWait(driver, seconds);
         switch (elementBy){

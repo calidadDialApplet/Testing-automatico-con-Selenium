@@ -13,7 +13,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 
-public class Trial {
+public class Action {
 
    private GridPane gridParent;
    private int rowIndex;
@@ -26,9 +26,10 @@ public class Trial {
    private TextField firstValueArgs = new TextField();
    private TextField secondValueArgs = new TextField();
    private Label value = new Label();
+   private Label infoText = new Label();
 
 
-    public Trial(GridPane gridParent, int rowIndex) {
+    public Action(GridPane gridParent, int rowIndex) {
 
         this.gridParent = gridParent;
         this.rowIndex = rowIndex;
@@ -43,22 +44,7 @@ public class Trial {
                 case "Click":
                     textFieldNotGenerated = true;
                     if(needToDelete) {
-                        switch (lastType){
-                            case "Click":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
-                                break;
-                            case "DragAndDrop":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs);
-                                break;
-                            case "WriteTo":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,secondValueArgs,value);
-                                break;
-                            case "ReadFrom":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
-                                break;
-                            case "default":
-                                break;
-                        }
+                        setDefaultAction(gridParent,lastType);
                     }
                     needToDelete = true;
                     lastType = "Click";
@@ -79,22 +65,7 @@ public class Trial {
                     textFieldNotGenerated = true;
                     placeNotGenerated = true;
                     if(needToDelete) {
-                        switch (lastType){
-                            case "Click":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
-                                break;
-                            case "DragAndDrop":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs);
-                                break;
-                            case "WriteTo":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,secondValueArgs,value);
-                                break;
-                            case "ReadFrom":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
-                                break;
-                            case "default":
-                                break;
-                        }
+                        setDefaultAction(gridParent,lastType);
                     }
                     needToDelete = true;
                     lastType = "DragAndDrop";
@@ -125,22 +96,7 @@ public class Trial {
                 case "WriteTo":
                     textFieldNotGenerated = true;
                     if(needToDelete) {
-                        switch (lastType){
-                            case "Click":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
-                                break;
-                            case "DragAndDrop":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs);
-                                break;
-                            case "WriteTo":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,secondValueArgs,value);
-                                break;
-                            case "ReadFrom":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
-                                break;
-                            case "default":
-                                break;
-                        }
+                        setDefaultAction(gridParent,lastType);
 
                     }
                     needToDelete = true;
@@ -166,23 +122,7 @@ public class Trial {
                 case "ReadFrom":
                     textFieldNotGenerated = true;
                     if(needToDelete) {
-                        switch (lastType){
-                            case "Click":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
-                                break;
-                            case "DragAndDrop":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs);
-                                break;
-                            case "WriteTo":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,secondValueArgs,value);
-                                break;
-                            case "ReadFrom":
-                                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
-                                break;
-                            case "default":
-                                break;
-                        }
-
+                        setDefaultAction(gridParent,lastType);
                     }
                     needToDelete = true;
                     lastType = "ReadFrom";
@@ -198,13 +138,41 @@ public class Trial {
                         textFieldNotGenerated = false;
                     });
                     break;
+
+                // WIP
+                /*case "Waiting":
+                    firstValueArgs = new TextField();
+                    gridParent.addRow(rowIndex, firstValueArgs);
+
+                    infoText.setText("Element");
+                    gridParent.addRow(rowIndex, infoText);
+
+                    selectElementBy = new ComboBox();
+                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    gridParent.addRow(rowIndex, selectElementBy);
+                    selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
+                    {
+                        if (textFieldNotGenerated) {
+                            firstValueArgs = new TextField();
+                            gridParent.addRow(rowIndex, firstValueArgs);
+
+                            value.setText("Value");
+                            gridParent.addRow(rowIndex,value);
+
+                            secondValueArgs = new TextField();
+                            gridParent.addRow(rowIndex,secondValueArgs);
+                        }
+                        textFieldNotGenerated = false;
+                    });
+
+                    break;*/
                 default:
                     break;
             }
         });
     }
 
-   public Trial(String actionType, String selectElementBy, String firstValueArgs, String selectPlaceBy, String secondValueArgs){
+   public Action(String actionType, String selectElementBy, String firstValueArgs, String selectPlaceBy, String secondValueArgs){
         this.actionType.setValue(actionType);
         this.selectElementBy.setValue(selectElementBy);
         this.firstValueArgs.setText(firstValueArgs);
@@ -238,14 +206,54 @@ public class Trial {
 
    }
 
+   public void setDefaultAction(GridPane gridParent, String lastType)
+   {
+       switch (lastType){
+           case "Click":
+               gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
+               break;
+           case "DragAndDrop":
+               gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs);
+               break;
+           case "WriteTo":
+               gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,secondValueArgs,value);
+               break;
+           case "ReadFrom":
+               gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
+               break;
+           case "default":
+               break;
+       }
+   }
+
    @Override
    public String toString() {
-        return "Trial{" +
+        return "Action{" +
                 "actionType=" + actionType.getValue().toString() +
                 ", selectElementBy=" + selectElementBy.getValue().toString() +
                 ", selectPlaceBy=" + selectPlaceBy.getValue().toString() +
                 ", firstValueArgs=" + firstValueArgs.getText() +
                 ", secondValueArgs=" + secondValueArgs.getText() +
                 '}';
+    }
+
+    public String getActionType() {
+        return actionType.getValue().toString();
+    }
+
+    public String getSelectElementBy() {
+        return selectElementBy.getValue().toString();
+    }
+
+    public String getSelectPlaceBy() {
+        return selectPlaceBy.getValue().toString();
+    }
+
+    public String getFirstValueArgs() {
+        return firstValueArgs.getText();
+    }
+
+    public String getSecondValueArgs() {
+        return secondValueArgs.getText();
     }
 }
