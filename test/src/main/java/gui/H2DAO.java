@@ -1,5 +1,11 @@
 package gui;
 
+
+
+
+
+
+import java.awt.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,18 +20,46 @@ public class H2DAO {
             Class.forName("org.h2.Driver");
             Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
             Statement st = conn.createStatement();
-            String statement = "create table trial_actions(" +
+            String createActionTypes = "create table action_types(" +
                     "  id integer auto_increment," +
-                    "  trialid integer auto_increment," +
-                    "  actiontypeid text," +
-                    "  selectionbyid1 text," +
-                    "  value1 text," +
-                    "  selectionbyid2 text," +
-                    "  value2 text," +
-                    "  constraint pk_trial_actions primary key(id, trialid)" +
+                    "  name text," +
+                    "  constraint pk_trial_action primary key(id)" +
                     ")";
-            //String statement = "drop table trial_actions";
-            st.execute(statement);
+            String createSelectionBy = "create table selection_by(" +
+                    "  id integer auto_increment," +
+                    "  name text," +
+                    "  constraint pk_selection_by primary key(id)" +
+                    ")";
+            String createTrials = "create table trials(" +
+                    "  id integer auto_increment," +
+                    "  name text," +
+                    "  constraint pk_trials primary key(id)" +
+                    ")";
+            String createTrialActonsTable = "create table trial_actions(" +
+                    "  id integer auto_increment," +
+                    "  trialid integer," +
+                    "  actiontypeid integer," +
+                    "  selectionbyid1 integer," +
+                    "  value1 text," +
+                    "  selectionbyid2 integer," +
+                    "  value2 text," +
+                    "  constraint pk_trial_action_table primary key(id,trialid)" +
+                    /*"  constraint fk_trials foreign key(trialid) references trials(id)" +
+                    "  constraint fk_action_type foreign key(actiontypeid) references action_types(name)" +
+                    "  constraint fk_selection_by foreign key(selectionbyid1) references selection_by(name)" +
+                    "  constraint fk_selection_by_name foreign key(selectionbyid2) references selection_by(name)" +*/
+                    ")";
+            String statement = "drop table trial_actions";
+
+            String alterTable = "alter table trials add constraint fk_action_type8 foreign key(id) references trial_actions(trialid)";
+            //st.execute(statement);
+            //st.execute(createActionTypes);
+            //st.execute(createSelectionBy);
+            //st.execute(createTrials);
+            //st.execute(createTrialActonsTable);
+            //st.execute(alterTable);
+
+            // Todas las tablas y relaciones creadas
             System.out.println("FUNCIONA!!!!");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -67,6 +101,7 @@ public class H2DAO {
                 Action currentAction = actionList.get(i);
                 String statement = "insert into" +
                         " trial_actions (" +
+                        " trialid," +
                         " actiontypeid," +
                         " selectionbyid1," +
                         " value1," +
@@ -74,17 +109,36 @@ public class H2DAO {
                         " value2" +
                         "  )" +
                         " values" +
-                        "(1, 1, 1, 1, 1)";
+                        "(1, 1, 1, 1, 1, 1)";
                         //"("+currentAction.getActionType()+", "+currentAction.getSelectElementBy()+", "+currentAction.getFirstValueArgs()+", "+currentAction.getSelectPlaceBy()+", "+currentAction.getSecondValueArgs()+")";
                 st.execute(statement);
                 System.out.println("Pasa2");
             }
-            String statement2 = "select count(*) from trial_actions";
-            System.out.println(st.execute(statement2));
+            String statement2 = "select * from trial_actions";
+            st.execute(statement2);
+            System.out.println(st.getResultSet());
             System.out.println("GUARDADO");
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
-        } catch (SQLException e) {
+        }
+
+    }
+    public static void createTrial(String name)
+    {
+        try {
+            Class.forName("org.h2.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
+            Statement st = conn.createStatement();
+
+
+            String statement = "insert into trials values(1, "+name+")";
+            st.execute(statement);
+
+            String statement2 = "select * from trials";
+            st.execute(statement2);
+            System.out.println(st.getResultSet());
+
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
 

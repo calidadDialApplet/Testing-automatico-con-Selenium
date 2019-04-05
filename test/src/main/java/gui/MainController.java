@@ -129,9 +129,22 @@ public class MainController implements Initializable {
    }
     public void saveTest()
     {
-        procesedList.clear();
-        goThroughTable();
-        H2DAO.saveTrial(procesedList);
+        TextInputDialog dialog = new TextInputDialog("dialtest");
+        dialog.setTitle("Guau! ¿Estás guardando ya?");
+        dialog.setHeaderText("Guardando la prueba");
+        dialog.setContentText("Por favor introduzca el nombre de la prueba:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            H2DAO.createTrial(result.get());
+        }
+
+
+        //result.ifPresent(name -> System.out.println("Your name: " + name));
+
+        //procesedList.clear();
+        //goThroughTable();
+        //H2DAO.saveTrial(procesedList);
     }
 
     public void goThroughTable(){
