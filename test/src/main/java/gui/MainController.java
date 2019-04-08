@@ -1,11 +1,15 @@
 package gui;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
 import main.SeleniumDAO;
 import org.openqa.selenium.WebDriver;
 
@@ -30,9 +34,6 @@ public class MainController implements Initializable {
     @FXML
     private GridPane gridPaneTrialList;
 
-    private boolean firstTime;
-    private boolean firstTimeDragAndDrop;
-
     private List<Action> actionList;
     private List<Action> procesedList;
 
@@ -54,6 +55,8 @@ public class MainController implements Initializable {
         // My try to get the ListView expanded to fit parent AnchorPane
         testList.setScaleX(100);
         testList.setScaleY(100);
+
+        
     }
 
     public void addActionRow()
@@ -65,16 +68,14 @@ public class MainController implements Initializable {
 
     public void deleteActionRow()
     {
-       List<Node> deleteNodes = new ArrayList<>();
-       for (Node child : gridPaneTrialList.getChildren())
-       {
-           if(gridPaneTrialList.getRowIndex(child) == rowIndex-1)
-           {
-               deleteNodes.add(child);
-           }
-       }
-       gridPaneTrialList.getChildren().removeAll(deleteNodes);
-       rowIndex--;
+         List<Node> deleteNodes = new ArrayList<>();
+         for (Node child : gridPaneTrialList.getChildren()) {
+             if (gridPaneTrialList.getRowIndex(child) == rowIndex - 1) {
+                 deleteNodes.add(child);
+             }
+         }
+         gridPaneTrialList.getChildren().removeAll(deleteNodes);
+         rowIndex--;
     }
 
     public void deleteAll()
@@ -90,6 +91,7 @@ public class MainController implements Initializable {
            rowIndex = 0;
        } else {
            // ... user chose CANCEL or closed the dialog
+           poblateTestList();
        }
    }
    public void processTable()
@@ -108,6 +110,16 @@ public class MainController implements Initializable {
             Action currentAction = actionList.get(i);
             currentAction.executeTrial(driver);
         }
+   }
+
+   public void executeTestHeadless(){
+       WebDriver driver = SeleniumDAO.initializeHeadLessDriver();
+       driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
+       for(int i = 0; i < actionList.size(); i++)
+       {
+           Action currentAction = actionList.get(i);
+           currentAction.executeTrial(driver);
+       }
    }
     // Close app method
    public void totalClose()
@@ -129,19 +141,38 @@ public class MainController implements Initializable {
    }
     public void saveTest()
     {
-        TextInputDialog dialog = new TextInputDialog("dialtest");
-        dialog.setTitle("Guau! ¿Estás guardando ya?");
-        dialog.setHeaderText("Guardando la prueba");
-        dialog.setContentText("Por favor introduzca el nombre de la prueba:");
-
-        Optional<String> result = dialog.showAndWait();
-        if (result.isPresent()){
-            H2DAO.createTrial(result.get());
+        boolean ok = false;
+        try
+        {
+            executeTestHeadless();
+             ok = true;
         }
+        catch (Exception e)
+        {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("Se ha producido un error durante la comprobación del test");
+            alert.setContentText("Contacta con tu administrador :)");
+            alert.showAndWait();
 
+            e.printStackTrace();
+        }
+        finally
+        {
+            if(ok)
+            {
+                TextInputDialog dialog = new TextInputDialog("dialtest");
+                dialog.setTitle("Guau! ¿Estás guardando ya?");
+                dialog.setHeaderText("Guardando la prueba");
+                dialog.setContentText("Por favor introduzca el nombre de la prueba:");
 
-        //result.ifPresent(name -> System.out.println("Your name: " + name));
+                Optional<String> result = dialog.showAndWait();
+                if (result.isPresent()){
+                    H2DAO.createTrial(result.get());
+                }
+            }
 
+        }
         //procesedList.clear();
         //goThroughTable();
         //H2DAO.saveTrial(procesedList);
@@ -186,6 +217,14 @@ public class MainController implements Initializable {
             iterator++;
             i = 0;
             j = 0;
+        }
+    }
+
+    public void poblateTestList()
+    {
+        for (String trial: H2DAO.getTrials())
+        {
+            testList.getItems().add(new CheckBox());
         }
     }
 }

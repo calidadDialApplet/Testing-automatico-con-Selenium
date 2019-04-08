@@ -6,10 +6,7 @@ package gui;
 
 
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,9 +46,10 @@ public class H2DAO {
                     "  constraint fk_selection_by foreign key(selectionbyid1) references selection_by(name)" +
                     "  constraint fk_selection_by_name foreign key(selectionbyid2) references selection_by(name)" +*/
                     ")";
-            String statement = "drop table trial_actions";
+            String statement = "drop table action_types";
 
-            String alterTable = "alter table trials add constraint fk_action_type8 foreign key(id) references trial_actions(trialid)";
+            String alterTable = "alter table trial_actions add constraint fk_selectionbyid2 foreign key(selectionbyid2) references selection_by(id)";
+            //String poblate = "insert into trials_actions (actiontypeid, selectionbyid1, value1, selectionbyid2, value2) values (click, id, login, NULL, NULL)";
             //st.execute(statement);
             //st.execute(createActionTypes);
             //st.execute(createSelectionBy);
@@ -125,13 +123,14 @@ public class H2DAO {
     }
     public static void createTrial(String name)
     {
-        try {
+        try
+        {
             Class.forName("org.h2.Driver");
             Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
             Statement st = conn.createStatement();
 
 
-            String statement = "insert into trials values(1, "+name+")";
+            String statement = "insert into trials (name) values('"+name+"')";
             st.execute(statement);
 
             String statement2 = "select * from trials";
@@ -141,6 +140,34 @@ public class H2DAO {
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
+    }
 
+    public static ArrayList<String> getTrials()
+    {
+        ArrayList<String> trialFromTable = new ArrayList<>();
+        try
+        {
+            Class.forName("org.h2.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
+            Statement st = conn.createStatement();
+
+            String getTrialsStatement = "select * from trials";
+            st.execute(getTrialsStatement);
+
+            ResultSet resultSet =  st.getResultSet();
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int numberOfCols = metaData.getColumnCount();
+
+            while (resultSet.next())
+            {
+               System.out.println(resultSet.getString("name"));
+               trialFromTable.add(resultSet.getString("name"));
+            }
+        }
+        catch (ClassNotFoundException | SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return trialFromTable;
     }
 }

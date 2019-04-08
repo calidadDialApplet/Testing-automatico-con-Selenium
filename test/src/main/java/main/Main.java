@@ -44,7 +44,6 @@ public class Main extends Application {
                 }catch (Exception e){
                         System.out.println(e);
                 }
-
         }
 
         public static void loginWebClient(String name, String password, int tlfOption, WebDriver driver){
