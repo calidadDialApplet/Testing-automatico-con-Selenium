@@ -5,7 +5,6 @@ package gui;
 
 
 
-import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +48,7 @@ public class H2DAO {
             String statement = "drop table action_types";
 
             String alterTable = "alter table trial_actions add constraint fk_selectionbyid2 foreign key(selectionbyid2) references selection_by(id)";
+
             //String poblate = "insert into trials_actions (actiontypeid, selectionbyid1, value1, selectionbyid2, value2) values (click, id, login, NULL, NULL)";
             //st.execute(statement);
             //st.execute(createActionTypes);
@@ -58,7 +58,7 @@ public class H2DAO {
             //st.execute(alterTable);
 
             // Todas las tablas y relaciones creadas
-            System.out.println("FUNCIONA!!!!");
+            //System.out.println("FUNCIONA!!!!");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -92,23 +92,52 @@ public class H2DAO {
             Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
             Statement st = conn.createStatement();
 
-
+            Integer actionTypeId = 1;
+            Integer firstValueArgs = 1;
+            String value1 = "NULL";
+            Integer secondValueArgs = 1;
+            String value2 = "NULL";
 
             for(int i = 0; i < actionList.size(); i++)
             {
                 Action currentAction = actionList.get(i);
+
+                if(!currentAction.getActionType().equals(""))
+                {
+                    actionTypeId = getIdActionType(currentAction.getActionType());
+                }
+
+                if(!currentAction.getSelectElementBy().equals(""))
+                {
+                    firstValueArgs = getIdSelectElementBy(currentAction.getSelectElementBy());
+                }
+
+                if(!currentAction.getFirstValueArgs().equals(""))
+                {
+                    value1 = currentAction.getFirstValueArgs();
+                }
+
+                if(!currentAction.getSelectPlaceBy().equals(""))
+                {
+                    secondValueArgs = getIdSelectElementBy(currentAction.getSelectPlaceBy());
+                }
+
+                if(!currentAction.getSecondValueArgs().equals(""))
+                {
+                    value2 = currentAction.getSecondValueArgs();
+                }
+
                 String statement = "insert into" +
-                        " trial_actions (" +
+                        " trial_actions ("+
                         " trialid," +
                         " actiontypeid," +
                         " selectionbyid1," +
                         " value1," +
                         " selectionbyid2," +
                         " value2" +
-                        "  )" +
+                        ")" +
                         " values" +
-                        "(1, 1, 1, 1, 1, 1)";
-                        //"("+currentAction.getActionType()+", "+currentAction.getSelectElementBy()+", "+currentAction.getFirstValueArgs()+", "+currentAction.getSelectPlaceBy()+", "+currentAction.getSecondValueArgs()+")";
+                        "('2','"+actionTypeId+"','"+firstValueArgs+"','"+value1+"','"+secondValueArgs+"','"+value2+"')";
                 st.execute(statement);
                 System.out.println("Pasa2");
             }
@@ -160,7 +189,7 @@ public class H2DAO {
 
             while (resultSet.next())
             {
-               System.out.println(resultSet.getString("name"));
+               //System.out.println(resultSet.getString("id"));
                trialFromTable.add(resultSet.getString("name"));
             }
         }
@@ -170,4 +199,52 @@ public class H2DAO {
         }
         return trialFromTable;
     }
+
+    public static Integer getIdActionType(String actionType)
+    {
+        Integer id = 1; // No action type
+        switch (actionType){
+                case "Click":
+                    id = 1;
+                    break;
+                case "DragAndDrop":
+                    id = 2;
+                    break;
+                case "WriteTo":
+                    id = 3;
+                    break;
+                case "ReadFrom":
+                    id = 4;
+                    break;
+                default:
+                    break;
+            }
+        return id;
+    }
+
+    public static Integer getIdSelectElementBy(String actionType)
+    {
+        Integer id = 1; // No action type
+        switch (actionType){
+            case "id":
+                id = 1;
+                break;
+            case "xpath":
+                id = 2;
+                break;
+            case "cssSelector":
+                id = 3;
+                break;
+            case "className":
+                id = 4;
+                break;
+            case "name":
+                id = 5;
+                break;
+            default:
+                break;
+        }
+        return id;
+    }
+
 }

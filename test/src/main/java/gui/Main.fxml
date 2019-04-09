@@ -43,12 +43,19 @@
         </MenuBar>
     </top>
     <left>
-        <ScrollPane BorderPane.alignment="CENTER_LEFT">
+        <ScrollPane fx:id="scrollPaneTrialList" hbarPolicy="NEVER" vbarPolicy="NEVER" BorderPane.alignment="CENTER_LEFT">
             <content>
-                <AnchorPane minHeight="100.0" minWidth="50.0">
+            <GridPane>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
                <children>
-                  <ListView fx:id="testList" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-               </children></AnchorPane>
+                  <ListView fx:id="testList" />
+               </children>
+            </GridPane>
             </content>
         </ScrollPane>
     </left>

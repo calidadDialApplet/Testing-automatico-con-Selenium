@@ -1,13 +1,16 @@
 package gui;
 
-import javafx.beans.property.SimpleStringProperty;
+
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 
 import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import main.SeleniumDAO;
@@ -34,6 +37,9 @@ public class MainController implements Initializable {
     @FXML
     private GridPane gridPaneTrialList;
 
+    @FXML
+    private ScrollPane scrollPaneTrialList;
+
     private List<Action> actionList;
     private List<Action> procesedList;
 
@@ -52,11 +58,15 @@ public class MainController implements Initializable {
         //tableColumnTestCol.setCellValueFactory( (param) -> new SimpleStringProperty( param.getValue().toString()));
         actionList = new ArrayList<>();
         procesedList = new ArrayList<>();
-        // My try to get the ListView expanded to fit parent AnchorPane
-        testList.setScaleX(100);
-        testList.setScaleY(100);
 
-        
+        // My try to get the ListView expanded to fit parent AnchorPane
+        //testList.setScaleX(100);
+        //testList.setScaleY(100);
+        //testList.prefWidthProperty().bind(scrollPaneTrialList.widthProperty());
+        testList.prefHeightProperty().bind(scrollPaneTrialList.heightProperty());
+
+        poblateTestList();
+
     }
 
     public void addActionRow()
@@ -75,7 +85,10 @@ public class MainController implements Initializable {
              }
          }
          gridPaneTrialList.getChildren().removeAll(deleteNodes);
-         rowIndex--;
+         if(rowIndex>0)
+         {
+             rowIndex--;
+         }
     }
 
     public void deleteAll()
@@ -91,7 +104,6 @@ public class MainController implements Initializable {
            rowIndex = 0;
        } else {
            // ... user chose CANCEL or closed the dialog
-           poblateTestList();
        }
    }
    public void processTable()
@@ -144,7 +156,7 @@ public class MainController implements Initializable {
         boolean ok = false;
         try
         {
-            executeTestHeadless();
+            //executeTestHeadless();
              ok = true;
         }
         catch (Exception e)
@@ -168,14 +180,14 @@ public class MainController implements Initializable {
 
                 Optional<String> result = dialog.showAndWait();
                 if (result.isPresent()){
-                    H2DAO.createTrial(result.get());
+                    //H2DAO.createTrial(result.get());
                 }
             }
 
         }
-        //procesedList.clear();
-        //goThroughTable();
-        //H2DAO.saveTrial(procesedList);
+        procesedList.clear();
+        goThroughTable();
+        H2DAO.saveTrial(procesedList);
     }
 
     public void goThroughTable(){
@@ -222,9 +234,22 @@ public class MainController implements Initializable {
 
     public void poblateTestList()
     {
+        ObservableList<CheckBox> checkBoxesList = FXCollections.observableArrayList();
         for (String trial: H2DAO.getTrials())
         {
-            testList.getItems().add(new CheckBox());
+            checkBoxesList.add(new CheckBox(trial));
+
         }
+        testList.getItems().addAll(checkBoxesList);
+    }
+
+    public void runSelectedTrials()
+    {
+       ObservableList<CheckBox> trialsSelected =  testList.getSelectionModel().getSelectedItems();
+
+       for(CheckBox trial: trialsSelected)
+       {
+            
+       }
     }
 }
