@@ -104,6 +104,8 @@ public class MainController implements Initializable {
            rowIndex = 0;
        } else {
            // ... user chose CANCEL or closed the dialog
+           //getSelectedTrials();
+           runSelectedTrials();
        }
    }
    public void processTable()
@@ -156,7 +158,7 @@ public class MainController implements Initializable {
         boolean ok = false;
         try
         {
-            //executeTestHeadless();
+            //executeTestHeadless();  // Comprobaciones
              ok = true;
         }
         catch (Exception e)
@@ -180,14 +182,16 @@ public class MainController implements Initializable {
 
                 Optional<String> result = dialog.showAndWait();
                 if (result.isPresent()){
-                    //H2DAO.createTrial(result.get());
+                    H2DAO.createTrial(result.get());                                                // Introducir nuevo trial con su nombre en trials
+                    String id =  H2DAO.getTrialId(result.get());                                    // Obtener id del nuevo trial
+                    procesedList.clear();                                                           // Limpiar lista con las acciones de la tabla
+                    goThroughTable();                                                               // Recorrer la tabla e introduce en procesedList las acciones
+                    H2DAO.saveTrial(procesedList, id);                                              // Insertar todas las acciones referentes al nuevo test en la tabla trials_actions
+
                 }
             }
 
         }
-        procesedList.clear();
-        goThroughTable();
-        H2DAO.saveTrial(procesedList);
     }
 
     public void goThroughTable(){
@@ -238,18 +242,35 @@ public class MainController implements Initializable {
         for (String trial: H2DAO.getTrials())
         {
             checkBoxesList.add(new CheckBox(trial));
-
         }
         testList.getItems().addAll(checkBoxesList);
     }
 
-    public void runSelectedTrials()
+    public void getSelectedTrials()
     {
-       ObservableList<CheckBox> trialsSelected =  testList.getSelectionModel().getSelectedItems();
+       ObservableList<CheckBox> trialsSelected = testList.getSelectionModel().getSelectedItems();
 
        for(CheckBox trial: trialsSelected)
        {
-            
+           String trialName = trial.getText();
+           ArrayList<Action> trialActions = H2DAO.getActions(trialName);
+           for(Action action : trialActions)
+           {
+               actionList.add(action);
+               rowIndex++;
+           }
        }
+    }
+
+    public void runSelectedTrials()
+    {
+        for(CheckBox trial : testList.getItems())
+        {
+            if(trial.isSelected())
+            {
+              ArrayList<Action> actions = H2DAO.getActions(trial.getText());
+              executeTest(actions);
+            }
+        }
     }
 }

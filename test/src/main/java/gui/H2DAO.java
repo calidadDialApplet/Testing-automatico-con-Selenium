@@ -1,10 +1,5 @@
 package gui;
 
-
-
-
-
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,13 +44,14 @@ public class H2DAO {
 
             String alterTable = "alter table trial_actions add constraint fk_selectionbyid2 foreign key(selectionbyid2) references selection_by(id)";
 
+            String delete = "delete from trials";
             //String poblate = "insert into trials_actions (actiontypeid, selectionbyid1, value1, selectionbyid2, value2) values (click, id, login, NULL, NULL)";
             //st.execute(statement);
             //st.execute(createActionTypes);
             //st.execute(createSelectionBy);
             //st.execute(createTrials);
             //st.execute(createTrialActonsTable);
-            //st.execute(alterTable);
+            //st.execute(delete);
 
             // Todas las tablas y relaciones creadas
             //System.out.println("FUNCIONA!!!!");
@@ -85,7 +81,7 @@ public class H2DAO {
         selectElementsBy.add("name");
         return selectElementsBy;
     }
-    public static void saveTrial(List<Action> actionList)
+    public static void saveTrial(List<Action> actionList, String id)
     {
         try {
             Class.forName("org.h2.Driver");
@@ -137,7 +133,7 @@ public class H2DAO {
                         " value2" +
                         ")" +
                         " values" +
-                        "('2','"+actionTypeId+"','"+firstValueArgs+"','"+value1+"','"+secondValueArgs+"','"+value2+"')";
+                        "('"+id+"','"+actionTypeId+"','"+firstValueArgs+"','"+value1+"','"+secondValueArgs+"','"+value2+"')";
                 st.execute(statement);
                 System.out.println("Pasa2");
             }
@@ -184,8 +180,8 @@ public class H2DAO {
             st.execute(getTrialsStatement);
 
             ResultSet resultSet =  st.getResultSet();
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int numberOfCols = metaData.getColumnCount();
+            //ResultSetMetaData metaData = resultSet.getMetaData();
+            //int numberOfCols = metaData.getColumnCount();
 
             while (resultSet.next())
             {
@@ -247,4 +243,58 @@ public class H2DAO {
         return id;
     }
 
+    public static ArrayList<Action> getActions(String trialName)
+    {
+        ArrayList<Action> actions = new ArrayList<>();
+        try
+        {
+            Class.forName("org.h2.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
+            Statement st = conn.createStatement();
+
+            String id = getTrialId(trialName);
+
+            System.out.println("ID: "+id);
+
+            String getActionsFromTrial = "Select * from trial_actions where trialid ='"+id+"'";
+            st.execute(getActionsFromTrial);
+            ResultSet actionsResultSet = st.getResultSet();
+            System.out.println(actionsResultSet.toString());
+
+            while (actionsResultSet.next())
+            {
+                Action currentAction = new Action(actionsResultSet.getString("actiontypeid"), actionsResultSet.getString("selectionbyid1"),
+                        actionsResultSet.getString("value1"), actionsResultSet.getString("selectionbyid2"), actionsResultSet.getString("value2"));
+                actions.add(currentAction);
+            }
+             System.out.println("Llega");
+
+        }catch (ClassNotFoundException | SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return actions;
+    }
+
+    public static String getTrialId(String trialName)
+    {
+        String id = "NULL";
+        try {
+            Class.forName("org.h2.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db", "test", "test");
+            Statement st = conn.createStatement();
+
+            String getIDFromTrialName = "Select id from trials where name='" + trialName + "'";
+            st.execute(getIDFromTrialName);
+
+            ResultSet idResultSet = st.getResultSet();
+            while (idResultSet.next()) {
+                id = (idResultSet.getString(1));
+            }
+        }catch (ClassNotFoundException | SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return id;
+    }
 }

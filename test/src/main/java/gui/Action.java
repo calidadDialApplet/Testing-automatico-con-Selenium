@@ -173,12 +173,138 @@ public class Action {
     }
 
    public Action(String actionType, String selectElementBy, String firstValueArgs, String selectPlaceBy, String secondValueArgs){
-        this.actionType.setValue(actionType);
-        this.selectElementBy.setValue(selectElementBy);
+        this.actionType.setValue(getActionTypeId(actionType));
+        this.selectElementBy.setValue(getSelectElementById(selectElementBy));
         this.firstValueArgs.setText(firstValueArgs);
-        this.selectPlaceBy.setValue(selectPlaceBy);
+        this.selectPlaceBy.setValue(getSelectElementById(selectPlaceBy));
         this.secondValueArgs.setText(secondValueArgs);
    }
+
+    public Action(GridPane gridParent, int rowIndex, String actionTypeValue, String selectElementByValue, String firstValueArgsValue, String selectPlaceByValue, String secondValueArgsValue) {
+
+        this.gridParent = gridParent;
+        this.rowIndex = rowIndex;
+
+        actionType = new ComboBox<>();
+        actionType.setItems(FXCollections.observableArrayList(gui.H2DAO.getTypeAction()));
+        gridParent.addRow(rowIndex, actionType);
+        actionType.setValue(actionTypeValue);
+        actionType.setItems(FXCollections.observableArrayList(gui.H2DAO.getTypeAction()));
+        actionType.valueProperty().addListener((observable, oldValue, newValue) ->
+        {
+            switch (actionType.getValue().toString()) {
+                case "Click":
+                    textFieldNotGenerated = true;
+                    if(needToDelete) {
+                        setDefaultAction(gridParent,lastType);
+                    }
+                    needToDelete = true;
+                    lastType = "Click";
+                    selectElementBy = new ComboBox();
+                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setValue(selectElementByValue);
+                    gridParent.addRow(rowIndex, selectElementBy);
+                    selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
+                    {
+
+                        if (textFieldNotGenerated) {
+                            firstValueArgs = new TextField();
+                            firstValueArgs.setText(firstValueArgsValue);
+                            gridParent.addRow(rowIndex, firstValueArgs);
+                        }
+                        textFieldNotGenerated = false;
+                    });
+                    break;
+                case "DragAndDrop":
+                    textFieldNotGenerated = true;
+                    placeNotGenerated = true;
+                    if(needToDelete) {
+                        setDefaultAction(gridParent,lastType);
+                    }
+                    needToDelete = true;
+                    lastType = "DragAndDrop";
+                    selectElementBy = new ComboBox();
+                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setValue(selectElementByValue);
+                    gridParent.addRow(rowIndex, selectElementBy);
+                    selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
+                    {
+
+                        if (placeNotGenerated) {
+                            firstValueArgs = new TextField();
+                            gridParent.addRow(rowIndex, firstValueArgs);
+                            selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                            //selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
+                            selectPlaceBy.setValue(selectPlaceByValue);
+                            gridParent.addRow(rowIndex, selectPlaceBy);
+                            placeNotGenerated = false;
+                            selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
+                            {
+                                if (textFieldNotGenerated) {
+                                    secondValueArgs = new TextField();
+                                    secondValueArgs.setText(secondValueArgsValue);
+                                    gridParent.addRow(rowIndex, secondValueArgs);
+                                }
+                                textFieldNotGenerated = false;
+                            });
+                        }
+                    });
+                    break;
+                case "WriteTo":
+                    textFieldNotGenerated = true;
+                    if(needToDelete) {
+                        setDefaultAction(gridParent,lastType);
+
+                    }
+                    needToDelete = true;
+                    lastType = "WriteTo";
+                    selectElementBy = new ComboBox();
+                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setValue(selectElementByValue);
+                    gridParent.addRow(rowIndex, selectElementBy);
+                    selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
+                    {
+                        if (textFieldNotGenerated) {
+                            firstValueArgs = new TextField();
+                            firstValueArgs.setText(firstValueArgsValue);
+                            gridParent.addRow(rowIndex, firstValueArgs);
+
+                            value.setText("Value");
+                            gridParent.addRow(rowIndex,value);
+
+                            secondValueArgs = new TextField();
+                            secondValueArgs.setText(secondValueArgsValue);
+                            gridParent.addRow(rowIndex,secondValueArgs);
+                        }
+                        textFieldNotGenerated = false;
+                    });
+                    break;
+                case "ReadFrom":
+                    textFieldNotGenerated = true;
+                    if(needToDelete) {
+                        setDefaultAction(gridParent,lastType);
+                    }
+                    needToDelete = true;
+                    lastType = "ReadFrom";
+                    selectElementBy = new ComboBox();
+                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setValue(selectElementByValue);
+                    gridParent.addRow(rowIndex, selectElementBy);
+                    selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
+                    {
+                        if (textFieldNotGenerated) {
+                            firstValueArgs = new TextField();
+                            firstValueArgs.setText(firstValueArgsValue);
+                            gridParent.addRow(rowIndex, firstValueArgs);
+                        }
+                        textFieldNotGenerated = false;
+                    });
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
 
    public void executeTrial(WebDriver driver){
         switch (this.actionType.getValue().toString()){
@@ -225,6 +351,53 @@ public class Action {
                break;
        }
    }
+
+    public static String getActionTypeId(String actionType)
+    {
+        String type = "NULL"; // No action type
+        switch (actionType){
+            case "1":
+                type = "Click";
+                break;
+            case "2":
+                type = "DragAndDrop";
+                break;
+            case "3":
+                type = "WriteTo";
+                break;
+            case "4":
+                type = "ReadFrom";
+                break;
+            default:
+                break;
+        }
+        return type;
+    }
+
+    public static String getSelectElementById(String actionType)
+    {
+        String SelectBy = "NULL"; // No action type
+        switch (actionType){
+            case "1":
+                SelectBy = "id";
+                break;
+            case "2":
+                SelectBy = "xpath";
+                break;
+            case "3":
+                SelectBy = "cssSelector";
+                break;
+            case "4":
+                SelectBy = "className";
+                break;
+            case "5":
+                SelectBy = "name";
+                break;
+            default:
+                break;
+        }
+        return SelectBy;
+    }
 
    @Override
    public String toString() {
