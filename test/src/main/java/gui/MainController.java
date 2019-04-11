@@ -1,7 +1,7 @@
 package gui;
 
 
-import javafx.beans.value.ObservableValue;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,10 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 
-import javafx.scene.control.cell.CheckBoxListCell;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.util.Callback;
 import main.SeleniumDAO;
 import org.openqa.selenium.WebDriver;
 
@@ -65,6 +62,12 @@ public class MainController implements Initializable {
         //testList.prefWidthProperty().bind(scrollPaneTrialList.widthProperty());
         testList.prefHeightProperty().bind(scrollPaneTrialList.heightProperty());
 
+        testList.getSelectionModel().selectedItemProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
+        {
+            deleteAll();
+            getSelectedTrials();
+        });
+
         poblateTestList();
 
     }
@@ -91,7 +94,7 @@ public class MainController implements Initializable {
          }
     }
 
-    public void deleteAll()
+    public void deletePanel()
     {
        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
        alert.setTitle("Confirmar Eliminación");
@@ -100,14 +103,18 @@ public class MainController implements Initializable {
        Optional<ButtonType> result = alert.showAndWait();
        if (result.get() == ButtonType.OK)
        {
-           gridPaneTrialList.getChildren().remove(0, gridPaneTrialList.getChildren().size());
-           rowIndex = 0;
+           deleteAll();
        } else {
            // ... user chose CANCEL or closed the dialog
-           //getSelectedTrials();
-           runSelectedTrials();
        }
    }
+
+   public void deleteAll()
+   {
+       gridPaneTrialList.getChildren().remove(0, gridPaneTrialList.getChildren().size());
+       rowIndex = 0;
+   }
+
    public void processTable()
    {
         procesedList.clear();
@@ -194,6 +201,16 @@ public class MainController implements Initializable {
         }
     }
 
+    public void modifyTrial()
+    {
+       String trialName = testList.getSelectionModel().getSelectedItem().getText();
+       String id = H2DAO.getTrialId(trialName);
+       H2DAO.deleteTrialActions(id);
+       procesedList.clear();
+       goThroughTable();
+       H2DAO.saveTrial(procesedList, id);
+    }
+
     public void goThroughTable(){
         int iterator = 0;
         while(iterator<rowIndex)
@@ -256,7 +273,9 @@ public class MainController implements Initializable {
            ArrayList<Action> trialActions = H2DAO.getActions(trialName);
            for(Action action : trialActions)
            {
-               actionList.add(action);
+               Action action2 = new Action(gridPaneTrialList,rowIndex,action.getActionTypeString(),action.getSelectElementByString(),
+                                            action.getFirstValueArgsString(),action.getSelectPlaceByString(),action.getSecondValueArgsString());
+               actionList.add(action2);
                rowIndex++;
            }
        }

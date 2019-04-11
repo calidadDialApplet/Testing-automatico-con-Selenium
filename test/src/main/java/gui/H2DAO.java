@@ -62,7 +62,6 @@ public class H2DAO {
         }
     }
 
-
     public static ArrayList<String> getTypeAction(){
         ArrayList<String> typeActions = new ArrayList<>();
         typeActions.add("Click");
@@ -72,6 +71,7 @@ public class H2DAO {
         //typeActions.add("Waiting");
         return typeActions;
     }
+
     public static ArrayList<String> getSelectElementBy(){
         ArrayList<String> selectElementsBy = new ArrayList<>();
         selectElementsBy.add("id");
@@ -81,6 +81,7 @@ public class H2DAO {
         selectElementsBy.add("name");
         return selectElementsBy;
     }
+
     public static void saveTrial(List<Action> actionList, String id)
     {
         try {
@@ -88,39 +89,33 @@ public class H2DAO {
             Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
             Statement st = conn.createStatement();
 
-            Integer actionTypeId = 1;
-            Integer firstValueArgs = 1;
+            Integer actionTypeId;
+            Integer firstValueArgs;
             String value1 = "NULL";
-            Integer secondValueArgs = 1;
+            Integer secondValueArgs;
             String value2 = "NULL";
 
             for(int i = 0; i < actionList.size(); i++)
             {
                 Action currentAction = actionList.get(i);
 
-                if(!currentAction.getActionType().equals(""))
+
+                    actionTypeId = getIdActionType(currentAction.getActionTypeString());
+
+
+                    firstValueArgs = getIdSelectElementBy(currentAction.getSelectElementByString());
+
+
+                if(!currentAction.getFirstValueArgsString().equals(""))
                 {
-                    actionTypeId = getIdActionType(currentAction.getActionType());
+                    value1 = currentAction.getFirstValueArgsString();
                 }
 
-                if(!currentAction.getSelectElementBy().equals(""))
-                {
-                    firstValueArgs = getIdSelectElementBy(currentAction.getSelectElementBy());
-                }
+                    secondValueArgs = getIdSelectElementBy(currentAction.getSelectPlaceByString());
 
-                if(!currentAction.getFirstValueArgs().equals(""))
+                if(!currentAction.getSecondValueArgsString().equals(""))
                 {
-                    value1 = currentAction.getFirstValueArgs();
-                }
-
-                if(!currentAction.getSelectPlaceBy().equals(""))
-                {
-                    secondValueArgs = getIdSelectElementBy(currentAction.getSelectPlaceBy());
-                }
-
-                if(!currentAction.getSecondValueArgs().equals(""))
-                {
-                    value2 = currentAction.getSecondValueArgs();
+                    value2 = currentAction.getSecondValueArgsString();
                 }
 
                 String statement = "insert into" +
@@ -146,6 +141,25 @@ public class H2DAO {
         }
 
     }
+
+    public static void deleteTrialActions(String trialID)
+    {
+        try{
+            Class.forName("org.h2.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
+            Statement st = conn.createStatement();
+
+            String deleteActions = "delete from trial_actions where trialid='"+trialID+"'";
+
+            st.execute(deleteActions);
+            System.out.println("Acciones eliminadas");
+
+
+        }  catch (ClassNotFoundException | SQLException e) {
+        e.printStackTrace();
+         }
+    }
+
     public static void createTrial(String name)
     {
         try

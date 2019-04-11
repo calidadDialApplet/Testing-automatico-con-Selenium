@@ -17,6 +17,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainController">
     <top>
@@ -45,17 +46,22 @@
     <left>
         <ScrollPane fx:id="scrollPaneTrialList" hbarPolicy="NEVER" vbarPolicy="NEVER" BorderPane.alignment="CENTER_LEFT">
             <content>
-            <GridPane>
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-               </rowConstraints>
+            <VBox>
                <children>
-                  <ListView fx:id="testList" />
+                  <GridPane>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <ListView fx:id="testList" />
+                     </children>
+                  </GridPane>
+                  <AnchorPane prefHeight="37.0" prefWidth="248.0" />
                </children>
-            </GridPane>
+            </VBox>
             </content>
         </ScrollPane>
     </left>
@@ -98,7 +104,7 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-              <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.columnIndex="1">
+              <HBox alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
                   <children>
                       <Button fx:id="buttonAdd" mnemonicParsing="true" onAction="#addActionRow">
                           <graphic>
@@ -118,7 +124,7 @@
                               </ImageView>
                           </graphic>
                       </Button>
-                  <Button fx:id="buttonDeleteAll" layoutX="88.0" layoutY="10.0" mnemonicParsing="true" onAction="#deleteAll">
+                  <Button fx:id="buttonDeleteAll" layoutX="88.0" layoutY="10.0" mnemonicParsing="true" onAction="#deletePanel">
                      <graphic>
                         <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -153,7 +159,7 @@
               </HBox>
             <HBox alignment="CENTER_LEFT" spacing="5.0">
                <children>
-                  <Button mnemonicParsing="true" onAction="#runSelectedTrials" HBox.hgrow="NEVER">
+                  <Button mnemonicParsing="true" onAction="#modifyTrial" HBox.hgrow="NEVER">
                      <graphic>
                         <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>

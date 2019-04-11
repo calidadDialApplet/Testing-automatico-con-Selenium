@@ -6,11 +6,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import main.SeleniumDAO;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+
 
 
 public class Action {
@@ -37,8 +35,7 @@ public class Action {
         actionType = new ComboBox<>();
         actionType.setItems(FXCollections.observableArrayList(gui.H2DAO.getTypeAction()));
         gridParent.addRow(rowIndex, actionType);
-        actionType.setItems(FXCollections.observableArrayList(gui.H2DAO.getTypeAction()));
-            actionType.valueProperty().addListener((observable, oldValue, newValue) ->
+        actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
             switch (actionType.getValue().toString()) {
                 case "Click":
@@ -79,7 +76,7 @@ public class Action {
                             firstValueArgs = new TextField();
                             gridParent.addRow(rowIndex, firstValueArgs);
                             selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
-                            //selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
+                            //selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementByString()));
                             gridParent.addRow(rowIndex, selectPlaceBy);
                             placeNotGenerated = false;
                             selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
@@ -148,7 +145,7 @@ public class Action {
                     gridParent.addRow(rowIndex, infoText);
 
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementByString()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -172,7 +169,8 @@ public class Action {
         });
     }
 
-   public Action(String actionType, String selectElementBy, String firstValueArgs, String selectPlaceBy, String secondValueArgs){
+   public Action(String actionType, String selectElementBy, String firstValueArgs, String selectPlaceBy, String secondValueArgs)
+   {
         this.actionType.setValue(getActionTypeId(actionType));
         this.selectElementBy.setValue(getSelectElementById(selectElementBy));
         this.firstValueArgs.setText(firstValueArgs);
@@ -188,8 +186,6 @@ public class Action {
         actionType = new ComboBox<>();
         actionType.setItems(FXCollections.observableArrayList(gui.H2DAO.getTypeAction()));
         gridParent.addRow(rowIndex, actionType);
-        actionType.setValue(actionTypeValue);
-        actionType.setItems(FXCollections.observableArrayList(gui.H2DAO.getTypeAction()));
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
             switch (actionType.getValue().toString()) {
@@ -202,7 +198,6 @@ public class Action {
                     lastType = "Click";
                     selectElementBy = new ComboBox();
                     selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
-                    selectElementBy.setValue(selectElementByValue);
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -214,6 +209,7 @@ public class Action {
                         }
                         textFieldNotGenerated = false;
                     });
+                    selectElementBy.setValue(selectElementByValue);
                     break;
                 case "DragAndDrop":
                     textFieldNotGenerated = true;
@@ -225,7 +221,6 @@ public class Action {
                     lastType = "DragAndDrop";
                     selectElementBy = new ComboBox();
                     selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
-                    selectElementBy.setValue(selectElementByValue);
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -234,8 +229,8 @@ public class Action {
                             firstValueArgs = new TextField();
                             gridParent.addRow(rowIndex, firstValueArgs);
                             selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
-                            //selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                            selectPlaceBy.setValue(selectPlaceByValue);
+                            //selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementByString()));
+
                             gridParent.addRow(rowIndex, selectPlaceBy);
                             placeNotGenerated = false;
                             selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
@@ -247,8 +242,10 @@ public class Action {
                                 }
                                 textFieldNotGenerated = false;
                             });
+                            selectPlaceBy.setValue(selectPlaceByValue);
                         }
                     });
+                    selectElementBy.setValue(selectElementByValue);
                     break;
                 case "WriteTo":
                     textFieldNotGenerated = true;
@@ -260,7 +257,6 @@ public class Action {
                     lastType = "WriteTo";
                     selectElementBy = new ComboBox();
                     selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
-                    selectElementBy.setValue(selectElementByValue);
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -278,6 +274,7 @@ public class Action {
                         }
                         textFieldNotGenerated = false;
                     });
+                    selectElementBy.setValue(selectElementByValue);
                     break;
                 case "ReadFrom":
                     textFieldNotGenerated = true;
@@ -288,7 +285,6 @@ public class Action {
                     lastType = "ReadFrom";
                     selectElementBy = new ComboBox();
                     selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
-                    selectElementBy.setValue(selectElementByValue);
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -299,11 +295,13 @@ public class Action {
                         }
                         textFieldNotGenerated = false;
                     });
+                    selectElementBy.setValue(selectElementByValue);
                     break;
                 default:
                     break;
             }
         });
+        actionType.getSelectionModel().select(actionTypeValue);
     }
 
    public void executeTrial(WebDriver driver){
@@ -410,23 +408,44 @@ public class Action {
                 '}';
     }
 
-    public String getActionType() {
+    public String getActionTypeString() {
         return actionType.getValue().toString();
     }
 
-    public String getSelectElementBy() {
+    public String getSelectElementByString() {
         return selectElementBy.getValue().toString();
     }
 
-    public String getSelectPlaceBy() {
+    public String getSelectPlaceByString() {
         return selectPlaceBy.getValue().toString();
     }
 
-    public String getFirstValueArgs() {
+    public String getFirstValueArgsString() {
         return firstValueArgs.getText();
     }
 
-    public String getSecondValueArgs() {
+    public String getSecondValueArgsString() {
         return secondValueArgs.getText();
+    }
+
+
+    public ComboBox getActionType() {
+        return actionType;
+    }
+
+    public ComboBox getSelectElementBy() {
+        return selectElementBy;
+    }
+
+    public ComboBox getSelectPlaceBy() {
+        return selectPlaceBy;
+    }
+
+    public TextField getFirstValueArgs() {
+        return firstValueArgs;
+    }
+
+    public TextField getSecondValueArgs() {
+        return secondValueArgs;
     }
 }

@@ -29,7 +29,10 @@ public class Main extends Application {
                 primaryStage.setTitle("WEB UI Tester");
                 primaryStage.setScene(new Scene(root, 800, 480));
                 primaryStage.show();
-                primaryStage.setOnCloseRequest( event -> alertClose());
+                primaryStage.setOnCloseRequest( event -> {
+                        event.consume();
+                        alertClose();
+                });
         }
 
         public static void loginDialappletWeb(String name, String password, WebDriver driver){
