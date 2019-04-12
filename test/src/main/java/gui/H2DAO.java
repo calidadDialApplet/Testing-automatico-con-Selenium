@@ -89,34 +89,17 @@ public class H2DAO {
             Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
             Statement st = conn.createStatement();
 
-            Integer actionTypeId;
-            Integer firstValueArgs;
-            String value1 = "NULL";
-            Integer secondValueArgs;
-            String value2 = "NULL";
-
             for(int i = 0; i < actionList.size(); i++)
             {
                 Action currentAction = actionList.get(i);
 
 
-                    actionTypeId = getIdActionType(currentAction.getActionTypeString());
+                Integer actionTypeId = getIdActionType(currentAction.getActionTypeString());
+                Integer firstValueArgs = getIdSelectElementBy(currentAction.getSelectElementByString());
+                String value1 = currentAction.getFirstValueArgsString();
+                Integer secondValueArgs = getIdSelectElementBy(currentAction.getSelectPlaceByString());
+                String value2 = currentAction.getSecondValueArgsString();
 
-
-                    firstValueArgs = getIdSelectElementBy(currentAction.getSelectElementByString());
-
-
-                if(!currentAction.getFirstValueArgsString().equals(""))
-                {
-                    value1 = currentAction.getFirstValueArgsString();
-                }
-
-                    secondValueArgs = getIdSelectElementBy(currentAction.getSelectPlaceByString());
-
-                if(!currentAction.getSecondValueArgsString().equals(""))
-                {
-                    value2 = currentAction.getSecondValueArgsString();
-                }
 
                 String statement = "insert into" +
                         " trial_actions ("+
@@ -158,6 +141,24 @@ public class H2DAO {
         }  catch (ClassNotFoundException | SQLException e) {
         e.printStackTrace();
          }
+    }
+
+    public static void deleteTrial(String trialID)
+    {
+        try{
+            Class.forName("org.h2.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
+            Statement st = conn.createStatement();
+
+            String deleteTrial = "delete from trials where id='"+trialID+"'";
+
+            st.execute(deleteTrial);
+            System.out.println("Trial Eliminado");
+
+
+        }  catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void createTrial(String name)

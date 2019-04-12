@@ -2,6 +2,7 @@ package gui;
 
 
 
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -27,6 +28,15 @@ public class MainController implements Initializable {
 
     @FXML
     private  Button buttonDelete;
+
+    @FXML
+    private Button buttonDeleteTrial;
+
+    @FXML
+    private Button buttonModifyTrial;
+
+    @FXML
+    private Button buttonPlayTrials;
 
     @FXML
     private  ListView<CheckBox> testList;
@@ -60,7 +70,9 @@ public class MainController implements Initializable {
         //testList.setScaleX(100);
         //testList.setScaleY(100);
         //testList.prefWidthProperty().bind(scrollPaneTrialList.widthProperty());
-        testList.prefHeightProperty().bind(scrollPaneTrialList.heightProperty());
+
+        //testList.prefHeightProperty().bind(scrollPaneTrialList.heightProperty());
+
 
         testList.getSelectionModel().selectedItemProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
         {
@@ -194,7 +206,7 @@ public class MainController implements Initializable {
                     procesedList.clear();                                                           // Limpiar lista con las acciones de la tabla
                     goThroughTable();                                                               // Recorrer la tabla e introduce en procesedList las acciones
                     H2DAO.saveTrial(procesedList, id);                                              // Insertar todas las acciones referentes al nuevo test en la tabla trials_actions
-
+                    poblateTestList();
                 }
             }
 
@@ -248,13 +260,14 @@ public class MainController implements Initializable {
             Action currentAction = new Action(comboBoxActionType,comboBoxSelectElementBy,textFieldFirstValueArgs,comboBoxSelectPlaceBy,textFieldSecondValueArgs);
             procesedList.add(currentAction);
             iterator++;
-            i = 0;
-            j = 0;
+            //i = 0;
+            //j = 0;
         }
     }
 
     public void poblateTestList()
     {
+        testList.getItems().remove(0, testList.getItems().size());
         ObservableList<CheckBox> checkBoxesList = FXCollections.observableArrayList();
         for (String trial: H2DAO.getTrials())
         {
@@ -271,11 +284,11 @@ public class MainController implements Initializable {
        {
            String trialName = trial.getText();
            ArrayList<Action> trialActions = H2DAO.getActions(trialName);
-           for(Action action : trialActions)
+           for(Action actionOfTrial : trialActions)
            {
-               Action action2 = new Action(gridPaneTrialList,rowIndex,action.getActionTypeString(),action.getSelectElementByString(),
-                                            action.getFirstValueArgsString(),action.getSelectPlaceByString(),action.getSecondValueArgsString());
-               actionList.add(action2);
+               Action action = new Action(gridPaneTrialList,rowIndex,actionOfTrial.getActionTypeString(),actionOfTrial.getSelectElementByString(),
+                                            actionOfTrial.getFirstValueArgsString(),actionOfTrial.getSelectPlaceByString(),actionOfTrial.getSecondValueArgsString());
+               actionList.add(action);
                rowIndex++;
            }
        }
@@ -291,5 +304,14 @@ public class MainController implements Initializable {
               executeTest(actions);
             }
         }
+    }
+
+    public void deleteSelectedTrial()
+    {
+       CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+       String id = H2DAO.getTrialId(selectedTrial.getText());
+       H2DAO.deleteTrialActions(id);
+       H2DAO.deleteTrial(id);
+       poblateTestList();
     }
 }

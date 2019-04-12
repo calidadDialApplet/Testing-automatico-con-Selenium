@@ -171,12 +171,27 @@ public class Action {
 
    public Action(String actionType, String selectElementBy, String firstValueArgs, String selectPlaceBy, String secondValueArgs)
    {
-        this.actionType.setValue(getActionTypeId(actionType));
-        this.selectElementBy.setValue(getSelectElementById(selectElementBy));
-        this.firstValueArgs.setText(firstValueArgs);
-        this.selectPlaceBy.setValue(getSelectElementById(selectPlaceBy));
-        this.secondValueArgs.setText(secondValueArgs);
+        if(actionType.matches("1|2|3|4")){
+            this.actionType.setValue(getActionTypeId(actionType));
+        } else {
+            this.actionType.setValue(actionType);
+        }
+        if(selectElementBy.matches("1|2|3|4|5"))
+        {
+            this.selectElementBy.setValue(getSelectElementById(selectElementBy));
+        } else {
+            this.selectElementBy.setValue(selectElementBy);
+        }
+       this.firstValueArgs.setText(firstValueArgs);
+       if(selectElementBy.matches("1|2|3|4|5")) {
+           this.selectPlaceBy.setValue(getSelectElementById(selectPlaceBy));
+       }else{
+           this.selectPlaceBy.setValue(selectPlaceBy);
+       }
+       this.secondValueArgs.setText(secondValueArgs);
    }
+
+
 
     public Action(GridPane gridParent, int rowIndex, String actionTypeValue, String selectElementByValue, String firstValueArgsValue, String selectPlaceByValue, String secondValueArgsValue) {
 
