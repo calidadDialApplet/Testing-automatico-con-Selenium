@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.collections.FXCollections;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -242,6 +243,7 @@ public class Action {
 
                         if (placeNotGenerated) {
                             firstValueArgs = new TextField();
+                            firstValueArgs.setText(firstValueArgsValue);
                             gridParent.addRow(rowIndex, firstValueArgs);
                             selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
                             //selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementByString()));
@@ -319,28 +321,33 @@ public class Action {
         actionType.getSelectionModel().select(actionTypeValue);
     }
 
-   public void executeTrial(WebDriver driver){
-        switch (this.actionType.getValue().toString()){
-            case "Click":
-                WebElement clickElement  = SeleniumDAO.selectElementBy(this.selectElementBy.getValue().toString(), this.firstValueArgs.getText(), driver);
-                SeleniumDAO.click(clickElement);
-                break;
-            case "DragAndDrop":
-                WebElement dragElement = SeleniumDAO.selectElementBy(this.selectElementBy.getValue().toString(), this.firstValueArgs.getText(), driver);
-                WebElement dropPlaceElement = SeleniumDAO.selectElementBy(this.selectPlaceBy.getValue().toString(), this.secondValueArgs.getText(), driver);
-                SeleniumDAO.dragAndDropAction(dragElement,dropPlaceElement,driver);
-                break;
-            case "WriteTo":
-                System.out.println(secondValueArgs.getText());
-                WebElement writeToElement = SeleniumDAO.selectElementBy(selectElementBy.getValue().toString(),firstValueArgs.getText(),driver);
-                writeToElement.sendKeys(secondValueArgs.getText());
-                //SeleniumDAO.writeInTo(writeToElement,this.secondValueArgs.getText());
-                break;
-            case "ReadFrom":
-                break;
-            default:
-                break;
-
+   public boolean executeAction(WebDriver driver){
+        try {
+            switch (this.actionType.getValue().toString()) {
+                case "Click":
+                    WebElement clickElement = SeleniumDAO.selectElementBy(this.selectElementBy.getValue().toString(), this.firstValueArgs.getText(), driver);
+                    SeleniumDAO.click(clickElement);
+                    break;
+                case "DragAndDrop":
+                    WebElement dragElement = SeleniumDAO.selectElementBy(this.selectElementBy.getValue().toString(), this.firstValueArgs.getText(), driver);
+                    WebElement dropPlaceElement = SeleniumDAO.selectElementBy(this.selectPlaceBy.getValue().toString(), this.secondValueArgs.getText(), driver);
+                    SeleniumDAO.dragAndDropAction(dragElement, dropPlaceElement, driver);
+                    break;
+                case "WriteTo":
+                    System.out.println(secondValueArgs.getText());
+                    WebElement writeToElement = SeleniumDAO.selectElementBy(selectElementBy.getValue().toString(), firstValueArgs.getText(), driver);
+                    writeToElement.sendKeys(secondValueArgs.getText());
+                    //SeleniumDAO.writeInTo(writeToElement,this.secondValueArgs.getText());
+                    break;
+                case "ReadFrom":
+                    break;
+                default:
+                    break;
+            }
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
         }
 
    }

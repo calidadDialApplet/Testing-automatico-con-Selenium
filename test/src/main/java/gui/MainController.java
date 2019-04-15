@@ -2,7 +2,6 @@ package gui;
 
 
 
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -45,12 +44,29 @@ public class MainController implements Initializable {
     private GridPane gridPaneTrialList;
 
     @FXML
+    private GridPane gridPaneValidationList;
+
+    @FXML
+    private Tab tabActions;
+
+    @FXML
+    private Tab tabValidation;
+
+    @FXML
     private ScrollPane scrollPaneTrialList;
 
+    @FXML
+    private TabPane tabPaneParent;
+
+    @FXML
+    private Accordion accordionComprobationList;
+
     private List<Action> actionList;
+    private List<Action> validationList;
     private List<Action> procesedList;
 
-    private int rowIndex = 0;
+    private int actionsRowIndex = 0;
+    private int validationRowIndex = 0;
 
     String comboBoxActionType = "";
     String comboBoxSelectElementBy = "";
@@ -64,7 +80,9 @@ public class MainController implements Initializable {
     {
         //tableColumnTestCol.setCellValueFactory( (param) -> new SimpleStringProperty( param.getValue().toString()));
         actionList = new ArrayList<>();
+        validationList = new ArrayList<>();
         procesedList = new ArrayList<>();
+
 
         // My try to get the ListView expanded to fit parent AnchorPane
         //testList.setScaleX(100);
@@ -73,7 +91,7 @@ public class MainController implements Initializable {
 
         //testList.prefHeightProperty().bind(scrollPaneTrialList.heightProperty());
 
-
+        //tabPaneParent.setTabMinWidth(Math.round(tabPaneParent.getWidth()/2));
         testList.getSelectionModel().selectedItemProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
         {
             deleteAll();
@@ -86,24 +104,48 @@ public class MainController implements Initializable {
 
     public void addActionRow()
     {
-            Action newAction = new Action(gridPaneTrialList,rowIndex);
+        if(tabActions.isSelected())
+        {
+            Action newAction = new Action(gridPaneTrialList, actionsRowIndex);
             actionList.add(newAction);
-            rowIndex++;
+            actionsRowIndex++;
+        }
+        if(tabValidation.isSelected())
+        {
+            Action newAction = new Action(gridPaneValidationList, validationRowIndex);
+            validationList.add(newAction);
+            validationRowIndex++;
+        }
     }
 
     public void deleteActionRow()
     {
-         List<Node> deleteNodes = new ArrayList<>();
-         for (Node child : gridPaneTrialList.getChildren()) {
-             if (gridPaneTrialList.getRowIndex(child) == rowIndex - 1) {
-                 deleteNodes.add(child);
-             }
-         }
-         gridPaneTrialList.getChildren().removeAll(deleteNodes);
-         if(rowIndex>0)
-         {
-             rowIndex--;
-         }
+        if(tabActions.isSelected())
+        {
+            List<Node> deleteNodes = new ArrayList<>();
+            for (Node child : gridPaneTrialList.getChildren()) {
+                if (gridPaneTrialList.getRowIndex(child) == actionsRowIndex - 1) {
+                    deleteNodes.add(child);
+                }
+            }
+            gridPaneTrialList.getChildren().removeAll(deleteNodes);
+            if (actionsRowIndex > 0) {
+                actionsRowIndex--;
+            }
+        }
+        if(tabValidation.isSelected())
+        {
+            List<Node> deleteNodes = new ArrayList<>();
+            for (Node child : gridPaneValidationList.getChildren()) {
+                if (gridPaneValidationList.getRowIndex(child) == validationRowIndex - 1) {
+                    deleteNodes.add(child);
+                }
+            }
+            gridPaneValidationList.getChildren().removeAll(deleteNodes);
+            if (validationRowIndex > 0) {
+                validationRowIndex--;
+            }
+        }
     }
 
     public void deletePanel()
@@ -123,8 +165,16 @@ public class MainController implements Initializable {
 
    public void deleteAll()
    {
-       gridPaneTrialList.getChildren().remove(0, gridPaneTrialList.getChildren().size());
-       rowIndex = 0;
+       if(tabActions.isSelected())
+       {
+           gridPaneTrialList.getChildren().remove(0, gridPaneTrialList.getChildren().size());
+           actionsRowIndex = 0;
+       }
+       if(tabValidation.isSelected())
+       {
+           gridPaneValidationList.getChildren().remove(0, gridPaneValidationList.getChildren().size());
+           validationRowIndex = 0;
+       }
    }
 
    public void processTable()
@@ -136,22 +186,51 @@ public class MainController implements Initializable {
 
    public void executeTest(List<Action> actionList)
    {
-        WebDriver driver = SeleniumDAO.initializeDriver();
-        driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
-        for(int i = 0; i < actionList.size(); i++)
-        {
-            Action currentAction = actionList.get(i);
-            currentAction.executeTrial(driver);
-        }
+       WebDriver driver = SeleniumDAO.initializeDriver();
+       driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
+
+       TitledPane trial = new TitledPane();
+       trial.setText("Test");
+       GridPane grid = new GridPane();
+       grid.setVgap(2);
+       for(int i = 0; i < actionList.size(); i++)
+       {
+           Action currentAction = actionList.get(i);
+
+
+           grid.add(new TextField("Action "+i),0,i);
+           if (currentAction.executeAction(driver)){
+               grid.add(new TextField("Ok"),1,i);
+           } else{
+               grid.add(new TextField("Fail"),1,i);
+           }
+
+       }
+       trial.setContent(grid);
+       accordionComprobationList.getPanes().add(trial);
    }
 
    public void executeTestHeadless(){
        WebDriver driver = SeleniumDAO.initializeHeadLessDriver();
        driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
+
+       TitledPane trial = new TitledPane();
+       trial.setText("Test");
+       GridPane grid = new GridPane();
+       grid.setVgap(2);
        for(int i = 0; i < actionList.size(); i++)
        {
-           Action currentAction = actionList.get(i);
-           currentAction.executeTrial(driver);
+          Action currentAction = actionList.get(i);
+
+
+          grid.add(new TextField("Action"+i),0,i);
+          if (currentAction.executeAction(driver)){
+              grid.add(new TextField("Ok"),1,i);
+          } else{
+              grid.add(new TextField("Fail"),1,i);
+          }
+          trial.setContent(grid);
+          accordionComprobationList.getPanes().add(trial);
        }
    }
     // Close app method
@@ -174,11 +253,11 @@ public class MainController implements Initializable {
    }
     public void saveTest()
     {
-        boolean ok = false;
+
         try
         {
             //executeTestHeadless();  // Comprobaciones
-             ok = true;
+
         }
         catch (Exception e)
         {
@@ -192,8 +271,7 @@ public class MainController implements Initializable {
         }
         finally
         {
-            if(ok)
-            {
+
                 TextInputDialog dialog = new TextInputDialog("dialtest");
                 dialog.setTitle("Guau! ¿Estás guardando ya?");
                 dialog.setHeaderText("Guardando la prueba");
@@ -208,7 +286,7 @@ public class MainController implements Initializable {
                     H2DAO.saveTrial(procesedList, id);                                              // Insertar todas las acciones referentes al nuevo test en la tabla trials_actions
                     poblateTestList();
                 }
-            }
+
 
         }
     }
@@ -225,7 +303,7 @@ public class MainController implements Initializable {
 
     public void goThroughTable(){
         int iterator = 0;
-        while(iterator<rowIndex)
+        while(iterator< actionsRowIndex)
         {
             int i = 0;
             int j = 0;
@@ -260,8 +338,6 @@ public class MainController implements Initializable {
             Action currentAction = new Action(comboBoxActionType,comboBoxSelectElementBy,textFieldFirstValueArgs,comboBoxSelectPlaceBy,textFieldSecondValueArgs);
             procesedList.add(currentAction);
             iterator++;
-            //i = 0;
-            //j = 0;
         }
     }
 
@@ -286,10 +362,10 @@ public class MainController implements Initializable {
            ArrayList<Action> trialActions = H2DAO.getActions(trialName);
            for(Action actionOfTrial : trialActions)
            {
-               Action action = new Action(gridPaneTrialList,rowIndex,actionOfTrial.getActionTypeString(),actionOfTrial.getSelectElementByString(),
+               Action action = new Action(gridPaneTrialList, actionsRowIndex,actionOfTrial.getActionTypeString(),actionOfTrial.getSelectElementByString(),
                                             actionOfTrial.getFirstValueArgsString(),actionOfTrial.getSelectPlaceByString(),actionOfTrial.getSecondValueArgsString());
                actionList.add(action);
-               rowIndex++;
+               actionsRowIndex++;
            }
        }
     }
@@ -314,4 +390,5 @@ public class MainController implements Initializable {
        H2DAO.deleteTrial(id);
        poblateTestList();
     }
+
 }
