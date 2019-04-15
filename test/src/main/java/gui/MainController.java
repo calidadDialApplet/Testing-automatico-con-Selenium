@@ -63,7 +63,8 @@ public class MainController implements Initializable {
 
     private List<Action> actionList;
     private List<Action> validationList;
-    private List<Action> procesedList;
+    private List<Action> procesedActionList;
+    private List<Action> procesedValidationList;
 
     private int actionsRowIndex = 0;
     private int validationRowIndex = 0;
@@ -81,7 +82,8 @@ public class MainController implements Initializable {
         //tableColumnTestCol.setCellValueFactory( (param) -> new SimpleStringProperty( param.getValue().toString()));
         actionList = new ArrayList<>();
         validationList = new ArrayList<>();
-        procesedList = new ArrayList<>();
+        procesedActionList = new ArrayList<>();
+        procesedValidationList = new ArrayList<>();
 
 
         // My try to get the ListView expanded to fit parent AnchorPane
@@ -95,7 +97,8 @@ public class MainController implements Initializable {
         testList.getSelectionModel().selectedItemProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
         {
             deleteAll();
-            getSelectedTrials();
+            getSelectedTrialActions();
+            getSelectedTrialValidations();
         });
 
         poblateTestList();
@@ -165,23 +168,27 @@ public class MainController implements Initializable {
 
    public void deleteAll()
    {
-       if(tabActions.isSelected())
-       {
            gridPaneTrialList.getChildren().remove(0, gridPaneTrialList.getChildren().size());
            actionsRowIndex = 0;
-       }
-       if(tabValidation.isSelected())
-       {
+
            gridPaneValidationList.getChildren().remove(0, gridPaneValidationList.getChildren().size());
            validationRowIndex = 0;
-       }
    }
 
    public void processTable()
    {
-        procesedList.clear();
-        goThroughTable();
-        executeTest(procesedList);
+       if (tabActions.isSelected())
+       {
+           procesedActionList.clear();
+           goThroughTable("Actions");
+           executeTest(procesedActionList);
+       }
+       if (tabValidation.isSelected())
+       {
+           procesedValidationList.clear();
+           goThroughTable("Validations");
+           executeTest(procesedValidationList);
+       }
    }
 
    public void executeTest(List<Action> actionList)
@@ -279,11 +286,20 @@ public class MainController implements Initializable {
 
                 Optional<String> result = dialog.showAndWait();
                 if (result.isPresent()){
-                    H2DAO.createTrial(result.get());                                                // Introducir nuevo trial con su nombre en trials
-                    String id =  H2DAO.getTrialId(result.get());                                    // Obtener id del nuevo trial
-                    procesedList.clear();                                                           // Limpiar lista con las acciones de la tabla
-                    goThroughTable();                                                               // Recorrer la tabla e introduce en procesedList las acciones
-                    H2DAO.saveTrial(procesedList, id);                                              // Insertar todas las acciones referentes al nuevo test en la tabla trials_actions
+
+                        H2DAO.createTrial(result.get());                                                // Introducir nuevo trial con su nombre en trials
+                        String id =  H2DAO.getTrialId(result.get());                                    // Obtener id del nuevo trial
+
+                        procesedActionList.clear();                                                     // Limpiar lista con las acciones de la tabla
+                        goThroughTable("Actions");                                                      // Recorrer la tabla e introduce en procesedActionList las acciones
+                        H2DAO.saveTrial(procesedActionList, id,0);                            // Insertar todas las acciones referentes al nuevo test en la tabla trials_actions
+
+
+
+                        procesedValidationList.clear();                                                 // Limpiar lista con las valideaciones de la tabla
+                        goThroughTable("Validations");                                                  // Recorrer la tabla e introduce en procesedValidationList las validaciones
+                        H2DAO.saveTrial(procesedValidationList, id,1);                        // Insertar todas las validaciones referentes al nuevo test en la tabla trials_actions
+
                     poblateTestList();
                 }
 
@@ -296,20 +312,48 @@ public class MainController implements Initializable {
        String trialName = testList.getSelectionModel().getSelectedItem().getText();
        String id = H2DAO.getTrialId(trialName);
        H2DAO.deleteTrialActions(id);
-       procesedList.clear();
-       goThroughTable();
-       H2DAO.saveTrial(procesedList, id);
+       if (tabActions.isSelected())
+       {
+           procesedActionList.clear();
+           goThroughTable("Actions");
+           H2DAO.saveTrial(procesedActionList, id,0);
+       }
+       if (tabValidation.isSelected())
+       {
+           procesedValidationList.clear();
+           goThroughTable("Validations");
+           H2DAO.saveTrial(procesedValidationList, id,1);
+       }
     }
 
-    public void goThroughTable(){
+    public void goThroughTable(String table){
+
         int iterator = 0;
-        while(iterator< actionsRowIndex)
+        int rowIndex = 0;
+        GridPane gridPane = new GridPane();
+        List<Action> list = new ArrayList<>();
+
+        if(table.equals("Actions")){
+            rowIndex = actionsRowIndex;
+            gridPane = gridPaneTrialList;
+            list = procesedActionList;
+        }
+
+        if(table.equals("Validations"))
+        {
+            rowIndex = validationRowIndex;
+            gridPane = gridPaneValidationList;
+            list = procesedValidationList;
+        }
+
+
+        while(iterator< rowIndex)
         {
             int i = 0;
             int j = 0;
-            for(Node child : gridPaneTrialList.getChildren())
+            for(Node child : gridPane.getChildren())
             {
-                if (gridPaneTrialList.getRowIndex(child) == iterator)
+                if (gridPane.getRowIndex(child) == iterator)
                 {
 
                     if (child instanceof ComboBox && i == 0)
@@ -336,7 +380,12 @@ public class MainController implements Initializable {
                 }
             }
             Action currentAction = new Action(comboBoxActionType,comboBoxSelectElementBy,textFieldFirstValueArgs,comboBoxSelectPlaceBy,textFieldSecondValueArgs);
-            procesedList.add(currentAction);
+            if (table.equals("Actions")) {
+                procesedActionList.add(currentAction);
+            }
+            if (table.equals("Validations"))  {
+                procesedValidationList.add(currentAction);
+            }
             iterator++;
         }
     }
@@ -352,7 +401,7 @@ public class MainController implements Initializable {
         testList.getItems().addAll(checkBoxesList);
     }
 
-    public void getSelectedTrials()
+    public void getSelectedTrialActions()
     {
        ObservableList<CheckBox> trialsSelected = testList.getSelectionModel().getSelectedItems();
 
@@ -368,6 +417,23 @@ public class MainController implements Initializable {
                actionsRowIndex++;
            }
        }
+    }
+
+    public void getSelectedTrialValidations(){
+        ObservableList<CheckBox> trialsSelected = testList.getSelectionModel().getSelectedItems();
+
+        for(CheckBox trial: trialsSelected)
+        {
+            String trialName = trial.getText();
+            ArrayList<Action> trialActions = H2DAO.getValidations(trialName);
+            for(Action validationOfTrial : trialActions)
+            {
+                Action action = new Action(gridPaneTrialList, actionsRowIndex,validationOfTrial.getActionTypeString(),validationOfTrial.getSelectElementByString(),
+                        validationOfTrial.getFirstValueArgsString(),validationOfTrial.getSelectPlaceByString(),validationOfTrial.getSecondValueArgsString());
+                validationList.add(action);
+                validationRowIndex++;
+            }
+        }
     }
 
     public void runSelectedTrials()

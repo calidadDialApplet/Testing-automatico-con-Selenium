@@ -26,7 +26,7 @@ public class H2DAO {
                     "  name text," +
                     "  constraint pk_trials primary key(id)" +
                     ")";
-            String createTrialActonsTable = "create table trial_actions(" +
+            String createTrialActionsTable = "create table trial_actions(" +
                     "  id integer auto_increment," +
                     "  trialid integer," +
                     "  actiontypeid integer," +
@@ -34,6 +34,7 @@ public class H2DAO {
                     "  value1 text," +
                     "  selectionbyid2 integer," +
                     "  value2 text," +
+                    "  validation integer," +
                     "  constraint pk_trial_action_table primary key(id,trialid)" +
                     /*"  constraint fk_trials foreign key(trialid) references trials(id)" +
                     "  constraint fk_action_type foreign key(actiontypeid) references action_types(name)" +
@@ -41,20 +42,37 @@ public class H2DAO {
                     "  constraint fk_selection_by_name foreign key(selectionbyid2) references selection_by(name)" +*/
                     ")";
             String statement = "drop table action_types";
+            String dropSelectionBy = "drop table selection_by";
+            String dropTrials = "drop table trials";
+            String dropTrialsActions = "drop table trial_actions";
 
-            String alterTable = "alter table trial_actions add constraint fk_selectionbyid2 foreign key(selectionbyid2) references selection_by(id)";
+            String alterTable = "alter table trial_actions add constraint fk_selectionById2 foreign key(selectionbyid2) references selection_by(id)";
 
-            String delete = "delete from trials";
-            //String poblate = "insert into trials_actions (actiontypeid, selectionbyid1, value1, selectionbyid2, value2) values (click, id, login, NULL, NULL)";
+            String delete = "delete from action_types";
+            //String poblate = "insert into selection_by(name) values ('name')";
             //st.execute(statement);
             //st.execute(createActionTypes);
             //st.execute(createSelectionBy);
             //st.execute(createTrials);
-            //st.execute(createTrialActonsTable);
-            //st.execute(delete);
+            //st.execute(createTrialActionsTable);
+            String check = "select * from action_types";
+            st.execute(delete);
+            //ResultSet  st2 = st.getResultSet();
+            //while (st2.next())
+            //{
+             //   System.out.println(st2.getString("id"));
 
+            //}
+            /*st.execute(statement);
+            System.out.println("FUNCIONA!!!!");
+            st.execute(dropSelectionBy);
+            System.out.println("FUNCIONA!!!!");
+            st.execute(dropTrials);
+            System.out.println("FUNCIONA!!!!");
+            st.execute(dropTrialsActions);
+               */
             // Todas las tablas y relaciones creadas
-            //System.out.println("FUNCIONA!!!!");
+            System.out.println("FUNCIONA!!!!");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -82,7 +100,7 @@ public class H2DAO {
         return selectElementsBy;
     }
 
-    public static void saveTrial(List<Action> actionList, String id)
+    public static void saveTrial(List<Action> actionList, String id, Integer validation)
     {
         try {
             Class.forName("org.h2.Driver");
@@ -108,10 +126,11 @@ public class H2DAO {
                         " selectionbyid1," +
                         " value1," +
                         " selectionbyid2," +
-                        " value2" +
+                        " value2," +
+                        " validation" +
                         ")" +
                         " values" +
-                        "('"+id+"','"+actionTypeId+"','"+firstValueArgs+"','"+value1+"','"+secondValueArgs+"','"+value2+"')";
+                        "('"+id+"','"+actionTypeId+"','"+firstValueArgs+"','"+value1+"','"+secondValueArgs+"','"+value2+"','"+validation+"')";
                 st.execute(statement);
                 System.out.println("Pasa2");
             }
@@ -271,7 +290,7 @@ public class H2DAO {
 
             System.out.println("ID: "+id);
 
-            String getActionsFromTrial = "Select * from trial_actions where trialid ='"+id+"'";
+            String getActionsFromTrial = "Select * from trial_actions where trialid ='"+id+"' and validation = '0'";
             st.execute(getActionsFromTrial);
             ResultSet actionsResultSet = st.getResultSet();
             System.out.println(actionsResultSet.toString());
@@ -289,6 +308,39 @@ public class H2DAO {
             e.printStackTrace();
         }
         return actions;
+    }
+
+    public static ArrayList<Action> getValidations(String trialName)
+    {
+        ArrayList<Action> validations = new ArrayList<>();
+        try
+        {
+            Class.forName("org.h2.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
+            Statement st = conn.createStatement();
+
+            String id = getTrialId(trialName);
+
+            System.out.println("ID: "+id);
+
+            String getValidationsFromTrial = "Select * from trial_actions where trialid ='"+id+"' and validation = '1'";
+            st.execute(getValidationsFromTrial);
+            ResultSet validationsResultSet = st.getResultSet();
+            System.out.println(validationsResultSet.toString());
+
+            while (validationsResultSet.next())
+            {
+                Action currentAction = new Action(validationsResultSet.getString("actiontypeid"), validationsResultSet.getString("selectionbyid1"),
+                        validationsResultSet.getString("value1"), validationsResultSet.getString("selectionbyid2"), validationsResultSet.getString("value2"));
+                validations.add(currentAction);
+            }
+            System.out.println("Llega");
+
+        }catch (ClassNotFoundException | SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return validations;
     }
 
     public static String getTrialId(String trialName)
