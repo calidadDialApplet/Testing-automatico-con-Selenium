@@ -64,7 +64,7 @@
                            <graphic>
                               <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@icons/round_play_circle_filled_black_24dp.png" />
+                                    <Image url="@../../resources/icons/round_play_circle_filled_black_24dp.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -73,7 +73,7 @@
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@icons/sharp_delete_black_24dp.png" />
+                                    <Image url="@../../resources/icons/sharp_delete_black_24dp.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -82,7 +82,7 @@
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@icons/baseline_edit_black_24dp.png" />
+                                    <Image url="@../../resources/icons/baseline_edit_black_24dp.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -97,15 +97,15 @@
     <center>
         <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
             <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                <AnchorPane fx:id="anchorPaneTrial" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane prefHeight="168.0" prefWidth="348.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
-                        <TabPane fx:id="tabPaneParent">
+                        <TabPane fx:id="tabPaneParent" prefHeight="168.0" prefWidth="348.0">
                            <tabs>
                               <Tab fx:id="tabActions" text="Actions">
                                  <content>
-                                    <GridPane fx:id="gridPaneTrialList" hgap="5.0" prefHeight="168.0" prefWidth="396.0">
+                                    <GridPane fx:id="gridPaneTrialList" hgap="10.0" prefHeight="168.0" prefWidth="396.0">
                                       <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -119,6 +119,9 @@
                                        <opaqueInsets>
                                           <Insets />
                                        </opaqueInsets>
+                                       <padding>
+                                          <Insets left="5.0" />
+                                       </padding>
                                     </GridPane>
                                  </content>
                               </Tab>
@@ -148,7 +151,7 @@
                </children></AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane prefHeight="167.0" prefWidth="348.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
                         <Accordion fx:id="accordionComprobationList" prefHeight="167.0" prefWidth="348.0" />
                      </content>
@@ -173,7 +176,7 @@
                           <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                   <image>
-                                      <Image url="@icons/sharp_add_black_24dp.png" />
+                                      <Image url="@../../resources/icons/sharp_add_black_24dp.png" />
                                   </image>
                               </ImageView>
                           </graphic>
@@ -182,7 +185,7 @@
                           <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                   <image>
-                                      <Image url="@icons/sharp_remove_black_24dp.png" />
+                                      <Image url="@../../resources/icons/sharp_remove_black_24dp.png" />
                                   </image>
                               </ImageView>
                           </graphic>
@@ -191,7 +194,7 @@
                      <graphic>
                         <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@icons/baseline_delete_forever_black_24dp.png" />
+                              <Image url="@../../resources/icons/baseline_delete_forever_black_24dp.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -200,7 +203,7 @@
                      <graphic>
                         <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@icons/baseline_save_black_24dp.png" />
+                              <Image url="@../../resources/icons/baseline_save_black_24dp.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -209,7 +212,7 @@
                           <graphic>
                               <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                   <image>
-                                      <Image url="@icons/baseline_play_arrow_black_24dp.png" />
+                                      <Image url="@../../resources/icons/baseline_play_arrow_black_24dp.png" />
                                   </image>
                               </ImageView>
                           </graphic>

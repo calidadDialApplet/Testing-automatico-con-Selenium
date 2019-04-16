@@ -27,7 +27,9 @@ public class Main extends Application {
         public void start(Stage primaryStage) throws Exception{
                 Parent root = FXMLLoader.load(getClass().getResource("/gui/Main.fxml"));
                 primaryStage.setTitle("WEB UI Tester");
-                primaryStage.setScene(new Scene(root, 800, 480));
+                Scene scene = new Scene(root,800,480);
+                scene.getStylesheets().add("/css/darcula.css");
+                primaryStage.setScene(scene);
                 primaryStage.show();
                 primaryStage.setOnCloseRequest( event -> {
                         event.consume();

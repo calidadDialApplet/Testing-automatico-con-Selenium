@@ -41,7 +41,7 @@ public class H2DAO {
                     "  constraint fk_selection_by foreign key(selectionbyid1) references selection_by(name)" +
                     "  constraint fk_selection_by_name foreign key(selectionbyid2) references selection_by(name)" +*/
                     ")";
-            String statement = "drop table action_types";
+            String dropActionTypes = "drop table action_types";
             String dropSelectionBy = "drop table selection_by";
             String dropTrials = "drop table trials";
             String dropTrialsActions = "drop table trial_actions";
@@ -49,20 +49,21 @@ public class H2DAO {
             String alterTable = "alter table trial_actions add constraint fk_selectionById2 foreign key(selectionbyid2) references selection_by(id)";
 
             String delete = "delete from action_types";
-            //String poblate = "insert into selection_by(name) values ('name')";
+            String poblate = "insert into action_types(name) values ('ReadFrom')";
             //st.execute(statement);
             //st.execute(createActionTypes);
             //st.execute(createSelectionBy);
             //st.execute(createTrials);
             //st.execute(createTrialActionsTable);
             String check = "select * from action_types";
-            st.execute(delete);
-            //ResultSet  st2 = st.getResultSet();
-            //while (st2.next())
-            //{
-             //   System.out.println(st2.getString("id"));
+            /*st.execute(check);
+            ResultSet  st2 = st.getResultSet();
+            while (st2.next())
+            {
+                System.out.println(st2.getString("id"));
+                System.out.println(st2.getString("name"));
 
-            //}
+            }*/
             /*st.execute(statement);
             System.out.println("FUNCIONA!!!!");
             st.execute(dropSelectionBy);
@@ -81,22 +82,56 @@ public class H2DAO {
     }
 
     public static ArrayList<String> getTypeAction(){
+
         ArrayList<String> typeActions = new ArrayList<>();
-        typeActions.add("Click");
-        typeActions.add("DragAndDrop");
-        typeActions.add("WriteTo");
-        typeActions.add("ReadFrom");
-        //typeActions.add("Waiting");
+        try{
+            Class.forName("org.h2.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
+            Statement st = conn.createStatement();
+
+            String getTrialsStatement = "select * from action_types";
+            st.execute(getTrialsStatement);
+
+            ResultSet resultSet =  st.getResultSet();
+
+            while (resultSet.next())
+            {
+                //System.out.println(resultSet.getString("id"));
+                typeActions.add(resultSet.getString("name"));
+            }
+            st.close();
+        }catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
         return typeActions;
     }
 
     public static ArrayList<String> getSelectElementBy(){
         ArrayList<String> selectElementsBy = new ArrayList<>();
-        selectElementsBy.add("id");
+        try{
+            Class.forName("org.h2.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
+            Statement st = conn.createStatement();
+
+            String getTrialsStatement = "select * from selection_by";
+            st.execute(getTrialsStatement);
+
+            ResultSet resultSet =  st.getResultSet();
+
+            while (resultSet.next())
+            {
+                //System.out.println(resultSet.getString("id"));
+                selectElementsBy.add(resultSet.getString("name"));
+            }
+            st.close();
+        }catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        /*selectElementsBy.add("id");
         selectElementsBy.add("xpath");
         selectElementsBy.add("cssSelector");
         selectElementsBy.add("className");
-        selectElementsBy.add("name");
+        selectElementsBy.add("name");*/
         return selectElementsBy;
     }
 
@@ -138,6 +173,7 @@ public class H2DAO {
             st.execute(statement2);
             System.out.println(st.getResultSet());
             System.out.println("GUARDADO");
+            st.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -151,15 +187,33 @@ public class H2DAO {
             Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
             Statement st = conn.createStatement();
 
-            String deleteActions = "delete from trial_actions where trialid='"+trialID+"'";
+            String deleteActions = "delete from trial_actions where trialid='"+trialID+"' and validation = '0'";
 
             st.execute(deleteActions);
             System.out.println("Acciones eliminadas");
 
-
+            st.close();
         }  catch (ClassNotFoundException | SQLException e) {
         e.printStackTrace();
          }
+    }
+
+    public static void deleteTrialValidations(String trialID)
+    {
+        try{
+            Class.forName("org.h2.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
+            Statement st = conn.createStatement();
+
+            String deleteActions = "delete from trial_actions where trialid='"+trialID+"' and validation = '1'";
+
+            st.execute(deleteActions);
+            System.out.println("Validaciones eliminadas");
+
+            st.close();
+        }  catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void deleteTrial(String trialID)
@@ -174,7 +228,7 @@ public class H2DAO {
             st.execute(deleteTrial);
             System.out.println("Trial Eliminado");
 
-
+            st.close();
         }  catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -196,6 +250,7 @@ public class H2DAO {
             st.execute(statement2);
             System.out.println(st.getResultSet());
 
+            st.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -222,6 +277,7 @@ public class H2DAO {
                //System.out.println(resultSet.getString("id"));
                trialFromTable.add(resultSet.getString("name"));
             }
+            st.close();
         }
         catch (ClassNotFoundException | SQLException e)
         {
@@ -302,7 +358,7 @@ public class H2DAO {
                 actions.add(currentAction);
             }
              System.out.println("Llega");
-
+            st.close();
         }catch (ClassNotFoundException | SQLException e)
         {
             e.printStackTrace();
@@ -335,7 +391,7 @@ public class H2DAO {
                 validations.add(currentAction);
             }
             System.out.println("Llega");
-
+            st.close();
         }catch (ClassNotFoundException | SQLException e)
         {
             e.printStackTrace();
@@ -358,6 +414,7 @@ public class H2DAO {
             while (idResultSet.next()) {
                 id = (idResultSet.getString(1));
             }
+            st.close();
         }catch (ClassNotFoundException | SQLException e)
         {
             e.printStackTrace();

@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -34,6 +35,7 @@ public class Action {
         this.rowIndex = rowIndex;
 
         actionType = new ComboBox<>();
+        //actionType.setMinWidth(100);
         actionType.setItems(FXCollections.observableArrayList(gui.H2DAO.getTypeAction()));
         gridParent.addRow(rowIndex, actionType);
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
