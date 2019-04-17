@@ -210,6 +210,8 @@ public class SeleniumDAO {
         element.sendKeys(value);
     }
 
+    public static String readFrom(WebElement element){ return element.getText();}
+
     public static void doWaiting(int seconds, String elementBy, String args, WebDriver driver){
         WebDriverWait waiting = new WebDriverWait(driver, seconds);
         switch (elementBy){

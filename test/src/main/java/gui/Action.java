@@ -1,8 +1,6 @@
 package gui;
 
 import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -323,33 +321,38 @@ public class Action {
         actionType.getSelectionModel().select(actionTypeValue);
     }
 
-   public boolean executeAction(WebDriver driver){
+   public String executeAction(WebDriver driver){
+        String result = "Fail";
         try {
             switch (this.actionType.getValue().toString()) {
                 case "Click":
                     WebElement clickElement = SeleniumDAO.selectElementBy(this.selectElementBy.getValue().toString(), this.firstValueArgs.getText(), driver);
                     SeleniumDAO.click(clickElement);
+                    result = "Ok";
                     break;
                 case "DragAndDrop":
                     WebElement dragElement = SeleniumDAO.selectElementBy(this.selectElementBy.getValue().toString(), this.firstValueArgs.getText(), driver);
                     WebElement dropPlaceElement = SeleniumDAO.selectElementBy(this.selectPlaceBy.getValue().toString(), this.secondValueArgs.getText(), driver);
                     SeleniumDAO.dragAndDropAction(dragElement, dropPlaceElement, driver);
+                    result = "Ok";
                     break;
                 case "WriteTo":
-                    System.out.println(secondValueArgs.getText());
                     WebElement writeToElement = SeleniumDAO.selectElementBy(selectElementBy.getValue().toString(), firstValueArgs.getText(), driver);
                     writeToElement.sendKeys(secondValueArgs.getText());
                     //SeleniumDAO.writeInTo(writeToElement,this.secondValueArgs.getText());
+                    result = "Ok";
                     break;
                 case "ReadFrom":
+                    WebElement readFromElement = SeleniumDAO.selectElementBy(selectElementBy.getValue().toString(),firstValueArgs.getText(),driver);
+                    result = SeleniumDAO.readFrom(readFromElement);
                     break;
                 default:
                     break;
             }
-            return true;
+            return result;
         }catch (Exception e){
             e.printStackTrace();
-            return false;
+            return result;
         }
 
    }
@@ -358,6 +361,7 @@ public class Action {
    {
        switch (lastType){
            case "Click":
+           case "ReadFrom":
                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
                break;
            case "DragAndDrop":
@@ -365,9 +369,6 @@ public class Action {
                break;
            case "WriteTo":
                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,secondValueArgs,value);
-               break;
-           case "ReadFrom":
-               gridParent.getChildren().removeAll(selectElementBy,firstValueArgs);
                break;
            case "default":
                break;

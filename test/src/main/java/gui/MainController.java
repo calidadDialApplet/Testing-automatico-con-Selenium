@@ -95,10 +95,14 @@ public class MainController implements Initializable {
         //testList.setScaleX(100);
         //testList.setScaleY(100);
         //testList.prefWidthProperty().bind(scrollPaneTrialList.widthProperty());
-
+        scrollPaneTrialList.setFitToWidth(true);
         //testList.prefHeightProperty().bind(scrollPaneTrialList.heightProperty());
 
         //tabPaneParent.setTabMinWidth(Math.round(tabPaneParent.getWidth()/2));
+
+        if(!H2DAO.checkDB()){
+            H2DAO.redoTables();
+        }
         testList.getSelectionModel().selectedItemProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
         {
             deleteAllTabs();
@@ -220,18 +224,19 @@ public class MainController implements Initializable {
        trial.setText(""+selectedTrial.getText());
        GridPane grid = new GridPane();
        grid.setVgap(2);
-       for(int i = 0; i < actionList.size(); i++)
-       {
-           Action currentAction = actionList.get(i);
-
-
-           grid.add(new Label("Action "+i+":"),0,i);
-           if (currentAction.executeAction(driver)){
-               grid.add(new Label(" Ok"),1,i);
-           } else{
-               grid.add(new Label(" Fail"),1,i);
+       if (tabActions.isSelected()) {
+           for (int i = 0; i < actionList.size(); i++) {
+               Action currentAction = actionList.get(i);
+               grid.add(new Label("Action " + i + ":"), 0, i);
+               grid.add(new Label(" " + currentAction.executeAction(driver)), 1, i);
            }
-
+       }
+       if (tabValidation.isSelected()){
+           for (int i = 0; i < validationList.size(); i++) {
+               Action currentValidation = validationList.get(i);
+               grid.add(new Label("Validation " + i + ":"), 0, i);
+               grid.add(new Label(" " + currentValidation.executeAction(driver)), 1, i);
+           }
        }
        trial.setContent(grid);
        accordionComprobationList.getPanes().add(trial);
@@ -252,12 +257,7 @@ public class MainController implements Initializable {
           Action currentAction = actionList.get(i);
 
 
-          grid.add(new TextField("Action"+i),0,i);
-          if (currentAction.executeAction(driver)){
-              grid.add(new TextField("Ok"),1,i);
-          } else{
-              grid.add(new TextField("Fail"),1,i);
-          }
+          grid.add(new Label(" "+currentAction.executeAction(driver)),1,i);
           trial.setContent(grid);
           accordionComprobationList.getPanes().add(trial);
        }

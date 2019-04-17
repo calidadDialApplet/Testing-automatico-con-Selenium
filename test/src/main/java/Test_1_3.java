@@ -71,7 +71,8 @@ public class Test_1_3 {
         int[] ids2 = new int[rows2];
         for(int i = 1; i<rows2-1; i++){
             WebElement currentId = SeleniumDAO.selectElementBy("xpath", "/html/body/div[2]/div[3]/div[2]/div[3]/div/table/tbody/tr["+i+"]/td[1]", driver);
-            ids2[i] = Integer.parseInt(currentId.getText());
+            //ids2[i] = Integer.parseInt(currentId.getText());
+            ids2[i] = Integer.parseInt(SeleniumDAO.readFrom(currentId));
         }
 
         int newMax = 0;

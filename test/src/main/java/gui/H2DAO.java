@@ -1,32 +1,51 @@
 package gui;
 
+import javafx.scene.control.Alert;
+
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class H2DAO {
 
-    public static void main(String[] args){
-        try {
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
-            Statement st = conn.createStatement();
-            String createActionTypes = "create table action_types(" +
+     static ArrayList<String> matchesTableName = new ArrayList<>(Arrays.asList("TRIALS","TRIAL_ACTIONS","ACTION_TYPES","SELECTION_BY"));
+     static ArrayList<String> matchesColName = new ArrayList<>(Arrays.asList("ID","NAME","ID","NAME","ID","NAME","ID","TRIALID","ACTIONTYPEID","SELECTIONBYID1","VALUE1","SELECTIONBYID2","VALUE2","VALIDATION"));
+     static ArrayList<String> matchesTypeName = new ArrayList<>(Arrays.asList("INTEGER","TEXT","INTEGER","TEXT","INTEGER","TEXT","INTEGER","INTEGER","INTEGER","INTEGER","TEXT","INTEGER","TEXT","INTEGER"));
+     static String validationTableNameQuery = "select table_name from information_schema.tables where table_type = 'TABLE'";
+     static String[] validationColNameQuerys = new String[]
+    {
+            "select column_name from information_schema.columns where table_name = 'TRIALS'",
+            "select column_name from information_schema.columns where table_name = 'ACTION_TYPES'",
+            "select column_name from information_schema.columns where table_name = 'SELECTION_BY'",
+            "select column_name from information_schema.columns where table_name = 'TRIAL_ACTIONS'"
+    };
+    static String[] validationColTypesQuerys = new String[]
+    {
+            "select column_type from information_schema.columns where table_name = 'TRIALS'",
+            "select column_type from information_schema.columns where table_name = 'ACTION_TYPES'",
+            "select column_type from information_schema.columns where table_name = 'SELECTION_BY'",
+            "select column_type from information_schema.columns where table_name = 'TRIAL_ACTIONS'"
+    };
+
+    static String[] createTables = new String[]
+    {
+            "create table action_types(" +
                     "  id integer auto_increment," +
                     "  name text," +
                     "  constraint pk_trial_action primary key(id)" +
-                    ")";
-            String createSelectionBy = "create table selection_by(" +
-                    "  id integer auto_increment," +
+                    ")",
+            "create table selection_by(" +
+            "  id integer auto_increment," +
                     "  name text," +
                     "  constraint pk_selection_by primary key(id)" +
-                    ")";
-            String createTrials = "create table trials(" +
+                    ")",
+            "create table trials(" +
                     "  id integer auto_increment," +
                     "  name text," +
                     "  constraint pk_trials primary key(id)" +
-                    ")";
-            String createTrialActionsTable = "create table trial_actions(" +
+                    ")",
+            "create table trial_actions(" +
                     "  id integer auto_increment," +
                     "  trialid integer," +
                     "  actiontypeid integer," +
@@ -35,51 +54,47 @@ public class H2DAO {
                     "  selectionbyid2 integer," +
                     "  value2 text," +
                     "  validation integer," +
-                    "  constraint pk_trial_action_table primary key(id,trialid)" +
-                    /*"  constraint fk_trials foreign key(trialid) references trials(id)" +
-                    "  constraint fk_action_type foreign key(actiontypeid) references action_types(name)" +
-                    "  constraint fk_selection_by foreign key(selectionbyid1) references selection_by(name)" +
-                    "  constraint fk_selection_by_name foreign key(selectionbyid2) references selection_by(name)" +*/
-                    ")";
-            String dropActionTypes = "drop table action_types";
-            String dropSelectionBy = "drop table selection_by";
-            String dropTrials = "drop table trials";
-            String dropTrialsActions = "drop table trial_actions";
+                    "  constraint pk_trial_action_table primary key(id,trialid)"+
+                    ")",
+            "alter table trial_actions add constraint fk_trialid foreign key(trialid) references trials(id)",
+            "alter table trial_actions add constraint fk_actiontypeid foreign key(trialid) references action_types(id)",
+            "alter table trial_actions add constraint fk_selectionById1 foreign key(selectionbyid1) references selection_by(id)",
+            "alter table trial_actions add constraint fk_selectionById2 foreign key(selectionbyid2) references selection_by(id)",
+            "insert into action_types(name) values ('Click')",
+            "insert into action_types(name) values ('DragAndDrop')",
+            "insert into action_types(name) values ('WriteTo')",
+            "insert into action_types(name) values ('ReadFrom')",
+            "insert into selection_by(name) values ('id')",
+            "insert into selection_by(name) values ('xpath')",
+            "insert into selection_by(name) values ('cssSelector')",
+            "insert into selection_by(name) values ('className')",
+            "insert into selection_by(name) values ('name')"
+    };
 
-            String alterTable = "alter table trial_actions add constraint fk_selectionById2 foreign key(selectionbyid2) references selection_by(id)";
+    static String[] dropTables = new String[]{
+        "drop table action_types",
+        "drop table selection_by",
+        "drop table trials",
+        "drop table trial_actions"
+    };
 
-            String delete = "delete from action_types";
-            String poblate = "insert into action_types(name) values ('ReadFrom')";
-            //st.execute(statement);
-            //st.execute(createActionTypes);
-            //st.execute(createSelectionBy);
-            //st.execute(createTrials);
-            //st.execute(createTrialActionsTable);
-            String check = "select * from action_types";
-            /*st.execute(check);
-            ResultSet  st2 = st.getResultSet();
-            while (st2.next())
-            {
-                System.out.println(st2.getString("id"));
-                System.out.println(st2.getString("name"));
+    public static void main(String[] args){
 
-            }*/
-            /*st.execute(statement);
-            System.out.println("FUNCIONA!!!!");
-            st.execute(dropSelectionBy);
-            System.out.println("FUNCIONA!!!!");
-            st.execute(dropTrials);
-            System.out.println("FUNCIONA!!!!");
-            st.execute(dropTrialsActions);
-               */
-            // Todas las tablas y relaciones creadas
-            System.out.println("FUNCIONA!!!!");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
+    }
+
+    /*public static Connection createMainConnection()
+    {
+        Connection conn = new Connection() {
+        };
+        try{
+            Class.forName("org.h2.Driver");
+            conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
+
+        }catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
-    }
+        return conn;
+    }*/
 
     public static ArrayList<String> getTypeAction(){
 
@@ -420,5 +435,110 @@ public class H2DAO {
             e.printStackTrace();
         }
         return id;
+    }
+
+    public static boolean checkDB()
+    {
+        ArrayList<String> tablesName = new ArrayList<>();
+        ArrayList<String> tablesColName = new ArrayList<>();
+        ArrayList<String> tablesColType = new ArrayList<>();
+        ResultSet resultOfQuery;
+
+        try {
+            Class.forName("org.h2.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db", "test", "test");
+            Statement st = conn.createStatement();
+            st.execute(validationTableNameQuery);
+            resultOfQuery = st.getResultSet();
+            while (resultOfQuery.next()){
+                tablesName.add(resultOfQuery.getString(1));
+            }
+
+            if (!tablesName.equals(matchesTableName)){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("Los nombres de las tablas no coinciden");
+                alert.setContentText("Contacta con tu administrador :)");
+                alert.showAndWait();
+                return false;
+            }else {
+                System.out.println("Nombre de tablas coinciden");
+                for (String query : validationColNameQuerys)
+                {
+                    st.execute(query);
+                    resultOfQuery = st.getResultSet();
+                    while (resultOfQuery.next())
+                    {
+                        tablesColName.add(resultOfQuery.getString(1));
+                    }
+                }
+                    if (!tablesColName.equals(matchesColName))
+                    {
+                        Alert alert = new Alert(Alert.AlertType.WARNING);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Los nombres de las columnas no coinciden");
+                        alert.setContentText("Contacta con tu administrador :)");
+                        alert.showAndWait();
+                        return false;
+                    }else{
+                        System.out.println("Nombre de Columnas coinciden");
+                        for (String query : validationColTypesQuerys)
+                        {
+                            st.execute(query);
+                            resultOfQuery = st.getResultSet();
+                            while (resultOfQuery.next())
+                            {
+                                String type = "";
+                                if (resultOfQuery.getString(1).indexOf(" ") == -1)
+                                {
+                                     type = resultOfQuery.getString(1);
+                                } else {
+                                     type = resultOfQuery.getString(1).substring(0, resultOfQuery.getString(1).indexOf(" "));
+                                }
+                                tablesColType.add(type);
+                            }
+                        }
+                        if (!tablesColType.equals(matchesTypeName))
+                        {
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                            alert.setTitle("Error");
+                            alert.setHeaderText("Los tipos de las columnas no coinciden");
+                            alert.setContentText("Contacta con tu administrador :)");
+                            alert.showAndWait();
+                            return false;
+                        } else {
+                            System.out.println("TODO VA COMO DIOS MANDA");
+                        }
+                    }
+            }
+            st.close();
+        }catch (ClassNotFoundException | SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public static void redoTables()
+    {
+        try
+        {
+            Class.forName("org.h2.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
+            Statement st = conn.createStatement();
+            
+            for(String query : dropTables)
+            {
+                st.execute(query);
+            }
+            
+            for (String query : createTables)
+            {
+                st.execute(query);    
+            }
+        
+        }catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
