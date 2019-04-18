@@ -78,14 +78,25 @@ public class H2DAO {
         "drop table trial_actions"
     };
 
+    static Connection connection;
+
+    static {
+        try {
+            Class.forName("org.h2.Driver");
+            connection = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
+        }catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args){
 
     }
 
     /*public static Connection createMainConnection()
     {
-        Connection conn = new Connection() {
-        };
+
+        Connection conn = null;
         try{
             Class.forName("org.h2.Driver");
             conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
@@ -96,26 +107,23 @@ public class H2DAO {
         return conn;
     }*/
 
-    public static ArrayList<String> getTypeAction(){
-
+    public static ArrayList<String> getTypeAction()
+    {
         ArrayList<String> typeActions = new ArrayList<>();
         try{
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
-            Statement st = conn.createStatement();
+                Statement st = connection.createStatement();
 
-            String getTrialsStatement = "select * from action_types";
-            st.execute(getTrialsStatement);
+                String getTrialsStatement = "select * from action_types";
+                st.execute(getTrialsStatement);
 
-            ResultSet resultSet =  st.getResultSet();
+                ResultSet resultSet =  st.getResultSet();
 
             while (resultSet.next())
             {
-                //System.out.println(resultSet.getString("id"));
                 typeActions.add(resultSet.getString("name"));
             }
-            st.close();
-        }catch (ClassNotFoundException | SQLException e) {
+                st.close();
+        }catch ( SQLException e) {
             e.printStackTrace();
         }
         return typeActions;
@@ -124,9 +132,7 @@ public class H2DAO {
     public static ArrayList<String> getSelectElementBy(){
         ArrayList<String> selectElementsBy = new ArrayList<>();
         try{
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
-            Statement st = conn.createStatement();
+            Statement st = connection.createStatement();
 
             String getTrialsStatement = "select * from selection_by";
             st.execute(getTrialsStatement);
@@ -135,27 +141,19 @@ public class H2DAO {
 
             while (resultSet.next())
             {
-                //System.out.println(resultSet.getString("id"));
                 selectElementsBy.add(resultSet.getString("name"));
             }
             st.close();
-        }catch (ClassNotFoundException | SQLException e) {
+        }catch (SQLException e) {
             e.printStackTrace();
         }
-        /*selectElementsBy.add("id");
-        selectElementsBy.add("xpath");
-        selectElementsBy.add("cssSelector");
-        selectElementsBy.add("className");
-        selectElementsBy.add("name");*/
         return selectElementsBy;
     }
 
     public static void saveTrial(List<Action> actionList, String id, Integer validation)
     {
         try {
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
-            Statement st = conn.createStatement();
+            Statement st = connection.createStatement();
 
             for(int i = 0; i < actionList.size(); i++)
             {
@@ -189,7 +187,7 @@ public class H2DAO {
             System.out.println(st.getResultSet());
             System.out.println("GUARDADO");
             st.close();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -198,9 +196,7 @@ public class H2DAO {
     public static void deleteTrialActions(String trialID)
     {
         try{
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
-            Statement st = conn.createStatement();
+            Statement st = connection.createStatement();
 
             String deleteActions = "delete from trial_actions where trialid='"+trialID+"' and validation = '0'";
 
@@ -208,7 +204,7 @@ public class H2DAO {
             System.out.println("Acciones eliminadas");
 
             st.close();
-        }  catch (ClassNotFoundException | SQLException e) {
+        }  catch (SQLException e) {
         e.printStackTrace();
          }
     }
@@ -216,9 +212,7 @@ public class H2DAO {
     public static void deleteTrialValidations(String trialID)
     {
         try{
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
-            Statement st = conn.createStatement();
+            Statement st = connection.createStatement();
 
             String deleteActions = "delete from trial_actions where trialid='"+trialID+"' and validation = '1'";
 
@@ -226,7 +220,7 @@ public class H2DAO {
             System.out.println("Validaciones eliminadas");
 
             st.close();
-        }  catch (ClassNotFoundException | SQLException e) {
+        }  catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -234,9 +228,7 @@ public class H2DAO {
     public static void deleteTrial(String trialID)
     {
         try{
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
-            Statement st = conn.createStatement();
+            Statement st = connection.createStatement();
 
             String deleteTrial = "delete from trials where id='"+trialID+"'";
 
@@ -244,7 +236,7 @@ public class H2DAO {
             System.out.println("Trial Eliminado");
 
             st.close();
-        }  catch (ClassNotFoundException | SQLException e) {
+        }  catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -253,10 +245,7 @@ public class H2DAO {
     {
         try
         {
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
-            Statement st = conn.createStatement();
-
+            Statement st = connection.createStatement();
 
             String statement = "insert into trials (name) values('"+name+"')";
             st.execute(statement);
@@ -266,7 +255,7 @@ public class H2DAO {
             System.out.println(st.getResultSet());
 
             st.close();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -276,9 +265,7 @@ public class H2DAO {
         ArrayList<String> trialFromTable = new ArrayList<>();
         try
         {
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
-            Statement st = conn.createStatement();
+            Statement st = connection.createStatement();
 
             String getTrialsStatement = "select * from trials";
             st.execute(getTrialsStatement);
@@ -294,7 +281,7 @@ public class H2DAO {
             }
             st.close();
         }
-        catch (ClassNotFoundException | SQLException e)
+        catch (SQLException e)
         {
             e.printStackTrace();
         }
@@ -353,9 +340,7 @@ public class H2DAO {
         ArrayList<Action> actions = new ArrayList<>();
         try
         {
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
-            Statement st = conn.createStatement();
+            Statement st = connection.createStatement();
 
             String id = getTrialId(trialName);
 
@@ -374,7 +359,7 @@ public class H2DAO {
             }
              System.out.println("Llega");
             st.close();
-        }catch (ClassNotFoundException | SQLException e)
+        }catch (SQLException e)
         {
             e.printStackTrace();
         }
@@ -386,9 +371,7 @@ public class H2DAO {
         ArrayList<Action> validations = new ArrayList<>();
         try
         {
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
-            Statement st = conn.createStatement();
+            Statement st = connection.createStatement();
 
             String id = getTrialId(trialName);
 
@@ -407,7 +390,7 @@ public class H2DAO {
             }
             System.out.println("Llega");
             st.close();
-        }catch (ClassNotFoundException | SQLException e)
+        }catch (SQLException e)
         {
             e.printStackTrace();
         }
@@ -418,9 +401,7 @@ public class H2DAO {
     {
         String id = "NULL";
         try {
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db", "test", "test");
-            Statement st = conn.createStatement();
+            Statement st = connection.createStatement();
 
             String getIDFromTrialName = "Select id from trials where name='" + trialName + "'";
             st.execute(getIDFromTrialName);
@@ -430,7 +411,7 @@ public class H2DAO {
                 id = (idResultSet.getString(1));
             }
             st.close();
-        }catch (ClassNotFoundException | SQLException e)
+        }catch (SQLException e)
         {
             e.printStackTrace();
         }
@@ -445,9 +426,7 @@ public class H2DAO {
         ResultSet resultOfQuery;
 
         try {
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db", "test", "test");
-            Statement st = conn.createStatement();
+            Statement st = connection.createStatement();
             st.execute(validationTableNameQuery);
             resultOfQuery = st.getResultSet();
             while (resultOfQuery.next()){
@@ -512,7 +491,7 @@ public class H2DAO {
                     }
             }
             st.close();
-        }catch (ClassNotFoundException | SQLException e)
+        }catch (SQLException e)
         {
             e.printStackTrace();
         }
@@ -523,21 +502,17 @@ public class H2DAO {
     {
         try
         {
-            Class.forName("org.h2.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
-            Statement st = conn.createStatement();
-            
+            Statement st = connection.createStatement();
             for(String query : dropTables)
             {
                 st.execute(query);
             }
-            
             for (String query : createTables)
             {
                 st.execute(query);    
             }
         
-        }catch (ClassNotFoundException | SQLException e) {
+        }catch (SQLException e) {
             e.printStackTrace();
         }
     }

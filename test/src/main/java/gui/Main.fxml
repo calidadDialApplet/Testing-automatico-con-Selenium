@@ -46,7 +46,7 @@
         </MenuBar>
     </top>
     <left>
-        <ScrollPane fx:id="scrollPaneTrialList" hbarPolicy="NEVER" vbarPolicy="NEVER" BorderPane.alignment="CENTER_LEFT">
+        <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER" BorderPane.alignment="CENTER_LEFT">
             <content>
             <GridPane>
                <columnConstraints>
@@ -99,11 +99,11 @@
             <items>
                 <AnchorPane fx:id="anchorPaneTrial" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <ScrollPane prefHeight="168.0" prefWidth="348.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <content>
-                        <TabPane fx:id="tabPaneParent" prefHeight="168.0" prefWidth="348.0">
-                           <tabs>
-                              <Tab fx:id="tabActions" text="Actions">
+                  <TabPane fx:id="tabPaneParent" prefHeight="168.0" prefWidth="348.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <tabs>
+                        <Tab fx:id="tabActions" text="Actions">
+                           <content>
+                              <ScrollPane fx:id="scrollPaneActionslList">
                                  <content>
                                     <GridPane fx:id="gridPaneTrialList" hgap="10.0" prefHeight="168.0" prefWidth="396.0">
                                       <columnConstraints>
@@ -124,8 +124,12 @@
                                        </padding>
                                     </GridPane>
                                  </content>
-                              </Tab>
-                              <Tab fx:id="tabValidation" text="Validation">
+                              </ScrollPane>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="tabValidation" text="Validation">
+                           <content>
+                              <ScrollPane fx:id="scrollPaneValidationsList">
                                  <content>
                                     <GridPane fx:id="gridPaneValidationList" hgap="5.0" prefHeight="168.0" prefWidth="396.0">
                                        <columnConstraints>
@@ -143,11 +147,11 @@
                                        </opaqueInsets>
                                     </GridPane>
                                  </content>
-                              </Tab>
-                           </tabs>
-                        </TabPane>
-                     </content>
-                  </ScrollPane>
+                              </ScrollPane>
+                           </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
                </children></AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>

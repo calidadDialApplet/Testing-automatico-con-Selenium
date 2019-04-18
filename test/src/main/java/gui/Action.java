@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -33,7 +34,8 @@ public class Action {
         this.rowIndex = rowIndex;
 
         actionType = new ComboBox<>();
-        //actionType.setMinWidth(100);
+        actionType.setMinWidth(100);
+
         actionType.setItems(FXCollections.observableArrayList(gui.H2DAO.getTypeAction()));
         gridParent.addRow(rowIndex, actionType);
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
@@ -47,6 +49,8 @@ public class Action {
                     needToDelete = true;
                     lastType = "Click";
                     selectElementBy = new ComboBox();
+                    selectElementBy.setMinWidth(100);
+
                     selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
@@ -338,8 +342,8 @@ public class Action {
                     break;
                 case "WriteTo":
                     WebElement writeToElement = SeleniumDAO.selectElementBy(selectElementBy.getValue().toString(), firstValueArgs.getText(), driver);
-                    writeToElement.sendKeys(secondValueArgs.getText());
-                    //SeleniumDAO.writeInTo(writeToElement,this.secondValueArgs.getText());
+                    //writeToElement.sendKeys(secondValueArgs.getText());
+                    SeleniumDAO.writeInTo(writeToElement,this.secondValueArgs.getText());
                     result = "Ok";
                     break;
                 case "ReadFrom":

@@ -2,15 +2,16 @@ package gui;
 
 
 
+import javafx.beans.property.DoubleProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import main.SeleniumDAO;
 import org.openqa.selenium.WebDriver;
 
@@ -20,6 +21,7 @@ import java.util.*;
 
 
 public class MainController implements Initializable {
+    ///
     @FXML
     private Button buttonPlay;
 
@@ -54,7 +56,10 @@ public class MainController implements Initializable {
     private Tab tabValidation;
 
     @FXML
-    private ScrollPane scrollPaneTrialList;
+    private ScrollPane scrollPaneActionslList;
+
+    @FXML
+    private ScrollPane scrollPaneValidationsList;
 
     @FXML
     private AnchorPane anchorPaneTrial;
@@ -89,19 +94,72 @@ public class MainController implements Initializable {
         procesedActionList = new ArrayList<>();
         procesedValidationList = new ArrayList<>();
 
+        gridPaneTrialList.getColumnConstraints().setAll(
+                ColumnConstraintsBuilder.create().percentWidth(100/5.0).build(),
+                ColumnConstraintsBuilder.create().percentWidth(100/5.0).build(),
+                ColumnConstraintsBuilder.create().percentWidth(100/5.0).build(),
+                ColumnConstraintsBuilder.create().percentWidth(100/5.0).build(),
+                ColumnConstraintsBuilder.create().percentWidth(100/5.0).build()
+        );
+        gridPaneTrialList.getRowConstraints().setAll(
+                 RowConstraintsBuilder.create().percentHeight(100/3.0).build(),
+                 RowConstraintsBuilder.create().percentHeight(100/3.0).build(),
+                 RowConstraintsBuilder.create().percentHeight(100/3.0).build(),
+                 RowConstraintsBuilder.create().percentHeight(100/3.0).build()
+
+        );
+
+       /* RowConstraints row = new RowConstraints();
+        row.setVgrow(Priority.NEVER);
+        row.setPercentHeight(100/80.0);
+        for (int i = 0; i<50; i++){
+            gridPaneTrialList.getRowConstraints().add(row);
+        }
+
+        ColumnConstraints col = new ColumnConstraints();
+        col.setHgrow(Priority.NEVER);
+        col.setPercentWidth(100/3.0);
+        for (int i = 0; i<100; i++){
+            gridPaneTrialList.getColumnConstraints().add(col);
+        }
+        */
+        /*
+        ObservableList<ColumnConstraints> cols = gridPaneTrialList.getColumnConstraints();
+        for (ColumnConstraints col : cols){
+            col.setPercentWidth(100/5.0);
+        }
+
+        ObservableList<RowConstraints> rows = gridPaneTrialList.getRowConstraints();
+        for (RowConstraints row : rows){
+            row.setPercentHeight(100/3.0);
+        }
+         */
+
+
         //tabPaneParent.setMinSize(1100,500);
         //tabPaneParent.setTabMinWidth(200);
         // My try to get the ListView expanded to fit parent AnchorPane
         //testList.setScaleX(100);
         //testList.setScaleY(100);
         //testList.prefWidthProperty().bind(scrollPaneTrialList.widthProperty());
-        scrollPaneTrialList.setFitToWidth(true);
+        //scrollPaneTrialList.setFitToWidth(true);
         //testList.prefHeightProperty().bind(scrollPaneTrialList.heightProperty());
 
         //tabPaneParent.setTabMinWidth(Math.round(tabPaneParent.getWidth()/2));
 
         if(!H2DAO.checkDB()){
-            H2DAO.redoTables();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Error en la base de datos");
+            alert.setHeaderText("¿Desea de reestablecer la base de datos?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK)
+            {
+                H2DAO.redoTables();
+            } else {
+                System.exit(0);
+            }
+
         }
         testList.getSelectionModel().selectedItemProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
         {
@@ -128,6 +186,8 @@ public class MainController implements Initializable {
             validationList.add(newAction);
             validationRowIndex++;
         }
+
+
     }
 
     public void deleteActionRow()
@@ -221,7 +281,11 @@ public class MainController implements Initializable {
 
        TitledPane trial = new TitledPane();
        CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
-       trial.setText(""+selectedTrial.getText());
+       if (selectedTrial == null){
+            trial.setText("Prueba sin guardar");
+       }else{
+            trial.setText(""+selectedTrial.getText());
+       }
        GridPane grid = new GridPane();
        grid.setVgap(2);
        if (tabActions.isSelected()) {
@@ -282,7 +346,6 @@ public class MainController implements Initializable {
    }
     public void saveTest()
     {
-
         try
         {
             //executeTestHeadless();  // Comprobaciones

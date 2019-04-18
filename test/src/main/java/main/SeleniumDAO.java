@@ -206,8 +206,7 @@ public class SeleniumDAO {
                 break;
         }
     }
-    public static void writeInTo(WebElement element, String value){
-        element.sendKeys(value);
+    public static void writeInTo(WebElement element, String value){element.sendKeys(value);
     }
 
     public static String readFrom(WebElement element){ return element.getText();}
