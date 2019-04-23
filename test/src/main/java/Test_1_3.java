@@ -15,7 +15,7 @@ import java.util.List;
 public class Test_1_3 {
     public static void main(String[] args) {
 
-        WebDriver driver = SeleniumDAO.initializeDriver();
+        WebDriver driver = SeleniumDAO.initializeFirefoxDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
         Main.loginDialappletWeb("admin", "admin", driver);
         // Click on Admin tab

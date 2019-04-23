@@ -1,21 +1,18 @@
 package main;
 
+import gui.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-import java.util.Optional;
 
-
-// main.Main entrypoint, GUI initialization, etc.
+// Main entrypoint
 
 public class Main extends Application {
 
@@ -25,18 +22,22 @@ public class Main extends Application {
 
         @Override
         public void start(Stage primaryStage) throws Exception{
-                Parent root = FXMLLoader.load(getClass().getResource("/gui/Main.fxml"));
+                FXMLLoader loader = new FXMLLoader();
+                Parent root = loader.load(getClass().getResource("/gui/Main.fxml"));
                 primaryStage.setTitle("WEB UI Tester");
+                MainController controller = loader.getController();
                 Scene scene = new Scene(root,800,480);
-                scene.getStylesheets().add("/css/darcula.css");
+                // TODO: Settings
+                //scene.getStylesheets().add("/css/darcula.css");
                 primaryStage.setScene(scene);
                 primaryStage.show();
                 primaryStage.setOnCloseRequest( event -> {
                         event.consume();
-                        alertClose();
+                        controller.totalClose();
                 });
         }
 
+        // TODO: Garbage clean
         public static void loginDialappletWeb(String name, String password, WebDriver driver){
                 WebElement user = driver.findElement(By.id("adminusername"));
                 user.sendKeys(name);
@@ -51,6 +52,7 @@ public class Main extends Application {
                 }
         }
 
+        // TODO: Garbage clean
         public static void loginWebClient(String name, String password, int tlfOption, WebDriver driver){
                 WebElement usernameWebClient = SeleniumDAO.selectElementBy("id","userName",driver);
                 usernameWebClient.sendKeys(name);
@@ -67,23 +69,6 @@ public class Main extends Application {
 
                 WebElement enter = driver.findElement(By.id("login"));
                 enter.click();
-        }
-
-        public static void alertClose(){
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("¿Nos dejas?");
-                alert.setHeaderText("Se perderán todos los cambios no guardados");
-                Optional<ButtonType> result = alert.showAndWait();
-
-                if (result.get() == ButtonType.OK)
-                {
-                        System.out.println("Adiós mundo cruel");
-                        System.exit(0);
-                }
-                else
-                {
-                        System.out.println("Muerte esquivada una vez más");
-                }
         }
 }
 

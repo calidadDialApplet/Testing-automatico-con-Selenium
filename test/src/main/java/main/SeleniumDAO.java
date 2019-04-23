@@ -1,8 +1,11 @@
 package main;
 
+import com.sun.javafx.PlatformUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -15,14 +18,42 @@ import java.util.HashMap;
 
 public class SeleniumDAO {
 
-    public static WebDriver initializeDriver(){
-        System.setProperty("webdriver.gecko.driver", "geckodriver");
+    public static WebDriver initializeFirefoxDriver(){
+        if(PlatformUtil.isWindows())
+        {
+            System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
+        }
+        else
+        {
+            System.setProperty("webdriver.gecko.driver", "geckodriver");
+        }
         WebDriver driver = new FirefoxDriver();
         return driver;
     }
 
-    public static WebDriver initializeHeadLessDriver(){
-        System.setProperty("webdriver.gecko.driver", "geckodriver");
+    public static WebDriver initializeChromeDriver(){
+        if(PlatformUtil.isWindows())
+        {
+            System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+        }
+        else
+        {
+            System.setProperty("webdriver.chrome.driver", "chromedriver");
+        }
+        WebDriver driver = new ChromeDriver();
+        return driver;
+    }
+
+    public static WebDriver initializeFirefoxHeadlessDriver()
+    {
+        if(PlatformUtil.isWindows())
+        {
+            System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
+        }
+        else
+        {
+            System.setProperty("webdriver.gecko.driver", "geckodriver");
+        }
         FirefoxBinary firefoxBinary = new FirefoxBinary();
         firefoxBinary.addCommandLineOptions("--headless");
         FirefoxOptions firefoxOptions = new FirefoxOptions();
@@ -31,7 +62,23 @@ public class SeleniumDAO {
         return driver;
     }
 
-    public static WebElement selectElementBy(String mode, String args, WebDriver driver){
+    public static WebDriver initializeChromeHeadlessDriver()
+    {
+        if(PlatformUtil.isWindows())
+        {
+            System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+        }
+        else
+        {
+            System.setProperty("webdriver.chrome.driver", "chromedriver");
+        }
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");
+        return new ChromeDriver(options);
+    }
+
+    public static WebElement selectElementBy(String mode, String args, WebDriver driver)
+    {
 
         WebElement elementReturned = null;
 
@@ -64,12 +111,11 @@ public class SeleniumDAO {
         {
             throw new NullPointerException("Element not found or could not be selected!");
         }
-
         return elementReturned;
-
     }
 
-    public static WebElement selectElementBy(String mode, String args, WebElement element){
+    public static WebElement selectElementBy(String mode, String args, WebElement element)
+    {
 
         WebElement elementReturned = null;
 
@@ -106,23 +152,33 @@ public class SeleniumDAO {
         return elementReturned;
 
     }
-    public static void click(WebElement element){
+
+    public static void click(WebElement element)
+    {
         element.click();
     }
-    public static void switchToFrame(String frameID, WebDriver driver){
+
+    public static void switchToFrame(String frameID, WebDriver driver)
+    {
         WebDriverWait waiting = new WebDriverWait(driver, 20);
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id(frameID)));
         driver.switchTo().frame(frameID);
 
     }
-    public static void switchToDefaultContent(WebDriver driver){
+
+    public static void switchToDefaultContent(WebDriver driver)
+    {
         driver.switchTo().defaultContent();
     }
-    public static void dragAndDropAction(WebElement draguedElement, WebElement droppedPlace, WebDriver driver){
+
+    public static void dragAndDropAction(WebElement draguedElement, WebElement droppedPlace, WebDriver driver)
+    {
         Actions moveAgent = new Actions(driver);
         moveAgent.dragAndDrop(draguedElement,droppedPlace).build().perform();
     }
-    public static Select findSelectElementBy(String mode, String args, WebDriver driver){
+
+    public static Select findSelectElementBy(String mode, String args, WebDriver driver)
+    {
         Select elementReturned = null;
 
         switch (mode){
@@ -153,7 +209,9 @@ public class SeleniumDAO {
 
         return elementReturned;
     }
-    public static Select findSelectElementBy(String mode, String args, WebElement element){
+
+    public static Select findSelectElementBy(String mode, String args, WebElement element)
+    {
         Select elementReturned = null;
 
         switch (mode){
@@ -184,14 +242,18 @@ public class SeleniumDAO {
 
         return elementReturned;
     }
-    public static HashMap<Integer, String> getSelectOptions(Select selector){
+
+    public static HashMap<Integer, String> getSelectOptions(Select selector)
+    {
         HashMap<Integer, String> hmap = new HashMap<Integer,String>();
         for(int i = 0; i < selector.getOptions().size(); i++){
             hmap.put(i,selector.getOptions().get(i).getText());
         }
         return hmap;
     }
-    public static void selectOption(String mode, String args, Select selector){
+
+    public static void selectOption(String mode, String args, Select selector)
+    {
         switch (mode){
             case "index":
                 selector.selectByIndex(Integer.parseInt(args));
@@ -206,12 +268,19 @@ public class SeleniumDAO {
                 break;
         }
     }
-    public static void writeInTo(WebElement element, String value){element.sendKeys(value);
+
+    public static void writeInTo(WebElement element, String value)
+    {
+        element.sendKeys(value);
     }
 
-    public static String readFrom(WebElement element){ return element.getText();}
+    public static String readFrom(WebElement element)
+    {
+        return element.getText();
+    }
 
-    public static void doWaiting(int seconds, String elementBy, String args, WebDriver driver){
+    public static void waitForElement(int seconds, String elementBy, String args, WebDriver driver)
+    {
         WebDriverWait waiting = new WebDriverWait(driver, seconds);
         switch (elementBy){
             case "id":

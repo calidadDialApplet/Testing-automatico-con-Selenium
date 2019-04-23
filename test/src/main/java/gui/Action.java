@@ -1,7 +1,6 @@
 package gui;
 
 import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -9,9 +8,10 @@ import javafx.scene.layout.GridPane;
 import main.SeleniumDAO;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import persistence.H2DAO;
 
-
-
+// TODO: Refactor this as ActionController, use it from MainController
+//       Add Action, Trial, etc DataModels and Controllers (https://stackoverflow.com/questions/32342864/applying-mvc-with-javafx)
 public class Action {
 
    private GridPane gridParent;
@@ -36,7 +36,7 @@ public class Action {
         actionType = new ComboBox<>();
         actionType.setMinWidth(100);
 
-        actionType.setItems(FXCollections.observableArrayList(gui.H2DAO.getTypeAction()));
+        actionType.setItems(FXCollections.observableArrayList(H2DAO.getTypeAction()));
         gridParent.addRow(rowIndex, actionType);
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
@@ -51,7 +51,7 @@ public class Action {
                     selectElementBy = new ComboBox();
                     selectElementBy.setMinWidth(100);
 
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -72,7 +72,7 @@ public class Action {
                     needToDelete = true;
                     lastType = "DragAndDrop";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -80,7 +80,7 @@ public class Action {
                         if (placeNotGenerated) {
                             firstValueArgs = new TextField();
                             gridParent.addRow(rowIndex, firstValueArgs);
-                            selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                            selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                             //selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementByString()));
                             gridParent.addRow(rowIndex, selectPlaceBy);
                             placeNotGenerated = false;
@@ -104,7 +104,7 @@ public class Action {
                     needToDelete = true;
                     lastType = "WriteTo";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -129,7 +129,7 @@ public class Action {
                     needToDelete = true;
                     lastType = "ReadFrom";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -150,7 +150,7 @@ public class Action {
                     gridParent.addRow(rowIndex, infoText);
 
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementByString()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(persistence.H2DAO.getSelectElementByString()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -204,7 +204,7 @@ public class Action {
         this.rowIndex = rowIndex;
 
         actionType = new ComboBox<>();
-        actionType.setItems(FXCollections.observableArrayList(gui.H2DAO.getTypeAction()));
+        actionType.setItems(FXCollections.observableArrayList(H2DAO.getTypeAction()));
         gridParent.addRow(rowIndex, actionType);
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
@@ -217,7 +217,7 @@ public class Action {
                     needToDelete = true;
                     lastType = "Click";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -240,7 +240,7 @@ public class Action {
                     needToDelete = true;
                     lastType = "DragAndDrop";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -249,7 +249,7 @@ public class Action {
                             firstValueArgs = new TextField();
                             firstValueArgs.setText(firstValueArgsValue);
                             gridParent.addRow(rowIndex, firstValueArgs);
-                            selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                            selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                             //selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementByString()));
 
                             gridParent.addRow(rowIndex, selectPlaceBy);
@@ -277,7 +277,7 @@ public class Action {
                     needToDelete = true;
                     lastType = "WriteTo";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -305,7 +305,7 @@ public class Action {
                     needToDelete = true;
                     lastType = "ReadFrom";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -326,8 +326,11 @@ public class Action {
     }
 
    public String executeAction(WebDriver driver){
+
         String result = "Fail";
-        try {
+
+        try
+        {
             switch (this.actionType.getValue().toString()) {
                 case "Click":
                     WebElement clickElement = SeleniumDAO.selectElementBy(this.selectElementBy.getValue().toString(), this.firstValueArgs.getText(), driver);
@@ -354,7 +357,9 @@ public class Action {
                     break;
             }
             return result;
-        }catch (Exception e){
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             return result;
         }

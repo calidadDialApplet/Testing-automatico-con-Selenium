@@ -1,27 +1,34 @@
 package gui;
 
-
-
-import javafx.beans.property.DoubleProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraintsBuilder;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraintsBuilder;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import main.SeleniumDAO;
 import org.openqa.selenium.WebDriver;
+import persistence.H2DAO;
 
-
+import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 
 public class MainController implements Initializable {
-    ///
+
     @FXML
     private Button buttonPlay;
 
@@ -70,6 +77,9 @@ public class MainController implements Initializable {
     @FXML
     private Accordion accordionComprobationList;
 
+    @FXML
+    private MenuItem menuItemSettings;
+
     private List<Action> actionList;
     private List<Action> validationList;
     private List<Action> procesedActionList;
@@ -94,6 +104,14 @@ public class MainController implements Initializable {
         procesedActionList = new ArrayList<>();
         procesedValidationList = new ArrayList<>();
 
+        // TODO: Has to be done with:
+        //            for (int i = 0; i < numColumns; i++)
+        //            {
+        //            ColumnConstraints colConstraint = new ColumnConstraints();
+        //            colConst.setPercentWidth(100.0 / numColumns);
+        //            gridPaneTrialList.getColumnConstraints().add(colConstraint);
+        //            }
+
         gridPaneTrialList.getColumnConstraints().setAll(
                 ColumnConstraintsBuilder.create().percentWidth(100/5.0).build(),
                 ColumnConstraintsBuilder.create().percentWidth(100/5.0).build(),
@@ -101,6 +119,12 @@ public class MainController implements Initializable {
                 ColumnConstraintsBuilder.create().percentWidth(100/5.0).build(),
                 ColumnConstraintsBuilder.create().percentWidth(100/5.0).build()
         );
+
+        // TODO: This is plain wrong. You can't set row constraints
+        //  this way, since you don't know the number of rows
+        //  That's why scroll pane is broken after adding 5 rows or more
+        //  Should be calculated and applied when adding new rows ...
+
         gridPaneTrialList.getRowConstraints().setAll(
                  RowConstraintsBuilder.create().percentHeight(100/3.0).build(),
                  RowConstraintsBuilder.create().percentHeight(100/3.0).build(),
@@ -108,6 +132,24 @@ public class MainController implements Initializable {
                  RowConstraintsBuilder.create().percentHeight(100/3.0).build()
 
         );
+
+        // TODO: ...
+        gridPaneValidationList.getColumnConstraints().setAll(
+                ColumnConstraintsBuilder.create().percentWidth(100/5.0).build(),
+                ColumnConstraintsBuilder.create().percentWidth(100/5.0).build(),
+                ColumnConstraintsBuilder.create().percentWidth(100/5.0).build(),
+                ColumnConstraintsBuilder.create().percentWidth(100/5.0).build(),
+                ColumnConstraintsBuilder.create().percentWidth(100/5.0).build()
+        );
+
+        // TODO: ...
+        gridPaneValidationList.getRowConstraints().setAll(
+                RowConstraintsBuilder.create().percentHeight(100/3.0).build(),
+                RowConstraintsBuilder.create().percentHeight(100/3.0).build(),
+                RowConstraintsBuilder.create().percentHeight(100/3.0).build(),
+                RowConstraintsBuilder.create().percentHeight(100/3.0).build()
+        );
+
 
        /* RowConstraints row = new RowConstraints();
         row.setVgrow(Priority.NEVER);
@@ -138,9 +180,6 @@ public class MainController implements Initializable {
 
         //tabPaneParent.setMinSize(1100,500);
         //tabPaneParent.setTabMinWidth(200);
-        // My try to get the ListView expanded to fit parent AnchorPane
-        //testList.setScaleX(100);
-        //testList.setScaleY(100);
         //testList.prefWidthProperty().bind(scrollPaneTrialList.widthProperty());
         //scrollPaneTrialList.setFitToWidth(true);
         //testList.prefHeightProperty().bind(scrollPaneTrialList.heightProperty());
@@ -150,7 +189,7 @@ public class MainController implements Initializable {
         if(!H2DAO.checkDB()){
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Error en la base de datos");
-            alert.setHeaderText("¿Desea de reestablecer la base de datos?");
+            alert.setHeaderText("¿Desea reestablecer la base de datos?");
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK)
@@ -172,6 +211,26 @@ public class MainController implements Initializable {
 
     }
 
+    public void openSettingsDialog()
+    {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/gui/Settings.fxml"));
+            Stage stage = new Stage();
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setAlwaysOnTop(true);
+            stage.setTitle("Settings");
+            Scene scene = new Scene(root,350,250);
+            scene.getStylesheets().add("/css/darcula.css");
+            stage.setScene(scene);
+            stage.showAndWait();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void addActionRow()
     {
         if(tabActions.isSelected())
@@ -186,8 +245,6 @@ public class MainController implements Initializable {
             validationList.add(newAction);
             validationRowIndex++;
         }
-
-
     }
 
     public void deleteActionRow()
@@ -273,18 +330,29 @@ public class MainController implements Initializable {
            executeTest(procesedValidationList);
        }
    }
-
+    // TODO: Tasks and tests cant be launched from MainController thread
+    //  Use Task or Platform.runLater to achieve this, and get this code concurrent
+    //  with protected methods, working out the logic part out of this
    public void executeTest(List<Action> actionList)
    {
-       WebDriver driver = SeleniumDAO.initializeDriver();
+       WebDriver driver = SeleniumDAO.initializeFirefoxDriver();
+       // TODO: Variable
        driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
 
        TitledPane trial = new TitledPane();
-       CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+
+       // TODO: This checkbox has no value. You create UI object to store values.
+       //  Plain wrong
+       //CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+
+       String selectedTrial = testList.getSelectionModel().getSelectedItem().getText();
+       // TODO: selectedTrial does not work properly
+       //  If you check without selecting row a Trial from checkables ListView,
+       //  after execution always says this, instead of Trial name
        if (selectedTrial == null){
             trial.setText("Prueba sin guardar");
        }else{
-            trial.setText(""+selectedTrial.getText());
+            trial.setText(selectedTrial);
        }
        GridPane grid = new GridPane();
        grid.setVgap(2);
@@ -306,8 +374,9 @@ public class MainController implements Initializable {
        accordionComprobationList.getPanes().add(trial);
    }
 
+   // TODO: Take settings into account to select the way to work with browsers
    public void executeTestHeadless(){
-       WebDriver driver = SeleniumDAO.initializeHeadLessDriver();
+       WebDriver driver = SeleniumDAO.initializeFirefoxHeadlessDriver();
        driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
 
        TitledPane trial = new TitledPane();
@@ -326,24 +395,28 @@ public class MainController implements Initializable {
           accordionComprobationList.getPanes().add(trial);
        }
    }
-    // Close app method
+
+   // Close app method
    public void totalClose()
    {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("¿Nos dejas?");
-        alert.setHeaderText("Se perderán todos los cambios no guardados");
-        Optional<ButtonType> result = alert.showAndWait();
+       Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+       //DialogPane dialog = alert.getDialogPane();
+       //dialog.getStylesheets().add(getClass().getResource("/css/darcula.css").toExternalForm());
+       alert.setTitle("¿Nos dejas?");
+       alert.setHeaderText("Se perderán todos los cambios no guardados");
+       Optional<ButtonType> result = alert.showAndWait();
 
-        if (result.get() == ButtonType.OK)
-        {
-            System.out.println("Adiós mundo cruel");
-            System.exit(0);
-        }
-        else
-        {
-            System.out.println("Muerte esquivada una vez más");
-        }
+       if (result.get() == ButtonType.OK)
+       {
+           System.out.println("Adiós mundo cruel");
+           System.exit(0);
+       }
+       else
+       {
+           System.out.println("Muerte esquivada una vez más");
+       }
    }
+
     public void saveTest()
     {
         try
@@ -375,7 +448,7 @@ public class MainController implements Initializable {
                         goThroughTable("Actions");                                                      // Recorrer la tabla e introduce en procesedActionList las acciones
                         if(!procesedActionList.isEmpty()) {
                             H2DAO.createTrial(result.get());                                                // Introducir nuevo trial con su nombre en trials
-                            String id =  H2DAO.getTrialId(result.get());                                    // Obtener id del nuevo trial
+                            String id =  H2DAO.getTrialID(result.get());                                    // Obtener id del nuevo trial
                             H2DAO.saveTrial(procesedActionList, id, 0);                            // Insertar todas las acciones referentes al nuevo test en la tabla trials_actions
                             procesedValidationList.clear();                                                 // Limpiar lista con las valideaciones de la tabla
                             goThroughTable("Validations");                                                  // Recorrer la tabla e introduce en procesedValidationList las validaciones
@@ -398,7 +471,7 @@ public class MainController implements Initializable {
     public void modifyTrial()
     {
        String trialName = testList.getSelectionModel().getSelectedItem().getText();
-       String id = H2DAO.getTrialId(trialName);
+       String id = H2DAO.getTrialID(trialName);
        if (tabActions.isSelected())
        {
            H2DAO.deleteTrialActions(id);
@@ -415,7 +488,8 @@ public class MainController implements Initializable {
        }
     }
 
-    public void goThroughTable(String table){
+    public void goThroughTable(String table)
+    {
 
         int iterator = 0;
         int rowIndex = 0;
@@ -548,7 +622,7 @@ public class MainController implements Initializable {
            alert.setContentText("Contacta con tu administrador :)");
            alert.showAndWait();
        } else {
-           String id = H2DAO.getTrialId(selectedTrial.getText());
+           String id = H2DAO.getTrialID(selectedTrial.getText());
            H2DAO.deleteTrialActions(id);
            H2DAO.deleteTrial(id);
            poblateTestList();
