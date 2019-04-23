@@ -64,7 +64,7 @@
                            <graphic>
                               <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../resources/icons/round_play_circle_filled_black_24dp.png" />
+                                    <Image url="@../../classes/icons/round_play_circle_filled_black_24dp.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -73,7 +73,7 @@
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../resources/icons/sharp_delete_black_24dp.png" />
+                                    <Image url="@../../classes/icons/sharp_delete_black_24dp.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -82,7 +82,7 @@
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../resources/icons/baseline_edit_black_24dp.png" />
+                                    <Image url="@../../classes/icons/baseline_edit_black_24dp.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -113,9 +113,6 @@
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                       </columnConstraints>
-                                      <rowConstraints>
-                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                      </rowConstraints>
                                        <opaqueInsets>
                                           <Insets />
                                        </opaqueInsets>
@@ -139,9 +136,6 @@
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                        </columnConstraints>
-                                       <rowConstraints>
-                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                       </rowConstraints>
                                        <opaqueInsets>
                                           <Insets />
                                        </opaqueInsets>
@@ -180,7 +174,7 @@
                           <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                   <image>
-                                      <Image url="@../../resources/icons/sharp_add_black_24dp.png" />
+                                      <Image url="@../../classes/icons/sharp_add_black_24dp.png" />
                                   </image>
                               </ImageView>
                           </graphic>
@@ -189,7 +183,7 @@
                           <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                   <image>
-                                      <Image url="@../../resources/icons/sharp_remove_black_24dp.png" />
+                                      <Image url="@../../classes/icons/sharp_remove_black_24dp.png" />
                                   </image>
                               </ImageView>
                           </graphic>
@@ -198,7 +192,7 @@
                      <graphic>
                         <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../resources/icons/baseline_delete_forever_black_24dp.png" />
+                              <Image url="@../../classes/icons/baseline_delete_forever_black_24dp.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -207,7 +201,7 @@
                      <graphic>
                         <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../resources/icons/baseline_save_black_24dp.png" />
+                              <Image url="@../../classes/icons/baseline_save_black_24dp.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -216,7 +210,7 @@
                           <graphic>
                               <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                   <image>
-                                      <Image url="@../../resources/icons/baseline_play_arrow_black_24dp.png" />
+                                      <Image url="@../../classes/icons/baseline_play_arrow_black_24dp.png" />
                                   </image>
                               </ImageView>
                           </graphic>

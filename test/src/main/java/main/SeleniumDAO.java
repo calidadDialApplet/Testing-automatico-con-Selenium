@@ -109,15 +109,17 @@ public class SeleniumDAO {
     public static void click(WebElement element){
         element.click();
     }
-    public static void switchToFrame(String frameID, WebDriver driver){
+
+    public static void switchToFrame(String frameArgs, WebDriver driver){
         WebDriverWait waiting = new WebDriverWait(driver, 20);
-        waiting.until(ExpectedConditions.presenceOfElementLocated(By.id(frameID)));
-        driver.switchTo().frame(frameID);
+        waiting.until(ExpectedConditions.presenceOfElementLocated(By.id(frameArgs)));
+        driver.switchTo().frame(frameArgs);
 
     }
     public static void switchToDefaultContent(WebDriver driver){
         driver.switchTo().defaultContent();
     }
+
     public static void dragAndDropAction(WebElement draguedElement, WebElement droppedPlace, WebDriver driver){
         Actions moveAgent = new Actions(driver);
         moveAgent.dragAndDrop(draguedElement,droppedPlace).build().perform();
@@ -141,6 +143,10 @@ public class SeleniumDAO {
             case "className":
                 Select elementClickedByClassName = new Select(driver.findElement(By.className(args)));
                 elementReturned = elementClickedByClassName;
+                break;
+            case "name":
+                Select elementClickedByName = new Select(driver.findElement(By.name(args)));
+                elementReturned = elementClickedByName;
                 break;
             default:
                 break;
@@ -172,6 +178,10 @@ public class SeleniumDAO {
             case "className":
                 Select elementClickedByClassName = new Select(element.findElement(By.className(args)));
                 elementReturned = elementClickedByClassName;
+                break;
+            case "name":
+                Select elementClickedByName = new Select(element.findElement(By.name(args)));
+                elementReturned = elementClickedByName;
                 break;
             default:
                 break;
@@ -211,7 +221,8 @@ public class SeleniumDAO {
 
     public static String readFrom(WebElement element){ return element.getText();}
 
-    public static void doWaiting(int seconds, String elementBy, String args, WebDriver driver){
+    public static void doWaiting(int seconds, String elementBy, String args, WebDriver driver)
+    {
         WebDriverWait waiting = new WebDriverWait(driver, seconds);
         switch (elementBy){
             case "id":
@@ -226,6 +237,12 @@ public class SeleniumDAO {
             case "className":
                 waiting.until(ExpectedConditions.presenceOfElementLocated(By.className(args)));
                 break;
+            case "name":
+                waiting.until(ExpectedConditions.presenceOfElementLocated(By.name(args)));
+                break;
+            default:
+                break;
         }
     }
+
 }

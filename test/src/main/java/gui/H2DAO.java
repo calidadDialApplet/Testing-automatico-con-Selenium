@@ -90,7 +90,17 @@ public class H2DAO {
     }
 
     public static void main(String[] args){
+        try{
+            Statement statement = connection.createStatement();
+            String addAtionType = "insert into action_types(name) values ('Waiting')";
+            statement.execute(addAtionType);
 
+
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Funciona");
     }
 
     /*public static Connection createMainConnection()
@@ -304,6 +314,11 @@ public class H2DAO {
                 case "ReadFrom":
                     id = 4;
                     break;
+                case  "SwitchTo":
+                    id = 5;
+                    break;
+                case  "Waiting":
+                    id = 6;
                 default:
                     break;
             }
@@ -384,9 +399,9 @@ public class H2DAO {
 
             while (validationsResultSet.next())
             {
-                Action currentAction = new Action(validationsResultSet.getString("actiontypeid"), validationsResultSet.getString("selectionbyid1"),
+                Action currentValidation = new Action(validationsResultSet.getString("actiontypeid"), validationsResultSet.getString("selectionbyid1"),
                         validationsResultSet.getString("value1"), validationsResultSet.getString("selectionbyid2"), validationsResultSet.getString("value2"));
-                validations.add(currentAction);
+                validations.add(currentValidation);
             }
             System.out.println("Llega");
             st.close();

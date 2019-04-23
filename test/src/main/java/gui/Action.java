@@ -140,34 +140,47 @@ public class Action {
                         textFieldNotGenerated = false;
                     });
                     break;
+                case "SwitchTo":
+                    textFieldNotGenerated = true;
+                    if (needToDelete)
+                    {
+                        setDefaultAction(gridParent,lastType);
+                    }
+                    needToDelete = true;
+                    lastType = "SwitchTo";
 
-                // WIP
-                /*case "Waiting":
+                    if (textFieldNotGenerated) {
+                        firstValueArgs = new TextField();
+                        gridParent.addRow(rowIndex, firstValueArgs);
+                    }
+                    textFieldNotGenerated = false;
+                    break;
+                case "Waiting":
+                    textFieldNotGenerated = true;
+                    if (needToDelete)
+                    {
+                        setDefaultAction(gridParent,lastType);
+                    }
+                    needToDelete = true;
+                    lastType = "Waiting";
                     firstValueArgs = new TextField();
                     gridParent.addRow(rowIndex, firstValueArgs);
 
-                    infoText.setText("Element");
-                    gridParent.addRow(rowIndex, infoText);
+                    value.setText("Element");
+                    gridParent.addRow(rowIndex,value);
 
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementByString()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
                         if (textFieldNotGenerated) {
-                            firstValueArgs = new TextField();
-                            gridParent.addRow(rowIndex, firstValueArgs);
-
-                            value.setText("Value");
-                            gridParent.addRow(rowIndex,value);
-
                             secondValueArgs = new TextField();
                             gridParent.addRow(rowIndex,secondValueArgs);
                         }
                         textFieldNotGenerated = false;
                     });
-
-                    break;*/
+                    break;
                 default:
                     break;
             }
@@ -176,7 +189,7 @@ public class Action {
 
    public Action(String actionType, String selectElementBy, String firstValueArgs, String selectPlaceBy, String secondValueArgs)
    {
-        if(actionType.matches("1|2|3|4")){
+        if(actionType.matches("1|2|3|4|5|6")){
             this.actionType.setValue(getActionTypeId(actionType));
         } else {
             this.actionType.setValue(actionType);
@@ -318,6 +331,51 @@ public class Action {
                     });
                     selectElementBy.setValue(selectElementByValue);
                     break;
+                case "SwitchTo":
+                    textFieldNotGenerated = true;
+                    if (needToDelete)
+                    {
+                        setDefaultAction(gridParent,lastType);
+                    }
+                    needToDelete = true;
+                    lastType = "SwitchTo";
+
+                    if (textFieldNotGenerated) {
+                        firstValueArgs = new TextField();
+                        firstValueArgs.setText(firstValueArgsValue);
+                        gridParent.addRow(rowIndex, firstValueArgs);
+                    }
+                    textFieldNotGenerated = false;
+                    break;
+                case "Waiting":
+                    textFieldNotGenerated = true;
+                    if (needToDelete)
+                    {
+                        setDefaultAction(gridParent,lastType);
+                    }
+                    needToDelete = true;
+                    lastType = "Waiting";
+                    firstValueArgs = new TextField();
+                    firstValueArgs.setText(firstValueArgsValue);
+                    gridParent.addRow(rowIndex, firstValueArgs);
+
+                    value.setText("Element");
+                    gridParent.addRow(rowIndex,value);
+
+                    selectElementBy = new ComboBox();
+                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    gridParent.addRow(rowIndex, selectElementBy);
+                    selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
+                    {
+                        if (textFieldNotGenerated) {
+                            secondValueArgs = new TextField();
+                            secondValueArgs.setText(secondValueArgsValue);
+                            gridParent.addRow(rowIndex,secondValueArgs);
+                        }
+                        textFieldNotGenerated = false;
+                    });
+                    selectElementBy.setValue(selectElementByValue);
+                    break;
                 default:
                     break;
             }
@@ -342,13 +400,21 @@ public class Action {
                     break;
                 case "WriteTo":
                     WebElement writeToElement = SeleniumDAO.selectElementBy(selectElementBy.getValue().toString(), firstValueArgs.getText(), driver);
-                    //writeToElement.sendKeys(secondValueArgs.getText());
                     SeleniumDAO.writeInTo(writeToElement,this.secondValueArgs.getText());
                     result = "Ok";
                     break;
                 case "ReadFrom":
                     WebElement readFromElement = SeleniumDAO.selectElementBy(selectElementBy.getValue().toString(),firstValueArgs.getText(),driver);
                     result = SeleniumDAO.readFrom(readFromElement);
+                    result = "Ok";
+                    break;
+                case "SwitchTo":
+                    SeleniumDAO.switchToFrame(this.firstValueArgs.getText(), driver);
+                    result = "Ok";
+                    break;
+                case "Waiting":
+                    SeleniumDAO.doWaiting(Integer.parseInt(this.firstValueArgs.getText()),this.selectElementBy.getValue().toString(), this.secondValueArgs.getText() ,driver);
+                    result = "Ok";
                     break;
                 default:
                     break;
@@ -372,7 +438,11 @@ public class Action {
                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs);
                break;
            case "WriteTo":
+           case "Waiting":
                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,secondValueArgs,value);
+               break;
+           case "SwitchTo":
+               gridParent.getChildren().removeAll(firstValueArgs);
                break;
            case "default":
                break;
@@ -395,6 +465,11 @@ public class Action {
             case "4":
                 type = "ReadFrom";
                 break;
+            case "5":
+                type = "SwitchTo";
+                break;
+            case "6":
+                type = "Waiting";
             default:
                 break;
         }

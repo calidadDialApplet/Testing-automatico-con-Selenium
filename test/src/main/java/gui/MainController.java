@@ -101,6 +101,7 @@ public class MainController implements Initializable {
                 ColumnConstraintsBuilder.create().percentWidth(100/5.0).build(),
                 ColumnConstraintsBuilder.create().percentWidth(100/5.0).build()
         );
+         /*
         gridPaneTrialList.getRowConstraints().setAll(
                  RowConstraintsBuilder.create().percentHeight(100/3.0).build(),
                  RowConstraintsBuilder.create().percentHeight(100/3.0).build(),
@@ -109,7 +110,7 @@ public class MainController implements Initializable {
 
         );
 
-       /* RowConstraints row = new RowConstraints();
+        RowConstraints row = new RowConstraints();
         row.setVgrow(Priority.NEVER);
         row.setPercentHeight(100/80.0);
         for (int i = 0; i<50; i++){
@@ -123,17 +124,14 @@ public class MainController implements Initializable {
             gridPaneTrialList.getColumnConstraints().add(col);
         }
         */
+
         /*
         ObservableList<ColumnConstraints> cols = gridPaneTrialList.getColumnConstraints();
         for (ColumnConstraints col : cols){
-            col.setPercentWidth(100/5.0);
+            col.setPercentWidth(100/cols.size());
         }
+        */
 
-        ObservableList<RowConstraints> rows = gridPaneTrialList.getRowConstraints();
-        for (RowConstraints row : rows){
-            row.setPercentHeight(100/3.0);
-        }
-         */
 
 
         //tabPaneParent.setMinSize(1100,500);
@@ -185,6 +183,11 @@ public class MainController implements Initializable {
             Action newAction = new Action(gridPaneValidationList, validationRowIndex);
             validationList.add(newAction);
             validationRowIndex++;
+        }
+
+        ObservableList<RowConstraints> rows = gridPaneTrialList.getRowConstraints();
+        for (RowConstraints row : rows){
+            row.setPercentHeight(gridPaneTrialList.getHgap()/rows.size());
         }
 
 
@@ -296,8 +299,8 @@ public class MainController implements Initializable {
            }
        }
        if (tabValidation.isSelected()){
-           for (int i = 0; i < validationList.size(); i++) {
-               Action currentValidation = validationList.get(i);
+           for (int i = 0; i < actionList.size(); i++) {
+               Action currentValidation = actionList.get(i);
                grid.add(new Label("Validation " + i + ":"), 0, i);
                grid.add(new Label(" " + currentValidation.executeAction(driver)), 1, i);
            }
