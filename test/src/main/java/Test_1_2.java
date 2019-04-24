@@ -14,7 +14,7 @@ public class Test_1_2 {
     public static void main(String[] args) {
 
         // Go to http://pruebas7.dialcata.com/dialapplet-web/
-        WebDriver driver = SeleniumDAO.initializeDriver();
+        WebDriver driver = SeleniumDAO.initializeFirefoxDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
 
         Main.loginDialappletWeb("admin", "admin", driver);

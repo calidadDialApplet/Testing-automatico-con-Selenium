@@ -1,0 +1,28 @@
+2019-04-08 09:16:09 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabla "TRIALS" no encontrada
+Table "TRIALS" not found; SQL statement:
+insert into trials values(1, dialtest) [42102-199]
+2019-04-15 15:24:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabla "TRIALS" no encontrada
+Table "TRIALS" not found; SQL statement:
+select * from trials [42102-199]
+2019-04-15 15:38:28 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabla "TRIALS" no encontrada
+Table "TRIALS" not found; SQL statement:
+select * from trials [42102-199]
+2019-04-20 14:30:10 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabla "ACTION_TYPES" no encontrada
+Table "ACTION_TYPES" not found; SQL statement:
+drop table action_types [42102-199]
+2019-04-20 14:30:10 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabla "TRIALS" no encontrada
+Table "TRIALS" not found; SQL statement:
+select * from trials [42102-199]
+2019-04-20 14:30:45 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabla "ACTION_TYPES" no encontrada
+Table "ACTION_TYPES" not found; SQL statement:
+drop table action_types [42102-199]
+2019-04-20 14:30:45 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabla "TRIALS" no encontrada
+Table "TRIALS" not found; SQL statement:
+select * from trials [42102-199]

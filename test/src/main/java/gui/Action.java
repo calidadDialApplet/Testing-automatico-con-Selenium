@@ -1,7 +1,6 @@
 package gui;
 
 import javafx.collections.FXCollections;
-import javafx.geometry.Insets;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -9,9 +8,10 @@ import javafx.scene.layout.GridPane;
 import main.SeleniumDAO;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import persistence.H2DAO;
 
-
-
+// TODO: Refactor this as ActionController, use it from MainController
+//       Add Action, Trial, etc DataModels and Controllers (https://stackoverflow.com/questions/32342864/applying-mvc-with-javafx)
 public class Action {
 
    private GridPane gridParent;
@@ -36,26 +36,22 @@ public class Action {
         actionType = new ComboBox<>();
         actionType.setMinWidth(100);
 
-        actionType.setItems(FXCollections.observableArrayList(gui.H2DAO.getTypeAction()));
+        actionType.setItems(FXCollections.observableArrayList(H2DAO.getTypeAction()));
         gridParent.addRow(rowIndex, actionType);
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
             switch (actionType.getValue().toString()) {
                 case "Click":
-                    textFieldNotGenerated = true;
-                    if(needToDelete) {
-                        setDefaultAction(gridParent,lastType);
-                    }
-                    needToDelete = true;
+
+                    initialiceCheckBox(gridParent);
                     lastType = "Click";
                     selectElementBy = new ComboBox();
                     selectElementBy.setMinWidth(100);
 
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
-
                         if (textFieldNotGenerated) {
                             firstValueArgs = new TextField();
                             gridParent.addRow(rowIndex, firstValueArgs);
@@ -64,15 +60,11 @@ public class Action {
                     });
                     break;
                 case "DragAndDrop":
-                    textFieldNotGenerated = true;
                     placeNotGenerated = true;
-                    if(needToDelete) {
-                        setDefaultAction(gridParent,lastType);
-                    }
-                    needToDelete = true;
+                    initialiceCheckBox(gridParent);
                     lastType = "DragAndDrop";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -80,8 +72,7 @@ public class Action {
                         if (placeNotGenerated) {
                             firstValueArgs = new TextField();
                             gridParent.addRow(rowIndex, firstValueArgs);
-                            selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
-                            //selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementByString()));
+                            selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                             gridParent.addRow(rowIndex, selectPlaceBy);
                             placeNotGenerated = false;
                             selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
@@ -96,15 +87,10 @@ public class Action {
                     });
                     break;
                 case "WriteTo":
-                    textFieldNotGenerated = true;
-                    if(needToDelete) {
-                        setDefaultAction(gridParent,lastType);
-
-                    }
-                    needToDelete = true;
+                    initialiceCheckBox(gridParent);
                     lastType = "WriteTo";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -122,14 +108,10 @@ public class Action {
                     });
                     break;
                 case "ReadFrom":
-                    textFieldNotGenerated = true;
-                    if(needToDelete) {
-                        setDefaultAction(gridParent,lastType);
-                    }
-                    needToDelete = true;
+                    initialiceCheckBox(gridParent);
                     lastType = "ReadFrom";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -141,12 +123,7 @@ public class Action {
                     });
                     break;
                 case "SwitchTo":
-                    textFieldNotGenerated = true;
-                    if (needToDelete)
-                    {
-                        setDefaultAction(gridParent,lastType);
-                    }
-                    needToDelete = true;
+                    initialiceCheckBox(gridParent);
                     lastType = "SwitchTo";
 
                     if (textFieldNotGenerated) {
@@ -156,12 +133,7 @@ public class Action {
                     textFieldNotGenerated = false;
                     break;
                 case "Waiting":
-                    textFieldNotGenerated = true;
-                    if (needToDelete)
-                    {
-                        setDefaultAction(gridParent,lastType);
-                    }
-                    needToDelete = true;
+                    initialiceCheckBox(gridParent);
                     lastType = "Waiting";
                     firstValueArgs = new TextField();
                     gridParent.addRow(rowIndex, firstValueArgs);
@@ -170,7 +142,7 @@ public class Action {
                     gridParent.addRow(rowIndex,value);
 
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(persistence.H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -187,7 +159,16 @@ public class Action {
         });
     }
 
-   public Action(String actionType, String selectElementBy, String firstValueArgs, String selectPlaceBy, String secondValueArgs)
+    private void initialiceCheckBox(GridPane gridParent) {
+        textFieldNotGenerated = true;
+        if (needToDelete) {
+            setDefaultAction(gridParent, lastType);
+        }
+        needToDelete = true;
+    }
+
+
+    public Action(String actionType, String selectElementBy, String firstValueArgs, String selectPlaceBy, String secondValueArgs)
    {
         if(actionType.matches("1|2|3|4|5|6")){
             this.actionType.setValue(getActionTypeId(actionType));
@@ -217,20 +198,16 @@ public class Action {
         this.rowIndex = rowIndex;
 
         actionType = new ComboBox<>();
-        actionType.setItems(FXCollections.observableArrayList(gui.H2DAO.getTypeAction()));
+        actionType.setItems(FXCollections.observableArrayList(H2DAO.getTypeAction()));
         gridParent.addRow(rowIndex, actionType);
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
             switch (actionType.getValue().toString()) {
                 case "Click":
-                    textFieldNotGenerated = true;
-                    if(needToDelete) {
-                        setDefaultAction(gridParent,lastType);
-                    }
-                    needToDelete = true;
+                    initialiceCheckBox(gridParent);
                     lastType = "Click";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -253,7 +230,7 @@ public class Action {
                     needToDelete = true;
                     lastType = "DragAndDrop";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -262,7 +239,7 @@ public class Action {
                             firstValueArgs = new TextField();
                             firstValueArgs.setText(firstValueArgsValue);
                             gridParent.addRow(rowIndex, firstValueArgs);
-                            selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                            selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                             //selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementByString()));
 
                             gridParent.addRow(rowIndex, selectPlaceBy);
@@ -282,15 +259,10 @@ public class Action {
                     selectElementBy.setValue(selectElementByValue);
                     break;
                 case "WriteTo":
-                    textFieldNotGenerated = true;
-                    if(needToDelete) {
-                        setDefaultAction(gridParent,lastType);
-
-                    }
-                    needToDelete = true;
+                    initialiceCheckBox(gridParent);
                     lastType = "WriteTo";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -311,14 +283,10 @@ public class Action {
                     selectElementBy.setValue(selectElementByValue);
                     break;
                 case "ReadFrom":
-                    textFieldNotGenerated = true;
-                    if(needToDelete) {
-                        setDefaultAction(gridParent,lastType);
-                    }
-                    needToDelete = true;
+                    initialiceCheckBox(gridParent);
                     lastType = "ReadFrom";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -332,12 +300,7 @@ public class Action {
                     selectElementBy.setValue(selectElementByValue);
                     break;
                 case "SwitchTo":
-                    textFieldNotGenerated = true;
-                    if (needToDelete)
-                    {
-                        setDefaultAction(gridParent,lastType);
-                    }
-                    needToDelete = true;
+                    initialiceCheckBox(gridParent);
                     lastType = "SwitchTo";
 
                     if (textFieldNotGenerated) {
@@ -348,12 +311,7 @@ public class Action {
                     textFieldNotGenerated = false;
                     break;
                 case "Waiting":
-                    textFieldNotGenerated = true;
-                    if (needToDelete)
-                    {
-                        setDefaultAction(gridParent,lastType);
-                    }
-                    needToDelete = true;
+                    initialiceCheckBox(gridParent);
                     lastType = "Waiting";
                     firstValueArgs = new TextField();
                     firstValueArgs.setText(firstValueArgsValue);
@@ -363,7 +321,7 @@ public class Action {
                     gridParent.addRow(rowIndex,value);
 
                     selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(gui.H2DAO.getSelectElementBy()));
+                    selectElementBy.setItems(FXCollections.observableArrayList(persistence.H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
@@ -384,8 +342,11 @@ public class Action {
     }
 
    public String executeAction(WebDriver driver){
+
         String result = "Fail";
-        try {
+
+        try
+        {
             switch (this.actionType.getValue().toString()) {
                 case "Click":
                     WebElement clickElement = SeleniumDAO.selectElementBy(this.selectElementBy.getValue().toString(), this.firstValueArgs.getText(), driver);
@@ -400,6 +361,7 @@ public class Action {
                     break;
                 case "WriteTo":
                     WebElement writeToElement = SeleniumDAO.selectElementBy(selectElementBy.getValue().toString(), firstValueArgs.getText(), driver);
+                    //writeToElement.sendKeys(secondValueArgs.getText());
                     SeleniumDAO.writeInTo(writeToElement,this.secondValueArgs.getText());
                     result = "Ok";
                     break;
@@ -413,14 +375,16 @@ public class Action {
                     result = "Ok";
                     break;
                 case "Waiting":
-                    SeleniumDAO.doWaiting(Integer.parseInt(this.firstValueArgs.getText()),this.selectElementBy.getValue().toString(), this.secondValueArgs.getText() ,driver);
+                    SeleniumDAO.waitForElement(Integer.parseInt(this.firstValueArgs.getText()),this.selectElementBy.getValue().toString(), this.secondValueArgs.getText() ,driver);
                     result = "Ok";
                     break;
                 default:
                     break;
             }
             return result;
-        }catch (Exception e){
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             return result;
         }

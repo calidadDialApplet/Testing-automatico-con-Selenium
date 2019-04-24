@@ -12,7 +12,7 @@ import org.openqa.selenium.WebElement;
 public class Test_1_4 {
         public static void main(String[] args) {
 
-            WebDriver driver = SeleniumDAO.initializeDriver();
+            WebDriver driver = SeleniumDAO.initializeFirefoxDriver();
             driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
 
             Main.loginDialappletWeb("admin","admin",driver);
