@@ -13,6 +13,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.SeleniumDAO;
+import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import persistence.H2DAO;
 
@@ -292,10 +293,10 @@ public class MainController implements Initializable {
     //  with protected methods, working out the logic part out of this
    public void executeTest(List<Action> actionList)
    {
-       WebDriver driver = SeleniumDAO.initializeFirefoxDriver();
+       WebDriver driver = getWebDriver();
        // TODO: Variable
-       driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
-
+       //driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
+       driver.get(H2DAO.getWeb());
        TitledPane trial = new TitledPane();
 
        // TODO: This checkbox has no value. You create UI object to store values.
@@ -331,7 +332,29 @@ public class MainController implements Initializable {
        accordionComprobationList.getPanes().add(trial);
    }
 
-   // TODO: Take settings into account to select the way to work with browsers
+    @Nullable
+    private WebDriver getWebDriver() {
+        WebDriver driver = null;
+        if (H2DAO.getBrowser().equals("Firefox") && H2DAO.isHeadless().equals("false"))
+        {
+            driver = SeleniumDAO.initializeFirefoxDriver();
+        }
+        if (H2DAO.getBrowser().equals("Chrome") && H2DAO.isHeadless().equals("false"))
+        {
+            driver = SeleniumDAO.initializeChromeDriver();
+        }
+        if (H2DAO.getBrowser().equals("Firefox") && H2DAO.isHeadless().equals("true"))
+        {
+            driver = SeleniumDAO.initializeFirefoxHeadlessDriver();
+        }
+        if (H2DAO.getBrowser().equals("Chrome") && H2DAO.isHeadless().equals("true"))
+        {
+            driver = SeleniumDAO.initializeChromeDriver();
+        }
+        return driver;
+    }
+
+    // TODO: Take settings into account to select the way to work with browsers
    public void executeTestHeadless(){
        WebDriver driver = SeleniumDAO.initializeFirefoxHeadlessDriver();
        driver.get("http://pruebas7.dialcata.com/dialapplet-web/");

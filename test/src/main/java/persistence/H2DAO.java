@@ -11,9 +11,10 @@ import java.util.List;
 public class H2DAO {
 
     // TODO: Once declared, this becomes constant, so should be enums, neither ArrayList<> nor String[]
-     enum matchTableName {TRIALS,TRIAL_ACTIONS,ACTION_TYPES,SELECTION_BY} ;
-     static ArrayList<String> matchesTableName = new ArrayList<>(Arrays.asList("TRIALS","TRIAL_ACTIONS","ACTION_TYPES","SELECTION_BY"));
-     static ArrayList<String> matchesColName = new ArrayList<>(Arrays.asList("ID","NAME","ID","NAME","ID","NAME","ID","TRIALID","ACTIONTYPEID","SELECTIONBYID1","VALUE1","SELECTIONBYID2","VALUE2","VALIDATION"));
+     //enum matchTableName {TRIALS,TRIAL_ACTIONS,ACTION_TYPES,SELECTION_BY} ;
+     static ArrayList<String> matchesTableName = new ArrayList<>(Arrays.asList("TRIALS","TRIAL_ACTIONS","SETTINGS","ACTION_TYPES","SELECTION_BY"));
+     static ArrayList<String> matchesColName = new ArrayList<>(Arrays.asList("ID","NAME","ID","NAME","ID","NAME","ID","TRIALID","ACTIONTYPEID","SELECTIONBYID1","VALUE1",
+                                                                            "SELECTIONBYID2","VALUE2","VALIDATION"));
      static ArrayList<String> matchesTypeName = new ArrayList<>(Arrays.asList("INTEGER","TEXT","INTEGER","TEXT","INTEGER","TEXT","INTEGER","INTEGER","INTEGER","INTEGER","TEXT","INTEGER","TEXT","INTEGER"));
      static String validationTableNameQuery = "select table_name from information_schema.tables where table_type = 'TABLE'";
 
@@ -49,7 +50,7 @@ public class H2DAO {
                     "  constraint pk_trial_action primary key(id)" +
                     ")",
             "create table selection_by(" +
-            "  id integer auto_increment," +
+                    "  id integer auto_increment," +
                     "  name text," +
                     "  constraint pk_selection_by primary key(id)" +
                     ")",
@@ -69,6 +70,7 @@ public class H2DAO {
                     "  validation integer," +
                     "  constraint pk_trial_action_table primary key(id,trialid)"+
                     ")",
+            "create table settings(settingField text, value text)",
             "alter table trial_actions add constraint fk_trialid foreign key(trialid) references trials(id)",
             "alter table trial_actions add constraint fk_actiontypeid foreign key(trialid) references action_types(id)",
             "alter table trial_actions add constraint fk_selectionById1 foreign key(selectionbyid1) references selection_by(id)",
@@ -107,7 +109,15 @@ public class H2DAO {
     }
 
     public static void main(String[] args){
+        try {
+            Statement st = connection.createStatement();
+            String create = "";
+            //st.execute(create);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
+        System.out.println("FUNCIONA");
     }
 
 
@@ -468,6 +478,7 @@ public class H2DAO {
         st.execute(sql);
         ResultSet resultOfQuery = st.getResultSet();
         List<String> tablesName = fillData(resultOfQuery, 1);
+        System.out.println(tablesName);
         return tablesName.equals(check);
     }
 
@@ -476,7 +487,7 @@ public class H2DAO {
         try {
 
             if (!executeQueryAndCheck(validationTableNameQuery, matchesTableName)){
-                Alert alert = new Alert(Alert.AlertType.WARNING);
+                Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Los nombres de las tablas no coinciden");
                 alert.setContentText("Contacta con tu administrador :)");
@@ -512,20 +523,94 @@ public class H2DAO {
         return true;
     }
 
+    public static void saveSettings(settingsObject settingsObject)
+    {
+        try {
+            Statement st = connection.createStatement();
+            //String saveWeb = "insert into settings (settingField, value) values ('web', '"+settingsObject.getWeb()+"')";
+            //String saveBrowser = "insert into settings (settingField, value) values ('browser', '"+settingsObject.getBrowser()+"')";
+            //String saveHeadless = "insert into settings (settingField, value) values ('headless', '"+settingsObject.isHeadless()+"')";
+            //st.execute(saveWeb);
+            //st.execute(saveBrowser);
+            //st.execute(saveHeadless);
+            String updateWeb = "update settings set value = '"+settingsObject.getWeb()+"' where settingField = 'web'";
+            String updateBrowser = "update settings set value = '"+settingsObject.getBrowser()+"' where settingField = 'browser'";
+            String updateHeadless = "update settings set value = '"+settingsObject.isHeadless()+"' where settingField = 'headless'";
+            st.execute(updateWeb);
+            st.execute(updateBrowser);
+            st.execute(updateHeadless);
+            System.out.println("Configuración guardada");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static String getWeb()
+    {
+       String web = "";
+        try {
+            Statement st = connection.createStatement();
+            String obtainWeb = "select value from settings where settingField = 'web'";
+            st.execute(obtainWeb);
+            ResultSet resultSet = st.getResultSet();
+                while (resultSet.next())
+                {
+                    web = resultSet.getString("value");
+                }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return web;
+    }
+
+    public static String getBrowser()
+    {
+        String browser = "";
+        try {
+            Statement st = connection.createStatement();
+            String obtainWeb = "select value from settings where settingField = 'browser'";
+            st.execute(obtainWeb);
+            ResultSet resultSet = st.getResultSet();
+            while (resultSet.next())
+            {
+                browser = resultSet.getString("value");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return browser;
+    }
+
+    public static String isHeadless()
+    {
+        String headless = "";
+        try {
+            Statement st = connection.createStatement();
+            String obtainWeb = "select value from settings where settingField = 'headless'";
+            st.execute(obtainWeb);
+            ResultSet resultSet = st.getResultSet();
+            while (resultSet.next())
+            {
+                headless = resultSet.getString("value");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return headless;
+    }
+
     public static void redoTables()
     {
         try
         {
             Statement st = connection.createStatement();
-            //for(String query : dropTables)
-            //{
-                st.execute(dropTablesQuery);
-            //}
+            st.execute(dropTablesQuery);
             for (String query : createTables)
             {
                 st.execute(query);    
             }
-        
+
         }catch (SQLException e) {
             e.printStackTrace();
         }
