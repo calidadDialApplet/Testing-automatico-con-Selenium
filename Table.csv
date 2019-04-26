@@ -1,0 +1,14 @@
+Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue
+WriteTo,id,adminusername,xpath,admin
+WriteTo,id,adminpassword,xpath,admin
+Click,id,login,xpath,admin
+Click,id,ADMIN,xpath,admin
+Click,xpath,/html/body/div[2]/div[1]/h3[2],xpath,admin
+Click,xpath,/html/body/div[2]/div[1]/div[2]/div/div[2]/p/a,xpath,admin
+WriteTo,id,new_groupname,xpath,TestSelenium1
+Click,cssSelector,img[src="imagenes/add2.png"],xpath,TestSelenium1
+Click,xpath,//*[@id="users-18"],xpath,TestSelenium1
+Waiting,id,10,xpath,fancybox-frame
+SwitchTo,id,fancybox-frame,xpath,fancybox-frame
+DragAndDrop,xpath,/html/body/form/div/div[1]/div/div[1]/div/ul/li[1],xpath,//*[@id="rightList"]
+Click,xpath,/html/body/form/div/p[3]/input,xpath,//*[@id="rightList"]

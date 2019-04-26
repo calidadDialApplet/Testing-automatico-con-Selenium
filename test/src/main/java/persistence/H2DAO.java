@@ -370,7 +370,7 @@ public class H2DAO {
                 id = 5;
                 break;
             default:
-                id = 0;
+                id = 1;
                 break;
         }
         return id;

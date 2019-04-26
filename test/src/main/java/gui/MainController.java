@@ -17,12 +17,9 @@ import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import persistence.H2DAO;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 public class MainController implements Initializable {
@@ -110,12 +107,20 @@ public class MainController implements Initializable {
         //            gridPaneTrialList.getColumnConstraints().add(colConstraint);
         //            }
 
-        int cols = getColCount(gridPaneTrialList);
-        for (int i = 0; i < cols; i++)
+        int trialsCols = getColCount(gridPaneTrialList);
+        for (int i = 0; i < trialsCols; i++)
         {
             ColumnConstraints columnConstraint = new ColumnConstraints();
-            columnConstraint.setPercentWidth(100.0/cols);
+            columnConstraint.setPercentWidth(100.0/trialsCols);
             gridPaneTrialList.getColumnConstraints().add(columnConstraint);
+        }
+
+        int validationCols = getColCount(gridPaneValidationList);
+        for (int i = 0; i < validationCols; i++)
+        {
+            ColumnConstraints columnConstraint = new ColumnConstraints();
+            columnConstraint.setPercentWidth(100.0/validationCols);
+            gridPaneValidationList.getColumnConstraints().add(columnConstraint);
         }
 
         // TODO: This is plain wrong. You can't set row constraints
@@ -530,6 +535,7 @@ public class MainController implements Initializable {
                 procesedValidationList.add(currentAction);
             }
             iterator++;
+
         }
     }
 
@@ -569,10 +575,10 @@ public class MainController implements Initializable {
         {
             String trialName = trial.getText();
             ArrayList<Action> trialActions = H2DAO.getValidations(trialName);
-            for(Action validationOfTrial : trialActions)
+            for(Action validation : trialActions)
             {
-                Action action = new Action(gridPaneValidationList, validationRowIndex,validationOfTrial.getActionTypeString(),validationOfTrial.getSelectElementByString(),
-                        validationOfTrial.getFirstValueArgsString(),validationOfTrial.getSelectPlaceByString(),validationOfTrial.getSecondValueArgsString());
+                Action action = new Action(gridPaneValidationList, validationRowIndex,validation.getActionTypeString(),validation.getSelectElementByString(),
+                        validation.getFirstValueArgsString(),validation.getSelectPlaceByString(),validation.getSecondValueArgsString());
                 validationList.add(action);
                 validationRowIndex++;
             }
@@ -585,8 +591,8 @@ public class MainController implements Initializable {
         {
             if(trial.isSelected())
             {
-              ArrayList<Action> actions = H2DAO.getActions(trial.getText());
-              executeTest(actions);
+                ArrayList<Action> actions = H2DAO.getActions(trial.getText());
+                executeTest(actions);
             }
         }
     }
@@ -635,5 +641,83 @@ public class MainController implements Initializable {
             }
         }
         return numCols;
+    }
+
+    private void saveToCSV(ArrayList<Action> actions,ArrayList<Action> validations,String trialName) throws IOException {
+            Writer writer = null;
+            try {
+                File file = new File("/home/david/git_docs/Table.csv");
+                writer = new BufferedWriter(new FileWriter(file));
+
+               //writer.write(trialName);
+               //writer.write(System.lineSeparator());
+                // writer.write("Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue");
+
+                for (Action action : actions)
+                {
+                    writer.write(System.lineSeparator());
+                    writer.write("" + action.getActionTypeString() + ","
+                            + action.getSelectElementByString() + ","
+                            + action.getFirstValueArgsString() + ","
+                            + action.getSelectPlaceByString() + ","
+                            + action.getSecondValueArgsString());
+                }
+                for (Action validation : validations)
+                {
+                    writer.write(System.lineSeparator());
+                    writer.write("" + validation.getActionTypeString() + ","
+                            + validation.getSelectElementByString() + ","
+                            + validation.getFirstValueArgsString() + ","
+                            + validation.getSelectPlaceByString() + ","
+                            + validation.getSecondValueArgsString());
+                }
+                System.out.println("FUNCIONA");
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                writer.flush();
+                writer.close();
+            }
+    }
+
+    public void exportTest()
+    {
+        for(CheckBox trial : testList.getItems())
+        {
+            if(trial.isSelected())
+            {
+                ArrayList<Action> actions = H2DAO.getActions(trial.getText());
+                ArrayList<Action> validations = H2DAO.getValidations(trial.getText());
+                try {
+                    saveToCSV(actions,validations,trial.getText());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void importTest()
+    {
+        String fileName = "/home/david/git_docs/Table.csv"; // Make dialog to ask file
+        File file = new File(fileName);
+        try {
+            Scanner inputStream = new Scanner(file);
+            while (inputStream.hasNext())
+            {
+                String data = inputStream.next();
+                //String action = data.substring()
+                String[] values = data.split(",");
+                //System.out.println(data);
+                Action act = new Action(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
+                actionList.add(act);
+                actionsRowIndex++;
+            }
+            inputStream.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
