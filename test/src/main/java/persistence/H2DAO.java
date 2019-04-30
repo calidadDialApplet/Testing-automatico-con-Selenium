@@ -83,7 +83,11 @@ public class H2DAO {
             "insert into selection_by(name) values ('xpath')",
             "insert into selection_by(name) values ('cssSelector')",
             "insert into selection_by(name) values ('className')",
-            "insert into selection_by(name) values ('name')"
+            "insert into selection_by(name) values ('name')",
+            "insert into settings (settingField, value) values ('web', 'www.google.es')",
+            "insert into settings (settingField, value) values ('browser', 'Firefox')",
+            "insert into settings (settingField, value) values ('headless', 'true')",
+            "insert into settings (settingField, value) values ('darktheme', 'true')"
     };
 
     // TODO: This could be a unique String
@@ -109,15 +113,24 @@ public class H2DAO {
     }
 
     public static void main(String[] args){
+       /*
         try {
             Statement st = connection.createStatement();
-            String create = "";
-            //st.execute(create);
+            String getTrialsStatement = "select * from settings";
+            st.execute(getTrialsStatement);
+
+            ResultSet resultSet =  st.getResultSet();
+
+            while (resultSet.next())
+            {
+                System.out.println(resultSet.getString("settingField"));
+            }
+            System.out.println("FUNCIONA");
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        */
 
-        System.out.println("FUNCIONA");
     }
 
 
@@ -137,45 +150,32 @@ public class H2DAO {
 
     public static ArrayList<String> getTypeAction()
     {
-        ArrayList<String> typeActions = new ArrayList<>();
-        try{
-                Statement st = connection.createStatement();
-
-                String getTrialsStatement = "select * from action_types";
-                st.execute(getTrialsStatement);
-
-                ResultSet resultSet =  st.getResultSet();
-
-            while (resultSet.next())
-            {
-                typeActions.add(resultSet.getString("name"));
-            }
-                st.close();
-        }catch ( SQLException e) {
-            e.printStackTrace();
-        }
-        return typeActions;
+        return getComboBoxElements("action_types");
     }
 
-    public static ArrayList<String> getSelectElementBy(){
-        ArrayList<String> selectElementsBy = new ArrayList<>();
+    public static ArrayList<String> getSelectElementBy()
+    {
+       return getComboBoxElements("selection_by");
+    }
+
+    public static ArrayList<String> getComboBoxElements(String comboBoxName)
+    {
+        ArrayList<String> comboItems = new ArrayList<>();
         try{
             Statement st = connection.createStatement();
 
-            String getTrialsStatement = "select * from selection_by";
-            st.execute(getTrialsStatement);
-
+            String Statement = "select * from "+comboBoxName+"";
+            st.execute(Statement);
             ResultSet resultSet =  st.getResultSet();
-
             while (resultSet.next())
             {
-                selectElementsBy.add(resultSet.getString("name"));
+                comboItems.add(resultSet.getString("name"));
             }
             st.close();
         }catch (SQLException e) {
             e.printStackTrace();
         }
-        return selectElementsBy;
+        return comboItems;
     }
 
     // TODO: How have "id"'s become Strings instead of int ??
@@ -209,7 +209,7 @@ public class H2DAO {
                         " values" +
                         "('"+id+"','"+actionTypeId+"','"+firstValueArgs+"','"+value1+"','"+secondValueArgs+"','"+value2+"','"+validation+"')";
                 st.execute(statement);
-                System.out.println("Pasa2");
+                //System.out.println("Pasa2");
             }
             String statement2 = "select * from trial_actions";
             st.execute(statement2);
@@ -225,67 +225,35 @@ public class H2DAO {
     // TODO: How have "id"'s become Strings instead of int ??
     public static void deleteTrialActions(String trialID)
     {
-        try{
-            Statement st = connection.createStatement();
-
-            String deleteActions = "delete from trial_actions where trialid='"+trialID+"' and validation = '0'";
-
-            st.execute(deleteActions);
+            executeQuery("delete from trial_actions where trialid='"+trialID+"' and validation = '0'");
             System.out.println("Acciones eliminadas");
-
-            st.close();
-        }  catch (SQLException e) {
-        e.printStackTrace();
-         }
     }
 
     // TODO: How have "id"'s become Strings instead of int ??
     public static void deleteTrialValidations(String trialID)
     {
-        try{
-            Statement st = connection.createStatement();
-
-            String deleteActions = "delete from trial_actions where trialid='"+trialID+"' and validation = '1'";
-
-            st.execute(deleteActions);
+            executeQuery("delete from trial_actions where trialid='"+trialID+"' and validation = '1'");
             System.out.println("Validaciones eliminadas");
-
-            st.close();
-        }  catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     // TODO: How have "id"'s become Strings instead of int ??
     public static void deleteTrial(String trialID)
     {
-        try{
-            Statement st = connection.createStatement();
-
-            String deleteTrial = "delete from trials where id='"+trialID+"'";
-
-            st.execute(deleteTrial);
+            executeQuery("delete from trials where id='"+trialID+"'");
             System.out.println("Trial Eliminado");
-
-            st.close();
-        }  catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     public static void createTrial(String name)
     {
+        executeQuery("insert into trials (name) values('"+name+"')");
+    }
+
+    public static void executeQuery(String query)
+    {
         try
         {
             Statement st = connection.createStatement();
-
-            String statement = "insert into trials (name) values('"+name+"')";
-            st.execute(statement);
-
-            String statement2 = "select * from trials";
-            st.execute(statement2);
-            System.out.println(st.getResultSet());
-
+            st.execute(query);
             st.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -342,6 +310,7 @@ public class H2DAO {
                     break;
                 case  "Waiting":
                     id = 6;
+                    break;
                 default:
                     id = 0;
                     break;
@@ -525,79 +494,57 @@ public class H2DAO {
 
     public static void saveSettings(settingsObject settingsObject)
     {
-        try {
-            Statement st = connection.createStatement();
             //String saveWeb = "insert into settings (settingField, value) values ('web', '"+settingsObject.getWeb()+"')";
             //String saveBrowser = "insert into settings (settingField, value) values ('browser', '"+settingsObject.getBrowser()+"')";
             //String saveHeadless = "insert into settings (settingField, value) values ('headless', '"+settingsObject.isHeadless()+"')";
             //st.execute(saveWeb);
             //st.execute(saveBrowser);
             //st.execute(saveHeadless);
-            String updateWeb = "update settings set value = '"+settingsObject.getWeb()+"' where settingField = 'web'";
-            String updateBrowser = "update settings set value = '"+settingsObject.getBrowser()+"' where settingField = 'browser'";
-            String updateHeadless = "update settings set value = '"+settingsObject.isHeadless()+"' where settingField = 'headless'";
-            st.execute(updateWeb);
-            st.execute(updateBrowser);
-            st.execute(updateHeadless);
-            System.out.println("Configuración guardada");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
+        executeQuery("update settings set value = '"+settingsObject.getWeb()+"' where settingField = 'web'");
+        executeQuery("update settings set value = '"+settingsObject.getBrowser()+"' where settingField = 'browser'");
+        executeQuery("update settings set value = '"+settingsObject.isHeadless()+"' where settingField = 'headless'");
+        executeQuery("update settings set value = '"+settingsObject.isDarktheme()+"' where settingField = 'darktheme'");
 
     }
 
     public static String getWeb()
     {
-       String web = "";
-        try {
-            Statement st = connection.createStatement();
-            String obtainWeb = "select value from settings where settingField = 'web'";
-            st.execute(obtainWeb);
-            ResultSet resultSet = st.getResultSet();
-                while (resultSet.next())
-                {
-                    web = resultSet.getString("value");
-                }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return web;
+       return getSettingValue("web");
     }
 
     public static String getBrowser()
     {
-        String browser = "";
-        try {
-            Statement st = connection.createStatement();
-            String obtainWeb = "select value from settings where settingField = 'browser'";
-            st.execute(obtainWeb);
-            ResultSet resultSet = st.getResultSet();
-            while (resultSet.next())
-            {
-                browser = resultSet.getString("value");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return browser;
+       return getSettingValue("browser");
     }
 
     public static String isHeadless()
     {
-        String headless = "";
+        return getSettingValue("headless");
+    }
+
+    public static String isDarkTheme()
+    {
+        return getSettingValue("darktheme");
+    }
+
+    // TODO: More generic, args: table and field
+    public static String getSettingValue(String settingField)
+    {
+        String result = "";
         try {
             Statement st = connection.createStatement();
-            String obtainWeb = "select value from settings where settingField = 'headless'";
-            st.execute(obtainWeb);
+            String obtainValue = "select value from settings where settingField = '"+settingField+"'";
+            st.execute(obtainValue);
             ResultSet resultSet = st.getResultSet();
             while (resultSet.next())
             {
-                headless = resultSet.getString("value");
+                result = resultSet.getString("value");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return headless;
+        return result;
     }
 
     public static void redoTables()

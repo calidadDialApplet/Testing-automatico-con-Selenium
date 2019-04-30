@@ -16,6 +16,8 @@ import org.openqa.selenium.support.ui.Select;
 
 public class Main extends Application {
 
+        private Scene scene;
+
         public static void main(String[] args) {
                 launch(args);
         }
@@ -26,7 +28,7 @@ public class Main extends Application {
                 Parent root = loader.load(getClass().getResource("/gui/Main.fxml"));
                 primaryStage.setTitle("WEB UI Tester");
                 MainController controller = loader.getController();
-                Scene scene = new Scene(root,800,480);
+                scene = new Scene(root,800,480);
                 // TODO: Settings
                 //scene.getStylesheets().add("/css/darcula.css");
                 primaryStage.setScene(scene);
@@ -35,6 +37,11 @@ public class Main extends Application {
                         event.consume();
                         controller.totalClose();
                 });
+        }
+
+        public void  setDarkTheme()
+        {
+                scene.getStylesheets().add("/css/darcula.css");
         }
 
         // TODO: Garbage clean

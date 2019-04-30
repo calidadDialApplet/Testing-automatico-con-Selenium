@@ -171,9 +171,21 @@ public class MainController implements Initializable {
             stage.setAlwaysOnTop(true);
             stage.setTitle("Settings");
             Scene scene = new Scene(root,350,250);
-            scene.getStylesheets().add("/css/darcula.css");
+            //scene.getStylesheets().add("/css/darcula.css");
             stage.setScene(scene);
             stage.showAndWait();
+
+            /*
+            class SceneFactory
+            {
+             static createSimpleScene(Parent root, int width, int height)
+             {
+                Scene scene = new Scene(root, width, height);
+                scene.getStylesheets().add("/css/darcula.css");
+                return scene;
+             }
+            }
+             */
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -479,19 +491,16 @@ public class MainController implements Initializable {
         int iterator = 0;
         int rowIndex = 0;
         GridPane gridPane = new GridPane();
-        List<Action> list = new ArrayList<>();
 
         if(table.equals("Actions")){
             rowIndex = actionsRowIndex;
             gridPane = gridPaneTrialList;
-            list = procesedActionList;
         }
 
         if(table.equals("Validations"))
         {
             rowIndex = validationRowIndex;
             gridPane = gridPaneValidationList;
-            list = procesedValidationList;
         }
 
 
@@ -528,6 +537,8 @@ public class MainController implements Initializable {
                 }
             }
             Action currentAction = new Action(comboBoxActionType,comboBoxSelectElementBy,textFieldFirstValueArgs,comboBoxSelectPlaceBy,textFieldSecondValueArgs);
+            resetFields();
+
             if (table.equals("Actions")) {
                 procesedActionList.add(currentAction);
             }
@@ -537,6 +548,14 @@ public class MainController implements Initializable {
             iterator++;
 
         }
+    }
+
+    private void resetFields() {
+        comboBoxActionType= "";
+        comboBoxSelectElementBy = "";
+        textFieldFirstValueArgs = "";
+        comboBoxSelectPlaceBy = "";
+        textFieldSecondValueArgs = "";
     }
 
     public void poblateTestList()
@@ -660,7 +679,8 @@ public class MainController implements Initializable {
                             + action.getSelectElementByString() + ","
                             + action.getFirstValueArgsString() + ","
                             + action.getSelectPlaceByString() + ","
-                            + action.getSecondValueArgsString());
+                            + action.getSecondValueArgsString() + ","
+                            + "A");
                 }
                 for (Action validation : validations)
                 {
@@ -669,7 +689,8 @@ public class MainController implements Initializable {
                             + validation.getSelectElementByString() + ","
                             + validation.getFirstValueArgsString() + ","
                             + validation.getSelectPlaceByString() + ","
-                            + validation.getSecondValueArgsString());
+                            + validation.getSecondValueArgsString() + ","
+                            + "V");
                 }
                 System.out.println("FUNCIONA");
 
@@ -700,6 +721,7 @@ public class MainController implements Initializable {
 
     public void importTest()
     {
+        deleteAllTabs();
         String fileName = "/home/david/git_docs/Table.csv"; // Make dialog to ask file
         File file = new File(fileName);
         try {
@@ -710,9 +732,19 @@ public class MainController implements Initializable {
                 //String action = data.substring()
                 String[] values = data.split(",");
                 //System.out.println(data);
-                Action act = new Action(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
-                actionList.add(act);
-                actionsRowIndex++;
+                if (values[5].equals("A"))
+                {
+                    Action act = new Action(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
+                    actionList.add(act);
+                    actionsRowIndex++;
+                }
+                if (values[5].equals("V"))
+                {
+                    Action act = new Action(gridPaneValidationList, validationRowIndex, values[0], values[1], values[2], values[3], values[4]);
+                    validationList.add(act);
+                    validationRowIndex++;
+                }
+
             }
             inputStream.close();
 

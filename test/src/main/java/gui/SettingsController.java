@@ -24,6 +24,9 @@ public class SettingsController implements Initializable {
     @FXML
     private CheckBox checkBoxHeadLess;
 
+    @FXML
+    private CheckBox checkBoxDarkTheme;
+
     private ArrayList<String> browsers = new ArrayList<>(Arrays.asList("Firefox","Chrome"));
 
     @Override
@@ -49,10 +52,17 @@ public class SettingsController implements Initializable {
             checkBoxHeadLess.setSelected(false);
         }
 
+        if (H2DAO.isDarkTheme().equals("true")){
+            checkBoxDarkTheme.setSelected(true);
+        } else{
+            checkBoxDarkTheme.setSelected(false);
+        }
+
+        //checkBoxDarkTheme.selectedProperty().addListener();
     }
 
     public void closeSettings(){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        /*Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("¿Nos dejas?");
         alert.setHeaderText("Se perderán todos los cambios no guardados");
         Optional<ButtonType> result = alert.showAndWait();
@@ -65,12 +75,11 @@ public class SettingsController implements Initializable {
         else
         {
             System.out.println("Muerte esquivada una vez más");
-        }
+        }*/
     }
 
     public void saveSettings(){
-        settingsObject  settings = new settingsObject(textFieldWeb.getText(), checkBoxHeadLess.isSelected(), choiceBoxBrowser.getValue().toString());
+        settingsObject  settings = new settingsObject(textFieldWeb.getText(), checkBoxHeadLess.isSelected(), choiceBoxBrowser.getValue().toString(), checkBoxDarkTheme.isSelected());
         H2DAO.saveSettings(settings);
-        System.out.println("saveSettings finalizado");
     }
 }
