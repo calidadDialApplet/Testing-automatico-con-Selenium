@@ -10,13 +10,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+import persistence.H2DAO;
 
 
 // Main entrypoint
 
 public class Main extends Application {
 
-        private Scene scene;
+        private static Scene scene;
 
         public static void main(String[] args) {
                 launch(args);
@@ -29,8 +30,12 @@ public class Main extends Application {
                 primaryStage.setTitle("WEB UI Tester");
                 MainController controller = loader.getController();
                 scene = new Scene(root,800,480);
-                // TODO: Settings
-                //scene.getStylesheets().add("/css/darcula.css");
+                if (H2DAO.isDarkTheme())
+                {
+                        setTheme("darcula");
+                }else {
+                        setTheme("modena");
+                }
                 primaryStage.setScene(scene);
                 primaryStage.show();
                 primaryStage.setOnCloseRequest( event -> {
@@ -41,9 +46,19 @@ public class Main extends Application {
                 });
         }
 
-        public void  setDarkTheme()
+        public static void setTheme(String theme)
         {
-                scene.getStylesheets().add("/css/darcula.css");
+
+                scene.getStylesheets().clear();
+                if (theme.equals("darcula"))
+                {
+                        scene.getStylesheets().add("/css/darcula.css");
+                }
+                if (theme.equals("modena"))
+                {
+                        //scene.getStylesheets().add("/css/modena.css");
+                        Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
+                }
         }
 
         // TODO: Garbage clean

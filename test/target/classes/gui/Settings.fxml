@@ -33,10 +33,10 @@
                </VBox.margin>
             </HBox>
             <CheckBox fx:id="checkBoxHeadLess" mnemonicParsing="false" text="Headless browser" />
-            <CheckBox fx:id="checkBoxDarkTheme" layoutX="56.0" layoutY="66.0" mnemonicParsing="false" text="Dark Theme" />
+            <CheckBox fx:id="checkBoxDarkTheme" layoutX="56.0" layoutY="66.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="142.0" text="Dark Theme" />
             <HBox alignment="CENTER" spacing="10.0">
                <children>
-                  <Label text="Browser" wrapText="true">
+                  <Label prefHeight="16.0" prefWidth="77.0" text="Browser" wrapText="true">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>

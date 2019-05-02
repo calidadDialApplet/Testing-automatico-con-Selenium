@@ -80,10 +80,19 @@ public class Test_1_2 {
         // Make the drag and drop action
         //Actions moveAgent = new Actions(driver);
         //moveAgent.dragAndDrop(agent,groupSpace).build().perform();
+
+
+        // Select a Agent
+        WebElement agent2 = SeleniumDAO.selectElementBy("xpath","/html/body/form/div/div[1]/div/div[1]/div/ul/li[2]",leftColumn);
+        // Take right column(group users)
+        WebElement groupSpace2 =  SeleniumDAO.selectElementBy("xpath", "//*[@id=\"rightList\"]",driver);
+
         SeleniumDAO.dragAndDropAction(agent,groupSpace,driver);
+
+        SeleniumDAO.dragAndDropAction(agent2,groupSpace2,driver);
         // Click on send button to finish the modification
-        WebElement send = SeleniumDAO.selectElementBy("xpath","/html/body/form/div/p[3]/input",driver);
-        SeleniumDAO.click(send);
+        //WebElement send = SeleniumDAO.selectElementBy("xpath","/html/body/form/div/p[3]/input",driver);
+        //SeleniumDAO.click(send);
 
         // Checking that the test works correctly
         // Take all ids of the agent groups of tabla principal and find the max value,

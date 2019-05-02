@@ -523,9 +523,13 @@ public class H2DAO {
         return getSettingValue("headless");
     }
 
-    public static String isDarkTheme()
+    public static boolean isDarkTheme()
     {
-        return getSettingValue("darktheme");
+        boolean result = false;
+        if (getSettingValue("darktheme").equals("true")){
+            result = true;
+        }
+        return result;
     }
 
     // TODO: More generic, args: table and field

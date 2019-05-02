@@ -172,143 +172,143 @@ public class SeleniumDAO {
             driver.switchTo().defaultContent();
      }
 
-        public static void dragAndDropAction (WebElement draguedElement, WebElement droppedPlace, WebDriver driver)
-        {
+     public static void dragAndDropAction (WebElement draguedElement, WebElement droppedPlace, WebDriver driver)
+     {
             Actions moveElement = new Actions(driver);
             moveElement.dragAndDrop(draguedElement, droppedPlace).build().perform();
+     }
+
+    public static Select findSelectElementBy (String mode, String args, WebDriver driver)
+    {
+        Select elementReturned = null;
+
+        switch (mode) {
+            case "id":
+                Select elementClickedById = new Select(driver.findElement(By.id(args)));
+                elementReturned = elementClickedById;
+                break;
+            case "xpath":
+                Select elementClickedByXpath = new Select(driver.findElement(By.xpath(args)));
+                elementReturned = elementClickedByXpath;
+                break;
+            case "cssSelector":
+                Select elementClickedByCssSelector = new Select(driver.findElement(By.cssSelector(args)));
+                elementReturned = elementClickedByCssSelector;
+                break;
+            case "className":
+                Select elementClickedByClassName = new Select(driver.findElement(By.className(args)));
+                elementReturned = elementClickedByClassName;
+                break;
+            case "name":
+                Select elementClickedByName = new Select(driver.findElement(By.name(args)));
+                elementReturned = elementClickedByName;
+                break;
+            default:
+                break;
         }
 
-            public static Select findSelectElementBy (String mode, String args, WebDriver driver)
-            {
-                Select elementReturned = null;
-
-                switch (mode) {
-                    case "id":
-                        Select elementClickedById = new Select(driver.findElement(By.id(args)));
-                        elementReturned = elementClickedById;
-                        break;
-                    case "xpath":
-                        Select elementClickedByXpath = new Select(driver.findElement(By.xpath(args)));
-                        elementReturned = elementClickedByXpath;
-                        break;
-                    case "cssSelector":
-                        Select elementClickedByCssSelector = new Select(driver.findElement(By.cssSelector(args)));
-                        elementReturned = elementClickedByCssSelector;
-                        break;
-                    case "className":
-                        Select elementClickedByClassName = new Select(driver.findElement(By.className(args)));
-                        elementReturned = elementClickedByClassName;
-                        break;
-                    case "name":
-                        Select elementClickedByName = new Select(driver.findElement(By.name(args)));
-                        elementReturned = elementClickedByName;
-                        break;
-                    default:
-                        break;
-                }
-
-                if (elementReturned == null) {
-                    throw new NullPointerException("Element not found or could not be selected!");
-                }
-
-                return elementReturned;
-            }
-
-            public static Select findSelectElementBy (String mode, String args, WebElement element)
-            {
-                Select elementReturned = null;
-
-                switch (mode) {
-                    case "id":
-                        Select elementClickedById = new Select(element.findElement(By.id(args)));
-                        elementReturned = elementClickedById;
-                        break;
-                    case "xpath":
-                        Select elementClickedByXpath = new Select(element.findElement(By.xpath(args)));
-                        elementReturned = elementClickedByXpath;
-                        break;
-                    case "cssSelector":
-                        Select elementClickedByCssSelector = new Select(element.findElement(By.cssSelector(args)));
-                        elementReturned = elementClickedByCssSelector;
-                        break;
-                    case "className":
-                        Select elementClickedByClassName = new Select(element.findElement(By.className(args)));
-                        elementReturned = elementClickedByClassName;
-                        break;
-                    case "name":
-                        Select elementClickedByName = new Select(element.findElement(By.name(args)));
-                        elementReturned = elementClickedByName;
-                        break;
-                    default:
-                        break;
-                }
-
-                if (elementReturned == null) {
-                    throw new NullPointerException("Element not found or could not be selected!");
-                }
-
-                return elementReturned;
-            }
-
-            public static HashMap<Integer, String> getSelectOptions (Select selector)
-            {
-                HashMap<Integer, String> hmap = new HashMap<Integer, String>();
-                for (int i = 0; i < selector.getOptions().size(); i++) {
-                    hmap.put(i, selector.getOptions().get(i).getText());
-                }
-                return hmap;
-            }
-
-            public static void selectOption (String mode, String args, Select selector)
-            {
-                switch (mode) {
-                    case "index":
-                        selector.selectByIndex(Integer.parseInt(args));
-                        break;
-                    case "value":
-                        selector.selectByValue(args);
-                        break;
-                    case "visibleText":
-                        selector.selectByVisibleText(args);
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            public static void writeInTo (WebElement element, String value)
-            {
-                element.sendKeys(value);
-            }
-
-            public static String readFrom (WebElement element)
-            {
-                return element.getText();
-            }
-
-            public static void waitForElement ( int seconds, String elementBy, String args, WebDriver driver)
-            {
-                WebDriverWait waiting = new WebDriverWait(driver, seconds);
-                switch (elementBy) {
-                    case "id":
-                        waiting.until(ExpectedConditions.presenceOfElementLocated(By.id(args)));
-                        break;
-                    case "xpath":
-                        waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath(args)));
-                        break;
-                    case "cssSelector":
-                        waiting.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(args)));
-                        break;
-                    case "className":
-                        waiting.until(ExpectedConditions.presenceOfElementLocated(By.className(args)));
-                        break;
-                    case "name":
-                        waiting.until(ExpectedConditions.presenceOfElementLocated(By.name(args)));
-                        break;
-                    default:
-                        break;
-                }
-            }
-
+        if (elementReturned == null) {
+            throw new NullPointerException("Element not found or could not be selected!");
         }
+
+        return elementReturned;
+    }
+
+    public static Select findSelectElementBy (String mode, String args, WebElement element)
+    {
+        Select elementReturned = null;
+
+        switch (mode) {
+            case "id":
+                Select elementClickedById = new Select(element.findElement(By.id(args)));
+                elementReturned = elementClickedById;
+                break;
+            case "xpath":
+                Select elementClickedByXpath = new Select(element.findElement(By.xpath(args)));
+                elementReturned = elementClickedByXpath;
+                break;
+            case "cssSelector":
+                Select elementClickedByCssSelector = new Select(element.findElement(By.cssSelector(args)));
+                elementReturned = elementClickedByCssSelector;
+                break;
+            case "className":
+                Select elementClickedByClassName = new Select(element.findElement(By.className(args)));
+                elementReturned = elementClickedByClassName;
+                break;
+            case "name":
+                Select elementClickedByName = new Select(element.findElement(By.name(args)));
+                elementReturned = elementClickedByName;
+                break;
+            default:
+                break;
+        }
+
+        if (elementReturned == null) {
+            throw new NullPointerException("Element not found or could not be selected!");
+        }
+
+        return elementReturned;
+    }
+
+    public static HashMap<Integer, String> getSelectOptions (Select selector)
+    {
+        HashMap<Integer, String> hmap = new HashMap<Integer, String>();
+        for (int i = 0; i < selector.getOptions().size(); i++) {
+            hmap.put(i, selector.getOptions().get(i).getText());
+        }
+        return hmap;
+    }
+
+    public static void selectOption (String mode, String args, Select selector)
+    {
+        switch (mode) {
+            case "index":
+                selector.selectByIndex(Integer.parseInt(args));
+                break;
+            case "value":
+                selector.selectByValue(args);
+                break;
+            case "visibleText":
+                selector.selectByVisibleText(args);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static void writeInTo (WebElement element, String value)
+    {
+        element.sendKeys(value);
+    }
+
+    public static String readFrom (WebElement element)
+    {
+        return element.getText();
+    }
+
+    public static void waitForElement ( int seconds, String elementBy, String args, WebDriver driver)
+    {
+        WebDriverWait waiting = new WebDriverWait(driver, seconds);
+        switch (elementBy) {
+            case "id":
+                waiting.until(ExpectedConditions.presenceOfElementLocated(By.id(args)));
+                break;
+            case "xpath":
+                waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath(args)));
+                break;
+            case "cssSelector":
+                waiting.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(args)));
+                break;
+            case "className":
+                waiting.until(ExpectedConditions.presenceOfElementLocated(By.className(args)));
+                break;
+            case "name":
+                waiting.until(ExpectedConditions.presenceOfElementLocated(By.name(args)));
+                break;
+            default:
+                break;
+        }
+    }
+
+}
 

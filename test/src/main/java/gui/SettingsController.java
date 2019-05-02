@@ -1,16 +1,19 @@
 package gui;
 
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import main.Main;
 import persistence.H2DAO;
 import persistence.settingsObject;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SettingsController implements Initializable {
@@ -52,34 +55,36 @@ public class SettingsController implements Initializable {
             checkBoxHeadLess.setSelected(false);
         }
 
-        if (H2DAO.isDarkTheme().equals("true")){
+        if (H2DAO.isDarkTheme()){
             checkBoxDarkTheme.setSelected(true);
         } else{
             checkBoxDarkTheme.setSelected(false);
         }
 
-        //checkBoxDarkTheme.selectedProperty().addListener();
+        checkBoxDarkTheme.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+               if (newValue){
+                   Main.setTheme("darcula");
+                   MainController.setTheme("darcula");
+               } else {
+                   Main.setTheme("modena");
+                   MainController.setTheme("modena");
+               }
+
+            }
+        });
     }
 
-    public void closeSettings(){
-        /*Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("¿Nos dejas?");
-        alert.setHeaderText("Se perderán todos los cambios no guardados");
-        Optional<ButtonType> result = alert.showAndWait();
-
-        if (result.get() == ButtonType.OK)
-        {
-            System.out.println("Adiós mundo cruel");
-
-        }
-        else
-        {
-            System.out.println("Muerte esquivada una vez más");
-        }*/
+    public void closeSettings()
+    {
+        MainController.closeSettings();
     }
 
-    public void saveSettings(){
+    public void saveSettings()
+    {
         settingsObject  settings = new settingsObject(textFieldWeb.getText(), checkBoxHeadLess.isSelected(), choiceBoxBrowser.getValue().toString(), checkBoxDarkTheme.isSelected());
         H2DAO.saveSettings(settings);
+        MainController.closeSettings();
     }
 }

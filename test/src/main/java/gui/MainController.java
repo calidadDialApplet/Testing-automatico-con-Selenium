@@ -1,5 +1,6 @@
 package gui;
 
+import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -75,6 +76,9 @@ public class MainController implements Initializable {
     @FXML
     private MenuItem menuItemSettings;
 
+    private static Scene sceneSettings;
+    private static Stage stageSettings;
+
     private List<Action> actionList;
     private List<Action> validationList;
     private List<Action> procesedActionList;
@@ -88,6 +92,8 @@ public class MainController implements Initializable {
     String textFieldFirstValueArgs = "";
     String comboBoxSelectPlaceBy = "";
     String textFieldSecondValueArgs = "";
+    String columnsHeadersCSV = "Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation";
+
 
 
     @Override
@@ -165,15 +171,21 @@ public class MainController implements Initializable {
     {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/gui/Settings.fxml"));
-            Stage stage = new Stage();
-            stage.setResizable(false);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setAlwaysOnTop(true);
-            stage.setTitle("Settings");
-            Scene scene = new Scene(root,350,250);
+            stageSettings = new Stage();
+            stageSettings.setResizable(false);
+            stageSettings.initModality(Modality.APPLICATION_MODAL);
+            stageSettings.setAlwaysOnTop(true);
+            stageSettings.setTitle("Settings");
+            sceneSettings = new Scene(root,350,250);
+            if (H2DAO.isDarkTheme()){
+                setTheme("darcula");
+            }else {
+                setTheme("modena");
+            }
             //scene.getStylesheets().add("/css/darcula.css");
-            stage.setScene(scene);
-            stage.showAndWait();
+            stageSettings.setScene(sceneSettings);
+            stageSettings.showAndWait();
+
 
             /*
             class SceneFactory
@@ -190,8 +202,8 @@ public class MainController implements Initializable {
         catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
+    }
 
     public void addActionRow()
     {
@@ -629,6 +641,7 @@ public class MainController implements Initializable {
        } else {
            String id = H2DAO.getTrialID(selectedTrial.getText());
            H2DAO.deleteTrialActions(id);
+           H2DAO.deleteTrialValidations(id);
            H2DAO.deleteTrial(id);
            poblateTestList();
        }
@@ -662,15 +675,15 @@ public class MainController implements Initializable {
         return numCols;
     }
 
-    private void saveToCSV(ArrayList<Action> actions,ArrayList<Action> validations,String trialName) throws IOException {
+    private void saveToCSV(ArrayList<Action> actions,ArrayList<Action> validations,String name) throws IOException {
             Writer writer = null;
             try {
-                File file = new File("/home/david/git_docs/Table.csv");
+                File file = new File("/home/david/git_docs/"+name+".csv");
                 writer = new BufferedWriter(new FileWriter(file));
 
                //writer.write(trialName);
                //writer.write(System.lineSeparator());
-                // writer.write("Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue");
+                writer.write(columnsHeadersCSV);
 
                 for (Action action : actions)
                 {
@@ -704,6 +717,13 @@ public class MainController implements Initializable {
 
     public void exportTest()
     {
+        TextInputDialog dialog = new TextInputDialog("dialtest");
+        dialog.setTitle("Guau! ¿Estás exportando ya?");
+        dialog.setHeaderText("Guardando el test");
+        dialog.setContentText("Por favor introduzca el nombre del archivo:");
+
+        Optional<String> result = dialog.showAndWait();
+
         for(CheckBox trial : testList.getItems())
         {
             if(trial.isSelected())
@@ -711,7 +731,7 @@ public class MainController implements Initializable {
                 ArrayList<Action> actions = H2DAO.getActions(trial.getText());
                 ArrayList<Action> validations = H2DAO.getValidations(trial.getText());
                 try {
-                    saveToCSV(actions,validations,trial.getText());
+                    saveToCSV(actions,validations,result.get());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -722,34 +742,78 @@ public class MainController implements Initializable {
     public void importTest()
     {
         deleteAllTabs();
-        String fileName = "/home/david/git_docs/Table.csv"; // Make dialog to ask file
-        File file = new File(fileName);
+
+        boolean headerOk = false;
+
+        TextInputDialog dialog = new TextInputDialog("dialtest");
+        dialog.setTitle("Importar test");
+        dialog.setHeaderText("Obteniendo el test");
+        dialog.setContentText("Por favor introduzca el nombre del archivo:");
+
+        Optional<String> result = dialog.showAndWait();
+
+
         try {
+            String fileName = "/home/david/git_docs/" + result.get() + ".csv"; // Make dialog to ask file
+            File file = new File(fileName);
             Scanner inputStream = new Scanner(file);
-            while (inputStream.hasNext())
-            {
+            while (inputStream.hasNext()) {
                 String data = inputStream.next();
                 //String action = data.substring()
-                String[] values = data.split(",");
-                //System.out.println(data);
-                if (values[5].equals("A"))
-                {
-                    Action act = new Action(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
-                    actionList.add(act);
-                    actionsRowIndex++;
+                if (data.equals(columnsHeadersCSV)) {
+                     headerOk = true;
                 }
-                if (values[5].equals("V"))
-                {
-                    Action act = new Action(gridPaneValidationList, validationRowIndex, values[0], values[1], values[2], values[3], values[4]);
-                    validationList.add(act);
-                    validationRowIndex++;
-                }
+                    if (headerOk) {
 
-            }
+                        String[] values = data.split(",");
+                        //System.out.println(data);
+                        if (values[5].equals("A")) {
+                            Action act = new Action(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
+                            actionList.add(act);
+                            actionsRowIndex++;
+                        }
+                        if (values[5].equals("V")) {
+                            Action act = new Action(gridPaneValidationList, validationRowIndex, values[0], values[1], values[2], values[3], values[4]);
+                            validationList.add(act);
+                            validationRowIndex++;
+                        }
+                    }
+
+                }
             inputStream.close();
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            } catch(FileNotFoundException e){
+                e.printStackTrace();
+            }
+        if (!headerOk)
+        {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("Se ha producido un error durante la importación del test");
+            alert.setContentText("El fichero no contienen las columnas correctas");
+            alert.showAndWait();
         }
+
+    }
+
+
+    public static void setTheme(String theme)
+    {
+
+        sceneSettings.getStylesheets().clear();
+        if (theme.equals("darcula"))
+        {
+            sceneSettings.getStylesheets().add("/css/darcula.css");
+        }
+        if (theme.equals("modena"))
+        {
+            //StyleManager.getInstance().addUserAgentStylesheet(getClass().getResource("/style.css").toString());
+            Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
+        }
+    }
+
+    public static void closeSettings()
+    {
+        stageSettings.close();
     }
 }

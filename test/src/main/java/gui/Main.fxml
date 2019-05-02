@@ -165,16 +165,15 @@
         </SplitPane>
     </center>
     <bottom>
-      <GridPane BorderPane.alignment="CENTER_RIGHT">
+      <GridPane BorderPane.alignment="CENTER_LEFT">
          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="303.0" minWidth="10.0" prefWidth="303.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="359.0" minWidth="10.0" prefWidth="297.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="597.0" minWidth="10.0" prefWidth="578.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-              <HBox alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS">
+              <HBox alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="5.0" GridPane.halignment="LEFT">
                   <children>
                       <Button fx:id="buttonAdd" mnemonicParsing="true" onAction="#addActionRow">
                           <graphic>
