@@ -3,6 +3,8 @@ package gui;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -94,7 +96,7 @@ public class MainController implements Initializable {
     String textFieldSecondValueArgs = "";
     String columnsHeadersCSV = "Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation";
 
-
+    private Service<Void> backgroundThread;
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
@@ -322,43 +324,51 @@ public class MainController implements Initializable {
     //  with protected methods, working out the logic part out of this
    public void executeTest(List<Action> actionList)
    {
-       WebDriver driver = getWebDriver();
-       // TODO: Variable
-       //driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
-       driver.get(H2DAO.getWeb());
-       TitledPane trial = new TitledPane();
 
-       // TODO: This checkbox has no value. You create UI object to store values.
-       //  Plain wrong
-       //CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+       Task<Void> task = new Task<Void>() {
+           @Override
+           protected Void call() throws Exception {
 
-       String selectedTrial = testList.getSelectionModel().getSelectedItem().getText();
-       // TODO: selectedTrial does not work properly
-       //  If you check without selecting row a Trial from checkables ListView,
-       //  after execution always says this, instead of Trial name
-       if (selectedTrial == null){
-            trial.setText("Prueba sin guardar");
-       }else{
-            trial.setText(selectedTrial);
-       }
-       GridPane grid = new GridPane();
-       grid.setVgap(2);
-       if (tabActions.isSelected()) {
-           for (int i = 0; i < actionList.size(); i++) {
-               Action currentAction = actionList.get(i);
-               grid.add(new Label("Action " + i + ":"), 0, i);
-               grid.add(new Label(" " + currentAction.executeAction(driver)), 1, i);
+               WebDriver driver = getWebDriver();
+               driver.get(H2DAO.getWeb());
+               TitledPane trial = new TitledPane();
+
+               // TODO: This checkbox has no value. You create UI object to store values.
+               //  Plain wrong
+               //CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+
+               String selectedTrial = testList.getSelectionModel().getSelectedItem().getText();
+               if (selectedTrial == null){
+                   trial.setText("Prueba sin guardar");
+               }else{
+                   trial.setText(selectedTrial);
+               }
+               GridPane grid = new GridPane();
+               grid.setVgap(2);
+               if (tabActions.isSelected()) {
+                   for (int i = 0; i < actionList.size(); i++) {
+                       Action currentAction = actionList.get(i);
+                       grid.add(new Label("Action " + i + ":"), 0, i);
+                       grid.add(new Label(" " + currentAction.executeAction(driver)), 1, i);
+                   }
+               }
+               if (tabValidation.isSelected()){
+                   for (int i = 0; i < actionList.size(); i++) {
+                       Action currentValidation = actionList.get(i);
+                       grid.add(new Label("Validation " + i + ":"), 0, i);
+                       grid.add(new Label(" " + currentValidation.executeAction(driver)), 1, i);
+                   }
+               }
+               trial.setContent(grid);
+               accordionComprobationList.getPanes().add(trial);
+               return null;
            }
-       }
-       if (tabValidation.isSelected()){
-           for (int i = 0; i < actionList.size(); i++) {
-               Action currentValidation = actionList.get(i);
-               grid.add(new Label("Validation " + i + ":"), 0, i);
-               grid.add(new Label(" " + currentValidation.executeAction(driver)), 1, i);
-           }
-       }
-       trial.setContent(grid);
-       accordionComprobationList.getPanes().add(trial);
+       };
+
+        Thread th = new Thread(task);
+        th.setDaemon(true);
+        th.start();
+
    }
 
     @Nullable
@@ -479,22 +489,30 @@ public class MainController implements Initializable {
 
     public void modifyTrial()
     {
-       String trialName = testList.getSelectionModel().getSelectedItem().getText();
-       String id = H2DAO.getTrialID(trialName);
-       if (tabActions.isSelected())
-       {
-           H2DAO.deleteTrialActions(id);
-           procesedActionList.clear();
-           goThroughTable("Actions");
-           H2DAO.saveTrial(procesedActionList, id,0);
-       }
-       if (tabValidation.isSelected())
-       {
-           H2DAO.deleteTrialValidations(id);
-           procesedValidationList.clear();
-           goThroughTable("Validations");
-           H2DAO.saveTrial(procesedValidationList, id,1);
-       }
+        CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+        if(selectedTrial == null)
+        {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("No hay ningún test seleccionado");
+            alert.setContentText("Contacta con tu administrador :)");
+            alert.showAndWait();
+        } else {
+            String trialName = testList.getSelectionModel().getSelectedItem().getText();
+            String id = H2DAO.getTrialID(trialName);
+            if (tabActions.isSelected()) {
+                H2DAO.deleteTrialActions(id);
+                procesedActionList.clear();
+                goThroughTable("Actions");
+                H2DAO.saveTrial(procesedActionList, id, 0);
+            }
+            if (tabValidation.isSelected()) {
+                H2DAO.deleteTrialValidations(id);
+                procesedValidationList.clear();
+                goThroughTable("Validations");
+                H2DAO.saveTrial(procesedValidationList, id, 1);
+            }
+        }
     }
 
     public void goThroughTable(String table)
@@ -754,6 +772,7 @@ public class MainController implements Initializable {
 
 
         try {
+
             String fileName = "/home/david/git_docs/" + result.get() + ".csv"; // Make dialog to ask file
             File file = new File(fileName);
             Scanner inputStream = new Scanner(file);

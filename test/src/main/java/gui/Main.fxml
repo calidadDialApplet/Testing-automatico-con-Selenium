@@ -57,8 +57,8 @@
                   <RowConstraints valignment="CENTER" />
                </rowConstraints>
                <children>
-                  <ListView fx:id="testList" prefHeight="310.0" prefWidth="248.0" />
-                  <HBox alignment="BASELINE_LEFT" spacing="5.0" GridPane.rowIndex="1">
+                  <ListView fx:id="testList" prefHeight="310.0" prefWidth="248.0" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS" />
+                  <HBox alignment="BASELINE_LEFT" spacing="5.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.vgrow="ALWAYS">
                      <children>
                         <Button fx:id="buttonPlayTrials" mnemonicParsing="true" onAction="#runSelectedTrials">
                            <graphic>
@@ -111,7 +111,7 @@
                            <content>
                               <ScrollPane fx:id="scrollPaneActionslList">
                                  <content>
-                                    <GridPane fx:id="gridPaneTrialList" hgap="10.0" prefHeight="168.0" prefWidth="396.0">
+                                    <GridPane fx:id="gridPaneTrialList" hgap="10.0" prefHeight="168.0" prefWidth="396.0" vgap="7.5">
                                       <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -123,7 +123,7 @@
                                           <Insets />
                                        </opaqueInsets>
                                        <padding>
-                                          <Insets left="5.0" />
+                                          <Insets left="5.0" top="5.0" />
                                        </padding>
                                     </GridPane>
                                  </content>
@@ -134,7 +134,7 @@
                            <content>
                               <ScrollPane fx:id="scrollPaneValidationsList">
                                  <content>
-                                    <GridPane fx:id="gridPaneValidationList" hgap="5.0" prefHeight="168.0" prefWidth="396.0">
+                                    <GridPane fx:id="gridPaneValidationList" hgap="5.0" prefHeight="168.0" prefWidth="396.0" vgap="7.5">
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -145,6 +145,9 @@
                                        <opaqueInsets>
                                           <Insets />
                                        </opaqueInsets>
+                                       <padding>
+                                          <Insets top="5.0" />
+                                       </padding>
                                     </GridPane>
                                  </content>
                               </ScrollPane>
@@ -165,7 +168,7 @@
         </SplitPane>
     </center>
     <bottom>
-      <GridPane BorderPane.alignment="CENTER_LEFT">
+      <GridPane alignment="CENTER_RIGHT" BorderPane.alignment="CENTER_LEFT">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="597.0" minWidth="10.0" prefWidth="578.0" />
          </columnConstraints>
@@ -173,7 +176,7 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-              <HBox alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="5.0" GridPane.halignment="LEFT">
+              <HBox alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="5.0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
                   <children>
                       <Button fx:id="buttonAdd" mnemonicParsing="true" onAction="#addActionRow">
                           <graphic>

@@ -12,7 +12,7 @@ public class H2DAO {
 
     // TODO: Once declared, this becomes constant, so should be enums, neither ArrayList<> nor String[]
      //enum matchTableName {TRIALS,TRIAL_ACTIONS,ACTION_TYPES,SELECTION_BY} ;
-     static ArrayList<String> matchesTableName = new ArrayList<>(Arrays.asList("TRIALS","TRIAL_ACTIONS","SETTINGS","ACTION_TYPES","SELECTION_BY"));
+     static ArrayList<String> matchesTableName = new ArrayList<>(Arrays.asList("TRIALS","TRIAL_ACTIONS","ACTION_TYPES","SETTINGS","SELECTION_BY"));
      static ArrayList<String> matchesColName = new ArrayList<>(Arrays.asList("ID","NAME","ID","NAME","ID","NAME","ID","TRIALID","ACTIONTYPEID","SELECTIONBYID1","VALUE1",
                                                                             "SELECTIONBYID2","VALUE2","VALIDATION"));
      static ArrayList<String> matchesTypeName = new ArrayList<>(Arrays.asList("INTEGER","TEXT","INTEGER","TEXT","INTEGER","TEXT","INTEGER","INTEGER","INTEGER","INTEGER","TEXT","INTEGER","TEXT","INTEGER"));
@@ -79,6 +79,9 @@ public class H2DAO {
             "insert into action_types(name) values ('DragAndDrop')",
             "insert into action_types(name) values ('WriteTo')",
             "insert into action_types(name) values ('ReadFrom')",
+            "insert into action_types(name) values ('SwitchTo')",
+            "insert into action_types(name) values ('Waiting')",
+            "insert into action_types(name) values ('WaitTime')",
             "insert into selection_by(name) values ('id')",
             "insert into selection_by(name) values ('xpath')",
             "insert into selection_by(name) values ('cssSelector')",
@@ -113,23 +116,23 @@ public class H2DAO {
     }
 
     public static void main(String[] args){
-       /*
+
         try {
             Statement st = connection.createStatement();
-            String getTrialsStatement = "select * from settings";
+            String getTrialsStatement = "select * from action_types";
             st.execute(getTrialsStatement);
 
             ResultSet resultSet =  st.getResultSet();
 
             while (resultSet.next())
             {
-                System.out.println(resultSet.getString("settingField"));
+                System.out.println(resultSet.getString("id"));
             }
             System.out.println("FUNCIONA");
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        */
+
 
     }
 
@@ -310,6 +313,9 @@ public class H2DAO {
                     break;
                 case  "Waiting":
                     id = 6;
+                    break;
+                case  "WaitTime":
+                    id = 7;
                     break;
                 default:
                     id = 0;

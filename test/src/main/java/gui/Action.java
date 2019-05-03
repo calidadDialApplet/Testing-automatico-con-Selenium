@@ -34,7 +34,8 @@ public class Action {
         this.rowIndex = rowIndex;
 
         actionType = new ComboBox<>();
-        actionType.setMinWidth(100);
+
+
 
         actionType.setItems(FXCollections.observableArrayList(H2DAO.getTypeAction()));
         gridParent.addRow(rowIndex, actionType);
@@ -46,8 +47,6 @@ public class Action {
                     initialiceCheckBox(gridParent);
                     lastType = "Click";
                     selectElementBy = new ComboBox();
-                    selectElementBy.setMinWidth(100);
-
                     selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
@@ -153,6 +152,16 @@ public class Action {
                         textFieldNotGenerated = false;
                     });
                     break;
+                case "WaitTime":
+                    initialiceCheckBox(gridParent);
+                    lastType = "WaitTime";
+
+                    if (textFieldNotGenerated) {
+                        firstValueArgs = new TextField();
+                        gridParent.addRow(rowIndex, firstValueArgs);
+                    }
+                    textFieldNotGenerated = false;
+                    break;
                 default:
                     break;
             }
@@ -170,7 +179,7 @@ public class Action {
 
     public Action(String actionType, String selectElementBy, String firstValueArgs, String selectPlaceBy, String secondValueArgs)
    {
-        if(actionType.matches("1|2|3|4|5|6")){
+        if(actionType.matches("1|2|3|4|5|6|7")){
             this.actionType.setValue(getActionTypeId(actionType));
         } else {
             this.actionType.setValue(actionType);
@@ -334,6 +343,17 @@ public class Action {
                     });
                     selectElementBy.setValue(selectElementByValue);
                     break;
+                case "WaitTime":
+                    initialiceCheckBox(gridParent);
+                    lastType = "WaitTime";
+
+                    if (textFieldNotGenerated) {
+                        firstValueArgs = new TextField();
+                        firstValueArgs.setText(firstValueArgsValue);
+                        gridParent.addRow(rowIndex, firstValueArgs);
+                    }
+                    textFieldNotGenerated = false;
+                    break;
                 default:
                     break;
             }
@@ -378,6 +398,10 @@ public class Action {
                     SeleniumDAO.waitForElement(Integer.parseInt(this.firstValueArgs.getText()),this.selectElementBy.getValue().toString(), this.secondValueArgs.getText() ,driver);
                     result = "Ok";
                     break;
+                case "WaitTime":
+                    SeleniumDAO.implicitWait(Integer.parseInt(this.firstValueArgs.getText()));
+                    result = "Ok";
+                    break;
                 default:
                     break;
             }
@@ -406,6 +430,7 @@ public class Action {
                gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,secondValueArgs,value);
                break;
            case "SwitchTo":
+           case "WaitTime":
                gridParent.getChildren().removeAll(firstValueArgs);
                break;
            case "default":
@@ -434,6 +459,10 @@ public class Action {
                 break;
             case "6":
                 type = "Waiting";
+                break;
+            case "7":
+                type = "WaitTime";
+                break;
             default:
                 break;
         }

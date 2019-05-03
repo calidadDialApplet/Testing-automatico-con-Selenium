@@ -1,11 +1,13 @@
 import main.Main;
 import main.SeleniumDAO;
 import main.Utils;
+import okio.Timeout;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 // Create a group called GruporcNverXYZ and add the agents that have been created before
@@ -88,7 +90,14 @@ public class Test_1_2 {
         WebElement groupSpace2 =  SeleniumDAO.selectElementBy("xpath", "//*[@id=\"rightList\"]",driver);
 
         SeleniumDAO.dragAndDropAction(agent,groupSpace,driver);
-
+        System.out.println("Mesperooo");
+        //driver.manage().timeouts().implicitlyWait(100, TimeUnit.SECONDS);
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Ya !");
         SeleniumDAO.dragAndDropAction(agent2,groupSpace2,driver);
         // Click on send button to finish the modification
         //WebElement send = SeleniumDAO.selectElementBy("xpath","/html/body/form/div/p[3]/input",driver);
