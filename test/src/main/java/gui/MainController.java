@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -13,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.SeleniumDAO;
@@ -322,7 +324,7 @@ public class MainController implements Initializable {
     // TODO: Tasks and tests cant be launched from MainController thread
     //  Use Task or Platform.runLater to achieve this, and get this code concurrent
     //  with protected methods, working out the logic part out of this
-   public void executeTest(List<Action> actionList)
+   protected void executeTest(List<Action> actionList)
    {
 
        Task<Void> task = new Task<Void>() {
@@ -337,30 +339,35 @@ public class MainController implements Initializable {
                //  Plain wrong
                //CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
 
-               String selectedTrial = testList.getSelectionModel().getSelectedItem().getText();
-               if (selectedTrial == null){
-                   trial.setText("Prueba sin guardar");
-               }else{
-                   trial.setText(selectedTrial);
-               }
-               GridPane grid = new GridPane();
-               grid.setVgap(2);
-               if (tabActions.isSelected()) {
-                   for (int i = 0; i < actionList.size(); i++) {
-                       Action currentAction = actionList.get(i);
-                       grid.add(new Label("Action " + i + ":"), 0, i);
-                       grid.add(new Label(" " + currentAction.executeAction(driver)), 1, i);
+               Platform.runLater(new Runnable() {
+                   @Override
+                   public void run() {
+                       String selectedTrial = testList.getSelectionModel().getSelectedItem().getText();
+                       if (selectedTrial == null){
+                           trial.setText("Prueba sin guardar");
+                       }else{
+                           trial.setText(selectedTrial);
+                       }
+                       GridPane grid = new GridPane();
+                       grid.setVgap(2);
+                       if (tabActions.isSelected()) {
+                           for (int i = 0; i < actionList.size(); i++) {
+                               Action currentAction = actionList.get(i);
+                               grid.add(new Label("Action " + i + ":"), 0, i);
+                               grid.add(new Label(" " + currentAction.executeAction(driver)), 1, i);
+                           }
+                       }
+                       if (tabValidation.isSelected()){
+                           for (int i = 0; i < actionList.size(); i++) {
+                               Action currentValidation = actionList.get(i);
+                               grid.add(new Label("Validation " + i + ":"), 0, i);
+                               grid.add(new Label(" " + currentValidation.executeAction(driver)), 1, i);
+                           }
+                       }
+                       trial.setContent(grid);
+                       accordionComprobationList.getPanes().add(trial);
                    }
-               }
-               if (tabValidation.isSelected()){
-                   for (int i = 0; i < actionList.size(); i++) {
-                       Action currentValidation = actionList.get(i);
-                       grid.add(new Label("Validation " + i + ":"), 0, i);
-                       grid.add(new Label(" " + currentValidation.executeAction(driver)), 1, i);
-                   }
-               }
-               trial.setContent(grid);
-               accordionComprobationList.getPanes().add(trial);
+               });
                return null;
            }
        };
@@ -648,22 +655,20 @@ public class MainController implements Initializable {
 
     public void deleteSelectedTrial()
     {
-       CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
-       if(selectedTrial == null)
-       {
-           Alert alert = new Alert(Alert.AlertType.WARNING);
-           alert.setTitle("Error");
-           alert.setHeaderText("No hay ningún test seleccionado");
-           alert.setContentText("Contacta con tu administrador :)");
-           alert.showAndWait();
-       } else {
-           String id = H2DAO.getTrialID(selectedTrial.getText());
-           H2DAO.deleteTrialActions(id);
-           H2DAO.deleteTrialValidations(id);
-           H2DAO.deleteTrial(id);
+        ObservableList<CheckBox> trials = testList.getItems();
+        for (CheckBox trial : trials)
+           {
+               if (trial.isSelected())
+               {
+                   String id = H2DAO.getTrialID(trial.getText());
+                   H2DAO.deleteTrialActions(id);
+                   H2DAO.deleteTrialValidations(id);
+                   H2DAO.deleteTrial(id);
+               }
+           }
            poblateTestList();
-       }
     }
+
 
     private int getRowCount(GridPane pane) {
         int numRows = pane.getRowConstraints().size();
@@ -693,10 +698,10 @@ public class MainController implements Initializable {
         return numCols;
     }
 
-    private void saveToCSV(ArrayList<Action> actions,ArrayList<Action> validations,String name) throws IOException {
+    private void saveToCSV(ArrayList<Action> actions,ArrayList<Action> validations,File file) throws IOException {
             Writer writer = null;
             try {
-                File file = new File("/home/david/git_docs/"+name+".csv");
+                //File file = new File("/home/david/git_docs/"+name+".csv");
                 writer = new BufferedWriter(new FileWriter(file));
 
                //writer.write(trialName);
@@ -735,12 +740,17 @@ public class MainController implements Initializable {
 
     public void exportTest()
     {
-        TextInputDialog dialog = new TextInputDialog("dialtest");
+        /*TextInputDialog dialog = new TextInputDialog("dialtest");
         dialog.setTitle("Guau! ¿Estás exportando ya?");
         dialog.setHeaderText("Guardando el test");
         dialog.setContentText("Por favor introduzca el nombre del archivo:");
 
         Optional<String> result = dialog.showAndWait();
+        */
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(stageSettings);
 
         for(CheckBox trial : testList.getItems())
         {
@@ -749,7 +759,7 @@ public class MainController implements Initializable {
                 ArrayList<Action> actions = H2DAO.getActions(trial.getText());
                 ArrayList<Action> validations = H2DAO.getValidations(trial.getText());
                 try {
-                    saveToCSV(actions,validations,result.get());
+                    saveToCSV(actions,validations,file);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -763,18 +773,21 @@ public class MainController implements Initializable {
 
         boolean headerOk = false;
 
-        TextInputDialog dialog = new TextInputDialog("dialtest");
+        /*TextInputDialog dialog = new TextInputDialog("dialtest");
         dialog.setTitle("Importar test");
         dialog.setHeaderText("Obteniendo el test");
         dialog.setContentText("Por favor introduzca el nombre del archivo:");
 
         Optional<String> result = dialog.showAndWait();
-
+        */
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        File file = fileChooser.showOpenDialog(stageSettings);
 
         try {
 
-            String fileName = "/home/david/git_docs/" + result.get() + ".csv"; // Make dialog to ask file
-            File file = new File(fileName);
+            //String fileName = "/home/david/git_docs/" + result.get() + ".csv"; // Make dialog to ask file
+            //File file = new File(fileName);
             Scanner inputStream = new Scanner(file);
             while (inputStream.hasNext()) {
                 String data = inputStream.next();

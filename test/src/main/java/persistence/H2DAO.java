@@ -72,7 +72,7 @@ public class H2DAO {
                     ")",
             "create table settings(settingField text, value text)",
             "alter table trial_actions add constraint fk_trialid foreign key(trialid) references trials(id)",
-            "alter table trial_actions add constraint fk_actiontypeid foreign key(trialid) references action_types(id)",
+            "alter table trial_actions add constraint fk_actiontypeid foreign key(actiontypeid) references action_types(id)",
             "alter table trial_actions add constraint fk_selectionById1 foreign key(selectionbyid1) references selection_by(id)",
             "alter table trial_actions add constraint fk_selectionById2 foreign key(selectionbyid2) references selection_by(id)",
             "insert into action_types(name) values ('Click')",
@@ -119,15 +119,17 @@ public class H2DAO {
 
         try {
             Statement st = connection.createStatement();
-            String getTrialsStatement = "select * from action_types";
-            st.execute(getTrialsStatement);
-
+            String getTrialsStatement = "drop table settings";
+            //st.execute(getTrialsStatement);
+            /*
             ResultSet resultSet =  st.getResultSet();
 
             while (resultSet.next())
             {
                 System.out.println(resultSet.getString("id"));
             }
+            */
+
             System.out.println("FUNCIONA");
         } catch (SQLException e) {
             e.printStackTrace();

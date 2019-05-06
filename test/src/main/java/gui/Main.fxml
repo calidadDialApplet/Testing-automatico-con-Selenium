@@ -46,59 +46,52 @@
         </MenuBar>
     </top>
     <left>
-        <ScrollPane hbarPolicy="NEVER" vbarPolicy="NEVER">
-            <content>
-            <GridPane>
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                  <RowConstraints valignment="CENTER" />
-               </rowConstraints>
+      <GridPane gridLinesVisible="true">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="34.0" prefHeight="34.0" valignment="CENTER" vgrow="ALWAYS" />
+         </rowConstraints>
+         <children>
+            <ListView fx:id="testList" GridPane.hgrow="ALWAYS" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS" />
+            <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <children>
-                  <ListView fx:id="testList" prefHeight="310.0" prefWidth="248.0" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS" />
-                  <HBox alignment="BASELINE_LEFT" spacing="5.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.vgrow="ALWAYS">
-                     <children>
-                        <Button fx:id="buttonPlayTrials" mnemonicParsing="true" onAction="#runSelectedTrials">
-                           <graphic>
-                              <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@/icons/round_play_circle_filled_black_24dp.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="buttonDeleteTrial" mnemonicParsing="true" onAction="#deleteSelectedTrial">
-                           <graphic>
-                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@/icons/sharp_delete_black_24dp.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="buttonModifyTrial" layoutX="49.0" layoutY="10.0" mnemonicParsing="true" onAction="#modifyTrial">
-                           <graphic>
-                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@/icons/baseline_edit_black_24dp.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                     </children>
-                     <padding>
-                        <Insets left="10.0" top="2.0" />
-                     </padding>
-                     <GridPane.margin>
-                        <Insets top="5.0" />
-                     </GridPane.margin>
-                  </HBox>
+                  <Button fx:id="buttonPlayTrials" mnemonicParsing="true" onAction="#runSelectedTrials">
+                     <graphic>
+                        <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/icons/round_play_circle_filled_black_24dp.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="buttonDeleteTrial" mnemonicParsing="true" onAction="#deleteSelectedTrial">
+                     <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/icons/sharp_delete_black_24dp.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="buttonModifyTrial" layoutX="49.0" layoutY="10.0" mnemonicParsing="true" onAction="#modifyTrial">
+                     <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/icons/baseline_edit_black_24dp.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                </children>
-            </GridPane>
-            </content>
-        </ScrollPane>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" top="5.0" />
+               </GridPane.margin>
+            </HBox>
+         </children>
+      </GridPane>
     </left>
     <center>
         <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
@@ -156,11 +149,11 @@
                      </tabs>
                   </TabPane>
                </children></AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="160.0">
                <children>
-                  <ScrollPane prefHeight="167.0" prefWidth="348.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="168.0" prefWidth="348.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
-                        <Accordion fx:id="accordionComprobationList" prefHeight="167.0" prefWidth="348.0" />
+                        <Accordion fx:id="accordionComprobationList" prefHeight="168.0" prefWidth="348.0" />
                      </content>
                   </ScrollPane>
                </children></AnchorPane>
