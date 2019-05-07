@@ -4,7 +4,13 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import main.SeleniumDAO;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -35,9 +41,18 @@ public class Action {
 
         actionType = new ComboBox<>();
 
+        //StackPane stackPane = new StackPane();
+
+
+
 
 
         actionType.setItems(FXCollections.observableArrayList(H2DAO.getTypeAction()));
+        //dragComboBox(actionType);
+        //addDropHandling(stackPane);
+        //stackPane.getChildren().add(actionType);
+        //gridParent.addRow(rowIndex, stackPane);
+
         gridParent.addRow(rowIndex, actionType);
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
@@ -493,6 +508,40 @@ public class Action {
         }
         return SelectBy;
     }
+    /*
+    private DataFormat comboBoxFormat = new DataFormat();
+    private ComboBox draggingComboBox;
+    private void dragComboBox(ComboBox comboBox)
+    {
+        comboBox.setOnDragDetected(event -> {
+            Dragboard db = comboBox.startDragAndDrop(TransferMode.MOVE);
+            db.setDragView(comboBox.snapshot(null, null));
+            ClipboardContent cc = new ClipboardContent();
+            cc.put(comboBoxFormat, " ");
+
+            db.setContent(cc);
+            draggingComboBox = comboBox;
+        });
+    }
+
+    private void addDropHandling(StackPane pane)
+    {
+        pane.setOnDragOver(event -> {
+            event.acceptTransferModes(TransferMode.MOVE);
+        });
+
+        pane.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+
+            if (db.hasContent(comboBoxFormat)) {
+                ((Pane)draggingComboBox.getParent()).getChildren().remove(draggingComboBox);
+                pane.getChildren().add(draggingComboBox);
+                event.setDropCompleted(true);
+
+                draggingComboBox = null;
+            }
+        });
+    }*/
 
    @Override
    public String toString() {

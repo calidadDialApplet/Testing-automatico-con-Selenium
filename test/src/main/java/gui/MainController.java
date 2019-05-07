@@ -9,11 +9,14 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -169,6 +172,39 @@ public class MainController implements Initializable {
 
         poblateTestList();
 
+        /*
+
+        StackPane row0Col0 = new StackPane();
+        StackPane row0Col1 = new StackPane();
+        StackPane row1Col1 = new StackPane();
+        StackPane row1Col0 = new StackPane();
+
+        row0Col0.setBackground(new Background(new BackgroundFill(Color.DARKGREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+        row0Col1.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
+        row1Col0.setBackground(new Background(new BackgroundFill(Color.SALMON, CornerRadii.EMPTY, Insets.EMPTY)));
+        row1Col1.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+
+
+        gridPaneTrialList.add(row0Col0, 0, 0);
+        gridPaneTrialList.add(row0Col1, 0, 1);
+        gridPaneTrialList.add(row1Col0, 1, 1);
+        gridPaneTrialList.add(row1Col1, 1, 0);
+
+        ComboBox cb = new ComboBox(FXCollections.observableArrayList("Uno", "Dos", "Tres"));
+        ComboBox cb2 = new ComboBox(FXCollections.observableArrayList("Uno", "Dos", "Tres"));
+
+        dragComboBox(cb);
+        dragComboBox(cb2);
+
+        gridPaneTrialList.addRow(2,cb);
+        gridPaneTrialList.addRow(3,cb2);
+
+        addDropHandling(row0Col0);
+        addDropHandling(row0Col1);
+        addDropHandling(row1Col0);
+        addDropHandling(row1Col1);
+
+         */
     }
 
     public void openSettingsDialog()
@@ -445,53 +481,33 @@ public class MainController implements Initializable {
 
     public void saveTest()
     {
-        try
-        {
-            //executeTestHeadless();  // Comprobaciones
+        TextInputDialog dialog = new TextInputDialog("dialtest");
+        dialog.setTitle("Guau! ¿Estás guardando ya?");
+        dialog.setHeaderText("Guardando la prueba");
+        dialog.setContentText("Por favor introduzca el nombre de la prueba:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            procesedActionList.clear();                                                     // Limpiar lista con las acciones de la tabla
+            goThroughTable("Actions");                                                      // Recorrer la tabla e introduce en procesedActionList las acciones
+            if(!procesedActionList.isEmpty()) {
+                H2DAO.createTrial(result.get());                                                // Introducir nuevo trial con su nombre en trials
+                String id =  H2DAO.getTrialID(result.get());                                    // Obtener id del nuevo trial
+                H2DAO.saveTrial(procesedActionList, id, 0);                           // Insertar todas las acciones referentes al nuevo test en la tabla trials_actions
+                procesedValidationList.clear();                                                 // Limpiar lista con las valideaciones de la tabla
+                goThroughTable("Validations");                                                  // Recorrer la tabla e introduce en procesedValidationList las validaciones
+                H2DAO.saveTrial(procesedValidationList, id, 1);                       // Insertar todas las validaciones referentes al nuevo test en la tabla trials_actions
+                poblateTestList();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("Debe de haber una acción asociada al test");
+                alert.setContentText("Contacta con tu administrador :)");
+                alert.showAndWait();
+            }
 
         }
-        catch (Exception e)
-        {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Error");
-            alert.setHeaderText("Se ha producido un error durante la comprobación del test");
-            alert.setContentText("Contacta con tu administrador :)");
-            alert.showAndWait();
 
-            e.printStackTrace();
-        }
-        finally
-        {
-
-                TextInputDialog dialog = new TextInputDialog("dialtest");
-                dialog.setTitle("Guau! ¿Estás guardando ya?");
-                dialog.setHeaderText("Guardando la prueba");
-                dialog.setContentText("Por favor introduzca el nombre de la prueba:");
-
-                Optional<String> result = dialog.showAndWait();
-                if (result.isPresent()){
-                        procesedActionList.clear();                                                     // Limpiar lista con las acciones de la tabla
-                        goThroughTable("Actions");                                                      // Recorrer la tabla e introduce en procesedActionList las acciones
-                        if(!procesedActionList.isEmpty()) {
-                            H2DAO.createTrial(result.get());                                                // Introducir nuevo trial con su nombre en trials
-                            String id =  H2DAO.getTrialID(result.get());                                    // Obtener id del nuevo trial
-                            H2DAO.saveTrial(procesedActionList, id, 0);                            // Insertar todas las acciones referentes al nuevo test en la tabla trials_actions
-                            procesedValidationList.clear();                                                 // Limpiar lista con las valideaciones de la tabla
-                            goThroughTable("Validations");                                                  // Recorrer la tabla e introduce en procesedValidationList las validaciones
-                            H2DAO.saveTrial(procesedValidationList, id, 1);                        // Insertar todas las validaciones referentes al nuevo test en la tabla trials_actions
-                            poblateTestList();
-                        } else {
-                            Alert alert = new Alert(Alert.AlertType.WARNING);
-                            alert.setTitle("Error");
-                            alert.setHeaderText("Debe de haber una acción asociada al test");
-                            alert.setContentText("Contacta con tu administrador :)");
-                            alert.showAndWait();
-                        }
-
-                }
-
-
-        }
     }
 
     public void modifyTrial()
@@ -740,17 +756,12 @@ public class MainController implements Initializable {
 
     public void exportTest()
     {
-        /*TextInputDialog dialog = new TextInputDialog("dialtest");
-        dialog.setTitle("Guau! ¿Estás exportando ya?");
-        dialog.setHeaderText("Guardando el test");
-        dialog.setContentText("Por favor introduzca el nombre del archivo:");
-
-        Optional<String> result = dialog.showAndWait();
-        */
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
         fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.setInitialFileName("DialTest.csv");
         File file = fileChooser.showSaveDialog(stageSettings);
+
 
         for(CheckBox trial : testList.getItems())
         {
@@ -764,6 +775,7 @@ public class MainController implements Initializable {
                     e.printStackTrace();
                 }
             }
+            // Aviso de ninguno seleccionado
         }
     }
 
@@ -772,59 +784,59 @@ public class MainController implements Initializable {
         deleteAllTabs();
 
         boolean headerOk = false;
-
-        /*TextInputDialog dialog = new TextInputDialog("dialtest");
-        dialog.setTitle("Importar test");
-        dialog.setHeaderText("Obteniendo el test");
-        dialog.setContentText("Por favor introduzca el nombre del archivo:");
-
-        Optional<String> result = dialog.showAndWait();
-        */
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
-        File file = fileChooser.showOpenDialog(stageSettings);
+        //File file = fileChooser.showOpenDialog(stageSettings);
+        List<File> files = fileChooser.showOpenMultipleDialog(stageSettings);
 
         try {
+            if (files!=null) {
 
-            //String fileName = "/home/david/git_docs/" + result.get() + ".csv"; // Make dialog to ask file
-            //File file = new File(fileName);
-            Scanner inputStream = new Scanner(file);
-            while (inputStream.hasNext()) {
-                String data = inputStream.next();
-                //String action = data.substring()
-                if (data.equals(columnsHeadersCSV)) {
-                     headerOk = true;
-                }
-                    if (headerOk) {
+                for (File file : files) {
 
-                        String[] values = data.split(",");
-                        //System.out.println(data);
-                        if (values[5].equals("A")) {
-                            Action act = new Action(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
-                            actionList.add(act);
-                            actionsRowIndex++;
+                    Scanner inputStream = new Scanner(file);
+                    while (inputStream.hasNext()) {
+                        String data = inputStream.next();
+                        //String action = data.substring()
+                        if (data.equals(columnsHeadersCSV))
+                        {
+                            headerOk = true;
                         }
-                        if (values[5].equals("V")) {
-                            Action act = new Action(gridPaneValidationList, validationRowIndex, values[0], values[1], values[2], values[3], values[4]);
-                            validationList.add(act);
-                            validationRowIndex++;
+                        if (headerOk) {
+
+                            String[] values = data.split(",");
+                            //System.out.println(data);
+                            if (values[5].equals("A")) {
+                                Action act = new Action(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
+                                actionList.add(act);
+                                actionsRowIndex++;
+                            }
+                            if (values[5].equals("V")) {
+                                Action act = new Action(gridPaneValidationList, validationRowIndex, values[0], values[1], values[2], values[3], values[4]);
+                                validationList.add(act);
+                                validationRowIndex++;
+                            }
                         }
                     }
-
+                    if(headerOk)
+                    {
+                        saveTest();
+                        deleteAllTabs();
+                        inputStream.close();
+                    }else {
+                        Alert alert = new Alert(Alert.AlertType.WARNING);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Se ha producido un error durante la importación del test");
+                        alert.setContentText("El fichero no contienen las columnas correctas");
+                        alert.showAndWait();
+                    }
                 }
-            inputStream.close();
+            }
 
             } catch(FileNotFoundException e){
                 e.printStackTrace();
             }
-        if (!headerOk)
-        {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Error");
-            alert.setHeaderText("Se ha producido un error durante la importación del test");
-            alert.setContentText("El fichero no contienen las columnas correctas");
-            alert.showAndWait();
-        }
+
 
     }
 
@@ -848,4 +860,8 @@ public class MainController implements Initializable {
     {
         stageSettings.close();
     }
+
+
+
+
 }

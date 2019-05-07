@@ -1,3 +1,4 @@
+Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation
 Click,xpath,dos,name,bfd,A
 WriteTo,id,c<z,name,bfd,A
 ReadFrom,className,drshdsf,name,bfd,A
