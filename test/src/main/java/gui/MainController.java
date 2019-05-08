@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import persistence.H2DAO;
 
+import javax.security.auth.callback.Callback;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
@@ -482,29 +483,31 @@ public class MainController implements Initializable {
     public void saveTest()
     {
         TextInputDialog dialog = new TextInputDialog("dialtest");
-        dialog.setTitle("Guau! ¿Estás guardando ya?");
-        dialog.setHeaderText("Guardando la prueba");
+        dialog.setTitle("Nueva prueba");
+        dialog.setHeaderText("");
         dialog.setContentText("Por favor introduzca el nombre de la prueba:");
 
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()){
             procesedActionList.clear();                                                     // Limpiar lista con las acciones de la tabla
             goThroughTable("Actions");                                                      // Recorrer la tabla e introduce en procesedActionList las acciones
-            if(!procesedActionList.isEmpty()) {
+            //if(!procesedActionList.isEmpty()) {
                 H2DAO.createTrial(result.get());                                                // Introducir nuevo trial con su nombre en trials
-                String id =  H2DAO.getTrialID(result.get());                                    // Obtener id del nuevo trial
-                H2DAO.saveTrial(procesedActionList, id, 0);                           // Insertar todas las acciones referentes al nuevo test en la tabla trials_actions
-                procesedValidationList.clear();                                                 // Limpiar lista con las valideaciones de la tabla
-                goThroughTable("Validations");                                                  // Recorrer la tabla e introduce en procesedValidationList las validaciones
-                H2DAO.saveTrial(procesedValidationList, id, 1);                       // Insertar todas las validaciones referentes al nuevo test en la tabla trials_actions
+                //String id =  H2DAO.getTrialID(result.get());                                    // Obtener id del nuevo trial
+                //H2DAO.saveTrial(procesedActionList, id, 0);                           // Insertar todas las acciones referentes al nuevo test en la tabla trials_actions
+                //procesedValidationList.clear();                                                 // Limpiar lista con las valideaciones de la tabla
+                //goThroughTable("Validations");                                                  // Recorrer la tabla e introduce en procesedValidationList las validaciones
+                //H2DAO.saveTrial(procesedValidationList, id, 1);                       // Insertar todas las validaciones referentes al nuevo test en la tabla trials_actions
                 poblateTestList();
-            } else {
+            /*} else {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("Debe de haber una acción asociada al test");
                 alert.setContentText("Contacta con tu administrador :)");
                 alert.showAndWait();
-            }
+
+             */
+            //}
 
         }
 
@@ -512,6 +515,7 @@ public class MainController implements Initializable {
 
     public void modifyTrial()
     {
+        boolean trialmodified = false;
         CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
         if(selectedTrial == null)
         {
@@ -535,6 +539,14 @@ public class MainController implements Initializable {
                 goThroughTable("Validations");
                 H2DAO.saveTrial(procesedValidationList, id, 1);
             }
+            trialmodified = true;
+        }
+
+        if (trialmodified) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Cambios comfirmados");
+            alert.setHeaderText("Cambios efectuados con éxito");
+            alert.showAndWait();
         }
     }
 

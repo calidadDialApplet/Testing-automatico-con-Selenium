@@ -1,20 +1,20 @@
 package gui;
 
 import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import main.SeleniumDAO;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import persistence.H2DAO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // TODO: Refactor this as ActionController, use it from MainController
 //       Add Action, Trial, etc DataModels and Controllers (https://stackoverflow.com/questions/32342864/applying-mvc-with-javafx)
@@ -33,8 +33,15 @@ public class Action {
    private Label value = new Label();
    private Label infoText = new Label();
 
+   private int rowIndexDrag;
+   private int rowIndexDrop;
 
-    public Action(GridPane gridParent, int rowIndex) {
+   private DataFormat comboBoxFormat = new DataFormat();
+
+
+
+    public Action(GridPane gridParent, int rowIndex)
+    {
 
         this.gridParent = gridParent;
         this.rowIndex = rowIndex;
@@ -42,10 +49,6 @@ public class Action {
         actionType = new ComboBox<>();
 
         //StackPane stackPane = new StackPane();
-
-
-
-
 
         actionType.setItems(FXCollections.observableArrayList(H2DAO.getTypeAction()));
         //dragComboBox(actionType);
@@ -181,7 +184,122 @@ public class Action {
                     break;
             }
         });
+
+        /*actionType.setOnDragDetected(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                /* drag was detected, start drag-and-drop gesture*/
+                /*System.out.println("onDragDetected");
+                //Node node = event.getPickResult().getIntersectedNode();
+                rowIndexDrag = GridPane.getRowIndex(event.getPickResult().getIntersectedNode());
+                System.out.println("Tomaaa con to mi node " + rowIndexDrag);
+                /* allow any transfer mode */
+                //Dragboard db = actionType.startDragAndDrop(TransferMode.ANY);
+                /*Dragboard db = actionType.startDragAndDrop(TransferMode.MOVE);
+
+                /* put a comboBox on dragboard */
+               /* ClipboardContent content = new ClipboardContent();
+                content.put(comboBoxFormat, " ");
+
+                db.setContent(content);
+
+                event.consume();
+            }
+        });
+
+        actionType.setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                /* data is dragged over the target */
+                //System.out.println("onDragOver");
+
+                /* accept it only if it is  not dragged from the same node
+                 * and if it has a string data */
+                //if (event.getGestureSource() != target &&
+                        //event.getDragboard().hasString()) {
+                    /* allow for both copying and moving, whatever user chooses */
+                /*    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                //}
+
+                event.consume();
+            }
+        });
+
+        actionType.setOnDragEntered(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                /* the drag-and-drop gesture entered the target */
+                /*System.out.println("onDragEntered");
+                /* show to the user that it is an actual gesture target */
+                //if (event.getGestureSource() != target &&
+                //        event.getDragboard().hasString()) {
+                    //actionType.setFill(Color.GREEN);
+                //}
+                /*event.consume();
+            }
+        });
+
+        actionType.setOnDragExited(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                /* mouse moved away, remove the graphical cues */
+                //target.setFill(Color.BLACK);
+
+                /*event.consume();
+            }
+        });
+
+        actionType.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                /* data dropped */
+                /*System.out.println("onDragDropped");
+                /* if there is a string data on dragboard, read it and use it */
+                /*Dragboard db = event.getDragboard();
+                rowIndexDrop = GridPane.getRowIndex(event.getPickResult().getIntersectedNode());
+                boolean success = false;
+                if (db.hasString()) {
+                    //target.setText(db.getString());
+                    success = true;
+                }
+
+                /* let the source know whether the string was successfully
+                 * transferred and used */
+
+                /*for (Node child : gridParent.getChildren()) {
+                    if(GridPane.getRowIndex(child) == rowIndexDrop){
+                        gridParent.getChildren().remove(child);
+                    }
+                }
+                System.out.println("Tomaaa con to mi node " + rowIndexDrop);
+
+                event.setDropCompleted(success);
+
+                event.consume();
+            }
+        });
+
+        actionType.setOnDragDone(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                /* the drag-and-drop gesture ended */
+                /*System.out.println("onDragDone");
+                /* if the data was successfully moved, clear it */
+               /* if (event.getTransferMode() == TransferMode.MOVE) {
+                    //source.setText("");
+                }
+                /*for (Node child : gridParent.getChildren()) {
+                    if(GridPane.getRowIndex(child) == rowIndexDrop){
+                        gridParent.getChildren().remove(child);
+                    }
+                }*/
+               /* gridParent.addColumn(rowIndexDrop, actionType);
+                event.consume();
+            }
+        });*/
     }
+
+
 
     private void initialiceCheckBox(GridPane gridParent) {
         textFieldNotGenerated = true;
@@ -508,8 +626,8 @@ public class Action {
         }
         return SelectBy;
     }
-    /*
-    private DataFormat comboBoxFormat = new DataFormat();
+
+    /*private DataFormat comboBoxFormat = new DataFormat();
     private ComboBox draggingComboBox;
     private void dragComboBox(ComboBox comboBox)
     {
@@ -542,6 +660,7 @@ public class Action {
             }
         });
     }*/
+
 
    @Override
    public String toString() {

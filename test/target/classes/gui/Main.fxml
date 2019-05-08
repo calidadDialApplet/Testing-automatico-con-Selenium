@@ -76,11 +76,11 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="buttonModifyTrial" layoutX="49.0" layoutY="10.0" mnemonicParsing="true" onAction="#modifyTrial">
+                  <Button fx:id="buttonModifyTrial" layoutX="49.0" layoutY="10.0" mnemonicParsing="true" onAction="#saveTest">
                      <graphic>
                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@/icons/baseline_edit_black_24dp.png" />
+                              <Image url="@/icons/sharp_add_black_24dp.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -198,7 +198,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="buttonSave" layoutX="88.0" layoutY="10.0" mnemonicParsing="true" onAction="#saveTest">
+                  <Button fx:id="buttonSave" layoutX="88.0" layoutY="10.0" mnemonicParsing="true" onAction="#modifyTrial">
                      <graphic>
                         <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
