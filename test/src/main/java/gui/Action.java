@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import main.SeleniumDAO;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -38,11 +39,16 @@ public class Action {
 
    private DataFormat comboBoxFormat = new DataFormat();
 
+   private String actionTypeS = "";
+   private String selectElementByS = "";
+   private String selectPlaceByS = "";
+   private String firstValueArgsS = "";
+   private String secondValueArgsS = "";
 
 
-    public Action(GridPane gridParent, int rowIndex)
-    {
-
+    //public Action(GridPane gridParent, int rowIndex)
+    //{
+        /*
         this.gridParent = gridParent;
         this.rowIndex = rowIndex;
 
@@ -183,22 +189,22 @@ public class Action {
                 default:
                     break;
             }
-        });
-
-        /*actionType.setOnDragDetected(new EventHandler<MouseEvent>() {
+        });*/
+        /*
+        actionType.setOnDragDetected(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                /* drag was detected, start drag-and-drop gesture*/
-                /*System.out.println("onDragDetected");
+
+                System.out.println("onDragDetected");
                 //Node node = event.getPickResult().getIntersectedNode();
                 rowIndexDrag = GridPane.getRowIndex(event.getPickResult().getIntersectedNode());
                 System.out.println("Tomaaa con to mi node " + rowIndexDrag);
-                /* allow any transfer mode */
-                //Dragboard db = actionType.startDragAndDrop(TransferMode.ANY);
-                /*Dragboard db = actionType.startDragAndDrop(TransferMode.MOVE);
 
-                /* put a comboBox on dragboard */
-               /* ClipboardContent content = new ClipboardContent();
+                //Dragboard db = actionType.startDragAndDrop(TransferMode.ANY);
+                Dragboard db = actionType.startDragAndDrop(TransferMode.MOVE);
+
+
+                ClipboardContent content = new ClipboardContent();
                 content.put(comboBoxFormat, " ");
 
                 db.setContent(content);
@@ -210,16 +216,10 @@ public class Action {
         actionType.setOnDragOver(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                /* data is dragged over the target */
-                //System.out.println("onDragOver");
 
-                /* accept it only if it is  not dragged from the same node
-                 * and if it has a string data */
-                //if (event.getGestureSource() != target &&
-                        //event.getDragboard().hasString()) {
-                    /* allow for both copying and moving, whatever user chooses */
-                /*    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                //}
+
+                   event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+
 
                 event.consume();
             }
@@ -228,45 +228,44 @@ public class Action {
         actionType.setOnDragEntered(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                /* the drag-and-drop gesture entered the target */
-                /*System.out.println("onDragEntered");
-                /* show to the user that it is an actual gesture target */
-                //if (event.getGestureSource() != target &&
-                //        event.getDragboard().hasString()) {
-                    //actionType.setFill(Color.GREEN);
-                //}
-                /*event.consume();
+
+                System.out.println("onDragEntered");
+
+                event.consume();
             }
         });
 
         actionType.setOnDragExited(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                /* mouse moved away, remove the graphical cues */
-                //target.setFill(Color.BLACK);
 
-                /*event.consume();
+                event.consume();
             }
         });
 
         actionType.setOnDragDropped(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                /* data dropped */
-                /*System.out.println("onDragDropped");
-                /* if there is a string data on dragboard, read it and use it */
-                /*Dragboard db = event.getDragboard();
-                rowIndexDrop = GridPane.getRowIndex(event.getPickResult().getIntersectedNode());
+
+                System.out.println("onDragDropped");
+
+                Dragboard db = event.getDragboard();
+                StackPane intento = new StackPane();
+                if(event.getPickResult().getClass().isInstance(intento))
+                {
+                    System.out.println("Tomaaaa");
+                    Node nodo = event.getPickResult().getIntersectedNode().getParent();
+                    System.out.println(nodo.toString());
+                }
+                //rowIndexDrop = GridPane.getRowIndex(event.getPickResult().getIntersectedNode());
                 boolean success = false;
                 if (db.hasString()) {
                     //target.setText(db.getString());
                     success = true;
                 }
 
-                /* let the source know whether the string was successfully
-                 * transferred and used */
 
-                /*for (Node child : gridParent.getChildren()) {
+                for (Node child : gridParent.getChildren()) {
                     if(GridPane.getRowIndex(child) == rowIndexDrop){
                         gridParent.getChildren().remove(child);
                     }
@@ -282,35 +281,35 @@ public class Action {
         actionType.setOnDragDone(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                /* the drag-and-drop gesture ended */
-                /*System.out.println("onDragDone");
-                /* if the data was successfully moved, clear it */
-               /* if (event.getTransferMode() == TransferMode.MOVE) {
-                    //source.setText("");
+
+                System.out.println("onDragDone");
+
+                if (event.getTransferMode() == TransferMode.MOVE) {
+
                 }
                 /*for (Node child : gridParent.getChildren()) {
                     if(GridPane.getRowIndex(child) == rowIndexDrop){
                         gridParent.getChildren().remove(child);
                     }
                 }*/
-               /* gridParent.addColumn(rowIndexDrop, actionType);
+              /* gridParent.addColumn(rowIndexDrop, actionType);
                 event.consume();
             }
         });*/
-    }
+    //}
 
 
 
-    private void initialiceCheckBox(GridPane gridParent) {
+   /* private void initialiceCheckBox(GridPane gridParent) {
         textFieldNotGenerated = true;
         if (needToDelete) {
             setDefaultAction(gridParent, lastType);
         }
         needToDelete = true;
-    }
+    }*/
 
 
-    public Action(String actionType, String selectElementBy, String firstValueArgs, String selectPlaceBy, String secondValueArgs)
+   /* public Action(String actionType, String selectElementBy, String firstValueArgs, String selectPlaceBy, String secondValueArgs)
    {
         if(actionType.matches("1|2|3|4|5|6|7")){
             this.actionType.setValue(getActionTypeId(actionType));
@@ -330,13 +329,23 @@ public class Action {
            this.selectPlaceBy.setValue(selectPlaceBy);
        }
        this.secondValueArgs.setText(secondValueArgs);
-   }
 
 
 
-    public Action(GridPane gridParent, int rowIndex, String actionTypeValue, String selectElementByValue, String firstValueArgsValue, String selectPlaceByValue, String secondValueArgsValue) {
+   }*/
 
-        this.gridParent = gridParent;
+    public Action(String actionTypeS, String selectElementByS, String selectPlaceByS, String firstValueArgsS, String secondValueArgsS) {
+        this.actionTypeS = actionTypeS;
+        this.selectElementByS = selectElementByS;
+        this.selectPlaceByS = selectPlaceByS;
+        this.firstValueArgsS = firstValueArgsS;
+        this.secondValueArgsS = secondValueArgsS;
+    }
+
+    //public Action(GridPane gridParent, int rowIndex, String actionTypeValue, String selectElementByValue, String firstValueArgsValue, String selectPlaceByValue, String secondValueArgsValue)
+    //{
+
+       /* this.gridParent = gridParent;
         this.rowIndex = rowIndex;
 
         actionType = new ComboBox<>();
@@ -492,7 +501,9 @@ public class Action {
             }
         });
         actionType.getSelectionModel().select(actionTypeValue);
-    }
+        */
+
+   // }
 
    public String executeAction(WebDriver driver){
 
@@ -500,39 +511,39 @@ public class Action {
 
         try
         {
-            switch (this.actionType.getValue().toString()) {
+            switch (actionTypeS) {
                 case "Click":
-                    WebElement clickElement = SeleniumDAO.selectElementBy(this.selectElementBy.getValue().toString(), this.firstValueArgs.getText(), driver);
+                    WebElement clickElement = SeleniumDAO.selectElementBy(this.selectElementByS, this.firstValueArgsS, driver);
                     SeleniumDAO.click(clickElement);
                     result = "Ok";
                     break;
                 case "DragAndDrop":
-                    WebElement dragElement = SeleniumDAO.selectElementBy(this.selectElementBy.getValue().toString(), this.firstValueArgs.getText(), driver);
-                    WebElement dropPlaceElement = SeleniumDAO.selectElementBy(this.selectPlaceBy.getValue().toString(), this.secondValueArgs.getText(), driver);
+                    WebElement dragElement = SeleniumDAO.selectElementBy(this.selectElementByS, this.firstValueArgsS, driver);
+                    WebElement dropPlaceElement = SeleniumDAO.selectElementBy(this.selectPlaceByS, this.secondValueArgsS, driver);
                     SeleniumDAO.dragAndDropAction(dragElement, dropPlaceElement, driver);
                     result = "Ok";
                     break;
                 case "WriteTo":
-                    WebElement writeToElement = SeleniumDAO.selectElementBy(selectElementBy.getValue().toString(), firstValueArgs.getText(), driver);
+                    WebElement writeToElement = SeleniumDAO.selectElementBy(this.selectElementByS, this.firstValueArgsS, driver);
                     //writeToElement.sendKeys(secondValueArgs.getText());
-                    SeleniumDAO.writeInTo(writeToElement,this.secondValueArgs.getText());
+                    SeleniumDAO.writeInTo(writeToElement,this.secondValueArgsS);
                     result = "Ok";
                     break;
                 case "ReadFrom":
-                    WebElement readFromElement = SeleniumDAO.selectElementBy(selectElementBy.getValue().toString(),firstValueArgs.getText(),driver);
+                    WebElement readFromElement = SeleniumDAO.selectElementBy(this.selectElementByS,this.firstValueArgsS,driver);
                     result = SeleniumDAO.readFrom(readFromElement);
                     result = "Ok";
                     break;
                 case "SwitchTo":
-                    SeleniumDAO.switchToFrame(this.firstValueArgs.getText(), driver);
+                    SeleniumDAO.switchToFrame(this.firstValueArgsS, driver);
                     result = "Ok";
                     break;
                 case "Waiting":
-                    SeleniumDAO.waitForElement(Integer.parseInt(this.firstValueArgs.getText()),this.selectElementBy.getValue().toString(), this.secondValueArgs.getText() ,driver);
+                    SeleniumDAO.waitForElement(Integer.parseInt(this.firstValueArgsS),this.selectElementByS, this.secondValueArgsS ,driver);
                     result = "Ok";
                     break;
                 case "WaitTime":
-                    SeleniumDAO.implicitWait(Integer.parseInt(this.firstValueArgs.getText()));
+                    SeleniumDAO.implicitWait(Integer.parseInt(this.firstValueArgsS));
                     result = "Ok";
                     break;
                 default:
@@ -548,7 +559,7 @@ public class Action {
 
    }
 
-   public void setDefaultAction(GridPane gridParent, String lastType)
+   /*public void setDefaultAction(GridPane gridParent, String lastType)
    {
        switch (lastType){
            case "Click":
@@ -569,9 +580,9 @@ public class Action {
            case "default":
                break;
        }
-   }
+   }*/
 
-    public static String getActionTypeId(String actionType)
+   /* public static String getActionTypeId(String actionType)
     {
         String type = "NULL"; // No action type
         switch (actionType){
@@ -625,7 +636,7 @@ public class Action {
                 break;
         }
         return SelectBy;
-    }
+    }*/
 
     /*private DataFormat comboBoxFormat = new DataFormat();
     private ComboBox draggingComboBox;
@@ -661,19 +672,38 @@ public class Action {
         });
     }*/
 
+    public String getActionTypeS() {
+        return actionTypeS;
+    }
 
-   @Override
-   public String toString() {
+    public String getSelectElementByS() {
+        return selectElementByS;
+    }
+
+    public String getSelectPlaceByS() {
+        return selectPlaceByS;
+    }
+
+    public String getFirstValueArgsS() {
+        return firstValueArgsS;
+    }
+
+    public String getSecondValueArgsS() {
+        return secondValueArgsS;
+    }
+
+    @Override
+    public String toString() {
         return "Action{" +
-                "actionType=" + actionType.getValue().toString() +
-                ", selectElementBy=" + selectElementBy.getValue().toString() +
-                ", selectPlaceBy=" + selectPlaceBy.getValue().toString() +
-                ", firstValueArgs=" + firstValueArgs.getText() +
-                ", secondValueArgs=" + secondValueArgs.getText() +
+                "actionTypeS='" + actionTypeS + '\'' +
+                ", selectElementByS='" + selectElementByS + '\'' +
+                ", selectPlaceByS='" + selectPlaceByS + '\'' +
+                ", firstValueArgsS='" + firstValueArgsS + '\'' +
+                ", secondValueArgsS='" + secondValueArgsS + '\'' +
                 '}';
     }
 
-    public String getActionTypeString() {
+    /* public String getActionTypeString() {
         return actionType.getValue().toString();
     }
 
@@ -712,5 +742,5 @@ public class Action {
 
     public TextField getSecondValueArgs() {
         return secondValueArgs;
-    }
+    }*/
 }

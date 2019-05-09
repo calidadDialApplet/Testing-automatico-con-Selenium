@@ -194,11 +194,11 @@ public class H2DAO {
                 Action currentAction = actionList.get(i);
 
 
-                Integer actionTypeId = getIdActionType(currentAction.getActionTypeString());
-                Integer firstValueArgs = getIdSelectElementBy(currentAction.getSelectElementByString());
-                String value1 = currentAction.getFirstValueArgsString();
-                Integer secondValueArgs = getIdSelectElementBy(currentAction.getSelectPlaceByString());
-                String value2 = currentAction.getSecondValueArgsString();
+                Integer actionTypeId = getIdActionType(currentAction.getActionTypeS());
+                Integer firstValueArgs = getIdSelectElementBy(currentAction.getSelectElementByS());
+                String value1 = currentAction.getFirstValueArgsS();
+                Integer secondValueArgs = getIdSelectElementBy(currentAction.getSelectElementByS());
+                String value2 = currentAction.getSecondValueArgsS();
 
 
                 String statement = "insert into" +
@@ -216,7 +216,7 @@ public class H2DAO {
                 st.execute(statement);
                 //System.out.println("Pasa2");
             }
-            String statement2 = "select * from trial_actions";
+            String statement2 = "select * from trial_actions where id ='"+id+"'";
             st.execute(statement2);
             System.out.println(st.getResultSet());
             System.out.println("GUARDADO");

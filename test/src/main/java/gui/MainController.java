@@ -250,14 +250,21 @@ public class MainController implements Initializable {
     {
         if(tabActions.isSelected())
         {
-            Action newAction = new Action(gridPaneTrialList, actionsRowIndex);
-            actionList.add(newAction);
+            //Action newAction = new Action(gridPaneTrialList, actionsRowIndex);
+            ActionController actionController = new ActionController();
+            actionController.addActiontoGrid(gridPaneTrialList, actionsRowIndex);
+            //Action newAction = new Action(actionController.getActionTypeString(), actionController.getSelectElementByString(),
+            //      actionController.getFirstValueArgsString(),actionController.getSelectPlaceByString(), actionController.getSecondValueArgsString());
+            //actionList.add(newAction);
             actionsRowIndex++;
         }
         if(tabValidation.isSelected())
         {
-            Action newAction = new Action(gridPaneValidationList, validationRowIndex);
-            validationList.add(newAction);
+            ActionController actionController = new ActionController();
+            actionController.addActiontoGrid(gridPaneValidationList, validationRowIndex);
+            //Action newAction = new Action(actionController.getActionTypeString(), actionController.getSelectElementByString(),
+            //        actionController.getFirstValueArgsString(),actionController.getSelectPlaceByString(), actionController.getSecondValueArgsString());
+            //validationList.add(newAction);
             validationRowIndex++;
         }
 
@@ -379,12 +386,12 @@ public class MainController implements Initializable {
                Platform.runLater(new Runnable() {
                    @Override
                    public void run() {
-                       String selectedTrial = testList.getSelectionModel().getSelectedItem().getText();
-                       if (selectedTrial == null){
-                           trial.setText("Prueba sin guardar");
-                       }else{
-                           trial.setText(selectedTrial);
-                       }
+                       //String selectedTrial = testList.getSelectionModel().getSelectedItem().getText();
+                       //if (selectedTrial == null){
+                       //    trial.setText("Prueba sin guardar");
+                       //}else{
+                       //    trial.setText(selectedTrial);
+                       //}
                        GridPane grid = new GridPane();
                        grid.setVgap(2);
                        if (tabActions.isSelected()) {
@@ -601,13 +608,15 @@ public class MainController implements Initializable {
                     }
                 }
             }
-            Action currentAction = new Action(comboBoxActionType,comboBoxSelectElementBy,textFieldFirstValueArgs,comboBoxSelectPlaceBy,textFieldSecondValueArgs);
+            Action currentAction = new Action(comboBoxActionType,comboBoxSelectElementBy,comboBoxSelectPlaceBy,textFieldFirstValueArgs,textFieldSecondValueArgs);
             resetFields();
 
             if (table.equals("Actions")) {
+                actionList.add(currentAction);
                 procesedActionList.add(currentAction);
             }
             if (table.equals("Validations"))  {
+                validationList.add(currentAction);
                 procesedValidationList.add(currentAction);
             }
             iterator++;
@@ -644,9 +653,12 @@ public class MainController implements Initializable {
            ArrayList<Action> trialActions = H2DAO.getActions(trialName);
            for(Action actionOfTrial : trialActions)
            {
-               Action action = new Action(gridPaneTrialList, actionsRowIndex,actionOfTrial.getActionTypeString(),actionOfTrial.getSelectElementByString(),
-                                            actionOfTrial.getFirstValueArgsString(),actionOfTrial.getSelectPlaceByString(),actionOfTrial.getSecondValueArgsString());
-               actionList.add(action);
+               ActionController actionController = new ActionController();
+               actionController.setAction(gridPaneTrialList, actionsRowIndex,actionOfTrial.getActionTypeS(),actionOfTrial.getSelectElementByS(),actionOfTrial.getSelectPlaceByS(),
+                                                   actionOfTrial.getFirstValueArgsS(),actionOfTrial.getSecondValueArgsS());
+               //Action action = new Action(gridPaneTrialList, actionsRowIndex,actionOfTrial.getActionTypeS(),actionOfTrial.getSelectElementByS(),
+               //                             actionOfTrial.getFirstValueArgsS(),actionOfTrial.getSelectPlaceByS(),actionOfTrial.getSecondValueArgsS());
+               //actionList.add(action);
                actionsRowIndex++;
            }
        }
@@ -661,9 +673,12 @@ public class MainController implements Initializable {
             ArrayList<Action> trialActions = H2DAO.getValidations(trialName);
             for(Action validation : trialActions)
             {
-                Action action = new Action(gridPaneValidationList, validationRowIndex,validation.getActionTypeString(),validation.getSelectElementByString(),
-                        validation.getFirstValueArgsString(),validation.getSelectPlaceByString(),validation.getSecondValueArgsString());
-                validationList.add(action);
+                ActionController actionController = new ActionController();
+                actionController.setAction(gridPaneTrialList, actionsRowIndex,validation.getActionTypeS(),validation.getSelectElementByS(),validation.getSelectPlaceByS(),
+                        validation.getFirstValueArgsS(),validation.getSecondValueArgsS());
+                //Action action = new Action(gridPaneValidationList, validationRowIndex,validation.getActionTypeS(),validation.getSelectElementByS(),
+                //        validation.getFirstValueArgsS(),validation.getSelectPlaceByS(),validation.getSecondValueArgsS());
+                //validationList.add(action);
                 validationRowIndex++;
             }
         }
@@ -739,21 +754,21 @@ public class MainController implements Initializable {
                 for (Action action : actions)
                 {
                     writer.write(System.lineSeparator());
-                    writer.write("" + action.getActionTypeString() + ","
-                            + action.getSelectElementByString() + ","
-                            + action.getFirstValueArgsString() + ","
-                            + action.getSelectPlaceByString() + ","
-                            + action.getSecondValueArgsString() + ","
+                    writer.write("" + action.getActionTypeS() + ","
+                            + action.getSelectElementByS() + ","
+                            + action.getFirstValueArgsS() + ","
+                            + action.getSelectPlaceByS() + ","
+                            + action.getSecondValueArgsS() + ","
                             + "A");
                 }
                 for (Action validation : validations)
                 {
                     writer.write(System.lineSeparator());
-                    writer.write("" + validation.getActionTypeString() + ","
-                            + validation.getSelectElementByString() + ","
-                            + validation.getFirstValueArgsString() + ","
-                            + validation.getSelectPlaceByString() + ","
-                            + validation.getSecondValueArgsString() + ","
+                    writer.write("" + validation.getActionTypeS() + ","
+                            + validation.getSelectElementByS() + ","
+                            + validation.getFirstValueArgsS() + ","
+                            + validation.getSelectPlaceByS() + ","
+                            + validation.getSecondValueArgsS() + ","
                             + "V");
                 }
                 System.out.println("FUNCIONA");
@@ -819,13 +834,17 @@ public class MainController implements Initializable {
                             String[] values = data.split(",");
                             //System.out.println(data);
                             if (values[5].equals("A")) {
-                                Action act = new Action(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
-                                actionList.add(act);
+                                ActionController actionController = new ActionController();
+                                actionController.setAction(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
+                                //Action act = new Action(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
+                                //actionList.add(act);
                                 actionsRowIndex++;
                             }
                             if (values[5].equals("V")) {
-                                Action act = new Action(gridPaneValidationList, validationRowIndex, values[0], values[1], values[2], values[3], values[4]);
-                                validationList.add(act);
+                                ActionController actionController = new ActionController();
+                                actionController.setAction(gridPaneValidationList, validationRowIndex, values[0], values[1], values[2], values[3], values[4]);
+                                //Action act = new Action(gridPaneValidationList, validationRowIndex, values[0], values[1], values[2], values[3], values[4]);
+                                //validationList.add(act);
                                 validationRowIndex++;
                             }
                         }
