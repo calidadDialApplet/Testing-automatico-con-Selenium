@@ -1,43 +1,13 @@
 package gui;
 
-import javafx.collections.FXCollections;
-import javafx.event.EventHandler;
-import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.input.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import main.SeleniumDAO;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import persistence.H2DAO;
 
-import java.util.ArrayList;
-import java.util.List;
 
 // TODO: Refactor this as ActionController, use it from MainController
 //       Add Action, Trial, etc DataModels and Controllers (https://stackoverflow.com/questions/32342864/applying-mvc-with-javafx)
 public class Action {
-
-   private GridPane gridParent;
-   private int rowIndex;
-   private String lastType;
-   private boolean textFieldNotGenerated, needToDelete, placeNotGenerated;
-
-   private ComboBox actionType = new ComboBox();
-   private ComboBox selectElementBy = new ComboBox();
-   private ComboBox selectPlaceBy = new ComboBox();
-   private TextField firstValueArgs = new TextField();
-   private TextField secondValueArgs = new TextField();
-   private Label value = new Label();
-   private Label infoText = new Label();
-
-   private int rowIndexDrag;
-   private int rowIndexDrop;
-
-   private DataFormat comboBoxFormat = new DataFormat();
 
    private String actionTypeS = "";
    private String selectElementByS = "";
@@ -340,6 +310,62 @@ public class Action {
         this.selectPlaceByS = selectPlaceByS;
         this.firstValueArgsS = firstValueArgsS;
         this.secondValueArgsS = secondValueArgsS;
+    }
+
+    public static String getActionTypeId(String actionType)
+    {
+        String type = "NULL"; // No action type
+        switch (actionType){
+            case "1":
+                type = "Click";
+                break;
+            case "2":
+                type = "DragAndDrop";
+                break;
+            case "3":
+                type = "WriteTo";
+                break;
+            case "4":
+                type = "ReadFrom";
+                break;
+            case "5":
+                type = "SwitchTo";
+                break;
+            case "6":
+                type = "Waiting";
+                break;
+            case "7":
+                type = "WaitTime";
+                break;
+            default:
+                break;
+        }
+        return type;
+    }
+
+    public static String getSelectElementById(String actionType)
+    {
+        String SelectBy = "NULL"; // No action type
+        switch (actionType){
+            case "1":
+                SelectBy = "id";
+                break;
+            case "2":
+                SelectBy = "xpath";
+                break;
+            case "3":
+                SelectBy = "cssSelector";
+                break;
+            case "4":
+                SelectBy = "className";
+                break;
+            case "5":
+                SelectBy = "name";
+                break;
+            default:
+                break;
+        }
+        return SelectBy;
     }
 
     //public Action(GridPane gridParent, int rowIndex, String actionTypeValue, String selectElementByValue, String firstValueArgsValue, String selectPlaceByValue, String secondValueArgsValue)

@@ -4,19 +4,17 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -25,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import persistence.H2DAO;
 
-import javax.security.auth.callback.Callback;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
@@ -66,23 +63,10 @@ public class MainController implements Initializable {
     @FXML
     private Tab tabValidation;
 
-    @FXML
-    private ScrollPane scrollPaneActionslList;
-
-    @FXML
-    private ScrollPane scrollPaneValidationsList;
-
-    @FXML
-    private AnchorPane anchorPaneTrial;
-
-    @FXML
-    private TabPane tabPaneParent;
 
     @FXML
     private Accordion accordionComprobationList;
 
-    @FXML
-    private MenuItem menuItemSettings;
 
     private static Scene sceneSettings;
     private static Stage stageSettings;
@@ -102,7 +86,11 @@ public class MainController implements Initializable {
     String textFieldSecondValueArgs = "";
     String columnsHeadersCSV = "Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation";
 
-    private Service<Void> backgroundThread;
+    private static DataFormat comboBoxFormat = new DataFormat();
+    private static Integer rowIndexDrag;
+    private static Integer rowIndexDrop;
+    private static List<Node> draguedChildList;
+    private static List<Node> movedChilds;
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
@@ -112,6 +100,8 @@ public class MainController implements Initializable {
         validationList = new ArrayList<>();
         procesedActionList = new ArrayList<>();
         procesedValidationList = new ArrayList<>();
+        draguedChildList = new ArrayList<>();
+        movedChilds = new ArrayList<>();
 
         // TODO: Has to be done with:
         //            for (int i = 0; i < numColumns; i++)
@@ -172,40 +162,6 @@ public class MainController implements Initializable {
         });
 
         poblateTestList();
-
-        /*
-
-        StackPane row0Col0 = new StackPane();
-        StackPane row0Col1 = new StackPane();
-        StackPane row1Col1 = new StackPane();
-        StackPane row1Col0 = new StackPane();
-
-        row0Col0.setBackground(new Background(new BackgroundFill(Color.DARKGREEN, CornerRadii.EMPTY, Insets.EMPTY)));
-        row0Col1.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
-        row1Col0.setBackground(new Background(new BackgroundFill(Color.SALMON, CornerRadii.EMPTY, Insets.EMPTY)));
-        row1Col1.setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
-
-
-        gridPaneTrialList.add(row0Col0, 0, 0);
-        gridPaneTrialList.add(row0Col1, 0, 1);
-        gridPaneTrialList.add(row1Col0, 1, 1);
-        gridPaneTrialList.add(row1Col1, 1, 0);
-
-        ComboBox cb = new ComboBox(FXCollections.observableArrayList("Uno", "Dos", "Tres"));
-        ComboBox cb2 = new ComboBox(FXCollections.observableArrayList("Uno", "Dos", "Tres"));
-
-        dragComboBox(cb);
-        dragComboBox(cb2);
-
-        gridPaneTrialList.addRow(2,cb);
-        gridPaneTrialList.addRow(3,cb2);
-
-        addDropHandling(row0Col0);
-        addDropHandling(row0Col1);
-        addDropHandling(row1Col0);
-        addDropHandling(row1Col1);
-
-         */
     }
 
     public void openSettingsDialog()
@@ -869,6 +825,104 @@ public class MainController implements Initializable {
             }
 
 
+    }
+
+    public static void dragAndDrop(GridPane gridParent, ComboBox dragItem)
+    {
+        rowIndexDrop = 0;
+        rowIndexDrag = 0;
+        draguedChildList.clear();
+        movedChilds.clear();
+
+        dragItem.setOnDragDetected(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Dragboard db = dragItem.startDragAndDrop(TransferMode.ANY);
+                ClipboardContent content = new ClipboardContent();
+                content.put(comboBoxFormat, " ");
+                db.setContent(content);
+                rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
+                System.out.println(rowIndexDrag);
+                for (Node child : gridParent.getChildren()){
+                    if (gridParent.getRowIndex(child) == rowIndexDrag)
+                    {
+                        draguedChildList.add(child);
+                    }
+                }
+                event.consume();
+            }
+        });
+
+        dragItem.setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                gridParent.getChildren().removeAll(draguedChildList);
+                event.consume();
+            }
+        });
+
+        dragItem.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                Dragboard db = event.getDragboard();
+                StackPane intento = new StackPane();
+                if(event.getPickResult().getClass().isInstance(intento))
+                {
+                    System.out.println("Tomaaaa");
+                    Node nodo = event.getPickResult().getIntersectedNode().getParent();
+                    System.out.println(nodo.toString());
+                }
+                rowIndexDrop = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
+                /*boolean success = false;
+                if (db.hasString()) {
+                    //target.setText(db.getString());
+                    success = true;
+                }*/
+
+
+                for (Node child : gridParent.getChildren()) {
+                    if(gridParent.getRowIndex(child) >= rowIndexDrop){
+                        gridParent.setRowIndex(child, gridParent.getRowIndex(child)+1);
+                        //movedChilds.add(child);
+                        //gridParent.getChildren().remove(child);
+
+                    }
+                }
+                System.out.println("Tomaaa con to mi node " + rowIndexDrop);
+
+                //event.setDropCompleted(success);
+
+                event.consume();
+            }
+        });
+
+        dragItem.setOnDragDone(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                System.out.println("onDragDone");
+
+                if (event.getTransferMode() == TransferMode.MOVE) {
+
+                }
+                /*for (Node child : gridParent.getChildren()) {
+                    System.out.println("El rowIndex donde voy a dejar esta mierda es: " + GridPane.getRowIndex(child));
+                    if(GridPane.getRowIndex(child) == rowIndexDrop){
+                        System.out.println("La madre del: " + child);
+                        gridParent.getChildren().remove(child);
+                    }
+                }*/
+                for (Node item : draguedChildList){
+                    gridParent.addRow(rowIndexDrop, item);
+                }
+
+                /*for (Node item : movedChilds){
+                    gridParent.addRow(gridParent.getRowIndex(item)+1, item);
+                }*/
+                //gridParent.addColumn(rowIndexDrop, dragItem);
+                event.consume();
+            }
+        });
     }
 
 

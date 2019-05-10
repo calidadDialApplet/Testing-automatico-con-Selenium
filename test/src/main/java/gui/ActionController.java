@@ -1,10 +1,14 @@
 package gui;
 
 import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import persistence.H2DAO;
 
 public class ActionController
@@ -18,45 +22,33 @@ public class ActionController
     private String lastType;
     private boolean textFieldNotGenerated, needToDelete, placeNotGenerated;
 
+
+
     public void setAction(GridPane gridParent, int rowIndex,String actionTypeValue, String selectElementByValue, String firstValueArgsValue, String selectPlaceByValue, String secondValueArgsValue)
     {
-        //this.gridParent = gridParent;
-        //this.rowIndex = rowIndex;
-
-
-
         actionType = new ComboBox<>();
         actionType.setItems(FXCollections.observableArrayList(H2DAO.getTypeAction()));
         gridParent.addRow(rowIndex, actionType);
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
+            lastType = actionType.getValue().toString();
             switch (actionType.getValue().toString()) {
                 case "Click":
-                    initialiceCheckBox(gridParent);
-                    lastType = "Click";
+                case "ReadFrom":
+                    initializeComboBox(gridParent);
                     selectElementBy = new ComboBox();
                     selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
-
-                        if (textFieldNotGenerated) {
-                            firstValueArgs = new TextField();
-                            firstValueArgs.setText(firstValueArgsValue);
-                            gridParent.addRow(rowIndex, firstValueArgs);
-                        }
-                        textFieldNotGenerated = false;
+                        generatedTextField(gridParent,rowIndex, "FirstValueArgs", firstValueArgsValue);
                     });
-                    selectElementBy.setValue(getSelectElementById(selectElementByValue));
+                    selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
                     break;
                 case "DragAndDrop":
                     textFieldNotGenerated = true;
                     placeNotGenerated = true;
-                    if(needToDelete) {
-                        setDefaultAction(gridParent);
-                    }
-                    needToDelete = true;
-                    lastType = "DragAndDrop";
+                    initializeComboBox(gridParent);
                     selectElementBy = new ComboBox();
                     selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
@@ -74,21 +66,15 @@ public class ActionController
                             placeNotGenerated = false;
                             selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
                             {
-                                if (textFieldNotGenerated) {
-                                    secondValueArgs = new TextField();
-                                    secondValueArgs.setText(secondValueArgsValue);
-                                    gridParent.addRow(rowIndex, secondValueArgs);
-                                }
-                                textFieldNotGenerated = false;
+                                generatedTextField(gridParent,rowIndex, "SecondValueArgs", secondValueArgsValue);
                             });
-                            selectPlaceBy.setValue(getSelectElementById(selectPlaceByValue));
+                            selectPlaceBy.setValue(Action.getSelectElementById(selectPlaceByValue));
                         }
                     });
-                    selectElementBy.setValue(getSelectElementById(selectElementByValue));
+                    selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
                     break;
                 case "WriteTo":
-                    initialiceCheckBox(gridParent);
-                    lastType = "WriteTo";
+                    initializeComboBox(gridParent);
                     selectElementBy = new ComboBox();
                     selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     gridParent.addRow(rowIndex, selectElementBy);
@@ -108,39 +94,15 @@ public class ActionController
                         }
                         textFieldNotGenerated = false;
                     });
-                    selectElementBy.setValue(getSelectElementById(selectElementByValue));
-                    break;
-                case "ReadFrom":
-                    initialiceCheckBox(gridParent);
-                    lastType = "ReadFrom";
-                    selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                    gridParent.addRow(rowIndex, selectElementBy);
-                    selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
-                    {
-                        if (textFieldNotGenerated) {
-                            firstValueArgs = new TextField();
-                            firstValueArgs.setText(firstValueArgsValue);
-                            gridParent.addRow(rowIndex, firstValueArgs);
-                        }
-                        textFieldNotGenerated = false;
-                    });
-                    selectElementBy.setValue(getSelectElementById(selectElementByValue));
+                    selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
                     break;
                 case "SwitchTo":
-                    initialiceCheckBox(gridParent);
-                    lastType = "SwitchTo";
-
-                    if (textFieldNotGenerated) {
-                        firstValueArgs = new TextField();
-                        firstValueArgs.setText(firstValueArgsValue);
-                        gridParent.addRow(rowIndex, firstValueArgs);
-                    }
-                    textFieldNotGenerated = false;
+                case "WaitTime":
+                    initializeComboBox(gridParent);
+                    generatedTextField(gridParent,rowIndex, "FirstValueArgs", firstValueArgsValue);
                     break;
                 case "Waiting":
-                    initialiceCheckBox(gridParent);
-                    lastType = "Waiting";
+                    initializeComboBox(gridParent);
                     firstValueArgs = new TextField();
                     firstValueArgs.setText(firstValueArgsValue);
                     gridParent.addRow(rowIndex, firstValueArgs);
@@ -153,31 +115,15 @@ public class ActionController
                     gridParent.addRow(rowIndex, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
-                        if (textFieldNotGenerated) {
-                            secondValueArgs = new TextField();
-                            secondValueArgs.setText(secondValueArgsValue);
-                            gridParent.addRow(rowIndex,secondValueArgs);
-                        }
-                        textFieldNotGenerated = false;
+                        generatedTextField(gridParent,rowIndex, "SecondValueArgs", secondValueArgsValue);
                     });
-                    selectElementBy.setValue(getSelectElementById(selectElementByValue));
-                    break;
-                case "WaitTime":
-                    initialiceCheckBox(gridParent);
-                    lastType = "WaitTime";
-
-                    if (textFieldNotGenerated) {
-                        firstValueArgs = new TextField();
-                        firstValueArgs.setText(firstValueArgsValue);
-                        gridParent.addRow(rowIndex, firstValueArgs);
-                    }
-                    textFieldNotGenerated = false;
+                    selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
                     break;
                 default:
                     break;
             }
         });
-        actionType.getSelectionModel().select(getActionTypeId(actionTypeValue));
+        actionType.getSelectionModel().select(Action.getActionTypeId(actionTypeValue));
     }
 
     public void addActiontoGrid(GridPane gridParent, int rowIndex)
@@ -189,7 +135,7 @@ public class ActionController
         gridParent.addRow(rowIndex, actionType);
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
-            initialiceCheckBox(gridParent);
+            initializeComboBox(gridParent);
             lastType = actionType.getValue().toString();
             placeNotGenerated = true;
             switch (actionType.getValue().toString()) {
@@ -206,11 +152,12 @@ public class ActionController
                     break;
             }
         });
-
+        MainController.dragAndDrop(gridParent, actionType);
     }
 
 
-    private void initialiceCheckBox(GridPane gridParent)
+
+    private void initializeComboBox(GridPane gridParent)
     {
         textFieldNotGenerated = true;
         if (needToDelete) {
@@ -229,7 +176,7 @@ public class ActionController
                 gridParent.addRow(rowIndex, selectElementBy);
                 selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                 {
-                    generatedTextField(gridParent,rowIndex,"FirstValueArgs");
+                    generatedTextField(gridParent,rowIndex,"FirstValueArgs","");
                 });
                 break;
             case "DragAndDrop":
@@ -246,7 +193,7 @@ public class ActionController
                         placeNotGenerated = false;
                         selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
                         {
-                            generatedTextField(gridParent,rowIndex,"SecondValueArgs");
+                            generatedTextField(gridParent,rowIndex,"SecondValueArgs","");
                         });
                     }
                 });
@@ -272,7 +219,7 @@ public class ActionController
                 break;
             case "SwitchTo":
             case "WaitTime":
-                generatedTextField(gridParent,rowIndex,"FirstValueArgs");
+                generatedTextField(gridParent,rowIndex,"FirstValueArgs","");
                 break;
             case "Waiting":
                 firstValueArgs = new TextField();
@@ -286,17 +233,19 @@ public class ActionController
                 gridParent.addRow(rowIndex, selectElementBy);
                 selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                 {
-                    generatedTextField(gridParent,rowIndex,"SecondValueArgs");
+                    generatedTextField(gridParent,rowIndex,"SecondValueArgs","");
                 });
                 break;
 
         }
     }
 
-    public void generatedTextField(GridPane gridParent,int rowIndex, String name){
+    public void generatedTextField(GridPane gridParent,int rowIndex, String name, String value)
+    {
         if(name.equals("FirstValueArgs")){
             if (textFieldNotGenerated) {
                 firstValueArgs = new TextField();
+                firstValueArgs.setText(value);
                 gridParent.addRow(rowIndex,firstValueArgs);
             }
             textFieldNotGenerated = false;
@@ -304,6 +253,7 @@ public class ActionController
         if (name.equals("SecondValueArgs")){
             if (textFieldNotGenerated) {
                 secondValueArgs = new TextField();
+                secondValueArgs.setText(value);
                 gridParent.addRow(rowIndex,secondValueArgs);
             }
             textFieldNotGenerated = false;
@@ -313,64 +263,15 @@ public class ActionController
     public void setDefaultAction(GridPane gridParent)
     {
         gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs, value);
-
     }
 
-    public static String getActionTypeId(String actionType)
+
+
+    public void  dragAndDrop (DragEvent event)
     {
-        String type = "NULL"; // No action type
-        switch (actionType){
-            case "1":
-                type = "Click";
-                break;
-            case "2":
-                type = "DragAndDrop";
-                break;
-            case "3":
-                type = "WriteTo";
-                break;
-            case "4":
-                type = "ReadFrom";
-                break;
-            case "5":
-                type = "SwitchTo";
-                break;
-            case "6":
-                type = "Waiting";
-                break;
-            case "7":
-                type = "WaitTime";
-                break;
-            default:
-                break;
-        }
-        return type;
+        event.getPickResult().getIntersectedNode();
     }
 
-    public static String getSelectElementById(String actionType)
-    {
-        String SelectBy = "NULL"; // No action type
-        switch (actionType){
-            case "1":
-                SelectBy = "id";
-                break;
-            case "2":
-                SelectBy = "xpath";
-                break;
-            case "3":
-                SelectBy = "cssSelector";
-                break;
-            case "4":
-                SelectBy = "className";
-                break;
-            case "5":
-                SelectBy = "name";
-                break;
-            default:
-                break;
-        }
-        return SelectBy;
-    }
 
     public String getActionTypeString() {
         return actionType.getValue().toString();
