@@ -834,10 +834,12 @@ public class MainController implements Initializable {
         draguedChildList.clear();
         movedChilds.clear();
 
+
+
         dragItem.setOnDragDetected(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                Dragboard db = dragItem.startDragAndDrop(TransferMode.ANY);
+                Dragboard db = dragItem.startDragAndDrop(TransferMode.MOVE);
                 ClipboardContent content = new ClipboardContent();
                 content.put(comboBoxFormat, " ");
                 db.setContent(content);
@@ -850,6 +852,7 @@ public class MainController implements Initializable {
                     }
                 }
                 event.consume();
+
             }
         });
 
@@ -858,6 +861,7 @@ public class MainController implements Initializable {
             public void handle(DragEvent event) {
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                 gridParent.getChildren().removeAll(draguedChildList);
+                gridParent.getRowConstraints().remove(rowIndexDrag);
                 event.consume();
             }
         });
@@ -865,7 +869,6 @@ public class MainController implements Initializable {
         dragItem.setOnDragDropped(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                Dragboard db = event.getDragboard();
                 StackPane intento = new StackPane();
                 if(event.getPickResult().getClass().isInstance(intento))
                 {
@@ -889,9 +892,11 @@ public class MainController implements Initializable {
 
                     }
                 }
+
+                event.setDropCompleted(true);
                 System.out.println("Tomaaa con to mi node " + rowIndexDrop);
 
-                //event.setDropCompleted(success);
+
 
                 event.consume();
             }
@@ -900,7 +905,6 @@ public class MainController implements Initializable {
         dragItem.setOnDragDone(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                System.out.println("onDragDone");
 
                 if (event.getTransferMode() == TransferMode.MOVE) {
 
@@ -914,17 +918,18 @@ public class MainController implements Initializable {
                 }*/
                 for (Node item : draguedChildList){
                     gridParent.addRow(rowIndexDrop, item);
+                    gridParent.setRowIndex(item, rowIndexDrop);
+                    //gridParent.setRowIndex(item, gridParent.getRowIndex(item));
                 }
-
                 /*for (Node item : movedChilds){
                     gridParent.addRow(gridParent.getRowIndex(item)+1, item);
                 }*/
                 //gridParent.addColumn(rowIndexDrop, dragItem);
+
                 event.consume();
             }
         });
     }
-
 
     public static void setTheme(String theme)
     {

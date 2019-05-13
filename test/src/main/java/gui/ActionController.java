@@ -3,6 +3,7 @@ package gui;
 import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.SubScene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -10,6 +11,9 @@ import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import persistence.H2DAO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActionController
 {
@@ -21,6 +25,13 @@ public class ActionController
     private Label value = new Label();
     private String lastType;
     private boolean textFieldNotGenerated, needToDelete, placeNotGenerated;
+
+    private static DataFormat comboBoxFormat = new DataFormat();
+    private static Integer rowIndexDrag;
+    private static Integer rowIndexDrop;
+    private static List<Node> draguedChildList = new ArrayList<>();;
+    private static List<Node> movedChilds = new ArrayList<>();;
+
 
 
 
@@ -130,8 +141,7 @@ public class ActionController
     {
 
 
-        actionType = new ComboBox<>();
-        actionType.setItems(FXCollections.observableArrayList(H2DAO.getTypeAction()));
+        actionType = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getTypeAction()));
         gridParent.addRow(rowIndex, actionType);
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
@@ -146,16 +156,139 @@ public class ActionController
                 case "SwitchTo":
                 case "Waiting":
                 case "WaitTime":
-                    drawElements(gridParent, rowIndex, lastType);
+                    drawElements(gridParent, lastType,actionType);
                     break;
                 default:
                     break;
             }
         });
-        MainController.dragAndDrop(gridParent, actionType);
+
+
+
+
+
+
+        actionType.setOnDragDetected(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                rowIndexDrop = -1;
+                rowIndexDrag = 0;
+                draguedChildList.clear();
+                movedChilds.clear();
+
+                Dragboard db = actionType.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent content = new ClipboardContent();
+                content.put(comboBoxFormat, " ");
+                db.setContent(content);
+                rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
+                for (Node child : gridParent.getChildren()){                                        // Almacenar en la lista los elementos de la accion
+                    if (gridParent.getRowIndex(child) == rowIndexDrag)
+                    {
+                        draguedChildList.add(child);
+                    }
+                }
+
+                for (Node child : gridParent.getChildren()){                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
+                    if (gridParent.getRowIndex(child) > rowIndexDrag)
+                    {
+                        gridParent.setRowIndex(child, gridParent.getRowIndex(child) - 1);
+                    }
+                }
+                event.consume();
+
+            }
+        });
+
+        actionType.setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                gridParent.getChildren().removeAll(draguedChildList);                               // Eliminar los elementos
+                gridParent.getRowConstraints().remove(rowIndexDrag);                                // Eliminar la fila del grid
+                event.consume();
+            }
+        });
+
+        actionType.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+
+
+                rowIndexDrop = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
+
+                System.out.println("DragIndex = "+ rowIndexDrag);
+                System.out.println("DropIndex = "+rowIndexDrop);
+
+                System.out.println(getLastChildIndex(gridParent));
+                /*if (rowIndexDrop == getLastChildIndex(gridParent))                                  // Insertar al final
+                {
+                    for (Node child : gridParent.getChildren())
+                    {
+                        if (gridParent.getRowIndex(child) > rowIndexDrag) {
+                            gridParent.setRowIndex(child, gridParent.getRowIndex(child) - 1); // Reducir el RowIndex de las acciones que tiene por encima en 1
+                        }
+                    }
+                }*/
+
+                if (rowIndexDrag > rowIndexDrop || rowIndexDrag < rowIndexDrop || rowIndexDrop == 0) // Insertar en cabeza o en el medio
+                {
+                    for (Node child : gridParent.getChildren()) {
+                        if (gridParent.getRowIndex(child) >= rowIndexDrop) {
+                            gridParent.setRowIndex(child, gridParent.getRowIndex(child) + 1); // Aumentar el RowIndex de las acciones que tiene por debajo en 1
+
+                        }
+                    }
+                }
+
+                System.out.println("Tomaaa con to mi node " + rowIndexDrop);
+
+
+
+                event.consume();
+            }
+        });
+
+        actionType.setOnDragDone(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+
+                if (event.getTransferMode() == TransferMode.MOVE) {
+
+                }
+
+                if (rowIndexDrop == -1){
+                    event.consume();
+                } else {
+
+                    for (Node item : draguedChildList) {
+                        gridParent.addRow(rowIndexDrop, item);
+                        gridParent.setRowIndex(item, rowIndexDrop);
+                        //gridParent.setRowIndex(item, gridParent.getRowIndex(item));
+                    }
+                }
+
+                System.out.println("RowIndex = "+rowIndex);
+                System.out.println("------------------------------------");
+                event.consume();
+            }
+        });
+
+
     }
 
+    private int getLastChildIndex(GridPane gridPane)
+    {
+        int index = 0;
 
+        for (Node child : gridPane.getChildren())
+        {
+            if (gridPane.getRowIndex(child) > index){
+                index = gridPane.getRowIndex(child);
+            }
+        }
+
+        return index;
+    }
 
     private void initializeComboBox(GridPane gridParent)
     {
@@ -166,34 +299,33 @@ public class ActionController
         needToDelete = true;
     }
 
-    private void drawElements(GridPane gridParent, int rowIndex, String type)
+    private void drawElements(GridPane gridParent, String type, ComboBox actionType)
     {
+        int rowIndex = gridParent.getRowIndex(actionType);
         switch (type) {
             case "Click":
             case "ReadFrom":
-                selectElementBy = new ComboBox();
-                selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
+                selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                 gridParent.addRow(rowIndex, selectElementBy);
                 selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                 {
-                    generatedTextField(gridParent,rowIndex,"FirstValueArgs","");
+                    generatedTextField(gridParent,gridParent.getRowIndex(selectElementBy),"FirstValueArgs","");
                 });
                 break;
             case "DragAndDrop":
-                selectElementBy = new ComboBox();
-                selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
+                selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                 gridParent.addRow(rowIndex, selectElementBy);
                 selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                 {
                     if (placeNotGenerated) {
                         firstValueArgs = new TextField();
-                        gridParent.addRow(rowIndex, firstValueArgs);
+                        gridParent.addRow(gridParent.getRowIndex(selectElementBy), firstValueArgs);
                         selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                        gridParent.addRow(rowIndex, selectPlaceBy);
+                        gridParent.addRow(gridParent.getRowIndex(selectElementBy), selectPlaceBy);
                         placeNotGenerated = false;
                         selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
                         {
-                            generatedTextField(gridParent,rowIndex,"SecondValueArgs","");
+                            generatedTextField(gridParent,gridParent.getRowIndex(selectPlaceBy),"SecondValueArgs","");
                         });
                     }
                 });
@@ -206,13 +338,13 @@ public class ActionController
                 {
                     if (textFieldNotGenerated) {
                         firstValueArgs = new TextField();
-                        gridParent.addRow(rowIndex, firstValueArgs);
+                        gridParent.addRow(gridParent.getRowIndex(selectElementBy), firstValueArgs);
 
                         value.setText("Value");
-                        gridParent.addRow(rowIndex,value);
+                        gridParent.addRow(gridParent.getRowIndex(selectElementBy),value);
 
                         secondValueArgs = new TextField();
-                        gridParent.addRow(rowIndex,secondValueArgs);
+                        gridParent.addRow(gridParent.getRowIndex(selectElementBy),secondValueArgs);
                     }
                     textFieldNotGenerated = false;
                 });
@@ -233,7 +365,7 @@ public class ActionController
                 gridParent.addRow(rowIndex, selectElementBy);
                 selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                 {
-                    generatedTextField(gridParent,rowIndex,"SecondValueArgs","");
+                    generatedTextField(gridParent,gridParent.getRowIndex(selectElementBy),"SecondValueArgs","");
                 });
                 break;
 
