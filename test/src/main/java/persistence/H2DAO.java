@@ -80,7 +80,7 @@ public class H2DAO {
             "insert into action_types(name) values ('WriteTo')",
             "insert into action_types(name) values ('ReadFrom')",
             "insert into action_types(name) values ('SwitchTo')",
-            "insert into action_types(name) values ('Waiting')",
+            "insert into action_types(name) values ('Waiting For')",
             "insert into action_types(name) values ('WaitTime')",
             "insert into selection_by(name) values ('id')",
             "insert into selection_by(name) values ('xpath')",
@@ -200,6 +200,7 @@ public class H2DAO {
                 Integer secondValueArgs = getIdSelectElementBy(currentAction.getSelectElementByS());
                 String value2 = currentAction.getSecondValueArgsS();
 
+                System.out.println(""+actionTypeId+" / "+firstValueArgs+ " / "+value1+" / "+secondValueArgs+ " / "+value2);
 
                 String statement = "insert into" +
                         " trial_actions ("+
@@ -313,7 +314,7 @@ public class H2DAO {
                 case  "SwitchTo":
                     id = 5;
                     break;
-                case  "Waiting":
+                case  "Waiting For":
                     id = 6;
                     break;
                 case  "WaitTime":
@@ -371,8 +372,10 @@ public class H2DAO {
 
             while (actionsResultSet.next())
             {
-                Action currentAction = new Action(actionsResultSet.getString("actiontypeid"), actionsResultSet.getString("selectionbyid1"),
-                        actionsResultSet.getString("value1"), actionsResultSet.getString("selectionbyid2"), actionsResultSet.getString("value2"));
+
+                Action currentAction = new Action( actionsResultSet.getString("actiontypeid"), actionsResultSet.getString("selectionbyid1"),
+                        actionsResultSet.getString("value1"),actionsResultSet.getString("selectionbyid2"), actionsResultSet.getString("value2"));
+                //currentAction.converAction();
                 actions.add(currentAction);
             }
              System.out.println("Llega");
@@ -383,6 +386,8 @@ public class H2DAO {
         }
         return actions;
     }
+
+
 
     public static ArrayList<Action> getValidations(String trialName)
     {
@@ -404,6 +409,7 @@ public class H2DAO {
             {
                 Action currentValidation = new Action(validationsResultSet.getString("actiontypeid"), validationsResultSet.getString("selectionbyid1"),
                         validationsResultSet.getString("value1"), validationsResultSet.getString("selectionbyid2"), validationsResultSet.getString("value2"));
+                //currentValidation.converAction();
                 validations.add(currentValidation);
             }
             System.out.println("Llega");

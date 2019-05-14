@@ -304,17 +304,31 @@ public class Action {
 
    }*/
 
-    public Action(String actionTypeS, String selectElementByS, String selectPlaceByS, String firstValueArgsS, String secondValueArgsS) {
-        this.actionTypeS = actionTypeS;
-        this.selectElementByS = selectElementByS;
-        this.selectPlaceByS = selectPlaceByS;
+    public Action(String actionTypeS, String selectElementByS, String firstValueArgsS, String selectPlaceByS, String secondValueArgsS) {
+        if (actionTypeS.matches("1|2|3|4|5|6|7")){
+            this.actionTypeS = getActionTypeId(actionTypeS);
+        }else {
+            this.actionTypeS = actionTypeS;
+        }
+        if(selectElementByS.matches("1|2|3|4|5"))
+        {
+            this.selectElementByS = getSelectElementById(selectElementByS);
+        }else {
+            this.selectElementByS = selectElementByS;
+        }
         this.firstValueArgsS = firstValueArgsS;
+        if (selectPlaceByS.matches("1|2|3|4|5")){
+            this.selectPlaceByS = getSelectElementById(selectPlaceByS);
+        } else {
+            this.selectPlaceByS = selectPlaceByS;
+        }
+
         this.secondValueArgsS = secondValueArgsS;
     }
 
     public static String getActionTypeId(String actionType)
     {
-        String type = "NULL"; // No action type
+        String type = actionType; // No action type
         switch (actionType){
             case "1":
                 type = "Click";
@@ -332,7 +346,7 @@ public class Action {
                 type = "SwitchTo";
                 break;
             case "6":
-                type = "Waiting";
+                type = "Waiting For";
                 break;
             case "7":
                 type = "WaitTime";
@@ -345,7 +359,7 @@ public class Action {
 
     public static String getSelectElementById(String actionType)
     {
-        String SelectBy = "NULL"; // No action type
+        String SelectBy = actionType; // No action type
         switch (actionType){
             case "1":
                 SelectBy = "id";
@@ -367,6 +381,13 @@ public class Action {
         }
         return SelectBy;
     }
+
+    /*public  void converAction()
+    {
+        actionTypeS =  getActionTypeId(actionTypeS);
+        selectElementByS = getSelectElementById(selectElementByS);
+        selectPlaceByS = getSelectElementById(selectPlaceByS);
+    }*/
 
     //public Action(GridPane gridParent, int rowIndex, String actionTypeValue, String selectElementByValue, String firstValueArgsValue, String selectPlaceByValue, String secondValueArgsValue)
     //{
@@ -564,7 +585,7 @@ public class Action {
                     SeleniumDAO.switchToFrame(this.firstValueArgsS, driver);
                     result = "Ok";
                     break;
-                case "Waiting":
+                case "Waiting For":
                     SeleniumDAO.waitForElement(Integer.parseInt(this.firstValueArgsS),this.selectElementByS, this.secondValueArgsS ,driver);
                     result = "Ok";
                     break;
