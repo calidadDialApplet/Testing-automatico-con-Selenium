@@ -200,7 +200,7 @@ public class H2DAO {
                 Integer secondValueArgs = getIdSelectElementBy(currentAction.getSelectElementByS());
                 String value2 = currentAction.getSecondValueArgsS();
 
-                System.out.println(""+actionTypeId+" / "+firstValueArgs+ " / "+value1+" / "+secondValueArgs+ " / "+value2);
+                //System.out.println(""+actionTypeId+" / "+firstValueArgs+ " / "+value1+" / "+secondValueArgs+ " / "+value2);
 
                 String statement = "insert into" +
                         " trial_actions ("+

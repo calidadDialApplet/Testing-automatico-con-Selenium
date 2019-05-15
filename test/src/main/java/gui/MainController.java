@@ -5,14 +5,19 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
@@ -95,6 +100,8 @@ public class MainController implements Initializable {
     private static List<Node> draguedChildList;
     private static List<Node> movedChilds;
 
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
@@ -105,6 +112,7 @@ public class MainController implements Initializable {
         procesedValidationList = new ArrayList<>();
         draguedChildList = new ArrayList<>();
         movedChilds = new ArrayList<>();
+
         //bottomButtons.setDisable(true);
 
         // TODO: Has to be done with:
@@ -255,7 +263,7 @@ public class MainController implements Initializable {
     {
         if(tabActions.isSelected())
         {
-            List<Node> deleteNodes = new ArrayList<>();
+            /*List<Node> deleteNodes = new ArrayList<>();
             for (Node child : gridPaneTrialList.getChildren()) {
                 if (gridPaneTrialList.getRowIndex(child) == actionsRowIndex - 1) {
                     deleteNodes.add(child);
@@ -264,11 +272,12 @@ public class MainController implements Initializable {
             gridPaneTrialList.getChildren().removeAll(deleteNodes);
             if (actionsRowIndex > 0) {
                 actionsRowIndex--;
-            }
+            }*/
+            deleteSelectedActions(gridPaneTrialList, actionsRowIndex);
         }
         if(tabValidation.isSelected())
         {
-            List<Node> deleteNodes = new ArrayList<>();
+           /* List<Node> deleteNodes = new ArrayList<>();
             for (Node child : gridPaneValidationList.getChildren()) {
                 if (gridPaneValidationList.getRowIndex(child) == validationRowIndex - 1) {
                     deleteNodes.add(child);
@@ -277,8 +286,89 @@ public class MainController implements Initializable {
             gridPaneValidationList.getChildren().removeAll(deleteNodes);
             if (validationRowIndex > 0) {
                 validationRowIndex--;
+            }*/
+           deleteSelectedActions(gridPaneValidationList, validationRowIndex);
+        }
+    }
+
+    public void deleteSelectedActions(GridPane gridPane, int gridIndex)
+    {
+        List<Integer> actionsToDelete = new ArrayList<>();
+        List<Node> nodesToDelete = new ArrayList<>();
+        Integer[] actionsToKeep = new Integer[1000];
+        int actionsToKeepIndex = 0;
+
+
+        for (Node child : gridPane.getChildren())
+        {
+            if (child instanceof CheckBox && ((CheckBox)child).isSelected())
+            {
+                actionsToDelete.add(gridPane.getRowIndex(child));
+            }
+            if (child instanceof CheckBox && !((CheckBox)child).isSelected()){
+                actionsToKeep[actionsToKeepIndex] = gridPane.getRowIndex(child);
+                actionsToKeepIndex++;
             }
         }
+
+        for (Integer index : actionsToDelete)
+        {
+            for (Node child : gridPane.getChildren())
+            {
+                if (gridPane.getRowIndex(child) == index)
+                {
+                    nodesToDelete.add(child);                                   // Obtener los hijos de cada fila
+                }
+
+            }
+        }
+
+        gridPane.getChildren().removeAll(nodesToDelete);
+        for (Integer index : actionsToDelete)
+        {
+            gridPane.getRowConstraints().remove(index);
+        }
+
+       /* for (Node child : gridPane.getChildren())
+        {
+            /*for (int i = 0; i < actionsToKeep.length; i++) {
+                //System.out.println(actionsToDelete.get(actionsToDelete.size()));
+                if (gridPane.getRowIndex(child) >= actionsToDelete.get(actionsToDelete.size() - 1)) {
+                    //int desplazamientos = gridPane.getRowIndex(child)-rowKeepIndex;
+
+
+                    gridPane.setRowIndex(child, gridPane.getRowIndex(child) - actionsToKeep[i-1]);
+                }
+            }
+            /// Otra prueba
+
+            for (int i = 1; i < actionsToKeep.length; i++){
+                if (actionsToKeep[i]==0 ){
+                    gridPane.setRowIndex(child, 0);
+                } else  {
+                    gridPane.setRowIndex(child, gridPane.getRowIndex(child) - actionsToKeep[i-1]);
+                }
+            }
+        }*/
+        //gridPane.getRowConstraints().removeAll(actionsToKeep);
+        //gridPane.getChildren().clear();
+
+        /*
+        for (Integer index : actionsToKeep)
+        {
+            for (Node child : nodesToKeep){
+                if (gridPane.getRowIndex(child) == index){
+                    gridPane.addRow(index,child);
+                }
+            }
+        }*/
+
+
+        gridIndex = gridIndex - actionsToDelete.size();
+
+
+
+        // Repartir nuevos índices entre filas restantes
     }
 
     public void deletePanel()
@@ -354,14 +444,54 @@ public class MainController implements Initializable {
                        WebDriver driver = getWebDriver();
                        driver.get(H2DAO.getWeb());
                        TitledPane trial = new TitledPane();
+                       Label titledPaneName = new Label();
 
+
+
+                       //Image image = new Image(getClass().getResourceAsStream("sharp_delete_black_24dp.png"));
+                       //buttonClose.setGraphic(new ImageView(image));
+                       //borderPane.prefWidthProperty().bind(scene.widthProperty().subtract(40));
                        if (trialName == "")
                        {
                            CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
-                           trial.setText(selectedTrial.getText());
+                           titledPaneName.setText(selectedTrial.getText());
+                           //trial.setText(selectedTrial.getText());
                        }else {
-                           trial.setText(trialName);
+                           titledPaneName.setText(trialName);
+                           //trial.setText(trialName);
                        }
+
+                       HBox contentPane = new HBox();
+                       contentPane.setAlignment(Pos.CENTER);
+                       contentPane.setPadding(new Insets(0, 30, 0, 10));
+                       contentPane.minWidthProperty().bind(trial.widthProperty());
+
+                       HBox region = new HBox();
+                       region.setMaxWidth(Double.MAX_VALUE);
+                       HBox.setHgrow(region, Priority.ALWAYS);
+
+                       // Add our nodes to the contentPane
+
+
+
+                       Button buttonClose = new Button("X");
+
+                       buttonClose.setOnAction(new EventHandler<ActionEvent>() {
+                           @Override
+                           public void handle(ActionEvent event) {
+                               accordionComprobationList.getPanes().remove(trial);
+                           }
+                       });
+
+                       contentPane.getChildren().addAll(
+                               titledPaneName,
+                               region,
+                               buttonClose
+                       );
+                       trial.setGraphic(contentPane);
+
+
+
 
                        GridPane grid = new GridPane();
                        grid.setVgap(2);
