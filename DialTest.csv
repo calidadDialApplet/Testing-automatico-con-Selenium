@@ -1,0 +1,9 @@
+Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation
+Click,id,uno,id,,false
+DragAndDrop,xpath,dos,xpath,tres,false
+WriteTo,id,cuatro,id,cinco,false
+ReadFrom,className,seis,className,,false
+SwitchTo,id,siete,id,,false
+Waiting For,name,ocho,name,nueve,false
+WaitTime,id,diez,id,,false
+Click,id,asdfaf,id,,true

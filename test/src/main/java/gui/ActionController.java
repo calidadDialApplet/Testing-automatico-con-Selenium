@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
+import jdk.nashorn.internal.objects.NativeDebug;
 import persistence.H2DAO;
 
 import java.util.ArrayList;
@@ -205,7 +206,7 @@ public class ActionController
                 System.out.println("DragIndex = "+ rowIndexDrag);
                 System.out.println("DropIndex = "+rowIndexDrop);
 
-                System.out.println(getLastChildIndex(gridParent));
+                //System.out.println(getLastChildIndex(gridParent));
                 /*if (rowIndexDrop == getLastChildIndex(gridParent))                                  // Insertar al final
                 {
                     for (Node child : gridParent.getChildren())
@@ -311,6 +312,8 @@ public class ActionController
                 content.put(comboBoxFormat, " ");
                 db.setContent(content);
                 rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
+
+
                 for (Node child : gridParent.getChildren()){                                        // Almacenar en la lista los elementos de la accion
                     if (gridParent.getRowIndex(child) == rowIndexDrag)
                     {
@@ -318,10 +321,13 @@ public class ActionController
                     }
                 }
 
-                for (Node child : gridParent.getChildren()){                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
-                    if (gridParent.getRowIndex(child) > rowIndexDrag)
-                    {
-                        gridParent.setRowIndex(child, gridParent.getRowIndex(child) - 1);
+                if (rowIndexDrag >= 0 && rowIndexDrag < getRowCount(gridParent))                    // Si es la cabeza o medio...
+                {
+                    for (Node child : gridParent.getChildren()){                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
+                        if (gridParent.getRowIndex(child) > rowIndexDrag)
+                        {
+                            gridParent.setRowIndex(child, gridParent.getRowIndex(child) - 1);
+                        }
                     }
                 }
                 event.consume();
@@ -344,12 +350,12 @@ public class ActionController
             public void handle(DragEvent event) {
 
 
-                rowIndexDrop = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
+
 
                 System.out.println("DragIndex = "+ rowIndexDrag);
                 System.out.println("DropIndex = "+rowIndexDrop);
 
-                System.out.println(getLastChildIndex(gridParent));
+
                 /*if (rowIndexDrop == getLastChildIndex(gridParent))                                  // Insertar al final
                 {
                     for (Node child : gridParent.getChildren())
@@ -360,7 +366,9 @@ public class ActionController
                     }
                 }*/
 
-                if (rowIndexDrag > rowIndexDrop || rowIndexDrag < rowIndexDrop || rowIndexDrop == 0) // Insertar en cabeza o en el medio
+
+
+                if (rowIndexDrop < getRowCount(gridParent)) // Insertar en cabeza o en el medio
                 {
                     for (Node child : gridParent.getChildren()) {
                         if (gridParent.getRowIndex(child) >= rowIndexDrop) {
@@ -383,14 +391,23 @@ public class ActionController
             public void handle(DragEvent event) {
 
                 if (event.getTransferMode() == TransferMode.MOVE) {
-
                 }
 
+                System.out.println("DragDone DropIndex = "+rowIndexDrop);
                 if (rowIndexDrop == -1){
                     event.consume();
                 } else {
 
-                    for (Node item : draguedChildList) {
+                    if (rowIndexDrop == getRowCount(gridParent))                    // Insertar al final
+                    {
+                        for (Node item : draguedChildList)
+                        {
+                            gridParent.addRow(rowIndex + 1,item);
+                        }
+                    }
+
+                    for (Node item : draguedChildList)                              // Insertar en el medio o en cabeza
+                    {
                         gridParent.addRow(rowIndexDrop, item);
                         gridParent.setRowIndex(item, rowIndexDrop);
                         //gridParent.setRowIndex(item, gridParent.getRowIndex(item));
@@ -406,19 +423,21 @@ public class ActionController
 
     }
 
-    private int getLastChildIndex(GridPane gridPane)
-    {
-        int index = 0;
-
-        for (Node child : gridPane.getChildren())
-        {
-            if (gridPane.getRowIndex(child) > index){
-                index = gridPane.getRowIndex(child);
+    private int getRowCount(GridPane pane) {
+        int numRows = pane.getRowConstraints().size();
+        for (int i = 0; i < pane.getChildren().size(); i++) {
+            Node child = pane.getChildren().get(i);
+            if (child.isManaged()) {
+                Integer rowIndex = GridPane.getRowIndex(child);
+                if(rowIndex != null){
+                    numRows = Math.max(numRows,rowIndex+1);
+                }
             }
         }
-
-        return index;
+        return numRows;
     }
+
+
 
     private void initializeComboBox(GridPane gridParent)
     {

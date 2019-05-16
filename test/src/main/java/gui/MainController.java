@@ -273,7 +273,8 @@ public class MainController implements Initializable {
             if (actionsRowIndex > 0) {
                 actionsRowIndex--;
             }*/
-            deleteSelectedActions(gridPaneTrialList, actionsRowIndex);
+            deleteSelectedActions(gridPaneTrialList);
+            actionsRowIndex = getRowCount(gridPaneTrialList);
         }
         if(tabValidation.isSelected())
         {
@@ -287,87 +288,51 @@ public class MainController implements Initializable {
             if (validationRowIndex > 0) {
                 validationRowIndex--;
             }*/
-           deleteSelectedActions(gridPaneValidationList, validationRowIndex);
+           deleteSelectedActions(gridPaneValidationList);
+           validationRowIndex = getRowCount(gridPaneValidationList);
         }
     }
 
-    public void deleteSelectedActions(GridPane gridPane, int gridIndex)
+    public void deleteSelectedActions(GridPane gridPane)
     {
-        List<Integer> actionsToDelete = new ArrayList<>();
         List<Node> nodesToDelete = new ArrayList<>();
-        Integer[] actionsToKeep = new Integer[1000];
-        int actionsToKeepIndex = 0;
+        int iterations = 0;
+        int rowToDelete = -1;
 
-
-        for (Node child : gridPane.getChildren())
+        for (Node child : gridPane.getChildren())                                   // Number of rows to delete
         {
             if (child instanceof CheckBox && ((CheckBox)child).isSelected())
             {
-                actionsToDelete.add(gridPane.getRowIndex(child));
-            }
-            if (child instanceof CheckBox && !((CheckBox)child).isSelected()){
-                actionsToKeep[actionsToKeepIndex] = gridPane.getRowIndex(child);
-                actionsToKeepIndex++;
+                iterations++;
             }
         }
 
-        for (Integer index : actionsToDelete)
+        for (int i = 0; i < iterations; i++)
         {
             for (Node child : gridPane.getChildren())
             {
-                if (gridPane.getRowIndex(child) == index)
+                if (child instanceof CheckBox && ((CheckBox)child).isSelected())
                 {
-                    nodesToDelete.add(child);                                   // Obtener los hijos de cada fila
+                    rowToDelete = gridPane.getRowIndex(child);
+                    break;
                 }
 
             }
+
+            for (Node child : gridPane.getChildren())
+            {
+                if (rowToDelete != -1) {                                    // Fila para borrar
+                    if (gridPane.getRowIndex(child) == rowToDelete)
+                    {                                                       // Hijo de la fila a borrar
+                        child.setVisible(false);
+                        nodesToDelete.add(child);
+                    }else if (gridPane.getRowIndex(child) > rowToDelete){
+                        gridPane.setRowIndex(child,gridPane.getRowIndex(child)-1);
+                    }
+                }
+            }
+            gridPane.getChildren().removeAll(nodesToDelete);
         }
-
-        gridPane.getChildren().removeAll(nodesToDelete);
-        for (Integer index : actionsToDelete)
-        {
-            gridPane.getRowConstraints().remove(index);
-        }
-
-       /* for (Node child : gridPane.getChildren())
-        {
-            /*for (int i = 0; i < actionsToKeep.length; i++) {
-                //System.out.println(actionsToDelete.get(actionsToDelete.size()));
-                if (gridPane.getRowIndex(child) >= actionsToDelete.get(actionsToDelete.size() - 1)) {
-                    //int desplazamientos = gridPane.getRowIndex(child)-rowKeepIndex;
-
-
-                    gridPane.setRowIndex(child, gridPane.getRowIndex(child) - actionsToKeep[i-1]);
-                }
-            }
-            /// Otra prueba
-
-            for (int i = 1; i < actionsToKeep.length; i++){
-                if (actionsToKeep[i]==0 ){
-                    gridPane.setRowIndex(child, 0);
-                } else  {
-                    gridPane.setRowIndex(child, gridPane.getRowIndex(child) - actionsToKeep[i-1]);
-                }
-            }
-        }*/
-        //gridPane.getRowConstraints().removeAll(actionsToKeep);
-        //gridPane.getChildren().clear();
-
-        /*
-        for (Integer index : actionsToKeep)
-        {
-            for (Node child : nodesToKeep){
-                if (gridPane.getRowIndex(child) == index){
-                    gridPane.addRow(index,child);
-                }
-            }
-        }*/
-
-
-        gridIndex = gridIndex - actionsToDelete.size();
-
-
-
         // Repartir nuevos índices entre filas restantes
     }
 
@@ -674,16 +639,17 @@ public class MainController implements Initializable {
         if (result.isPresent())
         {
             boolean trialmodified = false;
+            H2DAO.createTrial(result.get());                                                // Introducir nuevo trial con su nombre en trials
             String id = H2DAO.getTrialID(result.get());
 
-            H2DAO.deleteTrialActions(id);
-            procesedActionList.clear();
+            //H2DAO.deleteTrialActions(id);
+            //procesedActionList.clear();
             goThroughTable("Actions");
             H2DAO.saveTrial(procesedActionList, id, 0);
 
 
-            H2DAO.deleteTrialValidations(id);
-            procesedValidationList.clear();
+            //H2DAO.deleteTrialValidations(id);
+            //procesedValidationList.clear();
             goThroughTable("Validations");
             H2DAO.saveTrial(procesedValidationList, id, 1);
 
@@ -819,7 +785,7 @@ public class MainController implements Initializable {
             for(Action validation : trialActions)
             {
                 ActionController actionController = new ActionController();
-                actionController.setAction(gridPaneTrialList, actionsRowIndex,validation.getActionTypeS(),validation.getSelectElementByS(),
+                actionController.setAction(gridPaneValidationList, validationRowIndex,validation.getActionTypeS(),validation.getSelectElementByS(),
                          validation.getFirstValueArgsS(),validation.getSelectPlaceByS(),validation.getSecondValueArgsS());
                 //Action action = new Action(gridPaneValidationList, validationRowIndex,validation.getActionTypeS(),validation.getSelectElementByS(),
                 //        validation.getFirstValueArgsS(),validation.getSelectPlaceByS(),validation.getSecondValueArgsS());
@@ -905,7 +871,7 @@ public class MainController implements Initializable {
                             + action.getFirstValueArgsS() + ","
                             + action.getSelectPlaceByS() + ","
                             + action.getSecondValueArgsS() + ","
-                            + "A");
+                            + "false");
                 }
                 for (Action validation : validations)
                 {
@@ -915,7 +881,7 @@ public class MainController implements Initializable {
                             + validation.getFirstValueArgsS() + ","
                             + validation.getSelectPlaceByS() + ","
                             + validation.getSecondValueArgsS() + ","
-                            + "V");
+                            + "true");
                 }
                 System.out.println("FUNCIONA");
 
@@ -979,26 +945,29 @@ public class MainController implements Initializable {
 
                             String[] values = data.split(",");
                             //System.out.println(data);
-                            if (values[5].equals("A")) {
+                            if (values[5].equals("false")) {
                                 ActionController actionController = new ActionController();
                                 actionController.setAction(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
                                 Action act = new Action( values[0], values[1], values[2], values[3], values[4]);
                                 actionList.add(act);
+                                //procesedActionList.add(act);
                                 actionsRowIndex++;
                             }
-                            if (values[5].equals("V")) {
+                            if (values[5].equals("true")) {
                                 ActionController actionController = new ActionController();
                                 actionController.setAction(gridPaneValidationList, validationRowIndex, values[0], values[1], values[2], values[3], values[4]);
                                 Action act = new Action(values[0], values[1], values[2], values[3], values[4]);
                                 validationList.add(act);
+                                //procesedValidationList.add(act);
                                 validationRowIndex++;
                             }
                         }
                     }
                     if(headerOk)
                     {
-                        //saveTest();
+                        saveTest();
                         //deleteAllTabs();
+                        poblateTestList();
                         inputStream.close();
                     }else {
                         Alert alert = new Alert(Alert.AlertType.WARNING);

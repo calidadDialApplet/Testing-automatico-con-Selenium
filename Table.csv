@@ -1,6 +1,6 @@
 Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation
-Click,xpath,dos,name,bfd,A
-WriteTo,id,c<z,name,bfd,A
-ReadFrom,className,drshdsf,name,bfd,A
-DragAndDrop,className,tres,name,vdsv,V
-ReadFrom,className,sdvfds,name,vdsv,V
+Click,xpath,dos,name,bfd,false
+WriteTo,id,c<z,name,bfd,false
+ReadFrom,className,drshdsf,name,bfd,false
+DragAndDrop,className,tres,name,vdsv,true
+ReadFrom,className,sdvfds,name,vdsv,true
