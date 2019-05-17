@@ -1,7 +1,11 @@
 package gui;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -9,7 +13,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
-import jdk.nashorn.internal.objects.NativeDebug;
+
+import javafx.scene.layout.HBox;
+import main.Utils;
 import persistence.H2DAO;
 
 import java.util.ArrayList;
@@ -24,6 +30,7 @@ public class ActionController
     private TextField secondValueArgs = new TextField();
     private Label value = new Label();
     private CheckBox actionSelected = new CheckBox();
+    private HBox uniqueValue = new HBox();
     private String lastType;
     private boolean textFieldNotGenerated, needToDelete, placeNotGenerated, checkboxNotGenerated;
 
@@ -38,10 +45,11 @@ public class ActionController
 
     public void setAction(GridPane gridParent, int rowIndex,String actionTypeValue, String selectElementByValue, String firstValueArgsValue, String selectPlaceByValue, String secondValueArgsValue)
     {
-        Label rowIndexLabel = new Label("# "+rowIndex);
+        Label rowIndexLabel = new Label();
         gridParent.addRow(rowIndex,rowIndexLabel);
         actionType = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getTypeAction()));
         gridParent.addRow(rowIndex, actionType);
+        rowIndexLabel.textProperty().bind(new SimpleStringProperty("# "+rowIndex));
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
             lastType = actionType.getValue().toString();
@@ -106,6 +114,15 @@ public class ActionController
 
                             value.setText("Value");
                             gridParent.addRow(rowIndex,value);
+
+                            uniqueValue = new HBox();
+                            uniqueValue.setSpacing(8);
+                            uniqueValue.setPadding(new Insets(5, 0, 0, 0));
+                            CheckBox uniqueCheckBox = new CheckBox();
+                            Label unique = new Label("Unique");
+
+                            uniqueValue.getChildren().addAll(unique,uniqueCheckBox);
+                            gridParent.addRow(rowIndex, uniqueValue);
 
                             secondValueArgs = new TextField();
                             secondValueArgs.setText(secondValueArgsValue);
@@ -207,13 +224,17 @@ public class ActionController
                 System.out.println("DropIndex = "+rowIndexDrop);
 
                 //System.out.println(getLastChildIndex(gridParent));
-                /*if (rowIndexDrop == getLastChildIndex(gridParent))                                  // Insertar al final
+                /*if (rowIndexDrop == getRowCount(gridParent)-1)                                  // Insertar al final
                 {
-                    for (Node child : gridParent.getChildren())
+                    /*for (Node child : gridParent.getChildren())
                     {
                         if (gridParent.getRowIndex(child) > rowIndexDrag) {
                             gridParent.setRowIndex(child, gridParent.getRowIndex(child) - 1); // Reducir el RowIndex de las acciones que tiene por encima en 1
                         }
+                    }*/
+                    /*for (Node item : draguedChildList)
+                    {
+                        gridParent.setRowIndex(item, getRowCount(gridParent));
                     }
                 }*/
 
@@ -500,6 +521,16 @@ public class ActionController
                         value.setText("Value");
                         gridParent.addRow(gridParent.getRowIndex(selectElementBy),value);
 
+                        uniqueValue = new HBox();
+                        uniqueValue.setSpacing(8);
+                        uniqueValue.setPadding(new Insets(5, 0, 0, 0));
+                        CheckBox uniqueCheckBox = new CheckBox();
+
+                        Label unique = new Label("Unique");
+
+                        uniqueValue.getChildren().addAll(unique,uniqueCheckBox);
+                        gridParent.addRow(gridParent.getRowIndex(selectElementBy), uniqueValue);
+
                         secondValueArgs = new TextField();
                         gridParent.addRow(gridParent.getRowIndex(selectElementBy),secondValueArgs);
                         if (checkboxNotGenerated) {
@@ -539,7 +570,6 @@ public class ActionController
                 });
 
                 break;
-
         }
     }
 
@@ -571,10 +601,31 @@ public class ActionController
 
     public void setDefaultAction(GridPane gridParent)
     {
-        gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs, value, actionSelected);
+        gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs, value, actionSelected, uniqueValue);
     }
 
+    /*public boolean isUnique()
+    {
+        boolean unique = false;
+        for (Node child : uniqueValue.getChildren())
+        {
+            if (child instanceof CheckBox && ((CheckBox) child).isSelected())
+            {
+                unique = true;
+            }
+        }
 
+        return unique;
+    }
+
+    public void generateUnique()
+    {
+       if (isUnique())
+       {
+            secondValueArgs.setText(Utils.generateUniqueID(secondValueArgs.getText()));
+       }
+    }*/
+    /*
     public String getActionTypeString() {
         return actionType.getValue().toString();
     }
@@ -593,5 +644,5 @@ public class ActionController
 
     public String getSecondValueArgsString() {
         return secondValueArgs.getText();
-    }
+    }*/
 }

@@ -51,9 +51,10 @@ public class Test_1_3 {
 
         else System.out.println("Algo ha ido MAL !");
 
-        String uniqueID = Utils.generateUniqueID();
         String name = "AGENTE1Y2rcNver7816";
-        name = name.concat(uniqueID);
+        name = Utils.generateUniqueID(name);
+
+        //name = name.concat(uniqueID);
 
         WebElement groupName = SeleniumDAO.selectElementBy("id","new_groupname",driver);
         groupName.sendKeys(name);

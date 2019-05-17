@@ -45,9 +45,10 @@ public class Test_1_2 {
         }
         int currentMax = Arrays.stream(ids).max().getAsInt();
 
-        String uniqueID = Utils.generateUniqueID();
         String name = "GruporcNver7816";
-        name = name.concat(uniqueID);
+        Utils.generateUniqueID(name);
+
+        //name = name.concat(uniqueID);
 
         WebElement groupName = SeleniumDAO.selectElementBy("id","new_groupname",driver);
         groupName.sendKeys(name);

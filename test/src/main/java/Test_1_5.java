@@ -32,9 +32,9 @@ public class Test_1_5 {
         SeleniumDAO.click(createUser);
         // Create new Agent
         String name ="Agente1Nver7816";
-        String uniqueID = Utils.generateUniqueID();
-        uniqueID = uniqueID.substring(0,3);
-        name = name.concat(uniqueID);
+        Utils.generateUniqueID(name);
+        //uniqueID = uniqueID.substring(0,3);
+        //name = name.concat(uniqueID);
         WebElement username = SeleniumDAO.selectElementBy("id", "username", driver);
         username.sendKeys(name);
 

@@ -194,10 +194,10 @@ public class H2DAO {
                 Action currentAction = actionList.get(i);
 
 
-                Integer actionTypeId = getIdActionType(currentAction.getActionTypeS());
-                Integer firstValueArgs = getIdSelectElementBy(currentAction.getSelectElementByS());
+                int actionTypeId = getIdActionType(currentAction.getActionTypeS());
+                int firstValueArgs = getIdSelectElementBy(currentAction.getSelectElementByS());
                 String value1 = currentAction.getFirstValueArgsS();
-                Integer secondValueArgs = getIdSelectElementBy(currentAction.getSelectElementByS());
+                int secondValueArgs = getIdSelectElementBy(currentAction.getSelectElementByS());
                 String value2 = currentAction.getSecondValueArgsS();
 
                 //System.out.println(""+actionTypeId+" / "+firstValueArgs+ " / "+value1+" / "+secondValueArgs+ " / "+value2);
@@ -294,64 +294,57 @@ public class H2DAO {
         return trialFromTable;
     }
 
-    public static Integer getIdActionType(String actionType)
+    public static int getIdActionType(String actionType)
     {
         // TODO: Although you need to use "Integer" in Maps, you can still use "int" wherever
-        Integer id; // No action type - Wrong.
-        switch (actionType){
-                case "Click":
-                    id = 1;
-                    break;
-                case "DragAndDrop":
-                    id = 2;
-                    break;
-                case "WriteTo":
-                    id = 3;
-                    break;
-                case "ReadFrom":
-                    id = 4;
-                    break;
-                case  "SwitchTo":
-                    id = 5;
-                    break;
-                case  "Waiting For":
-                    id = 6;
-                    break;
-                case  "WaitTime":
-                    id = 7;
-                    break;
-                default:
-                    id = 0;
-                    break;
+        int result = -1;
+        try{
+
+            Statement st = connection.createStatement();
+            String getIdActionType = "Select id from action_types where name = '"+actionType+"'";
+            st.execute(getIdActionType);
+
+            ResultSet resultSet = st.getResultSet();
+
+            while (resultSet.next())
+            {
+                result = Integer.parseInt(resultSet.getString("id"));
             }
-        return id;
+
+
+        }catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        return result;
+
     }
 
-    public static Integer getIdSelectElementBy(String actionType)
+    public static int getIdSelectElementBy(String selectBy)
     {
         // TODO: Although you need to use "Integer" in Maps, you can still use "int" wherever
-        Integer id; // No action type - Wrong.
-        switch (actionType){
-            case "id":
-                id = 1;
-                break;
-            case "xpath":
-                id = 2;
-                break;
-            case "cssSelector":
-                id = 3;
-                break;
-            case "className":
-                id = 4;
-                break;
-            case "name":
-                id = 5;
-                break;
-            default:
-                id = 1;
-                break;
+        int result = -1;
+        try{
+
+            Statement st = connection.createStatement();
+            String getSelectByIndex = "Select id from selection_by where name = '"+selectBy+"'";
+            st.execute(getSelectByIndex);
+
+            ResultSet resultSet = st.getResultSet();
+
+            while (resultSet.next())
+            {
+                result = Integer.parseInt(resultSet.getString("id"));
+            }
+
+
+        }catch (SQLException e)
+        {
+            e.printStackTrace();
         }
-        return id;
+
+        return result;
     }
 
     public static ArrayList<Action> getActions(String trialName)
@@ -375,7 +368,6 @@ public class H2DAO {
 
                 Action currentAction = new Action( actionsResultSet.getString("actiontypeid"), actionsResultSet.getString("selectionbyid1"),
                         actionsResultSet.getString("value1"),actionsResultSet.getString("selectionbyid2"), actionsResultSet.getString("value2"));
-                //currentAction.converAction();
                 actions.add(currentAction);
             }
              System.out.println("Llega");
@@ -409,7 +401,6 @@ public class H2DAO {
             {
                 Action currentValidation = new Action(validationsResultSet.getString("actiontypeid"), validationsResultSet.getString("selectionbyid1"),
                         validationsResultSet.getString("value1"), validationsResultSet.getString("selectionbyid2"), validationsResultSet.getString("value2"));
-                //currentValidation.converAction();
                 validations.add(currentValidation);
             }
             System.out.println("Llega");

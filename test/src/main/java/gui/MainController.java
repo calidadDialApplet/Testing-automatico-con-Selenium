@@ -24,6 +24,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.SeleniumDAO;
+import main.Utils;
 import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import persistence.H2DAO;
@@ -412,10 +413,6 @@ public class MainController implements Initializable {
                        Label titledPaneName = new Label();
 
 
-
-                       //Image image = new Image(getClass().getResourceAsStream("sharp_delete_black_24dp.png"));
-                       //buttonClose.setGraphic(new ImageView(image));
-                       //borderPane.prefWidthProperty().bind(scene.widthProperty().subtract(40));
                        if (trialName == "")
                        {
                            CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
@@ -435,11 +432,16 @@ public class MainController implements Initializable {
                        region.setMaxWidth(Double.MAX_VALUE);
                        HBox.setHgrow(region, Priority.ALWAYS);
 
-                       // Add our nodes to the contentPane
 
 
+                       Button buttonClose = new Button();
+                       buttonClose.setStyle("-fx-background-color: transparent;");
+                       Image image = new Image(getClass().getResource("/icons/sharp_delete_black_24dp.png").toString());
+                       ImageView imageView = new ImageView(image);
+                       imageView.setFitHeight(17);
+                       imageView.setFitWidth(17);
+                       buttonClose.setGraphic(imageView);
 
-                       Button buttonClose = new Button("X");
 
                        buttonClose.setOnAction(new EventHandler<ActionEvent>() {
                            @Override
@@ -609,6 +611,7 @@ public class MainController implements Initializable {
                 procesedActionList.clear();
                 goThroughTable("Actions");
                 H2DAO.saveTrial(procesedActionList, id, 0);
+                trialmodified = true;
             }
             if (tabValidation.isSelected()) {
                 H2DAO.deleteTrialValidations(id);
@@ -616,7 +619,7 @@ public class MainController implements Initializable {
                 goThroughTable("Validations");
                 H2DAO.saveTrial(procesedValidationList, id, 1);
             }
-            trialmodified = true;
+
         }
 
         if (trialmodified) {
@@ -673,6 +676,7 @@ public class MainController implements Initializable {
 
         int iterator = 0;
         int rowIndex = 0;
+        boolean unique = false;
         GridPane gridPane = new GridPane();
 
         if(table.equals("Actions")){
@@ -717,7 +721,20 @@ public class MainController implements Initializable {
                         textFieldSecondValueArgs = ((TextField) child).getText();
 
                     }
+                    if (child instanceof HBox)
+                    {
+                        for (Node hboxChild : ((HBox) child).getChildren())
+                        {
+                            if (hboxChild instanceof CheckBox && ((CheckBox) hboxChild).isSelected())
+                            {
+                                unique = true;
+                            }
+                        }
+                    }
                 }
+            }
+            if (unique){
+                textFieldSecondValueArgs = Utils.generateUniqueID(textFieldSecondValueArgs);
             }
             Action currentAction = new Action(comboBoxActionType,comboBoxSelectElementBy,textFieldFirstValueArgs,comboBoxSelectPlaceBy,textFieldSecondValueArgs);
             resetFields();
@@ -935,7 +952,7 @@ public class MainController implements Initializable {
 
                     Scanner inputStream = new Scanner(file);
                     while (inputStream.hasNext()) {
-                        String data = inputStream.next();
+                        String data = inputStream.nextLine();
                         //String action = data.substring()
                         if (data.equals(columnsHeadersCSV))
                         {
