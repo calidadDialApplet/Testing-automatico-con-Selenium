@@ -1,8 +1,6 @@
 package gui;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,7 +13,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 
 import javafx.scene.layout.HBox;
-import main.Utils;
+import javafx.scene.layout.RowConstraints;
 import persistence.H2DAO;
 
 import java.util.ArrayList;
@@ -29,15 +27,17 @@ public class ActionController
     private TextField firstValueArgs = new TextField();
     private TextField secondValueArgs = new TextField();
     private Label value = new Label();
+    private Label rowIndexLabel = new Label();
     private CheckBox actionSelected = new CheckBox();
     private HBox uniqueValue = new HBox();
+    private HBox hBox = new HBox();
     private String lastType;
     private boolean textFieldNotGenerated, needToDelete, placeNotGenerated, checkboxNotGenerated;
 
-    private static DataFormat comboBoxFormat = new DataFormat();
+    private static DataFormat hBoxFormat = new DataFormat();
     private static Integer rowIndexDrag;
     private static Integer rowIndexDrop;
-    private static List<Node> draguedChildList = new ArrayList<>();;
+    private static List<Node> draggedChildList = new ArrayList<>();;
     private static List<Node> movedChilds = new ArrayList<>();;
 
 
@@ -45,11 +45,21 @@ public class ActionController
 
     public void setAction(GridPane gridParent, int rowIndex,String actionTypeValue, String selectElementByValue, String firstValueArgsValue, String selectPlaceByValue, String secondValueArgsValue)
     {
-        Label rowIndexLabel = new Label();
-        gridParent.addRow(rowIndex,rowIndexLabel);
-        actionType = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getTypeAction()));
-        gridParent.addRow(rowIndex, actionType);
+
+        hBox = new HBox();
+        hBox.setMinWidth(2000);
+        hBox.setSpacing(10);
+
+        rowIndexLabel = new Label();
+        rowIndexLabel.setPadding(new Insets(5,0,0,0));
         rowIndexLabel.textProperty().bind(new SimpleStringProperty("# "+rowIndex));
+        gridParent.addRow(rowIndex,hBox);
+
+        hBox.getChildren().add(rowIndexLabel);
+        actionType = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getTypeAction()));
+        //gridParent.addRow(rowIndex, actionType);
+        hBox.getChildren().add(actionType);
+
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
             lastType = actionType.getValue().toString();
@@ -57,14 +67,15 @@ public class ActionController
             switch (actionType.getValue().toString()) {
                 case "Click":
                 case "ReadFrom":
-                    initializeComboBox(gridParent);
+                    initializeComboBox(hBox);
                     selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                    gridParent.addRow(rowIndex, selectElementBy);
+                    //gridParent.addRow(rowIndex, selectElementBy);
+                    hBox.getChildren().add(selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
-                        generatedTextField(gridParent,rowIndex, "FirstValueArgs", firstValueArgsValue);
+                        generatedTextField(hBox, "FirstValueArgs", firstValueArgsValue);
                         if (checkboxNotGenerated) {
-                            drawCheckBox(gridParent, gridParent.getRowIndex(selectElementBy));
+                            drawCheckBox(hBox);
                             checkboxNotGenerated = false;
                         }
                     });
@@ -72,26 +83,28 @@ public class ActionController
                     break;
                 case "DragAndDrop":
                     placeNotGenerated = true;
-                    initializeComboBox(gridParent);
-                    selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                    gridParent.addRow(rowIndex, selectElementBy);
+                    initializeComboBox(hBox);
+                    selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
+                    //gridParent.addRow(rowIndex, selectElementBy);
+                    hBox.getChildren().add(selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
 
                         if (placeNotGenerated) {
                             firstValueArgs = new TextField();
                             firstValueArgs.setText(firstValueArgsValue);
-                            gridParent.addRow(rowIndex, firstValueArgs);
+                            //gridParent.addRow(rowIndex, firstValueArgs);
+                            hBox.getChildren().add(firstValueArgs);
                             selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
 
-                            gridParent.addRow(rowIndex, selectPlaceBy);
+                            //gridParent.addRow(rowIndex, selectPlaceBy);
+                            hBox.getChildren().add(selectPlaceBy);
                             placeNotGenerated = false;
                             selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
                             {
-                                generatedTextField(gridParent,rowIndex, "SecondValueArgs", secondValueArgsValue);
+                                generatedTextField(hBox, "SecondValueArgs", secondValueArgsValue);
                                 if (checkboxNotGenerated) {
-                                    drawCheckBox(gridParent, gridParent.getRowIndex(selectPlaceBy));
+                                    drawCheckBox(hBox);
                                     checkboxNotGenerated = false;
                                 }
                             });
@@ -101,19 +114,22 @@ public class ActionController
                     selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
                     break;
                 case "WriteTo":
-                    initializeComboBox(gridParent);
-                    selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                    gridParent.addRow(rowIndex, selectElementBy);
+                    initializeComboBox(hBox);
+                    selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
+                    //gridParent.addRow(rowIndex, selectElementBy);
+                    hBox.getChildren().add(selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
                         if (textFieldNotGenerated) {
                             firstValueArgs = new TextField();
                             firstValueArgs.setText(firstValueArgsValue);
-                            gridParent.addRow(rowIndex, firstValueArgs);
+                            //gridParent.addRow(rowIndex, firstValueArgs);
+                            hBox.getChildren().add(firstValueArgs);
 
                             value.setText("Value");
-                            gridParent.addRow(rowIndex,value);
+                            value.setPadding(new Insets(5,0,0,0));
+                            //gridParent.addRow(rowIndex,value);
+                            hBox.getChildren().add(value);
 
                             uniqueValue = new HBox();
                             uniqueValue.setSpacing(8);
@@ -122,13 +138,15 @@ public class ActionController
                             Label unique = new Label("Unique");
 
                             uniqueValue.getChildren().addAll(unique,uniqueCheckBox);
-                            gridParent.addRow(rowIndex, uniqueValue);
+                            //gridParent.addRow(rowIndex, uniqueValue);
+                            hBox.getChildren().add(uniqueValue);
 
                             secondValueArgs = new TextField();
                             secondValueArgs.setText(secondValueArgsValue);
-                            gridParent.addRow(rowIndex,secondValueArgs);
+                            //gridParent.addRow(rowIndex,secondValueArgs);
+                            hBox.getChildren().add(secondValueArgs);
                             if (checkboxNotGenerated) {
-                                drawCheckBox(gridParent, gridParent.getRowIndex(selectElementBy));
+                                drawCheckBox(hBox);
                                 checkboxNotGenerated = false;
                             }
                         }
@@ -138,29 +156,32 @@ public class ActionController
                     break;
                 case "SwitchTo":
                 case "WaitTime":
-                    initializeComboBox(gridParent);
-                    generatedTextField(gridParent,rowIndex, "FirstValueArgs", firstValueArgsValue);
+                    initializeComboBox(hBox);
+                    generatedTextField(hBox, "FirstValueArgs", firstValueArgsValue);
                     if (checkboxNotGenerated){
-                        drawCheckBox(gridParent,rowIndex);
+                        drawCheckBox(hBox);
                     }
                     break;
                 case "Waiting For":
-                    initializeComboBox(gridParent);
+                    initializeComboBox(hBox);
                     firstValueArgs = new TextField();
                     firstValueArgs.setText(firstValueArgsValue);
-                    gridParent.addRow(rowIndex, firstValueArgs);
+                    //gridParent.addRow(rowIndex, firstValueArgs);
+                    hBox.getChildren().add(firstValueArgs);
 
                     value.setText("Element");
-                    gridParent.addRow(rowIndex,value);
+                    value.setPadding(new Insets(5,0,0,0));
+                    //gridParent.addRow(rowIndex,value);
+                    hBox.getChildren().add(value);
 
-                    selectElementBy = new ComboBox();
-                    selectElementBy.setItems(FXCollections.observableArrayList(persistence.H2DAO.getSelectElementBy()));
-                    gridParent.addRow(rowIndex, selectElementBy);
+                    selectElementBy = new ComboBox(FXCollections.observableArrayList(persistence.H2DAO.getSelectElementBy()));
+                    //gridParent.addRow(rowIndex, selectElementBy);
+                    hBox.getChildren().add(selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
-                        generatedTextField(gridParent,rowIndex, "SecondValueArgs", secondValueArgsValue);
+                        generatedTextField(hBox, "SecondValueArgs", secondValueArgsValue);
                         if (checkboxNotGenerated) {
-                            drawCheckBox(gridParent, gridParent.getRowIndex(selectElementBy));
+                            drawCheckBox(hBox);
                             checkboxNotGenerated = false;
                         }
                     });
@@ -172,177 +193,47 @@ public class ActionController
         });
         actionType.getSelectionModel().select(Action.getActionTypeId(actionTypeValue));
 
-        actionType.setOnDragDetected(new EventHandler<MouseEvent>() {
+        hBox.setOnDragDetected(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 rowIndexDrop = -1;
                 rowIndexDrag = 0;
-                draguedChildList.clear();
+                draggedChildList.clear();
                 movedChilds.clear();
 
                 Dragboard db = actionType.startDragAndDrop(TransferMode.MOVE);
                 ClipboardContent content = new ClipboardContent();
-                content.put(comboBoxFormat, " ");
+                content.put(hBoxFormat, " ");
                 db.setContent(content);
-                rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
-                for (Node child : gridParent.getChildren()){                                        // Almacenar en la lista los elementos de la accion
-                    if (gridParent.getRowIndex(child) == rowIndexDrag)
-                    {
-                        draguedChildList.add(child);
-                    }
+
+
+                System.out.println(event.getPickResult().toString());
+
+                if (event.getPickResult().getIntersectedNode() instanceof ComboBox ||
+                        event.getPickResult().getIntersectedNode() instanceof TextField ||
+                        event.getPickResult().getIntersectedNode() instanceof CheckBox ||
+                        event.getPickResult().getIntersectedNode() instanceof Label)
+                {
+                    rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode().getParent());
+                }else {
+
+                    rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
                 }
-
-                for (Node child : gridParent.getChildren()){                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
-                    if (gridParent.getRowIndex(child) > rowIndexDrag)
-                    {
-                        gridParent.setRowIndex(child, gridParent.getRowIndex(child) - 1);
-                    }
-                }
-                event.consume();
-
-            }
-        });
-
-        actionType.setOnDragOver(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                gridParent.getChildren().removeAll(draguedChildList);                               // Eliminar los elementos
-                gridParent.getRowConstraints().remove(rowIndexDrag);                                // Eliminar la fila del grid
-                event.consume();
-            }
-        });
-
-        actionType.setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-
-
-                rowIndexDrop = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
-
                 System.out.println("DragIndex = "+ rowIndexDrag);
-                System.out.println("DropIndex = "+rowIndexDrop);
-
-                //System.out.println(getLastChildIndex(gridParent));
-                /*if (rowIndexDrop == getRowCount(gridParent)-1)                                  // Insertar al final
-                {
-                    /*for (Node child : gridParent.getChildren())
-                    {
-                        if (gridParent.getRowIndex(child) > rowIndexDrag) {
-                            gridParent.setRowIndex(child, gridParent.getRowIndex(child) - 1); // Reducir el RowIndex de las acciones que tiene por encima en 1
-                        }
-                    }*/
-                    /*for (Node item : draguedChildList)
-                    {
-                        gridParent.setRowIndex(item, getRowCount(gridParent));
-                    }
-                }*/
-
-                if (rowIndexDrag > rowIndexDrop || rowIndexDrag < rowIndexDrop || rowIndexDrop == 0) // Insertar en cabeza o en el medio
-                {
-                    for (Node child : gridParent.getChildren()) {
-                        if (gridParent.getRowIndex(child) >= rowIndexDrop) {
-                            gridParent.setRowIndex(child, gridParent.getRowIndex(child) + 1); // Aumentar el RowIndex de las acciones que tiene por debajo en 1
-
-                        }
-                    }
-                }
-
-                System.out.println("Tomaaa con to mi node " + rowIndexDrop);
 
 
-
-                event.consume();
-            }
-        });
-
-        actionType.setOnDragDone(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-
-                if (event.getTransferMode() == TransferMode.MOVE) {
-
-                }
-
-                if (rowIndexDrop == -1){
-                    /*for (Node item : draguedChildList) {
-                        gridParent.addRow(rowIndexDrag, item);
-                        gridParent.setRowIndex(item, rowIndexDrag);
-                        //gridParent.setRowIndex(item, gridParent.getRowIndex(item));
-                    }*/
-
-                    event.consume();
-                } else {
-
-                    for (Node item : draguedChildList) {
-                        gridParent.addRow(rowIndexDrop, item);
-                        gridParent.setRowIndex(item, rowIndexDrop);
-                        //gridParent.setRowIndex(item, gridParent.getRowIndex(item));
-                    }
-                }
-
-                System.out.println("RowIndex = "+rowIndex);
-                System.out.println("------------------------------------");
-                event.consume();
-            }
-        });
-    }
-
-    public void addActiontoGrid(GridPane gridParent, int rowIndex)
-    {
-
-        Label rowIndexLabel = new Label("# "+rowIndex);
-        gridParent.addRow(rowIndex,rowIndexLabel);
-        actionType = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getTypeAction()));
-        gridParent.addRow(rowIndex, actionType);
-        actionType.valueProperty().addListener((observable, oldValue, newValue) ->
-        {
-            initializeComboBox(gridParent);
-            lastType = actionType.getValue().toString();
-            placeNotGenerated = true;
-            checkboxNotGenerated = true;
-            switch (actionType.getValue().toString()) {
-                case "Click":
-                case "DragAndDrop":
-                case "WriteTo":
-                case "ReadFrom":
-                case "SwitchTo":
-                case "Waiting For":
-                case "WaitTime":
-                    drawElements(gridParent, lastType,actionType);
-                    break;
-                default:
-                    break;
-            }
-        });
-
-
-
-
-
-        actionType.setOnDragDetected(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                rowIndexDrop = -1;
-                rowIndexDrag = 0;
-                draguedChildList.clear();
-                movedChilds.clear();
-
-                Dragboard db = actionType.startDragAndDrop(TransferMode.MOVE);
-                ClipboardContent content = new ClipboardContent();
-                content.put(comboBoxFormat, " ");
-                db.setContent(content);
-                rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
-
-
-                for (Node child : gridParent.getChildren()){                                        // Almacenar en la lista los elementos de la accion
+                for (Node child : gridParent.getChildren()){                                        // Almacenar en la lista el Hbox de la accion
                     if (gridParent.getRowIndex(child) == rowIndexDrag)
                     {
-                        draguedChildList.add(child);
+                        draggedChildList.add(child);
                     }
                 }
 
-                if (rowIndexDrag >= 0 && rowIndexDrag < getRowCount(gridParent))                    // Si es la cabeza o medio...
+                /**/
+                gridParent.getChildren().remove(event.getPickResult().getIntersectedNode());
+                gridParent.getRowConstraints().remove(rowIndexDrag);
+
+                if (rowIndexDrag >= 0 || rowIndexDrag < getRowCount(gridParent))                    // Si es la cabeza o medio...
                 {
                     for (Node child : gridParent.getChildren()){                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
                         if (gridParent.getRowIndex(child) > rowIndexDrag)
@@ -356,48 +247,54 @@ public class ActionController
             }
         });
 
-        actionType.setOnDragOver(new EventHandler<DragEvent>() {
+        hBox.setOnDragOver(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                gridParent.getChildren().removeAll(draguedChildList);                               // Eliminar los elementos
-                gridParent.getRowConstraints().remove(rowIndexDrag);                                // Eliminar la fila del grid
+                //gridParent.getChildren().removeAll(draggedChildList);                               // Eliminar los elementos
+                //gridParent.getRowConstraints().remove(rowIndexDrag);                                // Eliminar la fila del grid
                 event.consume();
             }
         });
 
-        actionType.setOnDragDropped(new EventHandler<DragEvent>() {
+        hBox.setOnDragDropped(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
 
 
 
 
-                System.out.println("DragIndex = "+ rowIndexDrag);
+
+
+
+                rowIndexDrop = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
                 System.out.println("DropIndex = "+rowIndexDrop);
+                System.out.println("RowCount = "+ getRowCount(gridParent));
 
-
-                /*if (rowIndexDrop == getLastChildIndex(gridParent))                                  // Insertar al final
+                if (rowIndexDrop == getRowCount(gridParent)-1)                                  // Insertar al final
                 {
-                    for (Node child : gridParent.getChildren())
+                    /*for (Node child : gridParent.getChildren())
                     {
                         if (gridParent.getRowIndex(child) > rowIndexDrag) {
                             gridParent.setRowIndex(child, gridParent.getRowIndex(child) - 1); // Reducir el RowIndex de las acciones que tiene por encima en 1
                         }
-                    }
-                }*/
+                    }*/
 
+                    gridParent.getRowConstraints().add(new RowConstraints());
+                    gridParent.addRow(getRowCount(gridParent), draggedChildList.get(0));
 
-
-                if (rowIndexDrop < getRowCount(gridParent)) // Insertar en cabeza o en el medio
-                {
+                } else {
                     for (Node child : gridParent.getChildren()) {
                         if (gridParent.getRowIndex(child) >= rowIndexDrop) {
                             gridParent.setRowIndex(child, gridParent.getRowIndex(child) + 1); // Aumentar el RowIndex de las acciones que tiene por debajo en 1
-
                         }
                     }
+                    gridParent.addRow(rowIndexDrop, draggedChildList.get(0));
                 }
+
+
+
+
 
                 System.out.println("Tomaaa con to mi node " + rowIndexDrop);
 
@@ -407,27 +304,27 @@ public class ActionController
             }
         });
 
-        actionType.setOnDragDone(new EventHandler<DragEvent>() {
+        hBox.setOnDragDone(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
 
                 if (event.getTransferMode() == TransferMode.MOVE) {
                 }
 
-                System.out.println("DragDone DropIndex = "+rowIndexDrop);
+               /* System.out.println("DragDone DropIndex = "+rowIndexDrop);
                 if (rowIndexDrop == -1){
                     event.consume();
                 } else {
 
                     if (rowIndexDrop == getRowCount(gridParent))                    // Insertar al final
                     {
-                        for (Node item : draguedChildList)
+                        for (Node item : draggedChildList)
                         {
                             gridParent.addRow(rowIndex + 1,item);
                         }
                     }
 
-                    for (Node item : draguedChildList)                              // Insertar en el medio o en cabeza
+                    for (Node item : draggedChildList)                              // Insertar en el medio o en cabeza
                     {
                         gridParent.addRow(rowIndexDrop, item);
                         gridParent.setRowIndex(item, rowIndexDrop);
@@ -436,12 +333,214 @@ public class ActionController
                 }
 
                 System.out.println("RowIndex = "+rowIndex);
-                System.out.println("------------------------------------");
+                System.out.println("------------------------------------");*/
                 event.consume();
+            }
+        });
+    }
+
+    public void addActiontoGrid(GridPane gridParent, int rowIndex)
+    {
+
+        hBox = new HBox();
+        hBox.setMinWidth(2000);
+        hBox.setSpacing(10);
+
+
+
+        gridParent.addRow(rowIndex, hBox);
+        rowIndexLabel = new Label("# "+rowIndex);
+        dragAndDrop(gridParent, rowIndexLabel);
+        rowIndexLabel.setPadding(new Insets(5,0,0,0));
+        //gridParent.addRow(rowIndex,rowIndexLabel);
+        //hBox.setHgrow(rowIndexLabel, Priority.ALWAYS);
+
+
+        hBox.getChildren().add(rowIndexLabel);
+
+
+
+        actionType = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getTypeAction()));
+        //gridParent.addRow(rowIndex, actionType);
+        hBox.getChildren().add(actionType);
+        actionType.valueProperty().addListener((observable, oldValue, newValue) ->
+        {
+            initializeComboBox(hBox);
+            lastType = actionType.getValue().toString();
+            placeNotGenerated = true;
+            checkboxNotGenerated = true;
+            switch (actionType.getValue().toString()) {
+                case "Click":
+                case "DragAndDrop":
+                case "WriteTo":
+                case "ReadFrom":
+                case "SwitchTo":
+                case "Waiting For":
+                case "WaitTime":
+                    drawElements(hBox, lastType, gridParent);
+                    break;
+                default:
+                    break;
             }
         });
 
 
+        dragAndDrop(gridParent,actionType);
+        dragAndDrop(gridParent,hBox);
+
+
+    }
+
+    private void dragAndDrop(GridPane gridParent, Node node) {
+        node.setOnDragDetected(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                rowIndexDrop = -1;
+                rowIndexDrag = 0;
+                draggedChildList.clear();
+                movedChilds.clear();
+
+                Dragboard db = hBox.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent content = new ClipboardContent();
+                content.put(hBoxFormat, " ");
+                db.setContent(content);
+
+
+                if (node instanceof ComboBox)
+                {
+                    rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode().getParent());
+                } else if (node instanceof TextField ||
+                        node instanceof Label){
+                    rowIndexDrag = gridParent.getRowIndex(node);
+                }else {
+                    rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
+                }
+
+                System.out.println("DragIndex = "+ rowIndexDrag);
+
+
+                for (Node child : gridParent.getChildren()){                                        // Almacenar en la lista el Hbox de la accion
+                    if (gridParent.getRowIndex(child) == rowIndexDrag)
+                    {
+                        draggedChildList.add(child);
+                    }
+                }
+
+                if (    node instanceof ComboBox ||
+                        node instanceof TextField ||
+                        node instanceof Label)
+                {
+                    gridParent.getChildren().remove(event.getPickResult().getIntersectedNode().getParent());
+                }else {
+                    gridParent.getChildren().remove(event.getPickResult().getIntersectedNode());
+                }
+                gridParent.getRowConstraints().remove(rowIndexDrag);
+
+
+                if (rowIndexDrag >= 0 || rowIndexDrag < getRowCount(gridParent))                    // Si es la cabeza o medio...
+                {
+                    for (Node child : gridParent.getChildren()){                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
+                        if (gridParent.getRowIndex(child) > rowIndexDrag)
+                        {
+                            gridParent.setRowIndex(child, gridParent.getRowIndex(child) - 1);
+                        }
+                    }
+                }
+                event.consume();
+
+            }
+        });
+
+        node.setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                //gridParent.getChildren().removeAll(draggedChildList);                               // Eliminar los elementos
+                //gridParent.getRowConstraints().remove(rowIndexDrag);                                // Eliminar la fila del grid
+                event.consume();
+            }
+        });
+
+        node.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+
+
+
+                if (node instanceof CheckBox ||
+                        node instanceof ComboBox ||
+                        node instanceof TextField ||
+                        node instanceof Label)
+                {
+                    rowIndexDrop = gridParent.getRowIndex(event.getPickResult().getIntersectedNode().getParent());
+                }else {
+                    rowIndexDrop = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
+                }
+
+
+
+                System.out.println("DropIndex = "+rowIndexDrop);
+                System.out.println("RowCount = "+ getRowCount(gridParent));
+
+                if (rowIndexDrop == getRowCount(gridParent)-1)                                  // Insertar al final
+                {
+                    gridParent.getRowConstraints().add(new RowConstraints());
+                    gridParent.addRow(getRowCount(gridParent), draggedChildList.get(0));
+
+                } else {
+                    for (Node child : gridParent.getChildren()) {
+                        if (gridParent.getRowIndex(child) >= rowIndexDrop) {
+                            gridParent.setRowIndex(child, gridParent.getRowIndex(child) + 1); // Aumentar el RowIndex de las acciones que tiene por debajo en 1
+                        }
+                    }
+                    gridParent.addRow(rowIndexDrop, draggedChildList.get(0));
+                }
+
+
+
+
+
+                System.out.println("Tomaaa con to mi node " + rowIndexDrop);
+
+
+
+                event.consume();
+            }
+        });
+
+        node.setOnDragDone(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+
+                if (event.getTransferMode() == TransferMode.MOVE) {
+                }
+
+               /* System.out.println("DragDone DropIndex = "+rowIndexDrop);
+                if (rowIndexDrop == -1){
+                    event.consume();
+                } else {
+
+                    if (rowIndexDrop == getRowCount(gridParent))                    // Insertar al final
+                    {
+                        for (Node item : draggedChildList)
+                        {
+                            gridParent.addRow(rowIndex + 1,item);
+                        }
+                    }
+
+                    for (Node item : draggedChildList)                              // Insertar en el medio o en cabeza
+                    {
+                        gridParent.addRow(rowIndexDrop, item);
+                        gridParent.setRowIndex(item, rowIndexDrop);
+                        //gridParent.setRowIndex(item, gridParent.getRowIndex(item));
+                    }
+                }
+
+                System.out.println("RowIndex = "+rowIndex);
+                System.out.println("------------------------------------");*/
+                event.consume();
+            }
+        });
     }
 
     private int getRowCount(GridPane pane) {
@@ -460,48 +559,59 @@ public class ActionController
 
 
 
-    private void initializeComboBox(GridPane gridParent)
+    private void initializeComboBox(HBox hBox)
     {
         textFieldNotGenerated = true;
         if (needToDelete) {
-            setDefaultAction(gridParent);
+            setDefaultAction(hBox);
         }
         needToDelete = true;
     }
 
-    private void drawElements(GridPane gridParent, String type, ComboBox actionType)
+    private void drawElements(HBox hBox, String type, GridPane gridParent)
     {
-        int rowIndex = gridParent.getRowIndex(actionType);
+        //int rowIndex = gridParent.getRowIndex(actionType);
         switch (type) {
             case "Click":
             case "ReadFrom":
                 selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                gridParent.addRow(rowIndex, selectElementBy);
+                //gridParent.addRow(rowIndex, selectElementBy);
+                hBox.getChildren().add(selectElementBy);
+                dragAndDrop(gridParent, selectElementBy);
                 selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                 {
-                    generatedTextField(gridParent,gridParent.getRowIndex(selectElementBy),"FirstValueArgs","");
+
+                    generatedTextField(hBox,"FirstValueArgs","");
+                    dragAndDrop(gridParent, firstValueArgs);
                     if (checkboxNotGenerated) {
-                        drawCheckBox(gridParent, gridParent.getRowIndex(selectElementBy));
+                        drawCheckBox(hBox);
                         checkboxNotGenerated = false;
                     }
                 });
                 break;
             case "DragAndDrop":
                 selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                gridParent.addRow(rowIndex, selectElementBy);
+                //gridParent.addRow(rowIndex, selectElementBy);
+                hBox.getChildren().add(selectElementBy);
+                dragAndDrop(gridParent, selectElementBy);
                 selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                 {
                     if (placeNotGenerated) {
                         firstValueArgs = new TextField();
-                        gridParent.addRow(gridParent.getRowIndex(selectElementBy), firstValueArgs);
+                        hBox.getChildren().add(firstValueArgs);
+                        dragAndDrop(gridParent, firstValueArgs);
+
                         selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                        gridParent.addRow(gridParent.getRowIndex(selectElementBy), selectPlaceBy);
+                        hBox.getChildren().add(selectPlaceBy);
+                        dragAndDrop(gridParent, selectPlaceBy);
+
                         placeNotGenerated = false;
                         selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
                         {
-                            generatedTextField(gridParent,gridParent.getRowIndex(selectPlaceBy),"SecondValueArgs","");
+                            generatedTextField(hBox,"SecondValueArgs","");
+                            dragAndDrop(gridParent, secondValueArgs);
                             if (checkboxNotGenerated) {
-                                drawCheckBox(gridParent, gridParent.getRowIndex(selectPlaceBy));
+                                drawCheckBox(hBox);
                                 checkboxNotGenerated = false;
                             }
                         });
@@ -509,17 +619,23 @@ public class ActionController
                 });
                 break;
             case "WriteTo":
-                selectElementBy = new ComboBox();
-                selectElementBy.setItems(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                gridParent.addRow(rowIndex, selectElementBy);
+                selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
+                hBox.getChildren().add(selectElementBy);
+                dragAndDrop(gridParent, selectElementBy);
+
                 selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                 {
                     if (textFieldNotGenerated) {
                         firstValueArgs = new TextField();
-                        gridParent.addRow(gridParent.getRowIndex(selectElementBy), firstValueArgs);
+                        //gridParent.addRow(gridParent.getRowIndex(selectElementBy), firstValueArgs);
+                        hBox.getChildren().add(firstValueArgs);
+                        dragAndDrop(gridParent, firstValueArgs);
 
                         value.setText("Value");
-                        gridParent.addRow(gridParent.getRowIndex(selectElementBy),value);
+                        value.setPadding(new Insets( 5,0,0,0));
+                        dragAndDrop(gridParent, value);
+                        //gridParent.addRow(gridParent.getRowIndex(selectElementBy),value);
+                        hBox.getChildren().add(value);
 
                         uniqueValue = new HBox();
                         uniqueValue.setSpacing(8);
@@ -529,12 +645,16 @@ public class ActionController
                         Label unique = new Label("Unique");
 
                         uniqueValue.getChildren().addAll(unique,uniqueCheckBox);
-                        gridParent.addRow(gridParent.getRowIndex(selectElementBy), uniqueValue);
+                        //gridParent.addRow(gridParent.getRowIndex(selectElementBy), uniqueValue);
+                        hBox.getChildren().add(uniqueValue);
+                        dragAndDrop(gridParent, uniqueValue);
 
                         secondValueArgs = new TextField();
-                        gridParent.addRow(gridParent.getRowIndex(selectElementBy),secondValueArgs);
+                        //gridParent.addRow(gridParent.getRowIndex(selectElementBy),secondValueArgs);
+                        hBox.getChildren().add(secondValueArgs);
+                        dragAndDrop(gridParent, secondValueArgs);
                         if (checkboxNotGenerated) {
-                            drawCheckBox(gridParent, gridParent.getRowIndex(selectElementBy));
+                            drawCheckBox(hBox);
                             checkboxNotGenerated = false;
                         }
                     }
@@ -544,27 +664,35 @@ public class ActionController
                 break;
             case "SwitchTo":
             case "WaitTime":
-                generatedTextField(gridParent,rowIndex,"FirstValueArgs","");
+                generatedTextField(hBox,"FirstValueArgs","");
+                dragAndDrop(gridParent, firstValueArgs);
                 if (checkboxNotGenerated) {
-                    drawCheckBox(gridParent, rowIndex);
+                    drawCheckBox(hBox);
                     checkboxNotGenerated = false;
                 }
                 break;
             case "Waiting For":
                 firstValueArgs = new TextField();
-                gridParent.addRow(rowIndex, firstValueArgs);
+                //gridParent.addRow(rowIndex, firstValueArgs);
+                hBox.getChildren().add(firstValueArgs);
+                dragAndDrop(gridParent, firstValueArgs);
 
                 value.setText("Element");
-                gridParent.addRow(rowIndex,value);
+                value.setPadding(new Insets( 5,0,0,0));
+                //gridParent.addRow(rowIndex,value);
+                hBox.getChildren().add(value);
+                dragAndDrop(gridParent, value);
 
-                selectElementBy = new ComboBox();
-                selectElementBy.setItems(FXCollections.observableArrayList(persistence.H2DAO.getSelectElementBy()));
-                gridParent.addRow(rowIndex, selectElementBy);
+                selectElementBy = new ComboBox(FXCollections.observableArrayList(persistence.H2DAO.getSelectElementBy()));
+                //gridParent.addRow(rowIndex, selectElementBy);
+                hBox.getChildren().add(selectElementBy);
+                dragAndDrop(gridParent, selectElementBy);
                 selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                 {
-                    generatedTextField(gridParent,gridParent.getRowIndex(selectElementBy),"SecondValueArgs","");
+                    generatedTextField(hBox,"SecondValueArgs","");
+                    dragAndDrop(gridParent, secondValueArgs);
                     if (checkboxNotGenerated) {
-                        drawCheckBox(gridParent, gridParent.getRowIndex(selectElementBy));
+                        drawCheckBox(hBox);
                         checkboxNotGenerated = false;
                     }
                 });
@@ -573,35 +701,39 @@ public class ActionController
         }
     }
 
-    public void drawCheckBox(GridPane gridParent, int rowIndex)
+    public void drawCheckBox(HBox hBox)
     {
         actionSelected = new CheckBox();
-        gridParent.addRow(rowIndex, actionSelected);
+        actionSelected.setPadding(new Insets(10,0,0,0));
+        hBox.getChildren().add(actionSelected);
     }
 
-    public void generatedTextField(GridPane gridParent,int rowIndex, String name, String value)
+    public void generatedTextField(HBox hBox, String name, String value)
     {
         if(name.equals("FirstValueArgs")){
             if (textFieldNotGenerated) {
-                firstValueArgs = new TextField();
-                firstValueArgs.setText(value);
-                gridParent.addRow(rowIndex,firstValueArgs);
+                firstValueArgs = new TextField(value);
+                //firstValueArgs.setText(value);
+                //gridParent.addRow(rowIndex,firstValueArgs);
+                hBox.getChildren().add(firstValueArgs);
             }
             textFieldNotGenerated = false;
         }
         if (name.equals("SecondValueArgs")){
             if (textFieldNotGenerated) {
-                secondValueArgs = new TextField();
-                secondValueArgs.setText(value);
-                gridParent.addRow(rowIndex,secondValueArgs);
+                secondValueArgs = new TextField(value);
+                //secondValueArgs.setText(value);
+                //gridParent.addRow(rowIndex,secondValueArgs);
+                hBox.getChildren().add(secondValueArgs);
             }
             textFieldNotGenerated = false;
         }
     }
 
-    public void setDefaultAction(GridPane gridParent)
+    public void setDefaultAction(HBox hBox)
     {
-        gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs, value, actionSelected, uniqueValue);
+        //gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs, value, actionSelected, uniqueValue);
+        hBox.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs, value, actionSelected, uniqueValue);
     }
 
     /*public boolean isUnique()

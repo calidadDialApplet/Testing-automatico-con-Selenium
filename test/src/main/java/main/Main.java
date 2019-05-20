@@ -29,7 +29,7 @@ public class Main extends Application {
                 Parent root = loader.load(getClass().getResource("/gui/Main.fxml"));
                 primaryStage.setTitle("WEB UI Tester");
                 MainController controller = loader.getController();
-                scene = new Scene(root,800,480);
+                scene = new Scene(root,1024,666); // Devil's height
                 if (H2DAO.isDarkTheme())
                 {
                         setTheme("darcula");
