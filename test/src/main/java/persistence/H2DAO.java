@@ -297,7 +297,7 @@ public class H2DAO {
     public static int getIdActionType(String actionType)
     {
         // TODO: Although you need to use "Integer" in Maps, you can still use "int" wherever
-        int result = -1;
+        int result = 1;
         try{
 
             Statement st = connection.createStatement();
@@ -324,7 +324,7 @@ public class H2DAO {
     public static int getIdSelectElementBy(String selectBy)
     {
         // TODO: Although you need to use "Integer" in Maps, you can still use "int" wherever
-        int result = -1;
+        int result = 1;
         try{
 
             Statement st = connection.createStatement();

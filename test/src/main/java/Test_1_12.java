@@ -1,3 +1,4 @@
+import main.SeleniumDAO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -34,8 +35,10 @@ public class Test_1_12 {
         importUsersCSV.click();
         // Input Button
         // Tener en cuenta la ruta del fichero y que el mismo fichero no contenga errores
-        WebElement examine = driver.findElement(By.name("userfile"));
-        examine.sendKeys("/home/david/Escritorio/Importación Usuarios.csv");
+        //WebElement examine = driver.findElement(By.name("userfile"));
+        //examine.sendKeys("/home/david/Escritorio/Importación Usuarios.csv");
+        WebElement examine = SeleniumDAO.selectElementBy("name", "userfile", driver);
+        SeleniumDAO.writeInTo(examine,"/home/david/Escritorio/Importación_Usuarios.csv");
 
         WebElement submitCSV = driver.findElement(By.id("submitcsv"));
         submitCSV.click();

@@ -300,23 +300,35 @@ public class MainController implements Initializable {
         int iterations = 0;
         int rowToDelete = -1;
 
-        for (Node child : gridPane.getChildren())                                   // Number of rows to delete
+        for (Node hbox : gridPane.getChildren())                                   // Number of rows to delete
         {
-            if (child instanceof CheckBox && ((CheckBox)child).isSelected())
+            if (hbox instanceof HBox)
             {
-                iterations++;
+                for (Node child : ((HBox) hbox).getChildren())
+                {
+                    if (child instanceof CheckBox && ((CheckBox)child).isSelected())
+                    {
+                        iterations++;
+                    }
+                }
             }
         }
 
         for (int i = 0; i < iterations; i++)
         {
-            for (Node child : gridPane.getChildren())
+            for (Node hbox : gridPane.getChildren())
             {
-                if (child instanceof CheckBox && ((CheckBox)child).isSelected())
-                {
-                    rowToDelete = gridPane.getRowIndex(child);
-                    break;
+                if (hbox instanceof  HBox){
+                    for (Node child : ((HBox) hbox).getChildren())
+                    {
+                        if (child instanceof CheckBox && ((CheckBox)child).isSelected())
+                        {
+                            rowToDelete = gridPane.getRowIndex(child.getParent());
+                            break;
+                        }
+                    }
                 }
+
 
             }
 
@@ -695,43 +707,58 @@ public class MainController implements Initializable {
         {
             int i = 0;
             int j = 0;
-            for(Node child : gridPane.getChildren())
+            for(Node hbox : gridPane.getChildren())
             {
-                if (gridPane.getRowIndex(child) == iterator)
+                if (hbox instanceof HBox)
                 {
 
-                    if (child instanceof ComboBox && i == 0)
+                    for (Node child : ((HBox) hbox).getChildren())
                     {
-                        comboBoxActionType = ((ComboBox) child).getValue().toString();
-                        i++;
-                    } else if(child instanceof ComboBox && i == 1)
-                    {
-                        comboBoxSelectElementBy = ((ComboBox) child).getValue().toString();
-                        i++;
-                    } else if(child instanceof ComboBox && i == 2)
-                    {
-                        comboBoxSelectPlaceBy = ((ComboBox) child).getValue().toString();
-                    }
-                    if (child instanceof TextField && j == 0)
-                    {
-                        textFieldFirstValueArgs = ((TextField) child).getText();
-                        j++;
-                    } else if(child instanceof TextField && j == 1)
-                    {
-                        textFieldSecondValueArgs = ((TextField) child).getText();
-
-                    }
-                    if (child instanceof HBox)
-                    {
-                        for (Node hboxChild : ((HBox) child).getChildren())
+                        if (gridPane.getRowIndex(child.getParent()) == iterator)
                         {
-                            if (hboxChild instanceof CheckBox && ((CheckBox) hboxChild).isSelected())
+
+                            if (child instanceof ComboBox && i == 0)
                             {
-                                unique = true;
+                                comboBoxActionType = ((ComboBox) child).getValue().toString();
+                                i++;
+                            } else if(child instanceof ComboBox && i == 1)
+                            {
+                                comboBoxSelectElementBy = ((ComboBox) child).getValue().toString();
+                                i++;
+                            } else if(child instanceof ComboBox && i == 2)
+                            {
+                                comboBoxSelectPlaceBy = ((ComboBox) child).getValue().toString();
+                            }
+                            if (child instanceof TextField && j == 0)
+                            {
+                                textFieldFirstValueArgs = ((TextField) child).getText();
+                                j++;
+                            } else if(child instanceof StackPane && j == 1)
+                            {
+                                for (Node stackChild : ((StackPane) child).getChildren())
+                                {
+                                    if (stackChild instanceof TextField)
+                                    {
+                                        textFieldSecondValueArgs = ((TextField) stackChild).getText();
+                                    }
+                                }
+
+                            }
+                            if (child instanceof HBox)
+                            {
+                                for (Node hboxChild : ((HBox) child).getChildren())
+                                {
+                                    if (hboxChild instanceof CheckBox && ((CheckBox) hboxChild).isSelected())
+                                    {
+                                        unique = true;
+                                    }
+                                }
                             }
                         }
                     }
                 }
+
+
             }
             if (unique){
                 textFieldSecondValueArgs = Utils.generateUniqueID(textFieldSecondValueArgs);
@@ -918,20 +945,19 @@ public class MainController implements Initializable {
         fileChooser.setInitialFileName("DialTest.csv");
         File file = fileChooser.showSaveDialog(stageSettings);
 
-
-        for(CheckBox trial : testList.getItems())
-        {
-            if(trial.isSelected())
-            {
-                ArrayList<Action> actions = H2DAO.getActions(trial.getText());
-                ArrayList<Action> validations = H2DAO.getValidations(trial.getText());
-                try {
-                    saveToCSV(actions,validations,file);
-                } catch (IOException e) {
-                    e.printStackTrace();
+        if (file != null) {
+            for (CheckBox trial : testList.getItems()) {
+                if (trial.isSelected()) {
+                    ArrayList<Action> actions = H2DAO.getActions(trial.getText());
+                    ArrayList<Action> validations = H2DAO.getValidations(trial.getText());
+                    try {
+                        saveToCSV(actions, validations, file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+                // Aviso de ninguno seleccionado
             }
-            // Aviso de ninguno seleccionado
         }
     }
 
@@ -999,112 +1025,18 @@ public class MainController implements Initializable {
             } catch(FileNotFoundException e){
                 e.printStackTrace();
             }
-
-
     }
 
-    public static void dragAndDrop(GridPane gridParent, ComboBox dragItem)
+    public static String getPathOFC()
     {
-        rowIndexDrop = 0;
-        rowIndexDrag = 0;
-        draguedChildList.clear();
-        movedChilds.clear();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        File file = fileChooser.showOpenDialog(stageSettings);
+        if (file == null){
+            return "";
+        }
+        return file.getPath();
 
-
-
-        dragItem.setOnDragDetected(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                Dragboard db = dragItem.startDragAndDrop(TransferMode.MOVE);
-                ClipboardContent content = new ClipboardContent();
-                content.put(comboBoxFormat, " ");
-                db.setContent(content);
-                rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
-                System.out.println(rowIndexDrag);
-                for (Node child : gridParent.getChildren()){
-                    if (gridParent.getRowIndex(child) == rowIndexDrag)
-                    {
-                        draguedChildList.add(child);
-                    }
-                }
-                event.consume();
-
-            }
-        });
-
-        dragItem.setOnDragOver(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                gridParent.getChildren().removeAll(draguedChildList);
-                gridParent.getRowConstraints().remove(rowIndexDrag);
-                event.consume();
-            }
-        });
-
-        dragItem.setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                StackPane intento = new StackPane();
-                if(event.getPickResult().getClass().isInstance(intento))
-                {
-                    System.out.println("Tomaaaa");
-                    Node nodo = event.getPickResult().getIntersectedNode().getParent();
-                    System.out.println(nodo.toString());
-                }
-                rowIndexDrop = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
-                /*boolean success = false;
-                if (db.hasString()) {
-                    //target.setText(db.getString());
-                    success = true;
-                }*/
-
-
-                for (Node child : gridParent.getChildren()) {
-                    if(gridParent.getRowIndex(child) >= rowIndexDrop){
-                        gridParent.setRowIndex(child, gridParent.getRowIndex(child)+1);
-                        //movedChilds.add(child);
-                        //gridParent.getChildren().remove(child);
-
-                    }
-                }
-
-                event.setDropCompleted(true);
-                System.out.println("Tomaaa con to mi node " + rowIndexDrop);
-
-
-
-                event.consume();
-            }
-        });
-
-        dragItem.setOnDragDone(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-
-                if (event.getTransferMode() == TransferMode.MOVE) {
-
-                }
-                /*for (Node child : gridParent.getChildren()) {
-                    System.out.println("El rowIndex donde voy a dejar esta mierda es: " + GridPane.getRowIndex(child));
-                    if(GridPane.getRowIndex(child) == rowIndexDrop){
-                        System.out.println("La madre del: " + child);
-                        gridParent.getChildren().remove(child);
-                    }
-                }*/
-                for (Node item : draguedChildList){
-                    gridParent.addRow(rowIndexDrop, item);
-                    gridParent.setRowIndex(item, rowIndexDrop);
-                    //gridParent.setRowIndex(item, gridParent.getRowIndex(item));
-                }
-                /*for (Node item : movedChilds){
-                    gridParent.addRow(gridParent.getRowIndex(item)+1, item);
-                }*/
-                //gridParent.addColumn(rowIndexDrop, dragItem);
-
-                event.consume();
-            }
-        });
     }
 
     public static void setTheme(String theme)
