@@ -17,7 +17,7 @@ import javafx.scene.layout.*;
 
 import persistence.H2DAO;
 
-import java.io.FileNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,12 +50,13 @@ public class ActionController
     {
 
         hBox = new HBox();
+        hBox.setFillHeight(true);
         hBox.setMinWidth(2000);
         hBox.setSpacing(10);
 
-        rowIndexLabel = new Label();
+        rowIndexLabel = new Label("# "+rowIndex);
         rowIndexLabel.setPadding(new Insets(5,0,0,0));
-        rowIndexLabel.textProperty().bind(new SimpleStringProperty("# "+rowIndex));
+        //rowIndexLabel.textProperty().bind(new SimpleStringProperty("# "+rowIndex));
         dragAndDrop(gridParent, rowIndexLabel);
         gridParent.addRow(rowIndex,hBox);
 
@@ -223,10 +224,11 @@ public class ActionController
         dragAndDrop(gridParent,hBox);
     }
 
-    public void addActiontoGrid(GridPane gridParent, int rowIndex)
+    public void addActionToGrid(GridPane gridParent, int rowIndex)
     {
 
         hBox = new HBox();
+        hBox.setFillHeight(true);
         hBox.setMinWidth(2000);
         hBox.setSpacing(10);
 
@@ -303,16 +305,17 @@ public class ActionController
                     rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
                 }
 
-                System.out.println("DragIndex = "+ rowIndexDrag);
+                //System.out.println("DragIndex = "+ rowIndexDrag);
 
 
-                for (Node child : gridParent.getChildren()){                                        // Almacenar en la lista el Hbox de la accion
+                for (Node child : gridParent.getChildren())
+                {                                        // Almacenar en la lista el Hbox de la accion
                     if (gridParent.getRowIndex(child) == rowIndexDrag)
                     {
                         draggedChildList.add(child);
                     }
                 }
-
+                /*
                 if (node instanceof ComboBox)
                 {
                     gridParent.getChildren().remove(event.getPickResult().getIntersectedNode().getParent());
@@ -337,6 +340,7 @@ public class ActionController
                         }
                     }
                 }
+                */
                 event.consume();
 
             }
@@ -345,17 +349,66 @@ public class ActionController
         node.setOnDragOver(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
-                event.acceptTransferModes(TransferMode.NONE);
+                //event.acceptTransferModes(TransferMode.NONE);
                 //event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                 //gridParent.getChildren().removeAll(draggedChildList);                               // Eliminar los elementos
                 //gridParent.getRowConstraints().remove(rowIndexDrag);                                // Eliminar la fila del grid
+                if (event.getPickResult().getIntersectedNode() != null){
+                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                }
+
                 event.consume();
             }
         });
 
+        // Animación al pasar por un target
+        /*node.setOnDragEntered(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                if (event.getPickResult().getIntersectedNode() != null){
+                    for (Node child : gridParent.getChildren()) {
+                        if (gridParent.getRowIndex(child) >= rowIndexDrop) {
+                            gridParent.setRowIndex(child, gridParent.getRowIndex(child) + 1); // Aumentar el RowIndex de las acciones que tiene por debajo en 1
+                        }
+                    }
+                }
+
+            }
+        });
+
+        node.setOnDragExited(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                if (event.getPickResult().getIntersectedNode() != null){
+                    for (Node child : gridParent.getChildren()) {
+                        if (gridParent.getRowIndex(child) >= rowIndexDrop) {
+                            gridParent.setRowIndex(child, gridParent.getRowIndex(child) - 1); // Aumentar el RowIndex de las acciones que tiene por debajo en 1
+                        }
+                    }
+                }
+            }
+        });*/
+        //
+
+
         node.setOnDragDropped(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
+
+                gridParent.getChildren().removeAll(draggedChildList);
+                gridParent.getRowConstraints().remove(rowIndexDrag);
+
+
+                if (rowIndexDrag >= 0 || rowIndexDrag < getRowCount(gridParent))                    // Si es la cabeza o medio...
+                {
+                    for (Node child : gridParent.getChildren()){                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
+                        if (gridParent.getRowIndex(child) > rowIndexDrag)
+                        {
+                            gridParent.setRowIndex(child, gridParent.getRowIndex(child) - 1);
+                        }
+                    }
+                }
+
 
                 if (node instanceof ComboBox)
                 {
@@ -367,7 +420,7 @@ public class ActionController
                 }
 
 
-
+                System.out.println("DragIndex = "+ rowIndexDrag);
                 System.out.println("DropIndex = "+rowIndexDrop);
                 System.out.println("RowCount = "+ getRowCount(gridParent));
 
@@ -588,16 +641,19 @@ public class ActionController
                         checkboxNotGenerated = false;
                     }
                 });
-
                 break;
+
         }
     }
 
     public void drawCheckBox(HBox hBox)
     {
         actionSelected = new CheckBox();
-        actionSelected.setPadding(new Insets(10,0,0,0));
+        //actionSelected.setPadding(new Insets(25,0,0,0));
+        actionSelected.setAlignment(Pos.CENTER_RIGHT);
         hBox.getChildren().add(actionSelected);
+
+
     }
 
     public void addFileButton(TextField textField, HBox hBox)

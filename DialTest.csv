@@ -1,9 +1,16 @@
 Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation
+Click,id,,id,,false
+SwitchTo,id,,id,,false
+Click,id,,id,,false
+DragAndDrop,xpath,,xpath,,false
+ReadFrom,className,,className,,false
+SwitchDefault,id,,id,,false
 Click,id,uno,id,,false
-DragAndDrop,xpath,dos,xpath,tres,false
+DragAndDrop,xpath,dos,xpath,,false
 WriteTo,id,cuatro,id,cinco,false
 ReadFrom,className,seis,className,,false
 SwitchTo,id,siete,id,,false
-Waiting For,name,ocho,name,nueve,false
+Waiting For,name,ocho,name,,false
 WaitTime,id,diez,id,,false
+SwitchDefault,,,,,false
 Click,id,asdfaf,id,,true

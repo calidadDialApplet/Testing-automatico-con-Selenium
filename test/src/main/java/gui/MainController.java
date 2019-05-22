@@ -230,7 +230,7 @@ public class MainController implements Initializable {
         {
             //Action newAction = new Action(gridPaneTrialList, actionsRowIndex);
             ActionController actionController = new ActionController();
-            actionController.addActiontoGrid(gridPaneTrialList, actionsRowIndex);
+            actionController.addActionToGrid(gridPaneTrialList, actionsRowIndex);
             //Action newAction = new Action(actionController.getActionTypeString(), actionController.getSelectElementByString(),
             //      actionController.getFirstValueArgsString(),actionController.getSelectPlaceByString(), actionController.getSecondValueArgsString());
             //actionList.add(newAction);
@@ -239,7 +239,7 @@ public class MainController implements Initializable {
         if(tabValidation.isSelected())
         {
             ActionController actionController = new ActionController();
-            actionController.addActiontoGrid(gridPaneValidationList, validationRowIndex);
+            actionController.addActionToGrid(gridPaneValidationList, validationRowIndex);
             //Action newAction = new Action(actionController.getActionTypeString(), actionController.getSelectElementByString(),
             //        actionController.getFirstValueArgsString(),actionController.getSelectPlaceByString(), actionController.getSecondValueArgsString());
             //validationList.add(newAction);
@@ -567,7 +567,7 @@ public class MainController implements Initializable {
        }
    }
 
-    public void newTest()
+    public void newTrial()
     {
         bottomButtons.setDisable(false);
         TextInputDialog dialog = new TextInputDialog("dialtest");
@@ -576,27 +576,25 @@ public class MainController implements Initializable {
         dialog.setContentText("Por favor introduzca el nombre de la prueba:");
 
         Optional<String> result = dialog.showAndWait();
+
+        List<String> trialNames = new ArrayList<>();
+        for (CheckBox item : testList.getItems()){
+            trialNames.add(item.getText());
+        }
         if (result.isPresent()){
-            //procesedActionList.clear();                                                     // Limpiar lista con las acciones de la tabla
-            //goThroughTable("Actions");                                                      // Recorrer la tabla e introduce en procesedActionList las acciones
-            //if(!procesedActionList.isEmpty()) {
-                H2DAO.createTrial(result.get());                                                // Introducir nuevo trial con su nombre en trials
-                //String id =  H2DAO.getTrialID(result.get());                                    // Obtener id del nuevo trial
-                //H2DAO.modifyTest(procesedActionList, id, 0);                           // Insertar todas las acciones referentes al nuevo test en la tabla trials_actions
-                //procesedValidationList.clear();                                                 // Limpiar lista con las valideaciones de la tabla
-                //goThroughTable("Validations");                                                  // Recorrer la tabla e introduce en procesedValidationList las validaciones
-                //H2DAO.modifyTest(procesedValidationList, id, 1);                       // Insertar todas las validaciones referentes al nuevo test en la tabla trials_actions
-                poblateTestList();
-                testList.getSelectionModel().selectLast();
-            /*} else {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
+            if (trialNames.contains(result.get()))
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
-                alert.setHeaderText("Debe de haber una acción asociada al test");
+                alert.setHeaderText("Nombre de trial repetido");
                 alert.setContentText("Contacta con tu administrador :)");
                 alert.showAndWait();
+            } else {
+                H2DAO.createTrial(result.get());
+                poblateTestList();
+                testList.getSelectionModel().selectLast();
+            }
 
-             */
-            //}
 
         }else{
             bottomButtons.setDisable(true);
@@ -733,7 +731,13 @@ public class MainController implements Initializable {
                             {
                                 textFieldFirstValueArgs = ((TextField) child).getText();
                                 j++;
-                            } else if(child instanceof StackPane && j == 1)
+                            } else if (child instanceof TextField && j ==1)
+                            {
+                                textFieldSecondValueArgs = ((TextField) child).getText();
+
+                            }
+
+                            if(child instanceof StackPane && j == 1)
                             {
                                 for (Node stackChild : ((StackPane) child).getChildren())
                                 {
@@ -868,6 +872,47 @@ public class MainController implements Initializable {
            poblateTestList();
     }
 
+    public void modifyTrialName()
+    {
+        CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+
+        List<String> trialNames = new ArrayList<>();
+        for (CheckBox item : testList.getItems()){
+            trialNames.add(item.getText());
+        }
+
+        if (selectedTrial == null)
+        {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("Debe haber un test seleccionado");
+            alert.setContentText("Contacta con tu administrador :)");
+            alert.showAndWait();
+
+        }else {
+
+            TextInputDialog dialog = new TextInputDialog("DialTest");
+            dialog.setTitle("Modificando nombre de la prueba");
+            dialog.setHeaderText("");
+            dialog.setContentText("Por favor introduzca el nuevo nombre de la prueba:");
+            Optional<String> result = dialog.showAndWait();
+
+            if (result.isPresent()) {
+                if (trialNames.contains(result.get()))
+                {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Nombre de trial repetido");
+                    alert.setContentText("Contacta con tu administrador :)");
+                    alert.showAndWait();
+                }else {
+                    H2DAO.updateTrialName(selectedTrial.getText(), result.get());
+                    selectedTrial.setText(result.get());
+                }
+            }
+        }
+    }
+
 
     private int getRowCount(GridPane pane) {
         int numRows = pane.getRowConstraints().size();
@@ -939,24 +984,41 @@ public class MainController implements Initializable {
 
     public void exportTest()
     {
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
-        fileChooser.getExtensionFilters().add(extFilter);
-        fileChooser.setInitialFileName("DialTest.csv");
-        File file = fileChooser.showSaveDialog(stageSettings);
+        boolean oneSelected = false;
+        for (CheckBox item : testList.getItems())
+        {
+            if (item.isSelected()){
+                oneSelected = true;
+            }
+        }
 
-        if (file != null) {
-            for (CheckBox trial : testList.getItems()) {
-                if (trial.isSelected()) {
-                    ArrayList<Action> actions = H2DAO.getActions(trial.getText());
-                    ArrayList<Action> validations = H2DAO.getValidations(trial.getText());
-                    try {
-                        saveToCSV(actions, validations, file);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+        if (!oneSelected) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("Debe haber un test checkeado");
+            alert.setContentText("Contacta con tu administrador :)");
+            alert.showAndWait();
+        } else {
+
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
+            fileChooser.getExtensionFilters().add(extFilter);
+            fileChooser.setInitialFileName("DialTest.csv");
+            File file = fileChooser.showSaveDialog(stageSettings);
+
+            if (file != null) {
+                for (CheckBox trial : testList.getItems()) {
+                    if (trial.isSelected()) {
+                        ArrayList<Action> actions = H2DAO.getActions(trial.getText());
+                        ArrayList<Action> validations = H2DAO.getValidations(trial.getText());
+                        try {
+                            saveToCSV(actions, validations, file);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    // Aviso de ninguno seleccionado
                 }
-                // Aviso de ninguno seleccionado
             }
         }
     }

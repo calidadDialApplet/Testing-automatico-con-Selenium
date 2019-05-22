@@ -82,6 +82,7 @@ public class H2DAO {
             "insert into action_types(name) values ('SwitchTo')",
             "insert into action_types(name) values ('Waiting For')",
             "insert into action_types(name) values ('WaitTime')",
+            "insert into action_types(name) values ('SwitchDefault')",
             "insert into selection_by(name) values ('id')",
             "insert into selection_by(name) values ('xpath')",
             "insert into selection_by(name) values ('cssSelector')",
@@ -454,6 +455,17 @@ public class H2DAO {
         List<String> tablesName = fillData(resultOfQuery, 1);
         System.out.println(tablesName);
         return tablesName.equals(check);
+    }
+
+    public static void updateTrialName(String oldName, String newName)
+    {
+        try{
+            Statement st = connection.createStatement();
+            String setName = "update trials set name = '"+newName+"' where name = '"+oldName+"'";
+            st.execute(setName);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static boolean checkDB()

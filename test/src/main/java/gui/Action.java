@@ -305,7 +305,7 @@ public class Action {
    }*/
 
     public Action(String actionTypeS, String selectElementByS, String firstValueArgsS, String selectPlaceByS, String secondValueArgsS) {
-        if (actionTypeS.matches("1|2|3|4|5|6|7")){
+        if (actionTypeS.matches("1|2|3|4|5|6|7|8")){
             this.actionTypeS = getActionTypeId(actionTypeS);
         }else {
             this.actionTypeS = actionTypeS;
@@ -350,6 +350,9 @@ public class Action {
                 break;
             case "7":
                 type = "WaitTime";
+                break;
+            case "8":
+                type = "SwitchDefault";
                 break;
             default:
                 break;
@@ -579,7 +582,7 @@ public class Action {
                 case "ReadFrom":
                     WebElement readFromElement = SeleniumDAO.selectElementBy(this.selectElementByS,this.firstValueArgsS,driver);
                     result = SeleniumDAO.readFrom(readFromElement);
-                    result = "Ok";
+                    //result = "Ok";
                     break;
                 case "SwitchTo":
                     SeleniumDAO.switchToFrame(this.firstValueArgsS, driver);
@@ -593,6 +596,9 @@ public class Action {
                     SeleniumDAO.implicitWait(Integer.parseInt(this.firstValueArgsS));
                     result = "Ok";
                     break;
+                case "SwitchDefault":
+                    SeleniumDAO.switchToDefaultContent(driver);
+                    result = "Ok";
                 default:
                     break;
             }

@@ -1,0 +1,8 @@
+Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation
+WriteTo,id,adminpassword,id,admin,false
+WriteTo,id,adminusername,id,admin,false
+Click,id,login,id,,false
+WriteTo,id,adminusername,id,admin,true
+WriteTo,id,adminpassword,id,admin,true
+Click,id,login,id,,true
+ReadFrom,id,ADMIN,id,,true
