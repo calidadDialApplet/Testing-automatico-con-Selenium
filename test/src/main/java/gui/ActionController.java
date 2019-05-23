@@ -395,21 +395,6 @@ public class ActionController
             @Override
             public void handle(DragEvent event) {
 
-                gridParent.getChildren().removeAll(draggedChildList);
-                gridParent.getRowConstraints().remove(rowIndexDrag);
-
-
-                if (rowIndexDrag >= 0 || rowIndexDrag < getRowCount(gridParent))                    // Si es la cabeza o medio...
-                {
-                    for (Node child : gridParent.getChildren()){                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
-                        if (gridParent.getRowIndex(child) > rowIndexDrag)
-                        {
-                            gridParent.setRowIndex(child, gridParent.getRowIndex(child) - 1);
-                        }
-                    }
-                }
-
-
                 if (node instanceof ComboBox)
                 {
                     rowIndexDrop = gridParent.getRowIndex(event.getPickResult().getIntersectedNode().getParent());
@@ -424,21 +409,41 @@ public class ActionController
                 System.out.println("DropIndex = "+rowIndexDrop);
                 System.out.println("RowCount = "+ getRowCount(gridParent));
 
-                if (rowIndexDrop == getRowCount(gridParent)-1 || rowIndexDrop == null)                                  // Insertar al final
-                {
-                    gridParent.getRowConstraints().add(new RowConstraints());
-                    gridParent.addRow(getRowCount(gridParent), draggedChildList.get(0));
 
-                } else {
-                    for (Node child : gridParent.getChildren()) {
-                        if (gridParent.getRowIndex(child) >= rowIndexDrop) {
-                            gridParent.setRowIndex(child, gridParent.getRowIndex(child) + 1); // Aumentar el RowIndex de las acciones que tiene por debajo en 1
+                if  (rowIndexDrop != null && rowIndexDrag != null) {
+
+                    gridParent.getChildren().removeAll(draggedChildList);
+                    gridParent.getRowConstraints().remove(rowIndexDrag);
+
+
+                    if (rowIndexDrag >= 0 || rowIndexDrag < getRowCount(gridParent))                    // Si es la cabeza o medio...
+                    {
+                        for (Node child : gridParent.getChildren()){                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
+                            if (gridParent.getRowIndex(child) > rowIndexDrag)
+                            {
+                                gridParent.setRowIndex(child, gridParent.getRowIndex(child) - 1);
+                            }
                         }
                     }
-                    gridParent.addRow(rowIndexDrop, draggedChildList.get(0));
+
+
+                    if (rowIndexDrop == getRowCount(gridParent) - 1)                                  // Insertar al final
+                    {
+                        //gridParent.getRowConstraints().add(new RowConstraints());
+                        gridParent.addRow(getRowCount(gridParent), draggedChildList.get(0));
+
+                    } else {                                                                        // Insertar en cabeza o medio
+                        for (Node child : gridParent.getChildren()) {
+                            if (gridParent.getRowIndex(child) >= rowIndexDrop) {
+                                gridParent.setRowIndex(child, gridParent.getRowIndex(child) + 1); // Aumentar el RowIndex de las acciones que tiene por debajo en 1
+                            }
+                        }
+                        gridParent.addRow(rowIndexDrop, draggedChildList.get(0));
+                    }
+
+                } else{
+                    event.consume();
                 }
-
-
 
 
 

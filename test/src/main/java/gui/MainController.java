@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import org.openqa.selenium.WebDriver;
 import persistence.H2DAO;
 
+
 import java.io.*;
 import java.net.URL;
 import java.util.*;
@@ -77,7 +78,9 @@ public class MainController implements Initializable {
 
 
     private static Scene sceneSettings;
+    private static Scene sceneVariables;
     private static Stage stageSettings;
+    private static Stage stageVariables;
 
     private List<Action> actionList;
     private List<Action> validationList;
@@ -114,7 +117,8 @@ public class MainController implements Initializable {
         draguedChildList = new ArrayList<>();
         movedChilds = new ArrayList<>();
 
-        //bottomButtons.setDisable(true);
+
+
 
         // TODO: Has to be done with:
         //            for (int i = 0; i < numColumns; i++)
@@ -197,9 +201,9 @@ public class MainController implements Initializable {
             stageSettings.setTitle("Settings");
             sceneSettings = new Scene(root,350,250);
             if (H2DAO.isDarkTheme()){
-                setTheme("darcula");
+                setTheme("Settings","darcula");
             }else {
-                setTheme("modena");
+                setTheme("Settings","modena");
             }
             //scene.getStylesheets().add("/css/darcula.css");
             stageSettings.setScene(sceneSettings);
@@ -222,6 +226,30 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
 
+    }
+
+    public void openVariablesDialog()
+    {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/gui/Variables.fxml"));
+            stageVariables = new Stage();
+            stageVariables.setResizable(false);
+            stageVariables.initModality(Modality.APPLICATION_MODAL);
+            stageVariables.setAlwaysOnTop(true);
+            stageVariables.setTitle("Variables");
+            sceneVariables = new Scene(root,600,400);
+            if (H2DAO.isDarkTheme()){
+                setTheme("Variables","darcula");
+            }else {
+                setTheme("Variables","modena");
+            }
+            stageVariables.setScene(sceneVariables);
+            stageVariables.showAndWait();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addActionRow()
@@ -1101,24 +1129,38 @@ public class MainController implements Initializable {
 
     }
 
-    public static void setTheme(String theme)
+    public static void setTheme(String stage,String theme)
     {
 
-        sceneSettings.getStylesheets().clear();
-        if (theme.equals("darcula"))
-        {
-            sceneSettings.getStylesheets().add("/css/darcula.css");
+        if (stage.equals("Settings")) {
+            sceneSettings.getStylesheets().clear();
+            if (theme.equals("darcula")) {
+                sceneSettings.getStylesheets().add("/css/darcula.css");
+            }
+            if (theme.equals("modena")) {
+                Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
+            }
         }
-        if (theme.equals("modena"))
-        {
-            //StyleManager.getInstance().addUserAgentStylesheet(getClass().getResource("/style.css").toString());
-            Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
+
+        if (stage.equals("Variables")) {
+            sceneVariables.getStylesheets().clear();
+            if (theme.equals("darcula")) {
+                sceneVariables.getStylesheets().add("/css/darcula.css");
+            }
+            if (theme.equals("modena")) {
+                Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
+            }
         }
     }
 
-    public static void closeSettings()
+    public static void closeStage(String stage)
     {
-        stageSettings.close();
+        if (stage.equals("Settings")){
+            stageSettings.close();
+        }
+        if (stage.equals("Variables")){
+            stageVariables.close();
+        }
     }
 
 

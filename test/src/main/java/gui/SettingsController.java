@@ -66,10 +66,10 @@ public class SettingsController implements Initializable {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                if (newValue){
                    Main.setTheme("darcula");
-                   MainController.setTheme("darcula");
+                   MainController.setTheme("Settings","darcula");
                } else {
                    Main.setTheme("modena");
-                   MainController.setTheme("modena");
+                   MainController.setTheme("Settings","modena");
                }
 
             }
@@ -78,13 +78,13 @@ public class SettingsController implements Initializable {
 
     public void closeSettings()
     {
-        MainController.closeSettings();
+        MainController.closeStage("Settings");
     }
 
     public void saveSettings()
     {
         settingsObject  settings = new settingsObject(textFieldWeb.getText(), checkBoxHeadLess.isSelected(), choiceBoxBrowser.getValue().toString(), checkBoxDarkTheme.isSelected());
         H2DAO.saveSettings(settings);
-        MainController.closeSettings();
+        MainController.closeStage("Settings");
     }
 }

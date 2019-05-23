@@ -4,9 +4,7 @@ import gui.Action;
 import javafx.scene.control.Alert;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class H2DAO {
 
@@ -203,7 +201,9 @@ public class H2DAO {
 
                 //System.out.println(""+actionTypeId+" / "+firstValueArgs+ " / "+value1+" / "+secondValueArgs+ " / "+value2);
 
-                String statement = "insert into" +
+
+
+                String query = "insert into" +
                         " trial_actions ("+
                         " trialid," +
                         " actiontypeid," +
@@ -215,7 +215,18 @@ public class H2DAO {
                         ")" +
                         " values" +
                         "('"+id+"','"+actionTypeId+"','"+firstValueArgs+"','"+value1+"','"+secondValueArgs+"','"+value2+"','"+validation+"')";
-                st.execute(statement);
+                /*String query = "insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation)" +
+                        " values(?,?,?,?,?,?,?) ";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1,id);
+                preparedStatement.setString(2,""+actionTypeId);
+                preparedStatement.setString(3,""+firstValueArgs);
+                preparedStatement.setString(4,value1);
+                preparedStatement.setString(5,""+secondValueArgs);
+                preparedStatement.setString(6,value2);
+                preparedStatement.setString(7,""+validation);*/
+                st.execute(query);
+                //ResultSet rs = preparedStatement.executeQuery();
                 //System.out.println("Pasa2");
             }
             String statement2 = "select * from trial_actions where id ='"+id+"'";
@@ -453,7 +464,7 @@ public class H2DAO {
         st.execute(sql);
         ResultSet resultOfQuery = st.getResultSet();
         List<String> tablesName = fillData(resultOfQuery, 1);
-        System.out.println(tablesName);
+        //System.out.println(tablesName);
         return tablesName.equals(check);
     }
 
@@ -547,6 +558,22 @@ public class H2DAO {
             result = true;
         }
         return result;
+    }
+
+    public static void saveVariables(HashMap<String,String> variables, String trial)
+    {
+        try{
+            Statement st = connection.createStatement();
+            for (Map.Entry<String, String> entry : variables.entrySet())
+            {
+                String query = "insert into variables (trialid, variable, value) values ('"+trial+"', '"+entry.getKey()+"', '"+entry.getValue()+"')";
+                st.execute(query);
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
     }
 
     // TODO: More generic, args: table and field
