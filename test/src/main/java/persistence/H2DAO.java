@@ -1,6 +1,7 @@
 package persistence;
 
 import gui.Action;
+import gui.Variable;
 import javafx.scene.control.Alert;
 
 import java.sql.*;
@@ -10,7 +11,7 @@ public class H2DAO {
 
     // TODO: Once declared, this becomes constant, so should be enums, neither ArrayList<> nor String[]
      //enum matchTableName {TRIALS,TRIAL_ACTIONS,ACTION_TYPES,SELECTION_BY} ;
-     static ArrayList<String> matchesTableName = new ArrayList<>(Arrays.asList("TRIALS","TRIAL_ACTIONS","ACTION_TYPES","SETTINGS","SELECTION_BY"));
+     static ArrayList<String> matchesTableName = new ArrayList<>(Arrays.asList("TRIALS","TRIAL_ACTIONS","VARIABLES","ACTION_TYPES","SETTINGS","SELECTION_BY"));
      static ArrayList<String> matchesColName = new ArrayList<>(Arrays.asList("ID","NAME","ID","NAME","ID","NAME","ID","TRIALID","ACTIONTYPEID","SELECTIONBYID1","VALUE1",
                                                                             "SELECTIONBYID2","VALUE2","VALIDATION"));
      static ArrayList<String> matchesTypeName = new ArrayList<>(Arrays.asList("INTEGER","TEXT","INTEGER","TEXT","INTEGER","TEXT","INTEGER","INTEGER","INTEGER","INTEGER","TEXT","INTEGER","TEXT","INTEGER"));
@@ -69,10 +70,12 @@ public class H2DAO {
                     "  constraint pk_trial_action_table primary key(id,trialid)"+
                     ")",
             "create table settings(settingField text, value text)",
+            "create table variables(trial integer, variable text, value text)",
             "alter table trial_actions add constraint fk_trialid foreign key(trialid) references trials(id)",
             "alter table trial_actions add constraint fk_actiontypeid foreign key(actiontypeid) references action_types(id)",
             "alter table trial_actions add constraint fk_selectionById1 foreign key(selectionbyid1) references selection_by(id)",
             "alter table trial_actions add constraint fk_selectionById2 foreign key(selectionbyid2) references selection_by(id)",
+            "alter table variables add constraint fk_trial foreign key (trial) references trials(id)",
             "insert into action_types(name) values ('Click')",
             "insert into action_types(name) values ('DragAndDrop')",
             "insert into action_types(name) values ('WriteTo')",
@@ -118,8 +121,8 @@ public class H2DAO {
 
         try {
             Statement st = connection.createStatement();
-            String getTrialsStatement = "drop table settings";
-            //st.execute(getTrialsStatement);
+            String createTable = "alter table variables add constraint fk_trial foreign key (trial) references trials(id)";
+            st.execute(createTable);
             /*
             ResultSet resultSet =  st.getResultSet();
 
@@ -445,6 +448,20 @@ public class H2DAO {
         return id;
     }
 
+    public static void deleteTrialVariables(String trialid)
+    {
+        try{
+            Statement st = connection.createStatement();
+
+            String deleteVariables = "delete from variables where trial='"+trialid+"'";
+            st.execute(deleteVariables);
+            System.out.println("Variables Eliminadas");
+            st.close();
+        }catch (SQLException e){
+
+        }
+    }
+
     private static List<String> fillData(ResultSet set, int index) throws SQLException {
         List<String> result = new ArrayList<>();
         while (set.next()) {
@@ -464,7 +481,7 @@ public class H2DAO {
         st.execute(sql);
         ResultSet resultOfQuery = st.getResultSet();
         List<String> tablesName = fillData(resultOfQuery, 1);
-        //System.out.println(tablesName);
+        System.out.println(tablesName);
         return tablesName.equals(check);
     }
 
@@ -560,20 +577,41 @@ public class H2DAO {
         return result;
     }
 
-    public static void saveVariables(HashMap<String,String> variables, String trial)
+    public static void saveTrialVariables(ArrayList<Variable> variables, String trial)
     {
         try{
             Statement st = connection.createStatement();
-            for (Map.Entry<String, String> entry : variables.entrySet())
-            {
-                String query = "insert into variables (trialid, variable, value) values ('"+trial+"', '"+entry.getKey()+"', '"+entry.getValue()+"')";
+            for (Variable variable : variables){
+                String query = "insert into variables (trial, variable, value) values ('"+variable.getVariableTrial()+"', '"+variable.getVariableName()+"', '"+variable.getValue()+"')";
                 st.execute(query);
             }
-
+            System.out.println("Variables Guardadas");
         }catch (SQLException e){
             e.printStackTrace();
         }
 
+    }
+
+    public static ArrayList<Variable> getTrialVariables(String trial)
+    {
+        ArrayList<Variable> variables = new ArrayList<>();
+
+        try{
+            Statement st = connection.createStatement();
+            String getVariables = "select * from variables where trial = '"+trial+"'";
+            st.execute(getVariables);
+            ResultSet set = st.getResultSet();
+            while (set.next())
+            {
+              Variable variable = new Variable(set.getString(1), set.getString(2),set.getString(3));
+              variables.add(variable);
+            }
+
+        }catch (SQLException e){
+
+        }
+
+        return variables;
     }
 
     // TODO: More generic, args: table and field

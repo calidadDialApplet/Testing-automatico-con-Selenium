@@ -56,7 +56,7 @@ public class MainController implements Initializable {
     private Button buttonPlayTrials;
 
     @FXML
-    private  ListView<CheckBox> testList;
+    private ListView<CheckBox> testList;
 
     @FXML
     private GridPane gridPaneTrialList;
@@ -98,14 +98,6 @@ public class MainController implements Initializable {
     String columnsHeadersCSV = "Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation";
 
 
-    private static DataFormat comboBoxFormat = new DataFormat();
-    private static Integer rowIndexDrag;
-    private static Integer rowIndexDrop;
-    private static List<Node> draguedChildList;
-    private static List<Node> movedChilds;
-
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
@@ -114,8 +106,6 @@ public class MainController implements Initializable {
         validationList = new ArrayList<>();
         procesedActionList = new ArrayList<>();
         procesedValidationList = new ArrayList<>();
-        draguedChildList = new ArrayList<>();
-        movedChilds = new ArrayList<>();
 
 
 
@@ -243,6 +233,10 @@ public class MainController implements Initializable {
             }else {
                 setTheme("Variables","modena");
             }
+
+            //VariablesController variablesController = new VariablesController(H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText()));
+            //variablesController.setTrialID(H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText()));
+
             stageVariables.setScene(sceneVariables);
             stageVariables.showAndWait();
 
@@ -1117,6 +1111,19 @@ public class MainController implements Initializable {
             }
     }
 
+    public String getSelectedTrialId()
+    {
+        String trialid = "";
+
+        if (testList.getSelectionModel().getSelectedItem() == null){
+            // ALERTA
+        }else {
+            String trial = testList.getSelectionModel().getSelectedItem().getText();
+            trialid = H2DAO.getTrialID(trial);
+        }
+        return trialid;
+    }
+
     public static String getPathOFC()
     {
         FileChooser fileChooser = new FileChooser();
@@ -1128,6 +1135,7 @@ public class MainController implements Initializable {
         return file.getPath();
 
     }
+
 
     public static void setTheme(String stage,String theme)
     {
