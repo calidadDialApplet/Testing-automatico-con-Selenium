@@ -12,9 +12,10 @@ public class H2DAO {
     // TODO: Once declared, this becomes constant, so should be enums, neither ArrayList<> nor String[]
      //enum matchTableName {TRIALS,TRIAL_ACTIONS,ACTION_TYPES,SELECTION_BY} ;
      static ArrayList<String> matchesTableName = new ArrayList<>(Arrays.asList("TRIALS","TRIAL_ACTIONS","VARIABLES","ACTION_TYPES","SETTINGS","SELECTION_BY"));
-     static ArrayList<String> matchesColName = new ArrayList<>(Arrays.asList("ID","NAME","ID","NAME","ID","NAME","ID","TRIALID","ACTIONTYPEID","SELECTIONBYID1","VALUE1",
-                                                                            "SELECTIONBYID2","VALUE2","VALIDATION"));
-     static ArrayList<String> matchesTypeName = new ArrayList<>(Arrays.asList("INTEGER","TEXT","INTEGER","TEXT","INTEGER","TEXT","INTEGER","INTEGER","INTEGER","INTEGER","TEXT","INTEGER","TEXT","INTEGER"));
+     static ArrayList<String> matchesColName = new ArrayList<>(Arrays.asList("ID","NAME","ID","NAME","NAME","VALUE","SETTINGFIELD","VALUE","ID","NAME","ID","TRIALID","ACTIONTYPEID","SELECTIONBYID1","VALUE1",
+                                                                            "SELECTIONBYID2","VALUE2","VALIDATION","TRIAL","VARIABLE","VALUE"));
+     static ArrayList<String> matchesTypeName = new ArrayList<>(Arrays.asList("INTEGER","TEXT","INTEGER","TEXT","VARCHAR","VARCHAR","TEXT","TEXT","INTEGER","TEXT","INTEGER","INTEGER","INTEGER","INTEGER",
+                                                                                "TEXT","INTEGER","TEXT","INTEGER","INTEGER","TEXT","TEXT"));
      static String validationTableNameQuery = "select table_name from information_schema.tables where table_type = 'TABLE'";
 
      // TODO: This could be a unique String
@@ -27,7 +28,7 @@ public class H2DAO {
     };*/
 
      static String validationColNameQuery = "select column_name from information_schema.columns where table_name = 'TRIALS' or table_name = 'ACTION_TYPES'" +
-                                            "or table_name = 'SELECTION_BY' or table_name = 'TRIAL_ACTIONS'";
+                                            "or table_name = 'SELECTION_BY' or table_name = 'TRIAL_ACTIONS' or table_name = 'SETTINGS' or table_name = 'VARIABLES'";
 
     // TODO: This could be a unique String
     /*static String[] validationColTypesQuerys = new String[]
@@ -39,7 +40,7 @@ public class H2DAO {
     };*/
 
     static String validationColTypesQuery = "select column_type from information_schema.columns where table_name = 'TRIALS' or table_name = 'ACTION_TYPES'" +
-                                            "or table_name = 'SELECTION_BY' or table_name = 'TRIAL_ACTIONS'";
+                                            "or table_name = 'SELECTION_BY' or table_name = 'TRIAL_ACTIONS' or table_name = 'SETTINGS' or table_name = 'VARIABLES'";
     // TODO: This could be a unique String
     static String[] createTables = new String[]
     {
@@ -206,7 +207,7 @@ public class H2DAO {
 
 
 
-                String query = "insert into" +
+                /*String query = "insert into" +
                         " trial_actions ("+
                         " trialid," +
                         " actiontypeid," +
@@ -217,18 +218,19 @@ public class H2DAO {
                         " validation" +
                         ")" +
                         " values" +
-                        "('"+id+"','"+actionTypeId+"','"+firstValueArgs+"','"+value1+"','"+secondValueArgs+"','"+value2+"','"+validation+"')";
-                /*String query = "insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation)" +
+                        "('"+id+"','"+actionTypeId+"','"+firstValueArgs+"','"+value1+"','"+secondValueArgs+"','"+value2+"','"+validation+"')";*/
+                String query = "insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation)" +
                         " values(?,?,?,?,?,?,?) ";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setString(1,id);
-                preparedStatement.setString(2,""+actionTypeId);
-                preparedStatement.setString(3,""+firstValueArgs);
+                preparedStatement.setInt(2,actionTypeId);
+                preparedStatement.setInt(3,firstValueArgs);
                 preparedStatement.setString(4,value1);
-                preparedStatement.setString(5,""+secondValueArgs);
+                preparedStatement.setInt(5,secondValueArgs);
                 preparedStatement.setString(6,value2);
-                preparedStatement.setString(7,""+validation);*/
-                st.execute(query);
+                preparedStatement.setInt(7,validation);
+                preparedStatement.executeUpdate();
+                //st.execute(query);
                 //ResultSet rs = preparedStatement.executeQuery();
                 //System.out.println("Pasa2");
             }
@@ -494,6 +496,29 @@ public class H2DAO {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public static ArrayList<String> getValidationsName(String trialID)
+    {
+        ArrayList<String> validationNames = new ArrayList<>();
+
+        String query = "select variable from variables where trial = '?'";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,trialID);
+            //preparedStatement.executeUpdate();
+
+            ResultSet resultSet =  preparedStatement.executeQuery(query);
+            while (resultSet.next())
+            {
+                validationNames.add(resultSet.getString("variable"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return validationNames;
     }
 
     public static boolean checkDB()

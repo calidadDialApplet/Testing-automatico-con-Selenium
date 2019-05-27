@@ -18,7 +18,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -98,6 +97,7 @@ public class MainController implements Initializable {
     String columnsHeadersCSV = "Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation";
 
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
@@ -164,6 +164,7 @@ public class MainController implements Initializable {
         testList.getSelectionModel().selectedItemProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
         {
                 bottomButtons.setDisable(false);
+                //trialID = H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText());
                 deleteAllTabs();
                 getSelectedTrialActions();
                 getSelectedTrialValidations();
@@ -220,8 +221,15 @@ public class MainController implements Initializable {
 
     public void openVariablesDialog()
     {
+
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/gui/Variables.fxml"));
+
+            VariablesController variablesController = new VariablesController();
+            variablesController.setTrialID(H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText())); // Separa vista y logica!
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Variables.fxml"));
+            loader.setController(variablesController);
+            Parent root = loader.load();
             stageVariables = new Stage();
             stageVariables.setResizable(false);
             stageVariables.initModality(Modality.APPLICATION_MODAL);
@@ -234,11 +242,18 @@ public class MainController implements Initializable {
                 setTheme("Variables","modena");
             }
 
-            //VariablesController variablesController = new VariablesController(H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText()));
+            //VariablesController variablesController = loader.getController();
             //variablesController.setTrialID(H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText()));
 
+            //System.out.println(variablesController.getTrialID());
+            //String id = H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText());
+            //VariablesController variablesController = new VariablesController(H2DAO.getTrialVariables(id));
+            //variablesController.fillGrid();
+
             stageVariables.setScene(sceneVariables);
-            stageVariables.showAndWait();
+            stageVariables.show();
+
+
 
         }
         catch (IOException e) {
@@ -1111,7 +1126,7 @@ public class MainController implements Initializable {
             }
     }
 
-    public String getSelectedTrialId()
+    /*public String getSelectedTrialId()
     {
         String trialid = "";
 
@@ -1121,8 +1136,10 @@ public class MainController implements Initializable {
             String trial = testList.getSelectionModel().getSelectedItem().getText();
             trialid = H2DAO.getTrialID(trial);
         }
+        System.out.println("MainController "+trialid);
         return trialid;
-    }
+        //return trialID;
+    }*/
 
     public static String getPathOFC()
     {

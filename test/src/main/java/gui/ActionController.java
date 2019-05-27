@@ -270,7 +270,6 @@ public class ActionController
 
     private void dragAndDrop(GridPane gridParent, Node node)
     {
-
         node.setOnDragDetected(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -289,9 +288,16 @@ public class ActionController
                 {
                     rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode().getParent());
 
-                } else if (node instanceof TextField || node instanceof Label || node instanceof HBox){
+                } else if (node instanceof TextField || node instanceof Label){
 
                     rowIndexDrag = gridParent.getRowIndex(node.getParent());
+                }else if (node instanceof HBox){
+                    if (((HBox) node).getChildren().size() == 2)
+                    {
+                        rowIndexDrag = gridParent.getRowIndex(node.getParent());
+                    }else {
+                        rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
+                    }
                 }else {
                     rowIndexDrag = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
                 }
@@ -389,9 +395,18 @@ public class ActionController
                 if (node instanceof ComboBox)
                 {
                     rowIndexDrop = gridParent.getRowIndex(event.getPickResult().getIntersectedNode().getParent());
-                } else if (node instanceof TextField || node instanceof Label || node instanceof HBox) {
+
+                } else if (node instanceof TextField || node instanceof Label){
+
                     rowIndexDrop = gridParent.getRowIndex(node.getParent());
-                }else{
+                }else if (node instanceof HBox){
+                    if (((HBox) node).getChildren().size() == 2)
+                    {
+                        rowIndexDrop = gridParent.getRowIndex(node.getParent());
+                    }else {
+                        rowIndexDrop = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
+                    }
+                }else {
                     rowIndexDrop = gridParent.getRowIndex(event.getPickResult().getIntersectedNode());
                 }
 
@@ -639,6 +654,7 @@ public class ActionController
         actionSelected = new CheckBox();
         hBox.setMargin(actionSelected, new Insets(4,0,0,0));
         hBox.getChildren().add(actionSelected);
+        actionSelected.setAlignment(Pos.BOTTOM_RIGHT);
 
 
     }

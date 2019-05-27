@@ -1,5 +1,6 @@
 package gui;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -7,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -41,6 +43,7 @@ public class VariablesController implements Initializable {
     private TextField variable = new TextField();
     private TextField value = new TextField();
     private CheckBox deleteVariable = new CheckBox();
+    private ArrayList<Variable> variables = new ArrayList<>();
     private int variableTableIndex = 0;
 
     private String trialID;
@@ -49,11 +52,8 @@ public class VariablesController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        poblateGrid();
-    }
-
-    public VariablesController(String trialID) {
-        this.trialID = trialID;
+        System.out.println("MY TRIAL ID: " + trialID);
+        fillGrid();
     }
 
     public VariablesController() {
@@ -79,10 +79,10 @@ public class VariablesController implements Initializable {
         newVariable.setMargin(deleteVariable, new Insets(4,0,0,0));
         newVariable.setPadding(new Insets(0,0,0,100));
         newVariable.getChildren().addAll(variable,value,deleteVariable);
-        
+
         gridPaneVariableTable.addRow(variableTableIndex,newVariable);
         variableTableIndex++;
-        //System.out.println(trialID);
+
 
 
     }
@@ -196,21 +196,20 @@ public class VariablesController implements Initializable {
                }
            }
 
-           Variable currentVariable = new Variable("86", variable, value);
+           Variable currentVariable = new Variable(trialID, variable, value);
            variables.add(currentVariable);
            variable = "";
            value = "";
            iterator++;
        }
 
-        H2DAO.deleteTrialVariables("86");
-        H2DAO.saveTrialVariables(variables,"86");
+        H2DAO.deleteTrialVariables(trialID);
+        H2DAO.saveTrialVariables(variables,trialID);
     }
 
-    public void poblateGrid()
+    public void fillGrid()
     {
-        ArrayList<Variable> variables = H2DAO.getTrialVariables("86");
-
+        ArrayList<Variable> variables = H2DAO.getTrialVariables(trialID);
         for (Variable variable : variables)
         {
             addVariable(variable.getVariableName(),variable.getValue());
@@ -220,6 +219,11 @@ public class VariablesController implements Initializable {
     public void setTrialID(String trialID)
     {
         this.trialID = trialID;
+    }
+
+    public String getTrialID()
+    {
+        return trialID;
     }
 
 }
