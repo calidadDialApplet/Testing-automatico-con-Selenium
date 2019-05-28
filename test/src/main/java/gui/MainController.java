@@ -1,5 +1,6 @@
 package gui;
 
+import com.google.errorprone.annotations.Var;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -85,6 +86,7 @@ public class MainController implements Initializable {
     private List<Action> validationList;
     private List<Action> procesedActionList;
     private List<Action> procesedValidationList;
+    private ArrayList<Variable> variablesList;
 
     private int actionsRowIndex = 0;
     private int validationRowIndex = 0;
@@ -94,7 +96,8 @@ public class MainController implements Initializable {
     String textFieldFirstValueArgs = "";
     String comboBoxSelectPlaceBy = "";
     String textFieldSecondValueArgs = "";
-    String columnsHeadersCSV = "Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation";
+    String trialColumnsHeadersCSV = "Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation";
+    String variablesColumnsHeadersCSV = "TrialID,VariableName,Value";
 
 
 
@@ -106,6 +109,7 @@ public class MainController implements Initializable {
         validationList = new ArrayList<>();
         procesedActionList = new ArrayList<>();
         procesedValidationList = new ArrayList<>();
+        variablesList = new ArrayList<>();
 
 
 
@@ -225,35 +229,35 @@ public class MainController implements Initializable {
         try {
 
             VariablesController variablesController = new VariablesController();
-            variablesController.setTrialID(H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText())); // Separa vista y logica!
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Variables.fxml"));
-            loader.setController(variablesController);
-            Parent root = loader.load();
-            stageVariables = new Stage();
-            stageVariables.setResizable(false);
-            stageVariables.initModality(Modality.APPLICATION_MODAL);
-            stageVariables.setAlwaysOnTop(true);
-            stageVariables.setTitle("Variables");
-            sceneVariables = new Scene(root,600,400);
-            if (H2DAO.isDarkTheme()){
-                setTheme("Variables","darcula");
+            if (testList.getSelectionModel().getSelectedItem() == null)
+            {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("No hay ningún test seleccionado");
+                alert.setContentText("Contacta con tu administrador :)");
+                alert.showAndWait();
             }else {
-                setTheme("Variables","modena");
+                variablesController.setTrialID(H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText())); // Separa vista y logica!
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Variables.fxml"));
+                loader.setController(variablesController);
+                Parent root = loader.load();
+                stageVariables = new Stage();
+                stageVariables.setResizable(false);
+                stageVariables.initModality(Modality.APPLICATION_MODAL);
+                stageVariables.setAlwaysOnTop(true);
+                stageVariables.setTitle("Variables");
+                sceneVariables = new Scene(root, 600, 400);
+                if (H2DAO.isDarkTheme()) {
+                    setTheme("Variables", "darcula");
+                } else {
+                    setTheme("Variables", "modena");
+                }
+
+                stageVariables.setScene(sceneVariables);
+                stageVariables.show();
+
             }
-
-            //VariablesController variablesController = loader.getController();
-            //variablesController.setTrialID(H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText()));
-
-            //System.out.println(variablesController.getTrialID());
-            //String id = H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText());
-            //VariablesController variablesController = new VariablesController(H2DAO.getTrialVariables(id));
-            //variablesController.fillGrid();
-
-            stageVariables.setScene(sceneVariables);
-            stageVariables.show();
-
-
 
         }
         catch (IOException e) {
@@ -460,15 +464,17 @@ public class MainController implements Initializable {
                        driver.get(H2DAO.getWeb());
                        TitledPane trial = new TitledPane();
                        Label titledPaneName = new Label();
-
+                       ArrayList<Variable> variables;
 
                        if (trialName == "")
                        {
                            CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
                            titledPaneName.setText(selectedTrial.getText());
+                           variables = H2DAO.getTrialVariables(H2DAO.getTrialID(selectedTrial.getText()));
                            //trial.setText(selectedTrial.getText());
                        }else {
                            titledPaneName.setText(trialName);
+                           variables = H2DAO.getTrialVariables(H2DAO.getTrialID(trialName));
                            //trial.setText(trialName);
                        }
 
@@ -509,20 +515,21 @@ public class MainController implements Initializable {
 
 
 
+
                        GridPane grid = new GridPane();
                        grid.setVgap(2);
                        if (tabActions.isSelected()) {
                            for (int i = 0; i < actionList.size(); i++) {
                                Action currentAction = actionList.get(i);
                                grid.add(new Label("Action " + i + ":"), 0, i);
-                               grid.add(new Label(" " + currentAction.executeAction(driver)), 1, i);
+                               grid.add(new Label(" " + currentAction.executeAction(driver, variables)), 1, i);
                            }
                        }
                        if (tabValidation.isSelected()){
                            for (int i = 0; i < actionList.size(); i++) {
                                Action currentValidation = actionList.get(i);
                                grid.add(new Label("Validation " + i + ":"), 0, i);
-                               grid.add(new Label(" " + currentValidation.executeAction(driver)), 1, i);
+                               grid.add(new Label(" " + currentValidation.executeAction(driver, variables)), 1, i);
                            }
                        }
                        trial.setContent(grid);
@@ -561,27 +568,6 @@ public class MainController implements Initializable {
         return driver;
     }
 
-    // TODO: Take settings into account to select the way to work with browsers
-   public void executeTestHeadless(){
-       WebDriver driver = SeleniumDAO.initializeFirefoxHeadlessDriver();
-       driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
-
-       TitledPane trial = new TitledPane();
-
-       CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
-       trial.setText(""+selectedTrial.getText());
-       GridPane grid = new GridPane();
-       grid.setVgap(2);
-       for(int i = 0; i < actionList.size(); i++)
-       {
-          Action currentAction = actionList.get(i);
-
-
-          grid.add(new Label(" "+currentAction.executeAction(driver)),1,i);
-          trial.setContent(grid);
-          accordionComprobationList.getPanes().add(trial);
-       }
-   }
 
    // Close app method
    public void totalClose()
@@ -607,7 +593,7 @@ public class MainController implements Initializable {
     public void newTrial()
     {
         bottomButtons.setDisable(false);
-        TextInputDialog dialog = new TextInputDialog("dialtest");
+        TextInputDialog dialog = new TextInputDialog("Prueba");
         dialog.setTitle("Nueva prueba");
         dialog.setHeaderText("");
         dialog.setContentText("Por favor introduzca el nombre de la prueba:");
@@ -680,7 +666,7 @@ public class MainController implements Initializable {
     public void saveTest()
     {
         bottomButtons.setDisable(false);
-        TextInputDialog dialog = new TextInputDialog("dialtest");
+        TextInputDialog dialog = new TextInputDialog("Prueba");
         dialog.setTitle("Nueva prueba");
         dialog.setHeaderText("");
         dialog.setContentText("Por favor introduzca el nombre de la prueba:");
@@ -720,7 +706,7 @@ public class MainController implements Initializable {
 
     public void goThroughTable(String table)
     {
-
+        String trialID = H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText());
         int iterator = 0;
         int rowIndex = 0;
         boolean unique = false;
@@ -928,7 +914,7 @@ public class MainController implements Initializable {
 
         }else {
 
-            TextInputDialog dialog = new TextInputDialog("DialTest");
+            TextInputDialog dialog = new TextInputDialog("Prueba 2");
             dialog.setTitle("Modificando nombre de la prueba");
             dialog.setHeaderText("");
             dialog.setContentText("Por favor introduzca el nuevo nombre de la prueba:");
@@ -979,7 +965,7 @@ public class MainController implements Initializable {
         return numCols;
     }
 
-    private void saveToCSV(ArrayList<Action> actions,ArrayList<Action> validations,File file) throws IOException {
+    private void saveToCSV(ArrayList<Action> actions,ArrayList<Action> validations,ArrayList<Variable> variables, File file) throws IOException {
             Writer writer = null;
             try {
                 //File file = new File("/home/david/git_docs/"+name+".csv");
@@ -987,7 +973,7 @@ public class MainController implements Initializable {
 
                //writer.write(trialName);
                //writer.write(System.lineSeparator());
-                writer.write(columnsHeadersCSV);
+                writer.write(trialColumnsHeadersCSV);
 
                 for (Action action : actions)
                 {
@@ -1008,6 +994,13 @@ public class MainController implements Initializable {
                             + validation.getSelectPlaceByS() + ","
                             + validation.getSecondValueArgsS() + ","
                             + "true");
+                }
+                for (Variable variable : variables)
+                {
+                    writer.write(System.lineSeparator());
+                    writer.write("" + variable.getVariableTrial() + ","
+                                        + variable.getVariableName() + ","
+                                        + variable.getValue());
                 }
                 System.out.println("FUNCIONA");
 
@@ -1048,8 +1041,9 @@ public class MainController implements Initializable {
                     if (trial.isSelected()) {
                         ArrayList<Action> actions = H2DAO.getActions(trial.getText());
                         ArrayList<Action> validations = H2DAO.getValidations(trial.getText());
+                        ArrayList<Variable> variables = H2DAO.getTrialVariables(H2DAO.getTrialID(trial.getText()));
                         try {
-                            saveToCSV(actions, validations, file);
+                            saveToCSV(actions, validations, variables, file);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -1079,7 +1073,7 @@ public class MainController implements Initializable {
                     while (inputStream.hasNext()) {
                         String data = inputStream.nextLine();
                         //String action = data.substring()
-                        if (data.equals(columnsHeadersCSV))
+                        if (data.equals(trialColumnsHeadersCSV))
                         {
                             headerOk = true;
                         }
@@ -1121,25 +1115,74 @@ public class MainController implements Initializable {
                 }
             }
 
-            } catch(FileNotFoundException e){
-                e.printStackTrace();
-            }
+        } catch(FileNotFoundException e){
+            e.printStackTrace();
+        }
     }
 
-    /*public String getSelectedTrialId()
+    public void importVariables()
     {
-        String trialid = "";
+        boolean headerOk = false;
+        boolean firstRead = true;
+        String lastTrialVariable = "";      // Número de trial de la última variable leída
 
-        if (testList.getSelectionModel().getSelectedItem() == null){
-            // ALERTA
-        }else {
-            String trial = testList.getSelectionModel().getSelectedItem().getText();
-            trialid = H2DAO.getTrialID(trial);
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        //File file = fileChooser.showOpenDialog(stageSettings);
+        List<File> files = fileChooser.showOpenMultipleDialog(stageSettings);
+
+        try {
+
+            if (files != null)
+            {
+                for (File file : files)
+                {
+                    Scanner inputStream = new Scanner(file);
+                    while (inputStream.hasNext())
+                    {
+
+
+                        String data = inputStream.nextLine();
+                        if (headerOk)
+                        {
+                            String[] values = data.split(",");
+
+                            if (firstRead && !values[0].equals("TrialID")){
+                                Variable variable = new Variable(values[0], values[1], values[2]);
+                                variablesList.add(variable);
+                                lastTrialVariable = values[0];
+                                firstRead = false;
+                            } else {
+                                if (values[0].equals(lastTrialVariable))
+                                {
+                                    Variable variable = new Variable(values[0], values[1],values[2]);
+                                    variablesList.add(variable);
+                                    lastTrialVariable = values[0];
+                                } else {
+                                    H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
+                                    variablesList.clear();
+                                    Variable variable = new Variable(values[0], values[1],values[2]);
+                                    variablesList.add(variable);
+                                    lastTrialVariable = values[0];
+                                }
+                            }
+
+                        }
+
+                        if (data.equals(variablesColumnsHeadersCSV))
+                        {
+                            headerOk = true;
+
+                        }
+                    }
+                    H2DAO.saveTrialVariables(variablesList,lastTrialVariable);
+                    variablesList.clear();
+                }
+            }
+        } catch(FileNotFoundException e){
+            e.printStackTrace();
         }
-        System.out.println("MainController "+trialid);
-        return trialid;
-        //return trialID;
-    }*/
+    }
 
     public static String getPathOFC()
     {

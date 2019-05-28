@@ -1,0 +1,8 @@
+TrialID,VariableName,Value
+33,${variable1},a
+33,${variableX},X
+34,${variable2},b
+59,${variable3},c
+71,${variable4},d
+83,${variable5},e
+86,${variable6},f

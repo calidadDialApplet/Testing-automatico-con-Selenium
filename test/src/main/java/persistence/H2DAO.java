@@ -383,7 +383,7 @@ public class H2DAO {
             while (actionsResultSet.next())
             {
 
-                Action currentAction = new Action( actionsResultSet.getString("actiontypeid"), actionsResultSet.getString("selectionbyid1"),
+                Action currentAction = new Action(actionsResultSet.getString("actiontypeid"), actionsResultSet.getString("selectionbyid1"),
                         actionsResultSet.getString("value1"),actionsResultSet.getString("selectionbyid2"), actionsResultSet.getString("value2"));
                 actions.add(currentAction);
             }
