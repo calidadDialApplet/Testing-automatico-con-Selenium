@@ -104,7 +104,7 @@ public class H2DAO {
         "drop table trial_actions"
     };*/
 
-    static String dropTablesQuery = "drop table action_types,selection_by,trials,trial_actions";
+    static String dropTablesQuery = "drop table action_types,selection_by,trials,trial_actions,settings,validations";
 
     // TODO: This should be in H2DAO constructor, and main is useless
     static Connection connection;

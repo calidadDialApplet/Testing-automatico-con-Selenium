@@ -89,7 +89,7 @@
                      <graphic>
                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../src/main/resources/icons/baseline_edit_black_24dp.png" />
+                              <Image url="@../icons/baseline_edit_black_24dp.png" />
                            </image>
                         </ImageView>
                      </graphic>
@@ -98,7 +98,7 @@
                      <graphic>
                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../src/main/resources/icons/baseline_star_black_18dp.png" />
+                              <Image url="@../icons/baseline_star_black_18dp.png" />
                            </image>
                         </ImageView>
                      </graphic>
