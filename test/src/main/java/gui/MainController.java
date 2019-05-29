@@ -1,6 +1,6 @@
 package gui;
 
-import com.google.errorprone.annotations.Var;
+import com.opencsv.CSVWriter;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -20,6 +20,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -706,7 +707,6 @@ public class MainController implements Initializable {
 
     public void goThroughTable(String table)
     {
-        String trialID = H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText());
         int iterator = 0;
         int rowIndex = 0;
         boolean unique = false;
@@ -965,7 +965,8 @@ public class MainController implements Initializable {
         return numCols;
     }
 
-    private void saveToCSV(ArrayList<Action> actions,ArrayList<Action> validations,ArrayList<Variable> variables, File file) throws IOException {
+    private void saveTrialToCSV(ArrayList<Action> actions, ArrayList<Action> validations, File file) throws IOException
+    {
             Writer writer = null;
             try {
                 //File file = new File("/home/david/git_docs/"+name+".csv");
@@ -995,14 +996,8 @@ public class MainController implements Initializable {
                             + validation.getSecondValueArgsS() + ","
                             + "true");
                 }
-                for (Variable variable : variables)
-                {
-                    writer.write(System.lineSeparator());
-                    writer.write("" + variable.getVariableTrial() + ","
-                                        + variable.getVariableName() + ","
-                                        + variable.getValue());
-                }
-                System.out.println("FUNCIONA");
+
+                System.out.println("TEST EXPORTADOS");
 
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -1011,6 +1006,33 @@ public class MainController implements Initializable {
                 writer.close();
             }
     }
+
+    private void saveVariablesToCSV(ArrayList<Variable> variables, File file) throws IOException
+    {
+        Writer writer = null;
+        try {
+
+            writer = new BufferedWriter(new FileWriter(file));
+            writer.write(variablesColumnsHeadersCSV);
+
+            for (Variable variable : variables)
+            {
+                writer.write(System.lineSeparator());
+                writer.write("" + variable.getVariableTrial() + ","
+                        + variable.getVariableName() + ","
+                        + variable.getValue());
+            }
+
+            System.out.println("VARIABLES EXPORTADAS");
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            writer.flush();
+            writer.close();
+        }
+
+    }
+
 
     public void exportTest()
     {
@@ -1029,36 +1051,55 @@ public class MainController implements Initializable {
             alert.setContentText("Contacta con tu administrador :)");
             alert.showAndWait();
         } else {
+            DirectoryChooser dirChooser = new DirectoryChooser();
+            File defaultOrigin = new File(System.getProperty("user.home"));
+            dirChooser.setInitialDirectory(defaultOrigin);
+            File folder = dirChooser.showDialog(stageSettings);
 
-            FileChooser fileChooser = new FileChooser();
-            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv");
-            fileChooser.getExtensionFilters().add(extFilter);
-            fileChooser.setInitialFileName("DialTest.csv");
-            File file = fileChooser.showSaveDialog(stageSettings);
 
-            if (file != null) {
-                for (CheckBox trial : testList.getItems()) {
-                    if (trial.isSelected()) {
-                        ArrayList<Action> actions = H2DAO.getActions(trial.getText());
-                        ArrayList<Action> validations = H2DAO.getValidations(trial.getText());
-                        ArrayList<Variable> variables = H2DAO.getTrialVariables(H2DAO.getTrialID(trial.getText()));
-                        try {
-                            saveToCSV(actions, validations, variables, file);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+            //File variablesile = new File(folder.getAbsolutePath() + "nombrenuevoFIle1");
+            //File pruebas;
+
+            try {
+
+                if (folder != null) {
+                    for (CheckBox trial : testList.getItems()) {
+                        if (trial.isSelected()) {
+
+                            String trialID = H2DAO.getTrialID(trial.getText());
+
+                            File pruebasFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+trialID)+".csv");
+                            File variablesFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+"Variables"+"_"+trialID+".csv"));
+
+                            ArrayList<Action> actions = H2DAO.getActions(trial.getText());
+                            ArrayList<Action> validations = H2DAO.getValidations(trial.getText());
+                            ArrayList<Variable> variables = H2DAO.getTrialVariables(H2DAO.getTrialID(trial.getText()));
+
+                            saveTrialToCSV(actions, validations, pruebasFile);
+                            saveVariablesToCSV(variables,variablesFile);
+
                         }
+                        // Aviso de ninguno seleccionado
                     }
-                    // Aviso de ninguno seleccionado
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
+
+
         }
     }
+
+
 
     public void importTest()
     {
         deleteAllTabs();
 
-        boolean headerOk = false;
+        String header = "";
+        boolean firstRead = true;
+        String lastTrialVariable = "";
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         //File file = fileChooser.showOpenDialog(stageSettings);
@@ -1075,9 +1116,15 @@ public class MainController implements Initializable {
                         //String action = data.substring()
                         if (data.equals(trialColumnsHeadersCSV))
                         {
-                            headerOk = true;
+                            header = "Trial";
                         }
-                        if (headerOk) {
+                        if (data.equals(variablesColumnsHeadersCSV))
+                        {
+                            header = "Variables";
+                            continue;
+                        }
+                        if (header.equals("Trial"))
+                        {
 
                             String[] values = data.split(",");
                             //System.out.println(data);
@@ -1098,14 +1145,44 @@ public class MainController implements Initializable {
                                 validationRowIndex++;
                             }
                         }
+
+
+                        if (header.equals("Variables"))
+                        {
+                            String[] values = data.split(",");
+
+                            if (firstRead && !values[0].equals("TrialID")){
+                                Variable variable = new Variable(values[0], values[1], values[2]);
+                                variablesList.add(variable);
+                                lastTrialVariable = values[0];
+                                firstRead = false;
+                            } else {
+                                if (values[0].equals(lastTrialVariable))
+                                {
+                                    Variable variable = new Variable(values[0], values[1],values[2]);
+                                    variablesList.add(variable);
+                                    lastTrialVariable = values[0];
+                                } else {
+                                    H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
+                                    variablesList.clear();
+                                    Variable variable = new Variable(values[0], values[1],values[2]);
+                                    variablesList.add(variable);
+                                    lastTrialVariable = values[0];
+                                }
+                            }
+                        }
                     }
-                    if(headerOk)
+                    if(header.equals("Trial"))
                     {
                         saveTest();
                         //deleteAllTabs();
                         poblateTestList();
                         inputStream.close();
-                    }else {
+                    }else if (header.equals("Variables"))
+                    {
+                        H2DAO.saveTrialVariables(variablesList,lastTrialVariable);
+                        variablesList.clear();
+                    }else{
                         Alert alert = new Alert(Alert.AlertType.WARNING);
                         alert.setTitle("Error");
                         alert.setHeaderText("Se ha producido un error durante la importación del test");
@@ -1120,7 +1197,7 @@ public class MainController implements Initializable {
         }
     }
 
-    public void importVariables()
+    /*public void importVariables()
     {
         boolean headerOk = false;
         boolean firstRead = true;
@@ -1182,7 +1259,7 @@ public class MainController implements Initializable {
         } catch(FileNotFoundException e){
             e.printStackTrace();
         }
-    }
+    }*/
 
     public static String getPathOFC()
     {

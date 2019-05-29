@@ -1,9 +1,10 @@
 package gui;
 
-import com.google.errorprone.annotations.Var;
+
 import main.SeleniumDAO;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import persistence.H2DAO;
 
 import java.util.ArrayList;
 
@@ -12,7 +13,6 @@ import java.util.ArrayList;
 //       Add Action, Trial, etc DataModels and Controllers (https://stackoverflow.com/questions/32342864/applying-mvc-with-javafx)
 public class Action {
 
-   private String trialIDS = "";
    private String actionTypeS = "";
    private String selectElementByS = "";
    private String selectPlaceByS = "";
@@ -21,7 +21,7 @@ public class Action {
 
 
     public Action(String actionTypeS, String selectElementByS, String firstValueArgsS, String selectPlaceByS, String secondValueArgsS) {
-        //this.trialIDS = trialID;
+
         if (actionTypeS.matches("1|2|3|4|5|6|7|8")){
             this.actionTypeS = getActionTypeId(actionTypeS);
         }else {
@@ -107,34 +107,27 @@ public class Action {
 
         String result = "Fail";
 
-        for (Variable variable : variables)
-        {
-            if (this.firstValueArgsS.contains(variable.getVariableName()))
-            {
-                this.firstValueArgsS = this.firstValueArgsS.replaceAll(variable.getVariableName(), variable.getValue());
-            }
 
-            if (this.secondValueArgsS.contains(variable.getVariableName()))
-            {
-                this.secondValueArgsS = this.secondValueArgsS.replaceAll(variable.getVariableName(),variable.getValue());
-            }
-        }
+       String trialID = variables.get(0).getVariableTrial();
 
-        try
+       try
         {
             switch (actionTypeS) {
                 case "Click":
+                    getValueVariables(variables);
                     WebElement clickElement = SeleniumDAO.selectElementBy(this.selectElementByS, this.firstValueArgsS, driver);
                     SeleniumDAO.click(clickElement);
                     result = "Ok";
                     break;
                 case "DragAndDrop":
+                    getValueVariables(variables);
                     WebElement dragElement = SeleniumDAO.selectElementBy(this.selectElementByS, this.firstValueArgsS, driver);
                     WebElement dropPlaceElement = SeleniumDAO.selectElementBy(this.selectPlaceByS, this.secondValueArgsS, driver);
                     SeleniumDAO.dragAndDropAction(dragElement, dropPlaceElement, driver);
                     result = "Ok";
                     break;
                 case "WriteTo":
+                    getValueVariables(variables);
                     WebElement writeToElement = SeleniumDAO.selectElementBy(this.selectElementByS, this.firstValueArgsS, driver);
                     SeleniumDAO.writeInTo(writeToElement,this.secondValueArgsS);
                     result = "Ok";
@@ -142,20 +135,25 @@ public class Action {
                 case "ReadFrom":
                     WebElement readFromElement = SeleniumDAO.selectElementBy(this.selectElementByS,this.firstValueArgsS,driver);
                     result = SeleniumDAO.readFrom(readFromElement);
+                    H2DAO.updateTrialVariable(trialID, this.secondValueArgsS,result);
                     break;
                 case "SwitchTo":
+                    getValueVariables(variables);
                     SeleniumDAO.switchToFrame(this.firstValueArgsS, driver);
                     result = "Ok";
                     break;
                 case "Waiting For":
+                    getValueVariables(variables);
                     SeleniumDAO.waitForElement(Integer.parseInt(this.firstValueArgsS),this.selectElementByS, this.secondValueArgsS ,driver);
                     result = "Ok";
                     break;
                 case "WaitTime":
+                    getValueVariables(variables);
                     SeleniumDAO.implicitWait(Integer.parseInt(this.firstValueArgsS));
                     result = "Ok";
                     break;
                 case "SwitchDefault":
+                    getValueVariables(variables);
                     SeleniumDAO.switchToDefaultContent(driver);
                     result = "Ok";
                 default:
@@ -170,6 +168,24 @@ public class Action {
         }
 
    }
+
+    private void getValueVariables(ArrayList<Variable> variables)
+    {
+        for (Variable variable : variables)
+        {
+            if (this.firstValueArgsS.contains(variable.getVariableName()))
+            {
+                this.firstValueArgsS = this.firstValueArgsS.replaceAll(variable.getVariableName(), variable.getValue());
+            }
+
+            if (this.secondValueArgsS.contains(variable.getVariableName()))
+            {
+                this.secondValueArgsS = this.secondValueArgsS.replaceAll(variable.getVariableName(),variable.getValue());
+            }
+        }
+    }
+
+
 
     public String getActionTypeS() {
         return actionTypeS;

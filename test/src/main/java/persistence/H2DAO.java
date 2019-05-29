@@ -617,6 +617,36 @@ public class H2DAO {
 
     }
 
+    public static void updateTrialVariable(String trial, String variable, String value)
+    {
+        try{
+            Statement st = connection.createStatement();
+            String getTrialQuery = "select * from variables where trial = '"+trial+"'";
+            st.execute(getTrialQuery);
+
+            ResultSet resultSet =  st.getResultSet();
+            while (resultSet.next())
+            {
+                if (resultSet.getString(2).equals(variable)) {
+                    String oldValue = resultSet.getString(3);
+                    System.out.println(oldValue);
+
+                    String updateTrialQuery = "update variables set value = '" + value + "' where value = '" + oldValue + "' ";
+                    st.execute(updateTrialQuery);
+                    System.out.println("Variable actualizada");
+
+                }
+            }
+
+            String saveTrialQuery = "insert into variables (trial, variable, value) values ('" + trial + "', '" + variable + "', '" + value + "')";
+            st.execute(saveTrialQuery);
+            System.out.println("Variable guardada");
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
     public static ArrayList<Variable> getTrialVariables(String trial)
     {
         ArrayList<Variable> variables = new ArrayList<>();

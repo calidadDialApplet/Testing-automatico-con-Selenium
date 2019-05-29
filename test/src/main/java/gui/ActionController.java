@@ -71,7 +71,6 @@ public class ActionController
             checkboxNotGenerated = true;
             switch (actionType.getValue().toString()) {
                 case "Click":
-                case "ReadFrom":
                     initializeComboBox(hBox);
                     selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     //gridParent.addRow(rowIndex, selectElementBy);
@@ -167,6 +166,31 @@ public class ActionController
                             }
                         }
                         textFieldNotGenerated = false;
+                    });
+                    selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
+                    break;
+                case "ReadFrom":
+                    initializeComboBox(hBox);
+                    selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
+                    hBox.getChildren().add(selectElementBy);
+                    dragAndDrop(gridParent, selectElementBy);
+                    selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
+                    {
+                        if (textFieldNotGenerated) {
+                            generatedTextField(hBox, "FirstValueArgs", firstValueArgsValue);
+                            value.setText("Variable");
+                            value.setPadding(new Insets(5, 0, 0, 0));
+                            dragAndDrop(gridParent, value);
+                            hBox.getChildren().add(value);
+
+                            secondValueArgs = new TextField();
+                            secondValueArgs.setText(secondValueArgsValue);
+                            hBox.getChildren().add(secondValueArgs);
+                            if (checkboxNotGenerated) {
+                                drawCheckBox(hBox);
+                                checkboxNotGenerated = false;
+                            }
+                        }
                     });
                     selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
                     break;
@@ -526,7 +550,6 @@ public class ActionController
         //int rowIndex = gridParent.getRowIndex(actionType);
         switch (type) {
             case "Click":
-            case "ReadFrom":
                 selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                 //gridParent.addRow(rowIndex, selectElementBy);
                 hBox.getChildren().add(selectElementBy);
@@ -612,6 +635,28 @@ public class ActionController
                     textFieldNotGenerated = false;
                 });
 
+                break;
+            case "ReadFrom":
+                selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
+                hBox.getChildren().add(selectElementBy);
+                dragAndDrop(gridParent, selectElementBy);
+                selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
+                {
+                    if (textFieldNotGenerated) {
+                        generatedTextField(hBox, "FirstValueArgs", "");
+                        value.setText("Variable");
+                        value.setPadding(new Insets(5, 0, 0, 0));
+                        dragAndDrop(gridParent, value);
+                        hBox.getChildren().add(value);
+
+                        secondValueArgs = new TextField();
+                        hBox.getChildren().add(secondValueArgs);
+                        if (checkboxNotGenerated) {
+                            drawCheckBox(hBox);
+                            checkboxNotGenerated = false;
+                        }
+                    }
+                });
                 break;
             case "SwitchTo":
             case "WaitTime":
@@ -711,7 +756,7 @@ public class ActionController
     public void setDefaultAction(HBox hBox)
     {
         //gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs, value, actionSelected, uniqueValue);
-        hBox.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs, value, actionSelected, uniqueValue);
+        hBox.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs, value, actionSelected, uniqueValue, stackPane);
     }
 
 }
