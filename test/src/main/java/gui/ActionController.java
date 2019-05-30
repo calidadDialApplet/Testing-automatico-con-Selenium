@@ -204,10 +204,6 @@ public class ActionController
                     break;
                 case "Waiting For":
                     initializeComboBox(hBox);
-                    firstValueArgs = new TextField();
-                    firstValueArgs.setText(firstValueArgsValue);
-                    //gridParent.addRow(rowIndex, firstValueArgs);
-                    hBox.getChildren().add(firstValueArgs);
 
                     value.setText("Element");
                     value.setPadding(new Insets(5,0,0,0));
@@ -221,6 +217,10 @@ public class ActionController
                     hBox.getChildren().add(selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
+                        firstValueArgs = new TextField();
+                        firstValueArgs.setText(firstValueArgsValue);
+                        //gridParent.addRow(rowIndex, firstValueArgs);
+                        hBox.getChildren().add(firstValueArgs);
                         generatedTextField(hBox, "SecondValueArgs", secondValueArgsValue);
                         if (checkboxNotGenerated) {
                             drawCheckBox(hBox);
@@ -667,9 +667,6 @@ public class ActionController
                 }
                 break;
             case "Waiting For":
-                firstValueArgs = new TextField();
-                //gridParent.addRow(rowIndex, firstValueArgs);
-                hBox.getChildren().add(firstValueArgs);
 
                 value.setText("Element");
                 value.setPadding(new Insets( 5,0,0,0));
@@ -683,6 +680,9 @@ public class ActionController
                 dragAndDrop(gridParent, selectElementBy);
                 selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                 {
+                    firstValueArgs = new TextField();
+                    //gridParent.addRow(rowIndex, firstValueArgs);
+                    hBox.getChildren().add(firstValueArgs);
                     generatedTextField(hBox,"SecondValueArgs","");
                     if (checkboxNotGenerated) {
                         drawCheckBox(hBox);

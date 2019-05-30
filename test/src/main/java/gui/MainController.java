@@ -24,10 +24,15 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import jdk.nashorn.internal.runtime.JSONFunctions;
 import main.SeleniumDAO;
 import main.Utils;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonInput;
 import persistence.H2DAO;
 
 
@@ -64,6 +69,9 @@ public class MainController implements Initializable {
 
     @FXML
     private GridPane gridPaneValidationList;
+
+    @FXML
+    private TabPane tabPaneParent;
 
     @FXML
     private Tab tabActions;
@@ -123,6 +131,12 @@ public class MainController implements Initializable {
         //            gridPaneTrialList.getColumnConstraints().add(colConstraint);
         //            }
 
+        tabPaneParent.widthProperty().addListener(((observable, oldValue, newValue) ->
+        {
+                tabPaneParent.setTabMinWidth(tabPaneParent.getWidth() / 2);
+                tabPaneParent.setTabMinWidth(tabPaneParent.getWidth() / 2);
+        }));
+
         int trialsCols = getColCount(gridPaneTrialList);
         for (int i = 0; i < trialsCols; i++)
         {
@@ -139,18 +153,13 @@ public class MainController implements Initializable {
             gridPaneValidationList.getColumnConstraints().add(columnConstraint);
         }
 
+
         // TODO: This is plain wrong. You can't set row constraints
         //  this way, since you don't know the number of rows
         //  That's why scroll pane is broken after adding 5 rows or more
         //  Should be calculated and applied when adding new rows ...
 
-        //tabPaneParent.setMinSize(1100,500);
-        //tabPaneParent.setTabMinWidth(200);
-        //testList.prefWidthProperty().bind(scrollPaneTrialList.widthProperty());
-        //scrollPaneTrialList.setFitToWidth(true);
-        //testList.prefHeightProperty().bind(scrollPaneTrialList.heightProperty());
 
-        //tabPaneParent.setTabMinWidth(Math.round(tabPaneParent.getWidth()/2));
 
         if(!H2DAO.checkDB()){
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -597,31 +606,40 @@ public class MainController implements Initializable {
         TextInputDialog dialog = new TextInputDialog("Prueba");
         dialog.setTitle("Nueva prueba");
         dialog.setHeaderText("");
-        dialog.setContentText("Por favor introduzca el nombre de la prueba:");
+        dialog.setContentText("Por favor introduzca el nombre de la prueba sin '_' :");
 
         Optional<String> result = dialog.showAndWait();
 
-        List<String> trialNames = new ArrayList<>();
-        for (CheckBox item : testList.getItems()){
-            trialNames.add(item.getText());
-        }
-        if (result.isPresent()){
-            if (trialNames.contains(result.get()))
-            {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Nombre de trial repetido");
-                alert.setContentText("Contacta con tu administrador :)");
-                alert.showAndWait();
-            } else {
-                H2DAO.createTrial(result.get());
-                poblateTestList();
-                testList.getSelectionModel().selectLast();
+        if (result.toString().contains("_"))
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("El nombre de la prueba contiene '_'");
+            alert.setContentText("Contacta con tu administrador :)");
+            alert.show();
+        } else {
+
+            List<String> trialNames = new ArrayList<>();
+            for (CheckBox item : testList.getItems()) {
+                trialNames.add(item.getText());
             }
+            if (result.isPresent()) {
+                if (trialNames.contains(result.get())) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Nombre de trial repetido");
+                    alert.setContentText("Contacta con tu administrador :)");
+                    alert.showAndWait();
+                } else {
+                    H2DAO.createTrial(result.get());
+                    poblateTestList();
+                    testList.getSelectionModel().selectLast();
+                }
 
 
-        }else{
-            bottomButtons.setDisable(true);
+            } else {
+                bottomButtons.setDisable(true);
+            }
         }
 
     }
@@ -670,38 +688,46 @@ public class MainController implements Initializable {
         TextInputDialog dialog = new TextInputDialog("Prueba");
         dialog.setTitle("Nueva prueba");
         dialog.setHeaderText("");
-        dialog.setContentText("Por favor introduzca el nombre de la prueba:");
+        dialog.setContentText("Por favor introduzca el nombre de la prueba sin '_':");
 
         Optional<String> result = dialog.showAndWait();
-        if (result.isPresent())
+
+        if (result.toString().contains("_"))
         {
-            boolean trialmodified = false;
-            H2DAO.createTrial(result.get());                                                // Introducir nuevo trial con su nombre en trials
-            String id = H2DAO.getTrialID(result.get());
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("El nombre de la prueba contiene '_'");
+            alert.setContentText("Contacta con tu administrador :)");
+            alert.show();
+        } else {
+            if (result.isPresent()) {
+                boolean trialmodified = false;
+                H2DAO.createTrial(result.get());                                                // Introducir nuevo trial con su nombre en trials
+                String id = H2DAO.getTrialID(result.get());
 
-            //H2DAO.deleteTrialActions(id);
-            //procesedActionList.clear();
-            goThroughTable("Actions");
-            H2DAO.saveTrial(procesedActionList, id, 0);
+                //H2DAO.deleteTrialActions(id);
+                //procesedActionList.clear();
+                goThroughTable("Actions");
+                H2DAO.saveTrial(procesedActionList, id, 0);
 
 
-            //H2DAO.deleteTrialValidations(id);
-            //procesedValidationList.clear();
-            goThroughTable("Validations");
-            H2DAO.saveTrial(procesedValidationList, id, 1);
+                //H2DAO.deleteTrialValidations(id);
+                //procesedValidationList.clear();
+                goThroughTable("Validations");
+                H2DAO.saveTrial(procesedValidationList, id, 1);
 
-            trialmodified = true;
+                trialmodified = true;
 
 
-            if (trialmodified)
-            {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Test Importado");
-                alert.setHeaderText("Test importado correctamente");
-                alert.showAndWait();
+                if (trialmodified) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Test Importado");
+                    alert.setHeaderText("Test importado correctamente");
+                    alert.showAndWait();
+                }
+            } else {
+                bottomButtons.setDisable(true);
             }
-        }else{
-            bottomButtons.setDisable(true);
         }
     }
 
@@ -917,20 +943,29 @@ public class MainController implements Initializable {
             TextInputDialog dialog = new TextInputDialog("Prueba 2");
             dialog.setTitle("Modificando nombre de la prueba");
             dialog.setHeaderText("");
-            dialog.setContentText("Por favor introduzca el nuevo nombre de la prueba:");
+            dialog.setContentText("Por favor introduzca el nuevo nombre de la prueba sin '_':");
             Optional<String> result = dialog.showAndWait();
 
-            if (result.isPresent()) {
-                if (trialNames.contains(result.get()))
-                {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Nombre de trial repetido");
-                    alert.setContentText("Contacta con tu administrador :)");
-                    alert.showAndWait();
-                }else {
-                    H2DAO.updateTrialName(selectedTrial.getText(), result.get());
-                    selectedTrial.setText(result.get());
+            if (result.toString().contains("_"))
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("El nombre de la prueba contiene '_'");
+                alert.setContentText("Contacta con tu administrador :)");
+                alert.show();
+            } else {
+
+                if (result.isPresent()) {
+                    if (trialNames.contains(result.get())) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Nombre de trial repetido");
+                        alert.setContentText("Contacta con tu administrador :)");
+                        alert.showAndWait();
+                    } else {
+                        H2DAO.updateTrialName(selectedTrial.getText(), result.get());
+                        selectedTrial.setText(result.get());
+                    }
                 }
             }
         }
@@ -1007,6 +1042,32 @@ public class MainController implements Initializable {
             }
     }
 
+
+    public void exportJSON(ArrayList<Action> actions, ArrayList<Action> validations,ArrayList<Variable> variables,File file)
+    {
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+
+
+            jsonObject.put("Actions", actions);
+            jsonObject.put("Validations",validations);
+            jsonObject.put("Variables", variables);
+
+            System.out.println("TEST EXPORTADOS");
+
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(jsonObject.toString());
+            fileWriter.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
+
     private void saveVariablesToCSV(ArrayList<Variable> variables, File file) throws IOException
     {
         Writer writer = null;
@@ -1068,15 +1129,17 @@ public class MainController implements Initializable {
 
                             String trialID = H2DAO.getTrialID(trial.getText());
 
-                            File pruebasFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+trialID)+".csv");
+                            File trialFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+trialID)+".csv");
+                            File trialJSONFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+trialID)+".json");
                             File variablesFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+"Variables"+"_"+trialID+".csv"));
 
                             ArrayList<Action> actions = H2DAO.getActions(trial.getText());
                             ArrayList<Action> validations = H2DAO.getValidations(trial.getText());
                             ArrayList<Variable> variables = H2DAO.getTrialVariables(H2DAO.getTrialID(trial.getText()));
 
-                            saveTrialToCSV(actions, validations, pruebasFile);
+                            saveTrialToCSV(actions, validations, trialFile);
                             saveVariablesToCSV(variables,variablesFile);
+                            exportJSON(actions, validations, variables, trialJSONFile);
 
                         }
                         // Aviso de ninguno seleccionado
@@ -1090,8 +1153,6 @@ public class MainController implements Initializable {
 
         }
     }
-
-
 
     public void importTest()
     {
@@ -1197,69 +1258,89 @@ public class MainController implements Initializable {
         }
     }
 
-    /*public void importVariables()
+    public void importJSONTest()
     {
-        boolean headerOk = false;
-        boolean firstRead = true;
-        String lastTrialVariable = "";      // Número de trial de la última variable leída
+        deleteAllTabs();
 
+        boolean firstRead = true;
+        String lastTrialVariable = "";
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         //File file = fileChooser.showOpenDialog(stageSettings);
         List<File> files = fileChooser.showOpenMultipleDialog(stageSettings);
 
-        try {
-
-            if (files != null)
+        if (files != null)
+        {
+            for (File file : files)
             {
-                for (File file : files)
+                //JSONArray jsonArray = new JSONArray(file.toString());
+                JSONObject jsonObject = new JSONObject();
+                JSONFunctions.parse(file.toString(), jsonObject);
+                ArrayList<Action> actions = (ArrayList<Action>) jsonObject.get("Actions");
+                ArrayList<Action> validations = (ArrayList<Action>) jsonObject.get("Validations");
+                ArrayList<Variable> variables = (ArrayList<Variable>) jsonObject.get("Variables");
+
+
+
+                for (Action action : actions)
                 {
-                    Scanner inputStream = new Scanner(file);
-                    while (inputStream.hasNext())
-                    {
+                    ActionController actionController = new ActionController();
+                    actionController.setAction(gridPaneTrialList, actionsRowIndex, action.getActionTypeS(), action.getSelectElementByS(),
+                            action.getFirstValueArgsS(), action.getSelectPlaceByS(), action.getSecondValueArgsS());
+                    Action act = new Action(action.getActionTypeS(), action.getSelectElementByS(),
+                            action.getFirstValueArgsS(), action.getSelectPlaceByS(), action.getSecondValueArgsS());
+                    actionList.add(act);
+                    actionsRowIndex++;
+                }
+
+                for (Action validation : validations)
+                {
+                    ActionController actionController = new ActionController();
+                    actionController.setAction(gridPaneTrialList, actionsRowIndex, validation.getActionTypeS(), validation.getSelectElementByS(),
+                            validation.getFirstValueArgsS(), validation.getSelectPlaceByS(), validation.getSecondValueArgsS());
+                    Action act = new Action(validation.getActionTypeS(), validation.getSelectElementByS(),
+                            validation.getFirstValueArgsS(), validation.getSelectPlaceByS(), validation.getSecondValueArgsS());
+                    validationList.add(act);
+                    validationRowIndex++;
+                }
 
 
-                        String data = inputStream.nextLine();
-                        if (headerOk)
+                for (Variable variable : variables)
+                {
+                    if (firstRead){
+                        Variable variablef = new Variable(variable.getVariableTrial(), variable.getVariableName(), variable.getValue());
+                        variablesList.add(variable);
+                        lastTrialVariable = variable.getVariableTrial();
+                        firstRead = false;
+                    } else {
+                        if (variable.getVariableTrial().equals(lastTrialVariable))
                         {
-                            String[] values = data.split(",");
-
-                            if (firstRead && !values[0].equals("TrialID")){
-                                Variable variable = new Variable(values[0], values[1], values[2]);
-                                variablesList.add(variable);
-                                lastTrialVariable = values[0];
-                                firstRead = false;
-                            } else {
-                                if (values[0].equals(lastTrialVariable))
-                                {
-                                    Variable variable = new Variable(values[0], values[1],values[2]);
-                                    variablesList.add(variable);
-                                    lastTrialVariable = values[0];
-                                } else {
-                                    H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
-                                    variablesList.clear();
-                                    Variable variable = new Variable(values[0], values[1],values[2]);
-                                    variablesList.add(variable);
-                                    lastTrialVariable = values[0];
-                                }
-                            }
-
-                        }
-
-                        if (data.equals(variablesColumnsHeadersCSV))
-                        {
-                            headerOk = true;
-
+                            Variable variablef = new Variable(variable.getVariableTrial(), variable.getVariableName(), variable.getValue());
+                            variablesList.add(variable);
+                            lastTrialVariable = variable.getVariableTrial();
+                        } else {
+                            H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
+                            variablesList.clear();
+                            Variable variablef = new Variable(variable.getVariableTrial(), variable.getVariableName(), variable.getValue());
+                            variablesList.add(variable);
+                            lastTrialVariable = variable.getVariableTrial();
                         }
                     }
-                    H2DAO.saveTrialVariables(variablesList,lastTrialVariable);
-                    variablesList.clear();
                 }
+
+                saveTest();
+                //deleteAllTabs();
+                poblateTestList();
+
+
+                H2DAO.saveTrialVariables(variablesList,lastTrialVariable);
+                variablesList.clear();
+
             }
-        } catch(FileNotFoundException e){
-            e.printStackTrace();
         }
-    }*/
+        System.out.println("JSON IMPORTADO");
+    }
+
 
     public static String getPathOFC()
     {

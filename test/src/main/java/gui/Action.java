@@ -144,8 +144,8 @@ public class Action {
                     break;
                 case "Waiting For":
                     getValueVariables(variables);
-                    SeleniumDAO.waitForElement(Integer.parseInt(this.firstValueArgsS),this.selectElementByS, this.secondValueArgsS ,driver);
-                    result = "Ok";
+                    SeleniumDAO.waitForElement(Integer.parseInt(this.secondValueArgsS),this.selectElementByS, this.firstValueArgsS ,driver);
+                    result = "Ok"; // TEST
                     break;
                 case "WaitTime":
                     getValueVariables(variables);

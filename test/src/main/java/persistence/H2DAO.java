@@ -122,8 +122,8 @@ public class H2DAO {
 
         try {
             Statement st = connection.createStatement();
-            String createTable = "alter table variables add constraint fk_trial foreign key (trial) references trials(id)";
-            st.execute(createTable);
+            String createTable = "alter table variables add unique(variable)";
+            //st.execute(createTable);
             /*
             ResultSet resultSet =  st.getResultSet();
 
@@ -619,6 +619,7 @@ public class H2DAO {
 
     public static void updateTrialVariable(String trial, String variable, String value)
     {
+        boolean updated = false;
         try{
             Statement st = connection.createStatement();
             String getTrialQuery = "select * from variables where trial = '"+trial+"'";
@@ -631,17 +632,20 @@ public class H2DAO {
                     String oldValue = resultSet.getString(3);
                     System.out.println(oldValue);
 
+                    Statement statement = connection.createStatement();
+
                     String updateTrialQuery = "update variables set value = '" + value + "' where value = '" + oldValue + "' ";
-                    st.execute(updateTrialQuery);
+                    statement.execute(updateTrialQuery);
                     System.out.println("Variable actualizada");
+                    updated = true;
 
                 }
             }
-
-            String saveTrialQuery = "insert into variables (trial, variable, value) values ('" + trial + "', '" + variable + "', '" + value + "')";
-            st.execute(saveTrialQuery);
-            System.out.println("Variable guardada");
-
+            if (!updated) {
+                String saveTrialQuery = "insert into variables (trial, variable, value) values ('" + trial + "', '" + variable + "', '" + value + "')";
+                st.execute(saveTrialQuery);
+                System.out.println("Variable guardada");
+            }
         }catch (SQLException e){
             e.printStackTrace();
         }
