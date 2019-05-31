@@ -27,7 +27,7 @@
             <menus>
                 <Menu fx:id="menuFile" text="File">
                     <items>
-                        <MenuItem fx:id="menuItemImport" onAction="#importTest" text="Import" />
+                        <MenuItem fx:id="menuItemImport" onAction="#importJSONTest" text="Import" />
                         <MenuItem fx:id="menuItemExport" mnemonicParsing="true" onAction="#exportTest" text="Export" />
                         <MenuItem fx:id="menuItemClose" mnemonicParsing="true" onAction="#totalClose" text="Close" />
                     </items>

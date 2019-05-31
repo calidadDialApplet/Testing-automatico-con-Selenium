@@ -383,8 +383,8 @@ public class H2DAO {
             while (actionsResultSet.next())
             {
 
-                Action currentAction = new Action(actionsResultSet.getString("actiontypeid"), actionsResultSet.getString("selectionbyid1"),
-                        actionsResultSet.getString("value1"),actionsResultSet.getString("selectionbyid2"), actionsResultSet.getString("value2"));
+                Action currentAction = new Action(getActionType(actionsResultSet.getString("actiontypeid")), getSelectionBy(actionsResultSet.getString("selectionbyid1")),
+                        actionsResultSet.getString("value1"),getSelectionBy(actionsResultSet.getString("selectionbyid2")), actionsResultSet.getString("value2"));
                 actions.add(currentAction);
             }
              System.out.println("Llega");
@@ -416,8 +416,9 @@ public class H2DAO {
 
             while (validationsResultSet.next())
             {
-                Action currentValidation = new Action(validationsResultSet.getString("actiontypeid"), validationsResultSet.getString("selectionbyid1"),
-                        validationsResultSet.getString("value1"), validationsResultSet.getString("selectionbyid2"), validationsResultSet.getString("value2"));
+                Action currentValidation = new Action(getActionType(validationsResultSet.getString("actiontypeid")),getSelectionBy(validationsResultSet.getString("selectionbyid1")),
+                        validationsResultSet.getString("value1"),getSelectionBy(validationsResultSet.getString("selectionbyid2")), validationsResultSet.getString("value2"));
+
                 validations.add(currentValidation);
             }
             System.out.println("Llega");
@@ -427,6 +428,54 @@ public class H2DAO {
             e.printStackTrace();
         }
         return validations;
+    }
+
+    public static String getActionType(String id)
+    {
+        String result = "";
+
+        try {
+
+            Statement st = connection.createStatement();
+
+            String getName = "Select name from action_types where id = '"+id+"'";
+            st.execute(getName);
+
+            ResultSet resultSet = st.getResultSet();
+            while (resultSet.next()) {
+                result = (resultSet.getString(1));
+            }
+            st.close();
+        }catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public static String getSelectionBy(String id)
+    {
+        String result = "";
+
+        try {
+
+            Statement st = connection.createStatement();
+
+            String getName = "Select name from selection_by where id = '"+id+"'";
+            st.execute(getName);
+
+            ResultSet resultSet = st.getResultSet();
+            while (resultSet.next()) {
+                result = (resultSet.getString(1));
+            }
+            st.close();
+        }catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     public static String getTrialID(String trialName)
@@ -615,6 +664,18 @@ public class H2DAO {
             e.printStackTrace();
         }
 
+    }
+
+    public static void saveVariable(Variable variable)
+    {
+        try{
+            Statement st = connection.createStatement();
+            String query = "insert into variables (trial, variable, value) values ('"+variable.getVariableTrial()+"', '"+variable.getVariableName()+"', '"+variable.getValue()+"')";
+            st.execute(query);
+            System.out.println("Variable Guardada");
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public static void updateTrialVariable(String trial, String variable, String value)

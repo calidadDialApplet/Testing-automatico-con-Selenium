@@ -1,6 +1,5 @@
 package gui;
 
-import com.opencsv.CSVWriter;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -24,15 +23,15 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import jdk.nashorn.internal.runtime.JSONFunctions;
 import main.SeleniumDAO;
 import main.Utils;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonInput;
 import persistence.H2DAO;
 
 
@@ -244,7 +243,7 @@ public class MainController implements Initializable {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("No hay ningún test seleccionado");
-                alert.setContentText("Contacta con tu administrador :)");
+                alert.setContentText("No lo ves o que? :)");
                 alert.showAndWait();
             }else {
                 variablesController.setTrialID(H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText())); // Separa vista y logica!
@@ -615,7 +614,7 @@ public class MainController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("El nombre de la prueba contiene '_'");
-            alert.setContentText("Contacta con tu administrador :)");
+            alert.setContentText("Estas tonto o que? :)");
             alert.show();
         } else {
 
@@ -1269,76 +1268,92 @@ public class MainController implements Initializable {
         //File file = fileChooser.showOpenDialog(stageSettings);
         List<File> files = fileChooser.showOpenMultipleDialog(stageSettings);
 
-        if (files != null)
-        {
-            for (File file : files)
-            {
-                //JSONArray jsonArray = new JSONArray(file.toString());
-                JSONObject jsonObject = new JSONObject();
-                JSONFunctions.parse(file.toString(), jsonObject);
-                ArrayList<Action> actions = (ArrayList<Action>) jsonObject.get("Actions");
-                ArrayList<Action> validations = (ArrayList<Action>) jsonObject.get("Validations");
-                ArrayList<Variable> variables = (ArrayList<Variable>) jsonObject.get("Variables");
+
+        if (files != null) {
+            for (File file : files) {
 
 
 
-                for (Action action : actions)
-                {
-                    ActionController actionController = new ActionController();
-                    actionController.setAction(gridPaneTrialList, actionsRowIndex, action.getActionTypeS(), action.getSelectElementByS(),
-                            action.getFirstValueArgsS(), action.getSelectPlaceByS(), action.getSecondValueArgsS());
-                    Action act = new Action(action.getActionTypeS(), action.getSelectElementByS(),
-                            action.getFirstValueArgsS(), action.getSelectPlaceByS(), action.getSecondValueArgsS());
-                    actionList.add(act);
-                    actionsRowIndex++;
-                }
+                JSONParser parser = new JSONParser();
 
-                for (Action validation : validations)
-                {
-                    ActionController actionController = new ActionController();
-                    actionController.setAction(gridPaneTrialList, actionsRowIndex, validation.getActionTypeS(), validation.getSelectElementByS(),
-                            validation.getFirstValueArgsS(), validation.getSelectPlaceByS(), validation.getSecondValueArgsS());
-                    Action act = new Action(validation.getActionTypeS(), validation.getSelectElementByS(),
-                            validation.getFirstValueArgsS(), validation.getSelectPlaceByS(), validation.getSecondValueArgsS());
-                    validationList.add(act);
-                    validationRowIndex++;
-                }
+                try {
+                    FileReader reader = new FileReader(file);
+                    Object object = parser.parse(reader);
+                    System.out.println(object);
+
+                    JSONObject jsonObject = (JSONObject) object;
 
 
-                for (Variable variable : variables)
-                {
-                    if (firstRead){
-                        Variable variablef = new Variable(variable.getVariableTrial(), variable.getVariableName(), variable.getValue());
-                        variablesList.add(variable);
-                        lastTrialVariable = variable.getVariableTrial();
-                        firstRead = false;
-                    } else {
-                        if (variable.getVariableTrial().equals(lastTrialVariable))
-                        {
-                            Variable variablef = new Variable(variable.getVariableTrial(), variable.getVariableName(), variable.getValue());
-                            variablesList.add(variable);
-                            lastTrialVariable = variable.getVariableTrial();
-                        } else {
-                            H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
-                            variablesList.clear();
-                            Variable variablef = new Variable(variable.getVariableTrial(), variable.getVariableName(), variable.getValue());
-                            variablesList.add(variable);
-                            lastTrialVariable = variable.getVariableTrial();
-                        }
+
+
+
+
+                    JSONArray actions = (JSONArray) jsonObject.get("Actions");
+                    JSONArray validations = (JSONArray) jsonObject.get("Validations");
+                    JSONArray variables = (JSONArray) jsonObject.get("Variables");
+
+
+                    System.out.println(actions);
+                    System.out.println(validations);
+                    System.out.println(variables);
+
+
+                    for (int i = 0; i < actions.size(); i++)
+                    {
+                        JSONObject action = (JSONObject) actions.get(i);
+                        ActionController actionController = new ActionController();
+                        actionController.setAction(gridPaneTrialList, actionsRowIndex, action.get("actionTypeS").toString(), action.get("selectElementByS").toString(),
+                                action.get("firstValueArgsS").toString(), action.get("selectPlaceByS").toString(), action.get("secondValueArgsS").toString());
+                        Action act = new Action(action.get("actionTypeS").toString(), action.get("selectElementByS").toString(),
+                                action.get("firstValueArgsS").toString(), action.get("selectPlaceByS").toString(), action.get("secondValueArgsS").toString());
+                        actionList.add(act);
+                        actionsRowIndex++;
+
                     }
+
+                    for (int i = 0; i < validations.size(); i++)
+                    {
+                        JSONObject validation = (JSONObject) validations.get(i);
+                        ActionController actionController = new ActionController();
+                        actionController.setAction(gridPaneValidationList, validationRowIndex, validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
+                                validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());
+                        Action act = new Action(validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
+                                validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());
+                        validationList.add(act);
+                        validationRowIndex++;
+
+                    }
+
+
+                    for (int i = 0; i < variables.size(); i++)
+                    {
+                        JSONObject variable = (JSONObject) variables.get(i);
+                        Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
+                        H2DAO.saveVariable(var);
+                    }
+
+
+
+                    saveTest();
+                    //deleteAllTabs();
+                    poblateTestList();
+
+
+                    //H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
+                    //variablesList.clear();
+                    System.out.println("JSON IMPORTADO");
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
-                saveTest();
-                //deleteAllTabs();
-                poblateTestList();
-
-
-                H2DAO.saveTrialVariables(variablesList,lastTrialVariable);
-                variablesList.clear();
-
             }
         }
-        System.out.println("JSON IMPORTADO");
+
+
     }
 
 

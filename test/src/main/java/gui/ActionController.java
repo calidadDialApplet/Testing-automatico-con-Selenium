@@ -1,5 +1,6 @@
 package gui;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -56,6 +57,7 @@ public class ActionController
 
         rowIndexLabel = new Label("# "+rowIndex);
         rowIndexLabel.setPadding(new Insets(5,0,0,0));
+
         //rowIndexLabel.textProperty().bind(new SimpleStringProperty("# "+rowIndex));
         dragAndDrop(gridParent, rowIndexLabel);
         gridParent.addRow(rowIndex,hBox);
@@ -423,6 +425,7 @@ public class ActionController
                 } else if (node instanceof TextField || node instanceof Label){
 
                     rowIndexDrop = gridParent.getRowIndex(node.getParent());
+
                 }else if (node instanceof HBox){
                     if (((HBox) node).getChildren().size() == 2)
                     {
@@ -471,6 +474,8 @@ public class ActionController
                         gridParent.addRow(rowIndexDrop, draggedChildList.get(0));
                     }
 
+
+
                 } else{
                     event.consume();
                 }
@@ -490,31 +495,24 @@ public class ActionController
             public void handle(DragEvent event) {
 
                 if (event.getTransferMode() == TransferMode.MOVE) {
-                }
 
-               /* System.out.println("DragDone DropIndex = "+rowIndexDrop);
-                if (rowIndexDrop == -1){
-                    event.consume();
-                } else {
-
-                    if (rowIndexDrop == getRowCount(gridParent))                    // Insertar al final
+                    for (Node child : gridParent.getChildren())
                     {
-                        for (Node item : draggedChildList)
+                        if (child instanceof HBox)
                         {
-                            gridParent.addRow(rowIndex + 1,item);
+                            for (Node hboxChild : ((HBox) child).getChildren())
+                            {
+                                if (hboxChild instanceof Label) {
+                                    ((Label) hboxChild).setText("# "+ gridParent.getRowIndex(child));
+                                    break;
+                                }
+                            }
                         }
                     }
-
-                    for (Node item : draggedChildList)                              // Insertar en el medio o en cabeza
-                    {
-                        gridParent.addRow(rowIndexDrop, item);
-                        gridParent.setRowIndex(item, rowIndexDrop);
-                        //gridParent.setRowIndex(item, gridParent.getRowIndex(item));
-                    }
                 }
 
-                System.out.println("RowIndex = "+rowIndex);
-                System.out.println("------------------------------------");*/
+
+
                 event.consume();
             }
         });

@@ -22,23 +22,23 @@ public class Action {
 
     public Action(String actionTypeS, String selectElementByS, String firstValueArgsS, String selectPlaceByS, String secondValueArgsS) {
 
-        if (actionTypeS.matches("1|2|3|4|5|6|7|8")){
-            this.actionTypeS = getActionTypeId(actionTypeS);
-        }else {
+        //if (actionTypeS.matches("1|2|3|4|5|6|7|8")){
+          //  this.actionTypeS = getActionTypeId(actionTypeS);
+        //}else {
             this.actionTypeS = actionTypeS;
-        }
-        if(selectElementByS.matches("1|2|3|4|5"))
-        {
-            this.selectElementByS = getSelectElementById(selectElementByS);
-        }else {
+        //}
+        //if(selectElementByS.matches("1|2|3|4|5"))
+        //{
+          //  this.selectElementByS = getSelectElementById(selectElementByS);
+        //}else {
             this.selectElementByS = selectElementByS;
-        }
+        //}
         this.firstValueArgsS = firstValueArgsS;
-        if (selectPlaceByS.matches("1|2|3|4|5")){
-            this.selectPlaceByS = getSelectElementById(selectPlaceByS);
-        } else {
+        //if (selectPlaceByS.matches("1|2|3|4|5")){
+        //    this.selectPlaceByS = getSelectElementById(selectPlaceByS);
+        //} else {
             this.selectPlaceByS = selectPlaceByS;
-        }
+        //}
 
         this.secondValueArgsS = secondValueArgsS;
     }
