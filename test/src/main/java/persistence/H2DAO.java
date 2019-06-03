@@ -4,6 +4,7 @@ import gui.Action;
 import gui.Variable;
 import javafx.scene.control.Alert;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.*;
 
@@ -42,7 +43,7 @@ public class H2DAO {
     static String validationColTypesQuery = "select column_type from information_schema.columns where table_name = 'TRIALS' or table_name = 'ACTION_TYPES'" +
                                             "or table_name = 'SELECTION_BY' or table_name = 'TRIAL_ACTIONS' or table_name = 'SETTINGS' or table_name = 'VARIABLES'";
     // TODO: This could be a unique String
-    static String[] createTables = new String[]
+    final static String[] createTables = new String[]
     {
             "create table action_types(" +
                     "  id integer auto_increment," +
@@ -85,6 +86,7 @@ public class H2DAO {
             "insert into action_types(name) values ('Waiting For')",
             "insert into action_types(name) values ('WaitTime')",
             "insert into action_types(name) values ('SwitchDefault')",
+            "insert into selection_by(name) values ('')",
             "insert into selection_by(name) values ('id')",
             "insert into selection_by(name) values ('xpath')",
             "insert into selection_by(name) values ('cssSelector')",
@@ -200,7 +202,7 @@ public class H2DAO {
                 int actionTypeId = getIdActionType(currentAction.getActionTypeS());
                 int firstValueArgs = getIdSelectElementBy(currentAction.getSelectElementByS());
                 String value1 = currentAction.getFirstValueArgsS();
-                int secondValueArgs = getIdSelectElementBy(currentAction.getSelectElementByS());
+                int secondValueArgs = getIdSelectElementBy(currentAction.getSelectPlaceByS());
                 String value2 = currentAction.getSecondValueArgsS();
 
                 //System.out.println(""+actionTypeId+" / "+firstValueArgs+ " / "+value1+" / "+secondValueArgs+ " / "+value2);
@@ -257,6 +259,12 @@ public class H2DAO {
     {
             executeQuery("delete from trial_actions where trialid='"+trialID+"' and validation = '1'");
             System.out.println("Validaciones eliminadas");
+    }
+
+    public static void deleteTrialVariables(String trialID)
+    {
+            executeQuery("delete from variables where trial = '"+trialID+"'");
+            System.out.println("Variables eliminadas");
     }
 
     // TODO: How have "id"'s become Strings instead of int ??
@@ -499,20 +507,6 @@ public class H2DAO {
         return id;
     }
 
-    public static void deleteTrialVariables(String trialid)
-    {
-        try{
-            Statement st = connection.createStatement();
-
-            String deleteVariables = "delete from variables where trial='"+trialid+"'";
-            st.execute(deleteVariables);
-            System.out.println("Variables Eliminadas");
-            st.close();
-        }catch (SQLException e){
-
-        }
-    }
-
     private static List<String> fillData(ResultSet set, int index) throws SQLException {
         List<String> result = new ArrayList<>();
         while (set.next()) {
@@ -753,16 +747,43 @@ public class H2DAO {
         return result;
     }
 
+    public static void dropTables()
+    {
+        ArrayList<String> tablesToDrop = new ArrayList<>();
+
+        try
+        {
+           Statement st = connection.createStatement();
+           String getTablesQuery = "select table_name from information_schema.tables where table_type = 'TABLE'";
+           st.execute(getTablesQuery);
+
+           ResultSet resultSet = st.getResultSet();
+           while (resultSet.next())
+           {
+               tablesToDrop.add(resultSet.getString(1));
+           }
+
+           for (String table : tablesToDrop) {
+               String dropTable = "drop table "+table+"";
+           }
+
+        }catch (SQLException e){
+               e.printStackTrace();
+        }
+    }
+
     public static void redoTables()
     {
         try
         {
             Statement st = connection.createStatement();
-            st.execute(dropTablesQuery);
+            dropTables();
+
             for (String query : createTables)
             {
-                st.execute(query);    
+                st.execute(query);
             }
+            st.close();
 
         }catch (SQLException e) {
             e.printStackTrace();

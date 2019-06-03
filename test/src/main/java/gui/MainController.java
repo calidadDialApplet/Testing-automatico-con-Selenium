@@ -119,8 +119,20 @@ public class MainController implements Initializable {
         procesedValidationList = new ArrayList<>();
         variablesList = new ArrayList<>();
 
+        if(!H2DAO.checkDB()){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Error en la base de datos");
+            alert.setHeaderText("¿Desea reestablecer la base de datos?");
 
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK)
+            {
+                H2DAO.redoTables();
+            } else {
+                System.exit(0);
+            }
 
+        }
 
         // TODO: Has to be done with:
         //            for (int i = 0; i < numColumns; i++)
@@ -158,22 +170,6 @@ public class MainController implements Initializable {
         //  That's why scroll pane is broken after adding 5 rows or more
         //  Should be calculated and applied when adding new rows ...
 
-
-
-        if(!H2DAO.checkDB()){
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Error en la base de datos");
-            alert.setHeaderText("¿Desea reestablecer la base de datos?");
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK)
-            {
-                H2DAO.redoTables();
-            } else {
-                System.exit(0);
-            }
-
-        }
         testList.getSelectionModel().selectedItemProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
         {
                 bottomButtons.setDisable(false);
@@ -775,6 +771,7 @@ public class MainController implements Initializable {
                             {
                                 comboBoxSelectPlaceBy = ((ComboBox) child).getValue().toString();
                             }
+
                             if (child instanceof TextField && j == 0)
                             {
                                 textFieldFirstValueArgs = ((TextField) child).getText();
@@ -863,6 +860,7 @@ public class MainController implements Initializable {
                ActionController actionController = new ActionController();
                actionController.setAction(gridPaneTrialList, actionsRowIndex,actionOfTrial.getActionTypeS(),actionOfTrial.getSelectElementByS(),actionOfTrial.getFirstValueArgsS(),
                        actionOfTrial.getSelectPlaceByS(), actionOfTrial.getSecondValueArgsS());
+               System.out.println(actionOfTrial.toString());
                //Action action = new Action(gridPaneTrialList, actionsRowIndex,actionOfTrial.getActionTypeS(),actionOfTrial.getSelectElementByS(),
                //                             actionOfTrial.getFirstValueArgsS(),actionOfTrial.getSelectPlaceByS(),actionOfTrial.getSecondValueArgsS());
                //actionList.add(action);
@@ -914,6 +912,7 @@ public class MainController implements Initializable {
                    String id = H2DAO.getTrialID(trial.getText());
                    H2DAO.deleteTrialActions(id);
                    H2DAO.deleteTrialValidations(id);
+                   H2DAO.deleteTrialVariables(id);
                    H2DAO.deleteTrial(id);
                }
            }

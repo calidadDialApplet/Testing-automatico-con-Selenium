@@ -219,14 +219,16 @@ public class ActionController
                     hBox.getChildren().add(selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
-                        firstValueArgs = new TextField();
-                        firstValueArgs.setText(firstValueArgsValue);
-                        //gridParent.addRow(rowIndex, firstValueArgs);
-                        hBox.getChildren().add(firstValueArgs);
-                        generatedTextField(hBox, "SecondValueArgs", secondValueArgsValue);
-                        if (checkboxNotGenerated) {
-                            drawCheckBox(hBox);
-                            checkboxNotGenerated = false;
+                        if (textFieldNotGenerated) {
+                            firstValueArgs = new TextField();
+                            firstValueArgs.setText(firstValueArgsValue);
+                            //gridParent.addRow(rowIndex, firstValueArgs);
+                            hBox.getChildren().add(firstValueArgs);
+                            generatedTextField(hBox, "SecondValueArgs", secondValueArgsValue);
+                            if (checkboxNotGenerated) {
+                                drawCheckBox(hBox);
+                                checkboxNotGenerated = false;
+                            }
                         }
                     });
                     selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
@@ -678,13 +680,15 @@ public class ActionController
                 dragAndDrop(gridParent, selectElementBy);
                 selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                 {
-                    firstValueArgs = new TextField();
-                    //gridParent.addRow(rowIndex, firstValueArgs);
-                    hBox.getChildren().add(firstValueArgs);
-                    generatedTextField(hBox,"SecondValueArgs","");
-                    if (checkboxNotGenerated) {
-                        drawCheckBox(hBox);
-                        checkboxNotGenerated = false;
+                    if (textFieldNotGenerated) {
+                        firstValueArgs = new TextField();
+                        //gridParent.addRow(rowIndex, firstValueArgs);
+                        hBox.getChildren().add(firstValueArgs);
+                        generatedTextField(hBox, "SecondValueArgs", "");
+                        if (checkboxNotGenerated) {
+                            drawCheckBox(hBox);
+                            checkboxNotGenerated = false;
+                        }
                     }
                 });
                 break;
@@ -696,6 +700,7 @@ public class ActionController
     {
         actionSelected = new CheckBox();
         hBox.setMargin(actionSelected, new Insets(4,0,0,0));
+        hBox.setHgrow(actionSelected, Priority.ALWAYS);
         hBox.getChildren().add(actionSelected);
         actionSelected.setAlignment(Pos.BOTTOM_RIGHT);
 

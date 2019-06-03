@@ -82,18 +82,21 @@ public class Action {
         String SelectBy = actionType; // No action type
         switch (actionType){
             case "1":
-                SelectBy = "id";
+                SelectBy = "";
                 break;
             case "2":
-                SelectBy = "xpath";
+                SelectBy = "id";
                 break;
             case "3":
-                SelectBy = "cssSelector";
+                SelectBy = "xpath";
                 break;
             case "4":
-                SelectBy = "className";
+                SelectBy = "cssSelector";
                 break;
             case "5":
+                SelectBy = "className";
+                break;
+            case "6":
                 SelectBy = "name";
                 break;
             default:
