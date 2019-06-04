@@ -1,7 +1,6 @@
 package gui;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleStringProperty;
+
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -58,7 +57,7 @@ public class ActionController
         rowIndexLabel = new Label("# "+rowIndex);
         rowIndexLabel.setPadding(new Insets(5,0,0,0));
 
-        //rowIndexLabel.textProperty().bind(new SimpleStringProperty("# "+rowIndex));
+        drawCheckBox(hBox);
         dragAndDrop(gridParent, rowIndexLabel);
         gridParent.addRow(rowIndex,hBox);
 
@@ -81,10 +80,10 @@ public class ActionController
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
                         generatedTextField(hBox, "FirstValueArgs", firstValueArgsValue);
-                        if (checkboxNotGenerated) {
+                        /*if (checkboxNotGenerated) {
                             drawCheckBox(hBox);
                             checkboxNotGenerated = false;
-                        }
+                        }*/
                     });
                     selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
                     break;
@@ -111,10 +110,10 @@ public class ActionController
                             selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
                             {
                                 generatedTextField(hBox, "SecondValueArgs", secondValueArgsValue);
-                                if (checkboxNotGenerated) {
+                                /*if (checkboxNotGenerated) {
                                     drawCheckBox(hBox);
                                     checkboxNotGenerated = false;
-                                }
+                                }*/
                             });
                             selectPlaceBy.setValue(Action.getSelectElementById(selectPlaceByValue));
                         }
@@ -162,10 +161,10 @@ public class ActionController
                                 }
                             }
                             //hBox.getChildren().add(secondValueArgs);
-                            if (checkboxNotGenerated) {
+                            /*if (checkboxNotGenerated) {
                                 drawCheckBox(hBox);
                                 checkboxNotGenerated = false;
-                            }
+                            }*/
                         }
                         textFieldNotGenerated = false;
                     });
@@ -188,10 +187,10 @@ public class ActionController
                             secondValueArgs = new TextField();
                             secondValueArgs.setText(secondValueArgsValue);
                             hBox.getChildren().add(secondValueArgs);
-                            if (checkboxNotGenerated) {
+                            /*if (checkboxNotGenerated) {
                                 drawCheckBox(hBox);
                                 checkboxNotGenerated = false;
-                            }
+                            }*/
                         }
                     });
                     selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
@@ -200,9 +199,9 @@ public class ActionController
                 case "WaitTime":
                     initializeComboBox(hBox);
                     generatedTextField(hBox, "FirstValueArgs", firstValueArgsValue);
-                    if (checkboxNotGenerated){
+                    /*if (checkboxNotGenerated){
                         drawCheckBox(hBox);
-                    }
+                    }*/
                     break;
                 case "Waiting For":
                     initializeComboBox(hBox);
@@ -225,14 +224,16 @@ public class ActionController
                             //gridParent.addRow(rowIndex, firstValueArgs);
                             hBox.getChildren().add(firstValueArgs);
                             generatedTextField(hBox, "SecondValueArgs", secondValueArgsValue);
-                            if (checkboxNotGenerated) {
+                            /*if (checkboxNotGenerated) {
                                 drawCheckBox(hBox);
                                 checkboxNotGenerated = false;
-                            }
+                            }*/
                         }
                     });
                     selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
                     break;
+                case "SwitchDefault":
+                    initializeComboBox(hBox);
                 default:
                     break;
             }
@@ -251,7 +252,7 @@ public class ActionController
         hBox.setMinWidth(2000);
         hBox.setSpacing(10);
 
-
+        drawCheckBox(hBox);
 
         gridParent.addRow(rowIndex, hBox);
         rowIndexLabel = new Label("# "+rowIndex);
@@ -282,6 +283,7 @@ public class ActionController
                 case "SwitchTo":
                 case "Waiting For":
                 case "WaitTime":
+                case "SwitchDefault":
                     drawElements(hBox, lastType, gridParent);
                     break;
                 default:
@@ -498,19 +500,7 @@ public class ActionController
 
                 if (event.getTransferMode() == TransferMode.MOVE) {
 
-                    for (Node child : gridParent.getChildren())
-                    {
-                        if (child instanceof HBox)
-                        {
-                            for (Node hboxChild : ((HBox) child).getChildren())
-                            {
-                                if (hboxChild instanceof Label) {
-                                    ((Label) hboxChild).setText("# "+ gridParent.getRowIndex(child));
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    MainController.reorderIndex(gridParent);
                 }
 
 
@@ -558,10 +548,10 @@ public class ActionController
                 {
 
                     generatedTextField(hBox,"FirstValueArgs","");
-                    if (checkboxNotGenerated) {
+                    /*if (checkboxNotGenerated) {
                         drawCheckBox(hBox);
                         checkboxNotGenerated = false;
-                    }
+                    }*/
                 });
                 break;
             case "DragAndDrop":
@@ -583,10 +573,10 @@ public class ActionController
                         selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
                         {
                             generatedTextField(hBox,"SecondValueArgs","");
-                            if (checkboxNotGenerated) {
+                            /*if (checkboxNotGenerated) {
                                 drawCheckBox(hBox);
                                 checkboxNotGenerated = false;
-                            }
+                            }*/
                         });
                     }
                 });
@@ -627,10 +617,10 @@ public class ActionController
                         //gridParent.addRow(gridParent.getRowIndex(selectElementBy),secondValueArgs);
                         //hBox.getChildren().add(secondValueArgs);
                         addFileButton(secondValueArgs, hBox);
-                        if (checkboxNotGenerated) {
+                        /*if (checkboxNotGenerated) {
                             drawCheckBox(hBox);
                             checkboxNotGenerated = false;
-                        }
+                        }*/
                     }
                     textFieldNotGenerated = false;
                 });
@@ -651,20 +641,20 @@ public class ActionController
 
                         secondValueArgs = new TextField();
                         hBox.getChildren().add(secondValueArgs);
-                        if (checkboxNotGenerated) {
+                        /*if (checkboxNotGenerated) {
                             drawCheckBox(hBox);
                             checkboxNotGenerated = false;
-                        }
+                        }*/
                     }
                 });
                 break;
             case "SwitchTo":
             case "WaitTime":
                 generatedTextField(hBox,"FirstValueArgs","");
-                if (checkboxNotGenerated) {
+                /*if (checkboxNotGenerated) {
                     drawCheckBox(hBox);
                     checkboxNotGenerated = false;
-                }
+                }*/
                 break;
             case "Waiting For":
 
@@ -685,10 +675,10 @@ public class ActionController
                         //gridParent.addRow(rowIndex, firstValueArgs);
                         hBox.getChildren().add(firstValueArgs);
                         generatedTextField(hBox, "SecondValueArgs", "");
-                        if (checkboxNotGenerated) {
+                        /*if (checkboxNotGenerated) {
                             drawCheckBox(hBox);
                             checkboxNotGenerated = false;
-                        }
+                        }*/
                     }
                 });
                 break;
@@ -727,8 +717,12 @@ public class ActionController
         buttonFile.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                textField.setText(MainController.getPathOFC());
-                textField.setDisable(true);
+                String route = MainController.getPathOFC();
+                if (!route.equals("")) {
+                    textField.setText(route);
+                    textField.setText(route);
+                    textField.setDisable(true);
+                }
             }
         });
 
@@ -758,8 +752,7 @@ public class ActionController
 
     public void setDefaultAction(HBox hBox)
     {
-        //gridParent.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs, value, actionSelected, uniqueValue);
-        hBox.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs, value, actionSelected, uniqueValue, stackPane);
+        hBox.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs, value, uniqueValue, stackPane);
     }
 
 }

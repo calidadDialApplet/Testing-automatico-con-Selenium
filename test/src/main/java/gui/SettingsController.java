@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import main.Main;
+import org.apache.commons.validator.routines.UrlValidator;
 import persistence.H2DAO;
 import persistence.settingsObject;
 
@@ -83,8 +84,19 @@ public class SettingsController implements Initializable {
 
     public void saveSettings()
     {
-        settingsObject  settings = new settingsObject(textFieldWeb.getText(), checkBoxHeadLess.isSelected(), choiceBoxBrowser.getValue().toString(), checkBoxDarkTheme.isSelected());
-        H2DAO.saveSettings(settings);
-        MainController.closeStage("Settings");
+        UrlValidator defaultValidator = new UrlValidator();
+        if (defaultValidator.isValid(textFieldWeb.getText()))
+        {
+            settingsObject  settings = new settingsObject(textFieldWeb.getText(), checkBoxHeadLess.isSelected(), choiceBoxBrowser.getValue().toString(), checkBoxDarkTheme.isSelected());
+            H2DAO.saveSettings(settings);
+            MainController.closeStage("Settings");
+        } else{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("La URL no es valida");
+            alert.setContentText("Estas tonto o que? :)");
+            alert.show();
+        }
+
     }
 }

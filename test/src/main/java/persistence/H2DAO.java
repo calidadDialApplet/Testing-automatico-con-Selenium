@@ -92,7 +92,7 @@ public class H2DAO {
             "insert into selection_by(name) values ('cssSelector')",
             "insert into selection_by(name) values ('className')",
             "insert into selection_by(name) values ('name')",
-            "insert into settings (settingField, value) values ('web', 'www.google.es')",
+            "insert into settings (settingField, value) values ('web', 'http://www.google.es')",
             "insert into settings (settingField, value) values ('browser', 'Firefox')",
             "insert into settings (settingField, value) values ('headless', 'true')",
             "insert into settings (settingField, value) values ('darktheme', 'true')"
@@ -179,7 +179,10 @@ public class H2DAO {
             ResultSet resultSet =  st.getResultSet();
             while (resultSet.next())
             {
-                comboItems.add(resultSet.getString("name"));
+                if (!resultSet.getString("name").equals(""))
+                {
+                    comboItems.add(resultSet.getString("name"));
+                }
             }
             st.close();
         }catch (SQLException e) {
@@ -372,7 +375,7 @@ public class H2DAO {
         return result;
     }
 
-    public static ArrayList<Action> getActions(String trialName)
+    public static ArrayList<Action> getTrialActions(String trialName)
     {
         ArrayList<Action> actions = new ArrayList<>();
         try
@@ -406,7 +409,7 @@ public class H2DAO {
 
 
 
-    public static ArrayList<Action> getValidations(String trialName)
+    public static ArrayList<Action> getTrialValidations(String trialName)
     {
         ArrayList<Action> validations = new ArrayList<>();
         try
@@ -650,7 +653,7 @@ public class H2DAO {
         try{
             Statement st = connection.createStatement();
             for (Variable variable : variables){
-                String query = "insert into variables (trial, variable, value) values ('"+variable.getVariableTrial()+"', '"+variable.getVariableName()+"', '"+variable.getValue()+"')";
+                String query = "insert into variables (trial, variable, value) values ('"+trial+"', '"+variable.getVariableName()+"', '"+variable.getValue()+"')";
                 st.execute(query);
             }
             System.out.println("Variables Guardadas");
@@ -708,6 +711,7 @@ public class H2DAO {
 
     public static ArrayList<Variable> getTrialVariables(String trial)
     {
+        // O todos los get se le pasa el nombre o todos se les pasa el ID
         ArrayList<Variable> variables = new ArrayList<>();
 
         try{

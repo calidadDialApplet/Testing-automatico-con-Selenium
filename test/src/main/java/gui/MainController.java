@@ -84,6 +84,9 @@ public class MainController implements Initializable {
     @FXML
     private Accordion accordionComprobationList;
 
+    @FXML
+    private Label labelStatus;
+
 
     private static Scene sceneSettings;
     private static Scene sceneVariables;
@@ -321,6 +324,7 @@ public class MainController implements Initializable {
                 actionsRowIndex--;
             }*/
             deleteSelectedActions(gridPaneTrialList);
+            reorderIndex(gridPaneTrialList);
             actionsRowIndex = getRowCount(gridPaneTrialList);
         }
         if(tabValidation.isSelected())
@@ -336,6 +340,7 @@ public class MainController implements Initializable {
                 validationRowIndex--;
             }*/
            deleteSelectedActions(gridPaneValidationList);
+           reorderIndex(gridPaneValidationList);
            validationRowIndex = getRowCount(gridPaneValidationList);
         }
     }
@@ -854,7 +859,7 @@ public class MainController implements Initializable {
        for(CheckBox trial: trialsSelected)
        {
            String trialName = trial.getText();
-           ArrayList<Action> trialActions = H2DAO.getActions(trialName);
+           ArrayList<Action> trialActions = H2DAO.getTrialActions(trialName);
            for(Action actionOfTrial : trialActions)
            {
                ActionController actionController = new ActionController();
@@ -875,7 +880,7 @@ public class MainController implements Initializable {
         for(CheckBox trial: trialsSelected)
         {
             String trialName = trial.getText();
-            ArrayList<Action> trialActions = H2DAO.getValidations(trialName);
+            ArrayList<Action> trialActions = H2DAO.getTrialValidations(trialName);
             for(Action validation : trialActions)
             {
                 ActionController actionController = new ActionController();
@@ -896,7 +901,7 @@ public class MainController implements Initializable {
             if(trial.isSelected())
             {
                 String trialName = trial.getText();
-                ArrayList<Action> actions = H2DAO.getActions(trial.getText());
+                ArrayList<Action> actions = H2DAO.getTrialActions(trial.getText());
                 executeTest(actions, trialName);
             }
         }
@@ -924,7 +929,7 @@ public class MainController implements Initializable {
         CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
 
         List<String> trialNames = new ArrayList<>();
-        for (CheckBox item : testList.getItems()){
+        for (CheckBox item : testList.getItems()){      // Nombres de los trial
             trialNames.add(item.getText());
         }
 
@@ -967,6 +972,36 @@ public class MainController implements Initializable {
                 }
             }
         }
+    }
+
+    public void cloneTest()
+    {
+        CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+
+        if (selectedTrial == null)
+        {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("Debe haber un test seleccionado");
+            alert.setContentText("Contacta con tu administrador :)");
+            alert.showAndWait();
+
+        }else {
+
+            ArrayList<Action> actions = H2DAO.getTrialActions(selectedTrial.getText());
+            ArrayList<Action> validations = H2DAO.getTrialValidations(selectedTrial.getText());
+            ArrayList<Variable> variables = H2DAO.getTrialVariables(H2DAO.getTrialID(selectedTrial.getText()));
+
+            String clonedName = selectedTrial.getText().concat(" clon");
+            H2DAO.createTrial(clonedName);
+            String clonedID = H2DAO.getTrialID(clonedName);
+            H2DAO.saveTrial(actions, clonedID, 0);
+            H2DAO.saveTrial(validations, clonedID, 1);
+            H2DAO.saveTrialVariables(variables, clonedID);
+
+            poblateTestList();
+        }
+
     }
 
 
@@ -1047,10 +1082,18 @@ public class MainController implements Initializable {
         try {
             JSONObject jsonObject = new JSONObject();
 
-
-            jsonObject.put("Actions", actions);
-            jsonObject.put("Validations",validations);
-            jsonObject.put("Variables", variables);
+            //if (!validations.isEmpty())
+            //{
+                jsonObject.put("Validations", validations);
+            //}
+            //if (!variables.isEmpty())
+            //{
+                jsonObject.put("Variables", variables);
+            //}
+            //if (!actions.isEmpty())
+            //{
+                jsonObject.put("Actions", actions);
+            //}
 
             System.out.println("TEST EXPORTADOS");
 
@@ -1131,8 +1174,8 @@ public class MainController implements Initializable {
                             File trialJSONFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+trialID)+".json");
                             File variablesFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+"Variables"+"_"+trialID+".csv"));
 
-                            ArrayList<Action> actions = H2DAO.getActions(trial.getText());
-                            ArrayList<Action> validations = H2DAO.getValidations(trial.getText());
+                            ArrayList<Action> actions = H2DAO.getTrialActions(trial.getText());
+                            ArrayList<Action> validations = H2DAO.getTrialValidations(trial.getText());
                             ArrayList<Variable> variables = H2DAO.getTrialVariables(H2DAO.getTrialID(trial.getText()));
 
                             saveTrialToCSV(actions, validations, trialFile);
@@ -1283,10 +1326,6 @@ public class MainController implements Initializable {
                     JSONObject jsonObject = (JSONObject) object;
 
 
-
-
-
-
                     JSONArray actions = (JSONArray) jsonObject.get("Actions");
                     JSONArray validations = (JSONArray) jsonObject.get("Validations");
                     JSONArray variables = (JSONArray) jsonObject.get("Variables");
@@ -1389,6 +1428,23 @@ public class MainController implements Initializable {
             }
             if (theme.equals("modena")) {
                 Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
+            }
+        }
+    }
+
+    public static void reorderIndex(GridPane gridPane)
+    {
+        for (Node child : gridPane.getChildren())
+        {
+            if (child instanceof HBox)
+            {
+                for (Node hboxChild : ((HBox) child).getChildren())
+                {
+                    if (hboxChild instanceof Label) {
+                        ((Label) hboxChild).setText("# "+ gridPane.getRowIndex(child));
+                        break;
+                    }
+                }
             }
         }
     }
