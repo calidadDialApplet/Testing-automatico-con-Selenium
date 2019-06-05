@@ -34,6 +34,13 @@ public class Test_1_3 {
         WebElement containerTableFirstSearch = SeleniumDAO.selectElementBy("id", "contenido",driver);
         WebElement tableFirstSearch = SeleniumDAO.selectElementBy("className", "tabla-principal", containerTableFirstSearch);
 
+        WebElement lastElement = SeleniumDAO.selectElementBy("cssSelector", "tbody :nth-last-child(3) ~ tr :first-child",tableFirstSearch);
+
+        //tbody :nth-last-child(3) ~ tr :first-child
+        System.out.println(lastElement.getTagName());
+        System.out.println(lastElement.getText());
+
+
         List<WebElement> listOfRows = tableFirstSearch.findElements(By.tagName("tr"));
         int rows = listOfRows.size();
         int[] ids = new int[rows];

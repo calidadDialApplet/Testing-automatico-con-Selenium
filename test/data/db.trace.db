@@ -713,3 +713,11 @@ select * from variables where trial = 'Test' [22018-199]
 org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "Test clon"
 Data conversion error converting "Test clon"; SQL statement:
 select * from variables where trial = 'Test clon' [22018-199]
+2019-06-05 19:43:37 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "SELECT * FROM TRIALS WHERE TRIAL NAME[*] = '19' "
+Syntax error in SQL statement "SELECT * FROM TRIALS WHERE TRIAL NAME[*] = '19' "; SQL statement:
+select * from trials where trial name = '19' [42000-199]
+2019-06-05 19:44:21 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "SELECT * FROM TRIALS WHERE TRIAL ID[*] = '19' "
+Syntax error in SQL statement "SELECT * FROM TRIALS WHERE TRIAL ID[*] = '19' "; SQL statement:
+select * from trials where trial id = '19' [42000-199]

@@ -20,6 +20,7 @@ public class Test_1_5 {
         Main.loginDialappletWeb("admin","admin",driver);
         // Admin window
         WebElement adminButton = driver.findElement(By.id("ADMIN"));
+
         adminButton.click();
         // Click on "Users" left menu
         WebElement users = SeleniumDAO.selectElementBy("xpath", "/html/body/div[2]/div[1]/h3[2]",driver);

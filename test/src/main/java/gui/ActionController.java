@@ -464,19 +464,19 @@ public class ActionController
                     }
 
 
-                    if (rowIndexDrop == getRowCount(gridParent) - 1)                                  // Insertar al final
+                    /*if (rowIndexDrop == getRowCount(gridParent) - 1)                                  // Insertar al final
                     {
                         //gridParent.getRowConstraints().add(new RowConstraints());
                         gridParent.addRow(getRowCount(gridParent), draggedChildList.get(0));
 
-                    } else {                                                                        // Insertar en cabeza o medio
+                    } else {   */                                                                     // Insertar en cabeza o medio
                         for (Node child : gridParent.getChildren()) {
                             if (gridParent.getRowIndex(child) >= rowIndexDrop) {
                                 gridParent.setRowIndex(child, gridParent.getRowIndex(child) + 1); // Aumentar el RowIndex de las acciones que tiene por debajo en 1
                             }
                         }
                         gridParent.addRow(rowIndexDrop, draggedChildList.get(0));
-                    }
+                    //}
 
 
 

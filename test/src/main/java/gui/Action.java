@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import persistence.H2DAO;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 
 // TODO: Refactor this as ActionController, use it from MainController
@@ -18,6 +19,7 @@ public class Action {
    private String selectPlaceByS = "";
    private String firstValueArgsS = "";
    private String secondValueArgsS = "";
+   //private static Pattern VARIABLE_PATTERN = Pattern.compile("\$\{d{9000}\}");
 
 
     public Action(String actionTypeS, String selectElementByS, String firstValueArgsS, String selectPlaceByS, String secondValueArgsS) {
@@ -106,12 +108,11 @@ public class Action {
     }
 
 
-   public String executeAction(WebDriver driver, ArrayList<Variable> variables){
+   public String executeAction(WebDriver driver, ArrayList<Variable> variables, String trialName){
 
-        String result = "Fail";
+       String result = "Fail";
 
-
-       String trialID = variables.get(0).getVariableTrial();
+       String trialID = H2DAO.getTrialID(trialName);
 
        try
         {
@@ -169,6 +170,11 @@ public class Action {
             e.printStackTrace();
             return result;
         }
+
+   }
+
+   private void checkVariableForma(String variable)
+   {
 
    }
 

@@ -27,10 +27,12 @@ import main.SeleniumDAO;
 import main.Utils;
 import org.jetbrains.annotations.Nullable;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+//import org.json.simple.JSONArray;
+//import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.openqa.selenium.WebDriver;
 import persistence.H2DAO;
 
@@ -482,6 +484,7 @@ public class MainController implements Initializable {
                            titledPaneName.setText(selectedTrial.getText());
                            variables = H2DAO.getTrialVariables(H2DAO.getTrialID(selectedTrial.getText()));
                            //trial.setText(selectedTrial.getText());
+
                        }else {
                            titledPaneName.setText(trialName);
                            variables = H2DAO.getTrialVariables(H2DAO.getTrialID(trialName));
@@ -532,14 +535,14 @@ public class MainController implements Initializable {
                            for (int i = 0; i < actionList.size(); i++) {
                                Action currentAction = actionList.get(i);
                                grid.add(new Label("Action " + i + ":"), 0, i);
-                               grid.add(new Label(" " + currentAction.executeAction(driver, variables)), 1, i);
+                               grid.add(new Label(" " + currentAction.executeAction(driver, variables,trialName)), 1, i);
                            }
                        }
                        if (tabValidation.isSelected()){
                            for (int i = 0; i < actionList.size(); i++) {
                                Action currentValidation = actionList.get(i);
                                grid.add(new Label("Validation " + i + ":"), 0, i);
-                               grid.add(new Label(" " + currentValidation.executeAction(driver, variables)), 1, i);
+                               grid.add(new Label(" " + currentValidation.executeAction(driver, variables,trialName)), 1, i);
                            }
                        }
                        trial.setContent(grid);
@@ -865,7 +868,7 @@ public class MainController implements Initializable {
                ActionController actionController = new ActionController();
                actionController.setAction(gridPaneTrialList, actionsRowIndex,actionOfTrial.getActionTypeS(),actionOfTrial.getSelectElementByS(),actionOfTrial.getFirstValueArgsS(),
                        actionOfTrial.getSelectPlaceByS(), actionOfTrial.getSecondValueArgsS());
-               System.out.println(actionOfTrial.toString());
+               //System.out.println(actionOfTrial.toString());
                //Action action = new Action(gridPaneTrialList, actionsRowIndex,actionOfTrial.getActionTypeS(),actionOfTrial.getSelectElementByS(),
                //                             actionOfTrial.getFirstValueArgsS(),actionOfTrial.getSelectPlaceByS(),actionOfTrial.getSecondValueArgsS());
                //actionList.add(action);
@@ -1136,7 +1139,7 @@ public class MainController implements Initializable {
     }
 
 
-    public void exportTest()
+    public void exportTrial()
     {
         boolean oneSelected = false;
         for (CheckBox item : testList.getItems())
@@ -1195,22 +1198,44 @@ public class MainController implements Initializable {
         }
     }
 
-    public void importTest()
+    public void importTrial()
     {
         deleteAllTabs();
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        List<File> files = fileChooser.showOpenMultipleDialog(stageSettings);
+
+        for (File file : files)
+        {
+            String fileExtension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+            if (fileExtension.equals("json"))
+            {
+                importJSONTrial(file);
+            }
+            if (fileExtension.equals("csv"))
+            {
+                importCSVTrial(file);
+            }
+        }
+    }
+
+    public void importCSVTrial(File file)
+    {
+        //deleteAllTabs();
 
         String header = "";
         boolean firstRead = true;
         String lastTrialVariable = "";
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
+        //FileChooser fileChooser = new FileChooser();
+        //fileChooser.setTitle("Open Resource File");
         //File file = fileChooser.showOpenDialog(stageSettings);
-        List<File> files = fileChooser.showOpenMultipleDialog(stageSettings);
+        //List<File> files = fileChooser.showOpenMultipleDialog(stageSettings);
 
         try {
-            if (files!=null) {
+           // if (files!=null) {
 
-                for (File file : files) {
+           //     for (File file : files) {
 
                     Scanner inputStream = new Scanner(file);
                     while (inputStream.hasNext()) {
@@ -1254,21 +1279,29 @@ public class MainController implements Initializable {
                             String[] values = data.split(",");
 
                             if (firstRead && !values[0].equals("TrialID")){
-                                Variable variable = new Variable(values[0], values[1], values[2]);
-                                variablesList.add(variable);
+                                if (H2DAO.trialExist(values[0]))
+                                {
+                                    Variable variable = new Variable(values[0], values[1], values[2]);
+                                    variablesList.add(variable);
+                                }
                                 lastTrialVariable = values[0];
                                 firstRead = false;
                             } else {
                                 if (values[0].equals(lastTrialVariable))
                                 {
-                                    Variable variable = new Variable(values[0], values[1],values[2]);
-                                    variablesList.add(variable);
+                                    if (H2DAO.trialExist(values[0]))
+                                    {
+                                        Variable variable = new Variable(values[0], values[1], values[2]);
+                                        variablesList.add(variable);
+                                    }
                                     lastTrialVariable = values[0];
                                 } else {
                                     H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
                                     variablesList.clear();
-                                    Variable variable = new Variable(values[0], values[1],values[2]);
-                                    variablesList.add(variable);
+                                    if (H2DAO.trialExist(values[0])) {
+                                        Variable variable = new Variable(values[0], values[1], values[2]);
+                                        variablesList.add(variable);
+                                    }
                                     lastTrialVariable = values[0];
                                 }
                             }
@@ -1291,28 +1324,26 @@ public class MainController implements Initializable {
                         alert.setContentText("El fichero no contienen las columnas correctas");
                         alert.showAndWait();
                     }
-                }
-            }
+             //   }
+           // }
 
         } catch(FileNotFoundException e){
             e.printStackTrace();
         }
     }
 
-    public void importJSONTest()
+    public void importJSONTrial(File file)
     {
-        deleteAllTabs();
+        /*deleteAllTabs();
 
-        boolean firstRead = true;
-        String lastTrialVariable = "";
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
-        //File file = fileChooser.showOpenDialog(stageSettings);
         List<File> files = fileChooser.showOpenMultipleDialog(stageSettings);
 
 
         if (files != null) {
-            for (File file : files) {
+            for (File file : files) {*/
 
 
 
@@ -1323,12 +1354,12 @@ public class MainController implements Initializable {
                     Object object = parser.parse(reader);
                     System.out.println(object);
 
-                    JSONObject jsonObject = (JSONObject) object;
+                    org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) object;
 
 
-                    JSONArray actions = (JSONArray) jsonObject.get("Actions");
-                    JSONArray validations = (JSONArray) jsonObject.get("Validations");
-                    JSONArray variables = (JSONArray) jsonObject.get("Variables");
+                    org.json.simple.JSONArray actions = (org.json.simple.JSONArray) jsonObject.get("Actions");
+                    org.json.simple.JSONArray validations = (org.json.simple.JSONArray) jsonObject.get("Validations");
+                    org.json.simple.JSONArray variables = (org.json.simple.JSONArray) jsonObject.get("Variables");
 
 
                     System.out.println(actions);
@@ -1338,7 +1369,7 @@ public class MainController implements Initializable {
 
                     for (int i = 0; i < actions.size(); i++)
                     {
-                        JSONObject action = (JSONObject) actions.get(i);
+                        org.json.simple.JSONObject action = (org.json.simple.JSONObject) actions.get(i);
                         ActionController actionController = new ActionController();
                         actionController.setAction(gridPaneTrialList, actionsRowIndex, action.get("actionTypeS").toString(), action.get("selectElementByS").toString(),
                                 action.get("firstValueArgsS").toString(), action.get("selectPlaceByS").toString(), action.get("secondValueArgsS").toString());
@@ -1351,7 +1382,7 @@ public class MainController implements Initializable {
 
                     for (int i = 0; i < validations.size(); i++)
                     {
-                        JSONObject validation = (JSONObject) validations.get(i);
+                        org.json.simple.JSONObject validation = (org.json.simple.JSONObject) validations.get(i);
                         ActionController actionController = new ActionController();
                         actionController.setAction(gridPaneValidationList, validationRowIndex, validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
                                 validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());
@@ -1365,9 +1396,11 @@ public class MainController implements Initializable {
 
                     for (int i = 0; i < variables.size(); i++)
                     {
-                        JSONObject variable = (JSONObject) variables.get(i);
-                        Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
-                        H2DAO.saveVariable(var);
+                        org.json.simple.JSONObject variable = (org.json.simple.JSONObject) variables.get(i);
+                        if (H2DAO.trialExist(variable.get("variableTrial").toString())) {
+                            Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
+                            H2DAO.saveVariable(var);
+                        }
                     }
 
 
@@ -1381,15 +1414,15 @@ public class MainController implements Initializable {
                     //variablesList.clear();
                     System.out.println("JSON IMPORTADO");
 
-                } catch (FileNotFoundException e) {
+               } catch (FileNotFoundException e) {
                     e.printStackTrace();
-                } catch (ParseException e) {
+               } catch (ParseException e) {
+                   e.printStackTrace();
+               } catch (IOException e) {
                     e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+               }
+           // }
+        //}
 
 
     }

@@ -624,6 +624,26 @@ public class H2DAO {
 
     }
 
+    public static boolean trialExist(String trial)
+    {
+        boolean exist = false;
+        try{
+            Statement st = connection.createStatement();
+            String query = "select * from trials where id = '"+trial+"'";
+            st.execute(query);
+
+            ResultSet resultSet = st.getResultSet();
+            if (resultSet.getRow() > 0)
+            {
+                exist = true;
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return exist;
+    }
+
     public static String getWeb()
     {
        return getSettingValue("web");
