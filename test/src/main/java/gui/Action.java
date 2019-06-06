@@ -7,7 +7,7 @@ import org.openqa.selenium.WebElement;
 import persistence.H2DAO;
 
 import java.util.ArrayList;
-import java.util.regex.Pattern;
+
 
 
 // TODO: Refactor this as ActionController, use it from MainController
@@ -19,29 +19,15 @@ public class Action {
    private String selectPlaceByS = "";
    private String firstValueArgsS = "";
    private String secondValueArgsS = "";
-   //private static Pattern VARIABLE_PATTERN = Pattern.compile("\$\{d{9000}\}");
+
 
 
     public Action(String actionTypeS, String selectElementByS, String firstValueArgsS, String selectPlaceByS, String secondValueArgsS) {
 
-        //if (actionTypeS.matches("1|2|3|4|5|6|7|8")){
-          //  this.actionTypeS = getActionTypeId(actionTypeS);
-        //}else {
-            this.actionTypeS = actionTypeS;
-        //}
-        //if(selectElementByS.matches("1|2|3|4|5"))
-        //{
-          //  this.selectElementByS = getSelectElementById(selectElementByS);
-        //}else {
-            this.selectElementByS = selectElementByS;
-        //}
+        this.actionTypeS = actionTypeS;
+        this.selectElementByS = selectElementByS;
         this.firstValueArgsS = firstValueArgsS;
-        //if (selectPlaceByS.matches("1|2|3|4|5")){
-        //    this.selectPlaceByS = getSelectElementById(selectPlaceByS);
-        //} else {
-            this.selectPlaceByS = selectPlaceByS;
-        //}
-
+        this.selectPlaceByS = selectPlaceByS;
         this.secondValueArgsS = secondValueArgsS;
     }
 

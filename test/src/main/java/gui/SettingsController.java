@@ -7,6 +7,8 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import main.Main;
 import org.apache.commons.validator.routines.UrlValidator;
 import persistence.H2DAO;
@@ -95,7 +97,11 @@ public class SettingsController implements Initializable {
             alert.setTitle("Error");
             alert.setHeaderText("La URL no es valida");
             alert.setContentText("Estas tonto o que? :)");
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.initOwner(choiceBoxBrowser.getScene().getWindow());
             alert.show();
+
+
         }
 
     }

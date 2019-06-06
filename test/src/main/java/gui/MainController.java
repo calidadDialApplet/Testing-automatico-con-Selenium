@@ -27,11 +27,9 @@ import main.SeleniumDAO;
 import main.Utils;
 import org.jetbrains.annotations.Nullable;
 
-//import org.json.simple.JSONArray;
-//import org.json.simple.JSONObject;
+
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.WebDriver;
 import persistence.H2DAO;
@@ -40,6 +38,7 @@ import persistence.H2DAO;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.regex.Pattern;
 
 
 public class MainController implements Initializable {
@@ -112,6 +111,7 @@ public class MainController implements Initializable {
     String trialColumnsHeadersCSV = "Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation";
     String variablesColumnsHeadersCSV = "TrialID,VariableName,Value";
 
+    private static Pattern VARIABLE_PATTERN = Pattern.compile("\\$\\{\\S+\\}");
 
 
     @Override
@@ -212,7 +212,7 @@ public class MainController implements Initializable {
             }
             //scene.getStylesheets().add("/css/darcula.css");
             stageSettings.setScene(sceneSettings);
-            stageSettings.showAndWait();
+            stageSettings.show();
 
 
             /*
@@ -446,13 +446,21 @@ public class MainController implements Initializable {
        {
            procesedActionList.clear();
            goThroughTable("Actions");
-           executeTest(procesedActionList, "");
+           if (checkVariablesFormat(procesedActionList))
+           {
+               executeTest(procesedActionList, "");
+           }
+           // AVISO formato variables incorrectos
        }
        if (tabValidation.isSelected())
        {
            procesedValidationList.clear();
            goThroughTable("Validations");
-           executeTest(procesedValidationList,"");
+           if (checkVariablesFormat(procesedValidationList))
+           {
+               executeTest(procesedValidationList, "");
+           }
+           // AVISO formato variables incorrectos
        }
    }
     // TODO: Tasks and tests cant be launched from MainController thread
@@ -472,6 +480,8 @@ public class MainController implements Initializable {
                Platform.runLater(new Runnable() {
                    @Override
                    public void run() {
+                       String name = null;
+
                        WebDriver driver = getWebDriver();
                        driver.get(H2DAO.getWeb());
                        TitledPane trial = new TitledPane();
@@ -483,13 +493,16 @@ public class MainController implements Initializable {
                            CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
                            titledPaneName.setText(selectedTrial.getText());
                            variables = H2DAO.getTrialVariables(H2DAO.getTrialID(selectedTrial.getText()));
+                           name = selectedTrial.getText();
                            //trial.setText(selectedTrial.getText());
 
                        }else {
                            titledPaneName.setText(trialName);
                            variables = H2DAO.getTrialVariables(H2DAO.getTrialID(trialName));
+                           name = trialName;
                            //trial.setText(trialName);
                        }
+
 
                        HBox contentPane = new HBox();
                        contentPane.setAlignment(Pos.CENTER);
@@ -535,14 +548,14 @@ public class MainController implements Initializable {
                            for (int i = 0; i < actionList.size(); i++) {
                                Action currentAction = actionList.get(i);
                                grid.add(new Label("Action " + i + ":"), 0, i);
-                               grid.add(new Label(" " + currentAction.executeAction(driver, variables,trialName)), 1, i);
+                               grid.add(new Label(" " + currentAction.executeAction(driver, variables,name)), 1, i);
                            }
                        }
                        if (tabValidation.isSelected()){
                            for (int i = 0; i < actionList.size(); i++) {
                                Action currentValidation = actionList.get(i);
                                grid.add(new Label("Validation " + i + ":"), 0, i);
-                               grid.add(new Label(" " + currentValidation.executeAction(driver, variables,trialName)), 1, i);
+                               grid.add(new Label(" " + currentValidation.executeAction(driver, variables,name)), 1, i);
                            }
                        }
                        trial.setContent(grid);
@@ -621,13 +634,8 @@ public class MainController implements Initializable {
             alert.setContentText("Estas tonto o que? :)");
             alert.show();
         } else {
-
-            List<String> trialNames = new ArrayList<>();
-            for (CheckBox item : testList.getItems()) {
-                trialNames.add(item.getText());
-            }
             if (result.isPresent()) {
-                if (trialNames.contains(result.get())) {
+                if (!checkTrialName(result.get())) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
                     alert.setHeaderText("Nombre de trial repetido");
@@ -647,6 +655,20 @@ public class MainController implements Initializable {
 
     }
 
+    private boolean checkTrialName(String name)
+    {
+        boolean nameOk = true;
+        List<String> trialNames = new ArrayList<>();
+        for (CheckBox item : testList.getItems()) {
+            trialNames.add(item.getText());
+        }
+        if (trialNames.contains(name)){
+            nameOk = false;
+        }
+
+        return  nameOk;
+    }
+
     public void modifyTest()
     {
         boolean trialmodified = false;
@@ -662,17 +684,25 @@ public class MainController implements Initializable {
             String trialName = testList.getSelectionModel().getSelectedItem().getText();
             String id = H2DAO.getTrialID(trialName);
             if (tabActions.isSelected()) {
-                H2DAO.deleteTrialActions(id);
                 procesedActionList.clear();
                 goThroughTable("Actions");
-                H2DAO.saveTrial(procesedActionList, id, 0);
-                trialmodified = true;
+                if (checkVariablesFormat(procesedActionList))
+                {
+                    H2DAO.deleteTrialActions(id);
+                    H2DAO.saveTrial(procesedActionList, id, 0);
+                    trialmodified = true;
+                }
+                // Aviso formato de variables
             }
             if (tabValidation.isSelected()) {
-                H2DAO.deleteTrialValidations(id);
                 procesedValidationList.clear();
                 goThroughTable("Validations");
-                H2DAO.saveTrial(procesedValidationList, id, 1);
+                if (checkVariablesFormat(validationList))
+                {
+                    H2DAO.deleteTrialValidations(id);
+                    H2DAO.saveTrial(procesedValidationList, id, 1);
+                }
+                // Aviso formato de variables
             }
 
         }
@@ -683,6 +713,7 @@ public class MainController implements Initializable {
             alert.setHeaderText("Cambios efectuados con éxito");
             alert.showAndWait();
         }
+        // ALERTA
     }
 
     public void saveTest()
@@ -702,7 +733,14 @@ public class MainController implements Initializable {
             alert.setHeaderText("El nombre de la prueba contiene '_'");
             alert.setContentText("Contacta con tu administrador :)");
             alert.show();
-        } else {
+        } else if (checkTrialName(result.toString()))
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Nombre de trial repetido");
+            alert.setContentText("Contacta con tu administrador :)");
+            alert.showAndWait();
+        }else {
             if (result.isPresent()) {
                 boolean trialmodified = false;
                 H2DAO.createTrial(result.get());                                                // Introducir nuevo trial con su nombre en trials
@@ -711,6 +749,7 @@ public class MainController implements Initializable {
                 //H2DAO.deleteTrialActions(id);
                 //procesedActionList.clear();
                 goThroughTable("Actions");
+
                 H2DAO.saveTrial(procesedActionList, id, 0);
 
 
@@ -817,9 +856,11 @@ public class MainController implements Initializable {
 
 
             }
-            if (unique){
+            if (unique)
+            {
                 textFieldSecondValueArgs = Utils.generateUniqueID(textFieldSecondValueArgs);
             }
+
             Action currentAction = new Action(comboBoxActionType,comboBoxSelectElementBy,textFieldFirstValueArgs,comboBoxSelectPlaceBy,textFieldSecondValueArgs);
             resetFields();
 
@@ -834,6 +875,23 @@ public class MainController implements Initializable {
             iterator++;
 
         }
+    }
+
+    private boolean checkVariablesFormat(List<Action> actions)
+    {
+        boolean formatOk = true;
+        for (Action action : actions)
+        {
+            if (action.getActionTypeS().equals("ReadFrom"))
+            {
+                if (!action.getSecondValueArgsS().matches(String.valueOf(VARIABLE_PATTERN)))
+                {
+                    formatOk = false;
+                }
+            }
+        }
+
+        return formatOk;
     }
 
     private void resetFields() {
@@ -931,11 +989,6 @@ public class MainController implements Initializable {
     {
         CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
 
-        List<String> trialNames = new ArrayList<>();
-        for (CheckBox item : testList.getItems()){      // Nombres de los trial
-            trialNames.add(item.getText());
-        }
-
         if (selectedTrial == null)
         {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -946,7 +999,7 @@ public class MainController implements Initializable {
 
         }else {
 
-            TextInputDialog dialog = new TextInputDialog("Prueba 2");
+            TextInputDialog dialog = new TextInputDialog("Prueba");
             dialog.setTitle("Modificando nombre de la prueba");
             dialog.setHeaderText("");
             dialog.setContentText("Por favor introduzca el nuevo nombre de la prueba sin '_':");
@@ -962,7 +1015,7 @@ public class MainController implements Initializable {
             } else {
 
                 if (result.isPresent()) {
-                    if (trialNames.contains(result.get())) {
+                    if (!checkTrialName(result.get())) {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
                         alert.setHeaderText("Nombre de trial repetido");
@@ -1085,18 +1138,13 @@ public class MainController implements Initializable {
         try {
             JSONObject jsonObject = new JSONObject();
 
-            //if (!validations.isEmpty())
-            //{
-                jsonObject.put("Validations", validations);
-            //}
-            //if (!variables.isEmpty())
-            //{
-                jsonObject.put("Variables", variables);
-            //}
-            //if (!actions.isEmpty())
-            //{
-                jsonObject.put("Actions", actions);
-            //}
+
+            jsonObject.put("Validations", validations);
+
+            jsonObject.put("Variables", variables);
+
+            jsonObject.put("Actions", actions);
+
 
             System.out.println("TEST EXPORTADOS");
 
@@ -1206,126 +1254,121 @@ public class MainController implements Initializable {
         fileChooser.setTitle("Open Resource File");
         List<File> files = fileChooser.showOpenMultipleDialog(stageSettings);
 
-        for (File file : files)
-        {
-            String fileExtension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
-            if (fileExtension.equals("json"))
+        if (files != null){
+
+            for (File file : files)
             {
-                importJSONTrial(file);
+                String fileExtension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+                if (fileExtension.equals("json"))
+                {
+                    importJSONTrial(file);
+                }
+                if (fileExtension.equals("csv"))
+                {
+                    importCSVTrial(file);
+                }
             }
-            if (fileExtension.equals("csv"))
-            {
-                importCSVTrial(file);
-            }
+        } else {
+            return;
         }
     }
 
     public void importCSVTrial(File file)
     {
-        //deleteAllTabs();
-
         String header = "";
         boolean firstRead = true;
         String lastTrialVariable = "";
-        //FileChooser fileChooser = new FileChooser();
-        //fileChooser.setTitle("Open Resource File");
-        //File file = fileChooser.showOpenDialog(stageSettings);
-        //List<File> files = fileChooser.showOpenMultipleDialog(stageSettings);
 
         try {
-           // if (files!=null) {
+            Scanner inputStream = new Scanner(file);
+            while (inputStream.hasNext()) {
+                String data = inputStream.nextLine();
+                //String action = data.substring()
+                if (data.equals(trialColumnsHeadersCSV))
+                {
+                    header = "Trial";
+                }
+                if (data.equals(variablesColumnsHeadersCSV))
+                {
+                    header = "Variables";
+                    continue;
+                }
+                if (header.equals("Trial"))
+                {
 
-           //     for (File file : files) {
+                    String[] values = data.split(",");
+                    if (values[5].equals("false")) {
+                        ActionController actionController = new ActionController();
+                        actionController.setAction(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
+                        Action act = new Action( values[0], values[1], values[2], values[3], values[4]);
+                        actionList.add(act);
+                        actionsRowIndex++;
+                    }
+                    if (values[5].equals("true")) {
+                        ActionController actionController = new ActionController();
+                        actionController.setAction(gridPaneValidationList, validationRowIndex, values[0], values[1], values[2], values[3], values[4]);
+                        Action act = new Action(values[0], values[1], values[2], values[3], values[4]);
+                        validationList.add(act);
+                        validationRowIndex++;
+                    }
+                }
 
-                    Scanner inputStream = new Scanner(file);
-                    while (inputStream.hasNext()) {
-                        String data = inputStream.nextLine();
-                        //String action = data.substring()
-                        if (data.equals(trialColumnsHeadersCSV))
+
+                if (header.equals("Variables"))
+                {
+                    String[] values = data.split(",");
+
+                    if (firstRead && !values[0].equals("TrialID")){
+                        if (values[1].matches(String.valueOf(VARIABLE_PATTERN)) && H2DAO.trialExist(values[0]))
                         {
-                            header = "Trial";
+                            Variable variable = new Variable(values[0], values[1], values[2]);
+                            variablesList.add(variable);
                         }
-                        if (data.equals(variablesColumnsHeadersCSV))
+                        lastTrialVariable = values[0];
+                        firstRead = false;
+                    } else {
+                        if (values[0].equals(lastTrialVariable))
                         {
-                            header = "Variables";
-                            continue;
-                        }
-                        if (header.equals("Trial"))
-                        {
-
-                            String[] values = data.split(",");
-                            //System.out.println(data);
-                            if (values[5].equals("false")) {
-                                ActionController actionController = new ActionController();
-                                actionController.setAction(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
-                                Action act = new Action( values[0], values[1], values[2], values[3], values[4]);
-                                actionList.add(act);
-                                //procesedActionList.add(act);
-                                actionsRowIndex++;
+                            if (values[1].matches(String.valueOf(VARIABLE_PATTERN)) && H2DAO.trialExist(values[0]))
+                            {
+                                Variable variable = new Variable(values[0], values[1], values[2]);
+                                variablesList.add(variable);
                             }
-                            if (values[5].equals("true")) {
-                                ActionController actionController = new ActionController();
-                                actionController.setAction(gridPaneValidationList, validationRowIndex, values[0], values[1], values[2], values[3], values[4]);
-                                Action act = new Action(values[0], values[1], values[2], values[3], values[4]);
-                                validationList.add(act);
-                                //procesedValidationList.add(act);
-                                validationRowIndex++;
+                            lastTrialVariable = values[0];
+                        } else {
+                            H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
+                            variablesList.clear();
+                            if (values[1].matches(String.valueOf(VARIABLE_PATTERN)) && H2DAO.trialExist(values[0])) {
+                                Variable variable = new Variable(values[0], values[1], values[2]);
+                                variablesList.add(variable);
                             }
-                        }
-
-
-                        if (header.equals("Variables"))
-                        {
-                            String[] values = data.split(",");
-
-                            if (firstRead && !values[0].equals("TrialID")){
-                                if (H2DAO.trialExist(values[0]))
-                                {
-                                    Variable variable = new Variable(values[0], values[1], values[2]);
-                                    variablesList.add(variable);
-                                }
-                                lastTrialVariable = values[0];
-                                firstRead = false;
-                            } else {
-                                if (values[0].equals(lastTrialVariable))
-                                {
-                                    if (H2DAO.trialExist(values[0]))
-                                    {
-                                        Variable variable = new Variable(values[0], values[1], values[2]);
-                                        variablesList.add(variable);
-                                    }
-                                    lastTrialVariable = values[0];
-                                } else {
-                                    H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
-                                    variablesList.clear();
-                                    if (H2DAO.trialExist(values[0])) {
-                                        Variable variable = new Variable(values[0], values[1], values[2]);
-                                        variablesList.add(variable);
-                                    }
-                                    lastTrialVariable = values[0];
-                                }
-                            }
+                            lastTrialVariable = values[0];
                         }
                     }
-                    if(header.equals("Trial"))
-                    {
-                        saveTest();
-                        //deleteAllTabs();
-                        poblateTestList();
-                        inputStream.close();
-                    }else if (header.equals("Variables"))
-                    {
-                        H2DAO.saveTrialVariables(variablesList,lastTrialVariable);
-                        variablesList.clear();
-                    }else{
-                        Alert alert = new Alert(Alert.AlertType.WARNING);
-                        alert.setTitle("Error");
-                        alert.setHeaderText("Se ha producido un error durante la importación del test");
-                        alert.setContentText("El fichero no contienen las columnas correctas");
-                        alert.showAndWait();
-                    }
-             //   }
-           // }
+                }
+            }
+            if(header.equals("Trial"))
+            {
+                if (checkVariablesFormat(actionList) && checkVariablesFormat(validationList))
+                {
+                    saveTest();
+                    poblateTestList();
+                } else {
+                    // Aviso formato de variables
+                    deleteAllTabs();
+                }
+                inputStream.close();
+            }else if (header.equals("Variables"))
+            {
+                H2DAO.saveTrialVariables(variablesList,lastTrialVariable);
+                variablesList.clear();
+            }else{
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("Se ha producido un error durante la importación del test");
+                alert.setContentText("El fichero no contienen las columnas correctas");
+                alert.showAndWait();
+            }
 
         } catch(FileNotFoundException e){
             e.printStackTrace();
@@ -1334,96 +1377,81 @@ public class MainController implements Initializable {
 
     public void importJSONTrial(File file)
     {
-        /*deleteAllTabs();
+
+        JSONParser parser = new JSONParser();
+
+        try {
+            FileReader reader = new FileReader(file);
+            Object object = parser.parse(reader);
 
 
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
-        List<File> files = fileChooser.showOpenMultipleDialog(stageSettings);
+            org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) object;
 
 
-        if (files != null) {
-            for (File file : files) {*/
+            org.json.simple.JSONArray actions = (org.json.simple.JSONArray) jsonObject.get("Actions");
+            org.json.simple.JSONArray validations = (org.json.simple.JSONArray) jsonObject.get("Validations");
+            org.json.simple.JSONArray variables = (org.json.simple.JSONArray) jsonObject.get("Variables");
 
 
+            for (int i = 0; i < actions.size(); i++)
+            {
+                org.json.simple.JSONObject action = (org.json.simple.JSONObject) actions.get(i);
+                ActionController actionController = new ActionController();
+                actionController.setAction(gridPaneTrialList, actionsRowIndex, action.get("actionTypeS").toString(), action.get("selectElementByS").toString(),
+                        action.get("firstValueArgsS").toString(), action.get("selectPlaceByS").toString(), action.get("secondValueArgsS").toString());
+                Action act = new Action(action.get("actionTypeS").toString(), action.get("selectElementByS").toString(),
+                        action.get("firstValueArgsS").toString(), action.get("selectPlaceByS").toString(), action.get("secondValueArgsS").toString());
+                actionList.add(act);
+                actionsRowIndex++;
 
-                JSONParser parser = new JSONParser();
+            }
 
-                try {
-                    FileReader reader = new FileReader(file);
-                    Object object = parser.parse(reader);
-                    System.out.println(object);
+            for (int i = 0; i < validations.size(); i++)
+            {
+                org.json.simple.JSONObject validation = (org.json.simple.JSONObject) validations.get(i);
+                ActionController actionController = new ActionController();
+                actionController.setAction(gridPaneValidationList, validationRowIndex, validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
+                        validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());
+                Action act = new Action(validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
+                        validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());
+                validationList.add(act);
+                validationRowIndex++;
 
-                    org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) object;
-
-
-                    org.json.simple.JSONArray actions = (org.json.simple.JSONArray) jsonObject.get("Actions");
-                    org.json.simple.JSONArray validations = (org.json.simple.JSONArray) jsonObject.get("Validations");
-                    org.json.simple.JSONArray variables = (org.json.simple.JSONArray) jsonObject.get("Variables");
-
-
-                    System.out.println(actions);
-                    System.out.println(validations);
-                    System.out.println(variables);
+            }
 
 
-                    for (int i = 0; i < actions.size(); i++)
+            for (int i = 0; i < variables.size(); i++)
+            {
+                org.json.simple.JSONObject variable = (org.json.simple.JSONObject) variables.get(i);
+                if (H2DAO.trialExist(variable.get("variableTrial").toString())) {
+                    Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
+                    if (var.getVariableName().matches(String.valueOf(VARIABLE_PATTERN)) && H2DAO.trialExist(var.getVariableTrial()))
                     {
-                        org.json.simple.JSONObject action = (org.json.simple.JSONObject) actions.get(i);
-                        ActionController actionController = new ActionController();
-                        actionController.setAction(gridPaneTrialList, actionsRowIndex, action.get("actionTypeS").toString(), action.get("selectElementByS").toString(),
-                                action.get("firstValueArgsS").toString(), action.get("selectPlaceByS").toString(), action.get("secondValueArgsS").toString());
-                        Action act = new Action(action.get("actionTypeS").toString(), action.get("selectElementByS").toString(),
-                                action.get("firstValueArgsS").toString(), action.get("selectPlaceByS").toString(), action.get("secondValueArgsS").toString());
-                        actionList.add(act);
-                        actionsRowIndex++;
-
+                        H2DAO.saveVariable(var);
                     }
 
-                    for (int i = 0; i < validations.size(); i++)
-                    {
-                        org.json.simple.JSONObject validation = (org.json.simple.JSONObject) validations.get(i);
-                        ActionController actionController = new ActionController();
-                        actionController.setAction(gridPaneValidationList, validationRowIndex, validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
-                                validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());
-                        Action act = new Action(validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
-                                validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());
-                        validationList.add(act);
-                        validationRowIndex++;
+                }
+            }
 
-                    }
+            if (checkVariablesFormat(actionList) && checkVariablesFormat(validationList))
+            {
+                saveTest();
+                poblateTestList();
 
+                System.out.println("JSON IMPORTADO");
+            } else {
 
-                    for (int i = 0; i < variables.size(); i++)
-                    {
-                        org.json.simple.JSONObject variable = (org.json.simple.JSONObject) variables.get(i);
-                        if (H2DAO.trialExist(variable.get("variableTrial").toString())) {
-                            Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
-                            H2DAO.saveVariable(var);
-                        }
-                    }
+                // Aviso formato de variables
+                deleteAllTabs();
+            }
 
-
-
-                    saveTest();
-                    //deleteAllTabs();
-                    poblateTestList();
-
-
-                    //H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
-                    //variablesList.clear();
-                    System.out.println("JSON IMPORTADO");
-
-               } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-               } catch (ParseException e) {
-                   e.printStackTrace();
-               } catch (IOException e) {
-                    e.printStackTrace();
-               }
-           // }
-        //}
-
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

@@ -1,22 +1,19 @@
 package gui;
 
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import persistence.H2DAO;
 
 
 import java.net.URL;
 import java.util.*;
+import java.util.regex.Pattern;
 
 
 public class VariablesController implements Initializable {
@@ -47,6 +44,7 @@ public class VariablesController implements Initializable {
     private int variableTableIndex = 0;
 
     private String trialID;
+    private static Pattern VARIABLE_PATTERN = Pattern.compile("\\$\\{\\S+\\}");
 
 
     @Override
@@ -197,14 +195,32 @@ public class VariablesController implements Initializable {
            }
 
            Variable currentVariable = new Variable(trialID, variable, value);
-           variables.add(currentVariable);
+           if (currentVariable.getVariableName().matches(VARIABLE_PATTERN.toString()))
+           {
+               variables.add(currentVariable);
+           }
            variable = "";
            value = "";
            iterator++;
        }
 
-        H2DAO.deleteTrialVariables(trialID);
-        H2DAO.saveTrialVariables(variables,trialID);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmar cambios");
+        alert.setHeaderText("Variables guardadas");
+        alert.setContentText("Las variables que no tengan \nel formato se perderán :)");
+        alert.initModality(Modality.APPLICATION_MODAL);
+        alert.initOwner(newVariable.getScene().getWindow());
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK)
+        {
+            H2DAO.deleteTrialVariables(trialID);
+            H2DAO.saveTrialVariables(variables,trialID);
+            MainController.closeStage("Variables");
+        } else {
+
+        }
+
     }
 
     public void fillGrid()
