@@ -36,4 +36,13 @@ public class Variable {
     public void setValue(String value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "Variable{" +
+                "variableTrial='" + variableTrial + '\'' +
+                ", variableName='" + variableName + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
 }

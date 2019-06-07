@@ -633,10 +633,33 @@ public class H2DAO {
             st.execute(query);
 
             ResultSet resultSet = st.getResultSet();
+            resultSet.last();
             if (resultSet.getRow() > 0)
             {
                 exist = true;
             }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return exist;
+    }
+
+    public static boolean variableExists(Variable var)
+    {
+        boolean exist = false;
+        try{
+            Statement statement = connection.createStatement();
+            String existVariableQuery = "select * from variables where variable = '"+var.getVariableName()+"' and trial = '"+var.getVariableTrial()+"'";
+            statement.execute(existVariableQuery);
+
+            ResultSet resultSet = statement.getResultSet();
+            resultSet.last();
+            if (resultSet.getRow() > 0)
+            {
+                exist = true;
+            }
+
 
         }catch (SQLException e){
             e.printStackTrace();
@@ -728,6 +751,8 @@ public class H2DAO {
             e.printStackTrace();
         }
     }
+
+
 
     public static ArrayList<Variable> getTrialVariables(String trial)
     {

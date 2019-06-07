@@ -480,7 +480,7 @@ public class MainController implements Initializable {
                Platform.runLater(new Runnable() {
                    @Override
                    public void run() {
-                       String name = null;
+                       String nameOfTrial = null;
 
                        WebDriver driver = getWebDriver();
                        driver.get(H2DAO.getWeb());
@@ -493,13 +493,13 @@ public class MainController implements Initializable {
                            CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
                            titledPaneName.setText(selectedTrial.getText());
                            variables = H2DAO.getTrialVariables(H2DAO.getTrialID(selectedTrial.getText()));
-                           name = selectedTrial.getText();
+                           nameOfTrial = selectedTrial.getText();
                            //trial.setText(selectedTrial.getText());
 
                        }else {
                            titledPaneName.setText(trialName);
                            variables = H2DAO.getTrialVariables(H2DAO.getTrialID(trialName));
-                           name = trialName;
+                           nameOfTrial = trialName;
                            //trial.setText(trialName);
                        }
 
@@ -548,14 +548,14 @@ public class MainController implements Initializable {
                            for (int i = 0; i < actionList.size(); i++) {
                                Action currentAction = actionList.get(i);
                                grid.add(new Label("Action " + i + ":"), 0, i);
-                               grid.add(new Label(" " + currentAction.executeAction(driver, variables,name)), 1, i);
+                               grid.add(new Label(" " + currentAction.executeAction(driver, variables,nameOfTrial)), 1, i);
                            }
                        }
                        if (tabValidation.isSelected()){
                            for (int i = 0; i < actionList.size(); i++) {
                                Action currentValidation = actionList.get(i);
                                grid.add(new Label("Validation " + i + ":"), 0, i);
-                               grid.add(new Label(" " + currentValidation.executeAction(driver, variables,name)), 1, i);
+                               grid.add(new Label(" " + currentValidation.executeAction(driver, variables,nameOfTrial)), 1, i);
                            }
                        }
                        trial.setContent(grid);
@@ -691,18 +691,34 @@ public class MainController implements Initializable {
                     H2DAO.deleteTrialActions(id);
                     H2DAO.saveTrial(procesedActionList, id, 0);
                     trialmodified = true;
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Alguna de las variables no tiene el formato adecuado");
+                    alert.setContentText("Estas tonto o que? :)");
+                    alert.initModality(Modality.APPLICATION_MODAL);
+                    alert.initOwner(testList.getScene().getWindow());
+                    alert.show();
                 }
-                // Aviso formato de variables
+
             }
             if (tabValidation.isSelected()) {
                 procesedValidationList.clear();
                 goThroughTable("Validations");
-                if (checkVariablesFormat(validationList))
+                if (checkVariablesFormat(procesedValidationList))
                 {
                     H2DAO.deleteTrialValidations(id);
                     H2DAO.saveTrial(procesedValidationList, id, 1);
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Alguna de las variables no tiene el formato adecuado");
+                    alert.setContentText("Estas tonto o que? :)");
+                    alert.initModality(Modality.APPLICATION_MODAL);
+                    alert.initOwner(testList.getScene().getWindow());
+                    alert.show();
                 }
-                // Aviso formato de variables
+
             }
 
         }
@@ -1279,6 +1295,8 @@ public class MainController implements Initializable {
         boolean firstRead = true;
         String lastTrialVariable = "";
 
+        ArrayList<String> failedVariables = new ArrayList<>();
+
         try {
             Scanner inputStream = new Scanner(file);
             while (inputStream.hasNext()) {
@@ -1319,29 +1337,23 @@ public class MainController implements Initializable {
                     String[] values = data.split(",");
 
                     if (firstRead && !values[0].equals("TrialID")){
-                        if (values[1].matches(String.valueOf(VARIABLE_PATTERN)) && H2DAO.trialExist(values[0]))
-                        {
-                            Variable variable = new Variable(values[0], values[1], values[2]);
-                            variablesList.add(variable);
-                        }
+
+                        checkVariables(failedVariables, values);
+
                         lastTrialVariable = values[0];
                         firstRead = false;
                     } else {
                         if (values[0].equals(lastTrialVariable))
                         {
-                            if (values[1].matches(String.valueOf(VARIABLE_PATTERN)) && H2DAO.trialExist(values[0]))
-                            {
-                                Variable variable = new Variable(values[0], values[1], values[2]);
-                                variablesList.add(variable);
-                            }
+                            checkVariables(failedVariables, values);
+
                             lastTrialVariable = values[0];
                         } else {
                             H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
                             variablesList.clear();
-                            if (values[1].matches(String.valueOf(VARIABLE_PATTERN)) && H2DAO.trialExist(values[0])) {
-                                Variable variable = new Variable(values[0], values[1], values[2]);
-                                variablesList.add(variable);
-                            }
+
+                            checkVariables(failedVariables, values);
+
                             lastTrialVariable = values[0];
                         }
                     }
@@ -1360,7 +1372,20 @@ public class MainController implements Initializable {
                 inputStream.close();
             }else if (header.equals("Variables"))
             {
-                H2DAO.saveTrialVariables(variablesList,lastTrialVariable);
+                //H2DAO.saveTrialVariables(variablesList,lastTrialVariable);
+                if (failedVariables.size() > 0)
+                {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Se ha producido un error durante la importación de las variables");
+                    String error = "";
+                    for (String failedVariable : failedVariables)
+                    {
+                        error = error.concat(failedVariable+"\n");
+                    }
+                    alert.setContentText(error);
+                    alert.showAndWait();
+                }
                 variablesList.clear();
             }else{
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -1375,10 +1400,33 @@ public class MainController implements Initializable {
         }
     }
 
+    private void checkVariables(ArrayList<String> failedVariables, String[] values) {
+
+        if (values[1].matches(String.valueOf(VARIABLE_PATTERN)))
+        {
+            if (H2DAO.trialExist(values[0])){
+                Variable variable = new Variable(values[0], values[1], values[2]);
+                if (!H2DAO.variableExists(variable)) {
+                    H2DAO.saveVariable(variable);
+                    //variablesList.add(variable);
+                } else {
+                    failedVariables.add("Variable " + variable.getVariableName() + " Fallo: Variable existente");
+                }
+            }else {
+                Variable variable = new Variable(values[0], values[1], values[2]);
+                failedVariables.add("Variable " + variable.getVariableName() + " Fallo: No existe trial");
+            }
+        } else {
+            Variable variable = new Variable(values[0], values[1], values[2]);
+            failedVariables.add("Variable " + variable.getVariableName() + " Fallo: Formato");
+        }
+    }
+
     public void importJSONTrial(File file)
     {
 
         JSONParser parser = new JSONParser();
+        ArrayList<String> failedVariables = new ArrayList<>();
 
         try {
             FileReader reader = new FileReader(file);
@@ -1425,7 +1473,7 @@ public class MainController implements Initializable {
                 org.json.simple.JSONObject variable = (org.json.simple.JSONObject) variables.get(i);
                 if (H2DAO.trialExist(variable.get("variableTrial").toString())) {
                     Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
-                    if (var.getVariableName().matches(String.valueOf(VARIABLE_PATTERN)) && H2DAO.trialExist(var.getVariableTrial()))
+                    if (var.getVariableName().matches(String.valueOf(VARIABLE_PATTERN)) && H2DAO.trialExist(var.getVariableTrial()) && !H2DAO.variableExists(var))
                     {
                         H2DAO.saveVariable(var);
                     }

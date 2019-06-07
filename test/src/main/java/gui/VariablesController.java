@@ -158,6 +158,31 @@ public class VariablesController implements Initializable {
         variableTableIndex = variableTableIndex - iterations;
     }
 
+    public ArrayList<String> variablesName()
+    {
+        ArrayList<String> variablesName = new ArrayList<>();
+
+        for (Node hbox : gridPaneVariableTable.getChildren())                                   // Number of rows to delete
+        {
+            if (hbox instanceof HBox)
+            {
+                int i=0;
+                for (Node child : ((HBox) hbox).getChildren())
+                {
+                    if (child instanceof TextField && i == 0)
+                    {
+                        variablesName.add(((TextField) child).getText());
+                        i++;
+                    } else {
+                        i = 0;
+                    }
+                }
+            }
+        }
+
+        return variablesName;
+    }
+
     public void deleteAllVariables()
     {
         gridPaneVariableTable.getChildren().clear();
@@ -166,11 +191,13 @@ public class VariablesController implements Initializable {
 
     public void saveVariables()
     {
+        H2DAO.deleteTrialVariables(trialID);
        int iterator = 0;
        String variable = "";
        String value = "";
 
-       ArrayList<Variable> variables = new ArrayList<>();
+
+       ArrayList<String> failedVariables = new ArrayList<>();
 
        while (iterator < variableTableIndex)
        {
@@ -195,32 +222,52 @@ public class VariablesController implements Initializable {
            }
 
            Variable currentVariable = new Variable(trialID, variable, value);
-           if (currentVariable.getVariableName().matches(VARIABLE_PATTERN.toString()))
+           /*if (currentVariable.getVariableName().matches(VARIABLE_PATTERN.toString()) && !H2DAO.variableExists(currentVariable))
            {
-               variables.add(currentVariable);
-           }
+               //variables.add(currentVariable);
+               H2DAO.saveVariable(currentVariable);
+           }*/
+           checkVariablesFormat(failedVariables, currentVariable);
            variable = "";
            value = "";
            iterator++;
        }
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmar cambios");
-        alert.setHeaderText("Variables guardadas");
-        alert.setContentText("Las variables que no tengan \nel formato se perderán :)");
-        alert.initModality(Modality.APPLICATION_MODAL);
-        alert.initOwner(newVariable.getScene().getWindow());
+       if (failedVariables.size() > 0)
+       {
+           Alert alert = new Alert(Alert.AlertType.WARNING);
+           alert.setTitle("Error");
+           alert.setHeaderText("Se ha producido un error durante la importación de las variables");
+           String error = "";
+           for (String failedVariable : failedVariables)
+           {
+               error = error.concat(failedVariable+"\n");
+           }
+           alert.setContentText(error);
+           alert.showAndWait();
+       }else {
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK)
+           //H2DAO.deleteTrialVariables(trialID);
+           //H2DAO.saveTrialVariables(variables,trialID);
+           MainController.closeStage("Variables");
+       }
+
+    }
+
+    private void checkVariablesFormat(ArrayList<String> failedVariables, Variable variable)
+    {
+        if (variable.getVariableName().matches(String.valueOf(VARIABLE_PATTERN)))
         {
-            H2DAO.deleteTrialVariables(trialID);
-            H2DAO.saveTrialVariables(variables,trialID);
-            MainController.closeStage("Variables");
+            if (!H2DAO.variableExists(variable)) {
+                H2DAO.saveVariable(variable);
+
+            } else {
+                failedVariables.add("Variable " + variable.getVariableName() + " Fallo: Variable existente");
+            }
+
         } else {
-
+            failedVariables.add("Variable " + variable.getVariableName() + " Fallo: Formato");
         }
-
     }
 
     public void fillGrid()
