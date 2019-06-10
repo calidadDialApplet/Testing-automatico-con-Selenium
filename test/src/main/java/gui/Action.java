@@ -59,6 +59,9 @@ public class Action {
             case "8":
                 type = "SwitchDefault";
                 break;
+            case "9":
+                type = "NavigateTo";
+                break;
             default:
                 break;
         }
@@ -146,6 +149,11 @@ public class Action {
                     getValueVariables(variables);
                     SeleniumDAO.switchToDefaultContent(driver);
                     result = "Ok";
+                    break;
+                case "NavigateTo":
+                    SeleniumDAO.navigateTo(this.firstValueArgsS, driver);
+                    result = "Ok";
+                    break;
                 default:
                     break;
             }
@@ -154,14 +162,37 @@ public class Action {
         catch (Exception e)
         {
             e.printStackTrace();
+            System.out.println(e.getClass().getName().substring(e.getClass().getName().lastIndexOf(".") + 1));
+            result = manageException(e);
             return result;
         }
 
    }
 
-   private void checkVariableForma(String variable)
+   private String manageException(Exception exception)
    {
+       String message = "";
+       String type = exception.getClass().getName().substring(exception.getClass().getName().lastIndexOf(".") + 1);
+       switch (type)
+       {
+           case "NoSuchElementException":
+               message = "No se ha podido identificar el elemento con los parámetros indicados.";
+               break;
+           case "TimeoutException":
+               message = "Se ha excedido el tiempo máximo establecido para identificar el elemento.";
+               break;
+           case "InvalidSelectorException":
+               message = "El selector utilizado para encontrar un elemento no devuelve un elemento web.";
+               break;
+           case "ElementNotInteractableException":
+               message = "El elemento seleccionado no es interactuable con la acción indicada.";
+               break;
+           case "NoSuchFrameException":
+               message = "No se puede cambiar a un frame no válido o que no está disponible";
+               break;
+       }
 
+       return message;
    }
 
     private void getValueVariables(ArrayList<Variable> variables)

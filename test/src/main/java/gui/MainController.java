@@ -103,6 +103,8 @@ public class MainController implements Initializable {
     private int actionsRowIndex = 0;
     private int validationRowIndex = 0;
 
+    boolean modified = false;
+
     String comboBoxActionType = "";
     String comboBoxSelectElementBy = "";
     String textFieldFirstValueArgs = "";
@@ -177,11 +179,28 @@ public class MainController implements Initializable {
 
         testList.getSelectionModel().selectedItemProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
         {
-                bottomButtons.setDisable(false);
-                //trialID = H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText());
-                deleteAllTabs();
-                getSelectedTrialActions();
-                getSelectedTrialValidations();
+                if (this.modified)
+                {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Guardar trial modificado");
+                    alert.setHeaderText("Los cambios no guardados se perderán\n" +
+                                        "¿Quieres guardar?");
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == ButtonType.OK)
+                    {
+                        modifyTest();
+                    } else {
+
+                    }
+
+                }else {
+                    bottomButtons.setDisable(false);
+                    //System.out.println("MODIFICADO!!!!! => " +isModified());
+
+                    deleteAllTabs();
+                    getSelectedTrialActions();
+                    getSelectedTrialValidations();
+                }
 
         });
 
@@ -749,7 +768,7 @@ public class MainController implements Initializable {
             alert.setHeaderText("El nombre de la prueba contiene '_'");
             alert.setContentText("Contacta con tu administrador :)");
             alert.show();
-        } else if (checkTrialName(result.toString()))
+        } else if (!checkTrialName(result.toString()))
         {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -900,9 +919,10 @@ public class MainController implements Initializable {
         {
             if (action.getActionTypeS().equals("ReadFrom"))
             {
-                if (!action.getSecondValueArgsS().matches(String.valueOf(VARIABLE_PATTERN)))
-                {
-                    formatOk = false;
+                if (!action.getSecondValueArgsS().equals("")) {
+                    if (!action.getSecondValueArgsS().matches(String.valueOf(VARIABLE_PATTERN))) {
+                        formatOk = false;
+                    }
                 }
             }
         }
@@ -1338,21 +1358,24 @@ public class MainController implements Initializable {
 
                     if (firstRead && !values[0].equals("TrialID")){
 
-                        checkVariables(failedVariables, values);
+                        Variable variable = new Variable(values[0], values[1], values[2]);
+                        checkVariables(failedVariables, variable);
 
                         lastTrialVariable = values[0];
                         firstRead = false;
                     } else {
                         if (values[0].equals(lastTrialVariable))
                         {
-                            checkVariables(failedVariables, values);
+                            Variable variable = new Variable(values[0], values[1], values[2]);
+                            checkVariables(failedVariables, variable);
 
                             lastTrialVariable = values[0];
                         } else {
                             H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
                             variablesList.clear();
 
-                            checkVariables(failedVariables, values);
+                            Variable variable = new Variable(values[0], values[1], values[2]);
+                            checkVariables(failedVariables, variable);
 
                             lastTrialVariable = values[0];
                         }
@@ -1400,12 +1423,12 @@ public class MainController implements Initializable {
         }
     }
 
-    private void checkVariables(ArrayList<String> failedVariables, String[] values) {
+    private void checkVariables(ArrayList<String> failedVariables, Variable variable) {
 
-        if (values[1].matches(String.valueOf(VARIABLE_PATTERN)))
+        if (variable.getVariableName().matches(String.valueOf(VARIABLE_PATTERN)))
         {
-            if (H2DAO.trialExist(values[0])){
-                Variable variable = new Variable(values[0], values[1], values[2]);
+            if (H2DAO.trialExist(variable.getVariableTrial())){
+                //Variable variable = new Variable(values[0], values[1], values[2]);
                 if (!H2DAO.variableExists(variable)) {
                     H2DAO.saveVariable(variable);
                     //variablesList.add(variable);
@@ -1413,11 +1436,11 @@ public class MainController implements Initializable {
                     failedVariables.add("Variable " + variable.getVariableName() + " Fallo: Variable existente");
                 }
             }else {
-                Variable variable = new Variable(values[0], values[1], values[2]);
+                //Variable variable = new Variable(values[0], values[1], values[2]);
                 failedVariables.add("Variable " + variable.getVariableName() + " Fallo: No existe trial");
             }
         } else {
-            Variable variable = new Variable(values[0], values[1], values[2]);
+            //Variable variable = new Variable(values[0], values[1], values[2]);
             failedVariables.add("Variable " + variable.getVariableName() + " Fallo: Formato");
         }
     }
@@ -1471,23 +1494,36 @@ public class MainController implements Initializable {
             for (int i = 0; i < variables.size(); i++)
             {
                 org.json.simple.JSONObject variable = (org.json.simple.JSONObject) variables.get(i);
-                if (H2DAO.trialExist(variable.get("variableTrial").toString())) {
+                //if (H2DAO.trialExist(variable.get("variableTrial").toString())) {
                     Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
-                    if (var.getVariableName().matches(String.valueOf(VARIABLE_PATTERN)) && H2DAO.trialExist(var.getVariableTrial()) && !H2DAO.variableExists(var))
+                    /*if (var.getVariableName().matches(String.valueOf(VARIABLE_PATTERN)) && H2DAO.trialExist(var.getVariableTrial()) && !H2DAO.variableExists(var))
                     {
                         H2DAO.saveVariable(var);
-                    }
+                    }*/
+                    checkVariables(failedVariables, var);
 
-                }
+                //}
             }
 
-            if (checkVariablesFormat(actionList) && checkVariablesFormat(validationList))
+            if (checkVariablesFormat(actionList) && checkVariablesFormat(validationList) && failedVariables.size() == 0)
             {
                 saveTest();
                 poblateTestList();
 
                 System.out.println("JSON IMPORTADO");
             } else {
+
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("Se ha producido un error durante la importación de las variables");
+                //alert.initOwner(buttonSave.getScene().getWindow());
+                String error = "";
+                for (String failedVariable : failedVariables)
+                {
+                    error = error.concat(failedVariable+"\n");
+                }
+                alert.setContentText(error);
+                alert.showAndWait();
 
                 // Aviso formato de variables
                 deleteAllTabs();
@@ -1569,6 +1605,11 @@ public class MainController implements Initializable {
     }
 
 
+    public boolean isModified() {
+        return modified;
+    }
 
-
+    public void setModified(boolean modified) {
+        this.modified = modified;
+    }
 }

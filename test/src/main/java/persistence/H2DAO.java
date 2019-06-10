@@ -86,6 +86,7 @@ public class H2DAO {
             "insert into action_types(name) values ('Waiting For')",
             "insert into action_types(name) values ('WaitTime')",
             "insert into action_types(name) values ('SwitchDefault')",
+            "insert into action_types(name) values ('NavigateTo')",
             "insert into selection_by(name) values ('')",
             "insert into selection_by(name) values ('id')",
             "insert into selection_by(name) values ('xpath')",

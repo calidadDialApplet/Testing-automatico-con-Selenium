@@ -61,11 +61,14 @@
         </HBox>
     </bottom>
     <top>
-      <HBox alignment="CENTER" spacing="130.0" BorderPane.alignment="BOTTOM_LEFT">
+      <HBox alignment="CENTER" spacing="150.0" BorderPane.alignment="BOTTOM_LEFT">
          <children>
             <Label text="Variable" />
             <Label text="Valor" />
          </children>
+         <BorderPane.margin>
+            <Insets bottom="10.0" top="10.0" />
+         </BorderPane.margin>
       </HBox>
     </top>
 </BorderPane>

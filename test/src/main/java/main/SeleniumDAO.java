@@ -319,5 +319,10 @@ public class SeleniumDAO {
         }
     }
 
+    public static void navigateTo (String URL, WebDriver driver)
+    {
+        driver.navigate().to(URL);
+    }
+
 }
 

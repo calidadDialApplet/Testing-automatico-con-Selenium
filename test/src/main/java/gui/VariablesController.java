@@ -7,7 +7,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
 import persistence.H2DAO;
 
 
@@ -238,6 +237,7 @@ public class VariablesController implements Initializable {
            Alert alert = new Alert(Alert.AlertType.WARNING);
            alert.setTitle("Error");
            alert.setHeaderText("Se ha producido un error durante la importación de las variables");
+           alert.initOwner(buttonSave.getScene().getWindow());
            String error = "";
            for (String failedVariable : failedVariables)
            {
