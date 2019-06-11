@@ -18,6 +18,7 @@ import persistence.H2DAO;
 public class Main extends Application {
 
         private static Scene scene;
+        private static boolean modified;
 
         public static void main(String[] args) {
                 launch(args);
@@ -95,6 +96,14 @@ public class Main extends Application {
                 enter.click();
         }
 
+        public static boolean isModified()
+        {
+                return modified;
+        }
 
+        public static void setModified(boolean modified)
+        {
+                Main.modified = modified;
+        }
 }
 

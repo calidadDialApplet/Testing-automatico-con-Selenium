@@ -115,7 +115,7 @@ public class H2DAO {
     static {
         try {
             Class.forName("org.h2.Driver");
-            connection = DriverManager.getConnection("jdbc:h2:./data/db","test","test");
+            connection = DriverManager.getConnection("jdbc:h2:./data/db;AUTO_SERVER=TRUE","test","test");
         }catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }

@@ -16,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 
+import main.Main;
 import persistence.H2DAO;
 
 
@@ -49,11 +50,27 @@ public class ActionController
 
     public void setAction(GridPane gridParent, int rowIndex,String actionTypeValue, String selectElementByValue, String firstValueArgsValue, String selectPlaceByValue, String secondValueArgsValue)
     {
-        MainController mainController = new MainController();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainController"));
-        loader.setController(mainController);
 
-        mainController.setModified(false);
+        Main.setModified(false);
+
+        //MainController mainController = new MainController();
+        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainController.java"));
+        //loader.setController(mainController);
+
+
+
+        /*try {
+            loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
+                //loader.getController();
+
+
+
+
+        //mainController.setModified(false);
         hBox = new HBox();
         hBox.setFillHeight(true);
         hBox.setMinWidth(2000);
@@ -73,11 +90,10 @@ public class ActionController
 
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
-
-            System.out.println("1"+mainController.isModified());
+            System.out.println("Modified 1 actionController -> "+Main.isModified());
             if (oldValue != newValue && oldValue != null) {
-                mainController.setModified(true);
-                System.out.println("2"+mainController.isModified());
+                Main.setModified(true);
+                System.out.println("Modified 2 actionController -> "+Main.isModified());
             }
             lastType = actionType.getValue().toString();
             checkboxNotGenerated = true;
@@ -91,8 +107,8 @@ public class ActionController
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
                         if (oldValue != newValue && oldValue != null) {
-                            mainController.setModified(true);
-                            System.out.println(mainController.isModified());
+                            Main.setModified(true);
+                            System.out.println(Main.isModified());
                         }
                         generatedTextField(hBox, "FirstValueArgs", firstValueArgsValue);
                         /*if (checkboxNotGenerated) {
@@ -112,14 +128,14 @@ public class ActionController
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
                         if (oldValue != newValue && oldValue != null) {
-                            mainController.setModified(true);
-                            System.out.println(mainController.isModified());
+                            Main.setModified(true);
+                            System.out.println(Main.isModified());
                         }
                         if (placeNotGenerated) {
                             firstValueArgs = new TextField(firstValueArgsValue);
                             firstValueArgs.textProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->{
                                 if (oldValueSelect1 != newValueSelect1) {
-                                    mainController.setModified(true);
+                                    Main.setModified(true);
                                 }
                             });
                             //firstValueArgs.setText(firstValueArgsValue);
@@ -133,7 +149,7 @@ public class ActionController
                             selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
                             {
                                 if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null) {
-                                    mainController.setModified(true);
+                                    Main.setModified(true);
                                 }
                                 generatedTextField(hBox, "SecondValueArgs", secondValueArgsValue);
                                 /*if (checkboxNotGenerated) {
@@ -155,13 +171,14 @@ public class ActionController
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
                         if (oldValueSelect != newValueSelect && oldValueSelect != null) {
-                            mainController.setModified(true);
+                            Main.setModified(true);
                         }
                         if (textFieldNotGenerated) {
                             firstValueArgs = new TextField(firstValueArgsValue);
                             firstValueArgs.textProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->{
                                 if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null) {
-                                    mainController.setModified(true);
+                                    System.out.println("writeTo "+Main.isModified());
+                                    Main.setModified(true);
                                 }
                             });
                             //firstValueArgs.setText(firstValueArgsValue);
@@ -188,7 +205,7 @@ public class ActionController
                             secondValueArgs = new TextField(secondValueArgsValue);
                             secondValueArgs.textProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->{
                                 if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null) {
-                                    mainController.setModified(true);
+                                    Main.setModified(true);
                                 }
                             });
                             //secondValueArgs.setText(secondValueArgsValue);
@@ -216,8 +233,11 @@ public class ActionController
                     dragAndDrop(gridParent, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
-                        if (oldValueSelect != newValueSelect && oldValueSelect != null) {
-                            mainController.setModified(true);
+                        System.out.println("ReadForm modified "+Main.isModified());
+                        if (oldValueSelect != newValueSelect && oldValueSelect != null)
+                        {
+                            Main.setModified(true);
+                            System.out.println("ReadForm modified 2 "+Main.isModified());
                         }
                         if (textFieldNotGenerated) {
                             generatedTextField(hBox, "FirstValueArgs", firstValueArgsValue);
@@ -229,7 +249,7 @@ public class ActionController
                             secondValueArgs = new TextField(secondValueArgsValue);
                             secondValueArgs.textProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->{
                                 if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null) {
-                                    mainController.setModified(true);
+                                    Main.setModified(true);
                                 }
                             });
                             //secondValueArgs.setText(secondValueArgsValue);
@@ -267,13 +287,13 @@ public class ActionController
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
                         if (oldValueSelect != newValueSelect && oldValueSelect != null) {
-                            mainController.setModified(true);
+                            Main.setModified(true);
                         }
                         if (textFieldNotGenerated) {
                             firstValueArgs = new TextField(firstValueArgsValue);
                             firstValueArgs.textProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->{
                                 if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null) {
-                                    mainController.setModified(true);
+                                    Main.setModified(true);
                                 }
                             });
                             //firstValueArgs.setText(firstValueArgsValue);
@@ -792,7 +812,7 @@ public class ActionController
             if (textFieldNotGenerated) {
                 firstValueArgs = new TextField(value);
                 firstValueArgs.textProperty().addListener((observable -> {
-                    //mainController.setModified(true);
+                   Main.setModified(true);
                 }));
                 hBox.getChildren().add(firstValueArgs);
             }
@@ -802,7 +822,7 @@ public class ActionController
             if (textFieldNotGenerated) {
                 secondValueArgs = new TextField(value);
                 secondValueArgs.textProperty().addListener((observable -> {
-                    //mainController.setModified(true);
+                    Main.setModified(true);
                 }));
                 hBox.getChildren().add(secondValueArgs);
             }
@@ -815,11 +835,4 @@ public class ActionController
         hBox.getChildren().removeAll(selectElementBy,firstValueArgs,selectPlaceBy,secondValueArgs, value, uniqueValue, stackPane);
     }
 
-    public boolean isModified() {
-        return modified;
-    }
-
-    public void setModified(boolean modified) {
-        this.modified = modified;
-    }
 }

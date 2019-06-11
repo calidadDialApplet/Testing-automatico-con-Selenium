@@ -23,6 +23,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import main.Main;
 import main.SeleniumDAO;
 import main.Utils;
 import org.jetbrains.annotations.Nullable;
@@ -88,6 +89,9 @@ public class MainController implements Initializable {
     @FXML
     private Label labelStatus;
 
+    @FXML
+    private Spinner spinner;
+
 
     private static Scene sceneSettings;
     private static Scene sceneVariables;
@@ -103,7 +107,7 @@ public class MainController implements Initializable {
     private int actionsRowIndex = 0;
     private int validationRowIndex = 0;
 
-    boolean modified = false;
+    private boolean modified = false;
 
     String comboBoxActionType = "";
     String comboBoxSelectElementBy = "";
@@ -125,6 +129,11 @@ public class MainController implements Initializable {
         procesedActionList = new ArrayList<>();
         procesedValidationList = new ArrayList<>();
         variablesList = new ArrayList<>();
+
+        SpinnerValueFactory<Integer> executions = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,5,1);
+        spinner.setValueFactory(executions);
+
+
 
         if(!H2DAO.checkDB()){
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -172,14 +181,10 @@ public class MainController implements Initializable {
         }
 
 
-        // TODO: This is plain wrong. You can't set row constraints
-        //  this way, since you don't know the number of rows
-        //  That's why scroll pane is broken after adding 5 rows or more
-        //  Should be calculated and applied when adding new rows ...
-
         testList.getSelectionModel().selectedItemProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
         {
-                if (this.modified)
+
+               /* if (Main.isModified())
                 {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("Guardar trial modificado");
@@ -189,18 +194,18 @@ public class MainController implements Initializable {
                     if (result.get() == ButtonType.OK)
                     {
                         modifyTest();
+                        Main.setModified(false);
+
                     } else {
 
                     }
 
-                }else {
+                }else {*/
                     bottomButtons.setDisable(false);
-                    //System.out.println("MODIFICADO!!!!! => " +isModified());
-
                     deleteAllTabs();
                     getSelectedTrialActions();
                     getSelectedTrialValidations();
-                }
+               // }
 
         });
 
@@ -993,13 +998,17 @@ public class MainController implements Initializable {
 
     public void runSelectedTrials()
     {
+        int times = Integer.parseInt(spinner.getValue().toString());
         for(CheckBox trial : testList.getItems())
         {
             if(trial.isSelected())
             {
                 String trialName = trial.getText();
                 ArrayList<Action> actions = H2DAO.getTrialActions(trial.getText());
-                executeTest(actions, trialName);
+                for (int i = 0; i < times; i++)
+                {
+                    executeTest(actions, trialName);
+                }
             }
         }
     }
@@ -1538,6 +1547,11 @@ public class MainController implements Initializable {
         }
 
     }
+
+    /*public void incrementSpinner()
+    {
+        spinner.increment();
+    }*/
 
 
     public static String getPathOFC()

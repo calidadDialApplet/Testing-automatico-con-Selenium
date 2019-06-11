@@ -9,6 +9,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -145,6 +146,9 @@
                                        <padding>
                                           <Insets left="7.0" top="5.0" />
                                        </padding>
+                                       <rowConstraints>
+                                          <RowConstraints />
+                                       </rowConstraints>
                                     </GridPane>
                                  </content>
                               </ScrollPane>
@@ -196,59 +200,64 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-              <HBox fx:id="bottomButtons" alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="5.0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
-                  <children>
-                      <Button fx:id="buttonAdd" mnemonicParsing="true" onAction="#addActionRow">
-                          <graphic>
-                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                  <image>
-                                      <Image url="@/icons/sharp_add_black_24dp.png" />
-                                  </image>
-                              </ImageView>
-                          </graphic>
-                      </Button>
-                      <Button fx:id="buttonDelete" mnemonicParsing="true" onAction="#deleteActionRow">
-                          <graphic>
-                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                  <image>
-                                      <Image url="@/icons/sharp_remove_black_24dp.png" />
-                                  </image>
-                              </ImageView>
-                          </graphic>
-                      </Button>
-                  <Button fx:id="buttonDeleteAll" layoutX="88.0" layoutY="10.0" mnemonicParsing="true" onAction="#deletePanel">
-                     <graphic>
-                        <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@/icons/baseline_delete_forever_black_24dp.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button fx:id="buttonSave" layoutX="88.0" layoutY="10.0" mnemonicParsing="true" onAction="#modifyTest">
-                     <graphic>
-                        <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@/icons/baseline_save_black_24dp.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                      <Button fx:id="buttonPlay" mnemonicParsing="true" onAction="#processTable" HBox.hgrow="NEVER">
-                          <graphic>
+            <HBox spacing="280.0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
+               <children>
+                  <Spinner fx:id="spinner" nodeOrientation="LEFT_TO_RIGHT" prefWidth="80.0" />
+                    <HBox fx:id="bottomButtons" alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="5.0">
+                        <children>
+                            <Button fx:id="buttonAdd" mnemonicParsing="true" onAction="#addActionRow">
+                                <graphic>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                        <image>
+                                            <Image url="@/icons/sharp_add_black_24dp.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                            <Button fx:id="buttonDelete" mnemonicParsing="true" onAction="#deleteActionRow">
+                                <graphic>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                        <image>
+                                            <Image url="@/icons/sharp_remove_black_24dp.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Button>
+                        <Button fx:id="buttonDeleteAll" layoutX="88.0" layoutY="10.0" mnemonicParsing="true" onAction="#deletePanel">
+                           <graphic>
                               <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                  <image>
-                                      <Image url="@/icons/baseline_play_arrow_black_24dp.png" />
-                                  </image>
+                                 <image>
+                                    <Image url="@/icons/baseline_delete_forever_black_24dp.png" />
+                                 </image>
                               </ImageView>
-                          </graphic>
-                          <HBox.margin>
-                              <Insets />
-                          </HBox.margin>
-                      </Button>
-                      <Label fx:id="labelStatus" alignment="CENTER" text="Label" wrapText="true" HBox.hgrow="NEVER" />
-                  </children>
-              </HBox>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="buttonSave" layoutX="88.0" layoutY="10.0" mnemonicParsing="true" onAction="#modifyTest">
+                           <graphic>
+                              <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@/icons/baseline_save_black_24dp.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                            <Button fx:id="buttonPlay" mnemonicParsing="true" onAction="#processTable" HBox.hgrow="NEVER">
+                                <graphic>
+                                    <ImageView blendMode="DARKEN" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                        <image>
+                                            <Image url="@/icons/baseline_play_arrow_black_24dp.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                                <HBox.margin>
+                                    <Insets />
+                                </HBox.margin>
+                            </Button>
+                            <Label fx:id="labelStatus" alignment="CENTER" text="Label" wrapText="true" HBox.hgrow="NEVER" />
+                        </children>
+                    </HBox>
+               </children>
+            </HBox>
          </children>
       </GridPane>
     </bottom>
