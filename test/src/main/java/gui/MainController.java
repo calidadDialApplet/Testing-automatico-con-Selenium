@@ -39,6 +39,10 @@ import persistence.H2DAO;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 
@@ -106,8 +110,7 @@ public class MainController implements Initializable {
 
     private int actionsRowIndex = 0;
     private int validationRowIndex = 0;
-
-    private boolean modified = false;
+    private CheckBox lastTrialSelected;
 
     String comboBoxActionType = "";
     String comboBoxSelectElementBy = "";
@@ -183,8 +186,8 @@ public class MainController implements Initializable {
 
         testList.getSelectionModel().selectedItemProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
         {
-
-               /* if (Main.isModified())
+            System.out.println(Main.isModified());
+                if (Main.isModified())
                 {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("Guardar trial modificado");
@@ -193,21 +196,28 @@ public class MainController implements Initializable {
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.get() == ButtonType.OK)
                     {
-                        modifyTest();
+                        modifyTestListener(oldValueSelect);
                         Main.setModified(false);
-
+                        deleteAllTabs();
+                        getSelectedTrialActions();
+                        getSelectedTrialValidations();
                     } else {
-
+                        Main.setModified(false);
+                        bottomButtons.setDisable(false);
+                        deleteAllTabs();
+                        getSelectedTrialActions();
+                        getSelectedTrialValidations();
                     }
-
-                }else {*/
+                }else {
                     bottomButtons.setDisable(false);
                     deleteAllTabs();
                     getSelectedTrialActions();
                     getSelectedTrialValidations();
-               // }
+                }
 
         });
+
+
 
         if (testList.getSelectionModel().selectedItemProperty().getValue() == null)
         {
@@ -301,6 +311,7 @@ public class MainController implements Initializable {
 
     public void addActionRow()
     {
+        Main.setModified(true);
         if(tabActions.isSelected())
         {
             //Action newAction = new Action(gridPaneTrialList, actionsRowIndex);
@@ -337,6 +348,7 @@ public class MainController implements Initializable {
 
     public void deleteActionRow()
     {
+        Main.setModified(true);
         if(tabActions.isSelected())
         {
             /*List<Node> deleteNodes = new ArrayList<>();
@@ -443,6 +455,7 @@ public class MainController implements Initializable {
 
    public void deleteSelectedTab()
    {
+       Main.setModified(true);
        if (tabActions.isSelected())
        {
            gridPaneTrialList.getChildren().remove(0, gridPaneTrialList.getChildren().size());
@@ -472,9 +485,27 @@ public class MainController implements Initializable {
            goThroughTable("Actions");
            if (checkVariablesFormat(procesedActionList))
            {
-               executeTest(procesedActionList, "");
+               if (checkWaitingForTime(procesedActionList))
+               {
+                   executeTest(procesedActionList, "");
+               }else {
+                   Alert alert = new Alert(Alert.AlertType.ERROR);
+                   alert.setTitle("Error");
+                   alert.setHeaderText("Algun tiempo de los waiting for no es un entero");
+                   alert.setContentText("Estas tonto o que? :)");
+                   alert.initModality(Modality.APPLICATION_MODAL);
+                   alert.initOwner(testList.getScene().getWindow());
+                   alert.show();
+               }
+           } else {
+               Alert alert = new Alert(Alert.AlertType.ERROR);
+               alert.setTitle("Error");
+               alert.setHeaderText("Alguna de las variables no tiene el formato adecuado");
+               alert.setContentText("Estas tonto o que? :)");
+               alert.initModality(Modality.APPLICATION_MODAL);
+               alert.initOwner(testList.getScene().getWindow());
+               alert.show();
            }
-           // AVISO formato variables incorrectos
        }
        if (tabValidation.isSelected())
        {
@@ -482,9 +513,28 @@ public class MainController implements Initializable {
            goThroughTable("Validations");
            if (checkVariablesFormat(procesedValidationList))
            {
-               executeTest(procesedValidationList, "");
+               if (checkWaitingForTime(procesedValidationList))
+               {
+                   executeTest(procesedValidationList, "");
+               } else {
+                   Alert alert = new Alert(Alert.AlertType.ERROR);
+                   alert.setTitle("Error");
+                   alert.setHeaderText("Algun tiempo de los waiting for no es un entero");
+                   alert.setContentText("Estas tonto o que? :)");
+                   alert.initModality(Modality.APPLICATION_MODAL);
+                   alert.initOwner(testList.getScene().getWindow());
+                   alert.show();
+               }
+           }else {
+               Alert alert = new Alert(Alert.AlertType.ERROR);
+               alert.setTitle("Error");
+               alert.setHeaderText("Alguna de las variables no tiene el formato adecuado");
+               alert.setContentText("Estas tonto o que? :)");
+               alert.initModality(Modality.APPLICATION_MODAL);
+               alert.initOwner(testList.getScene().getWindow());
+               alert.show();
            }
-           // AVISO formato variables incorrectos
+
        }
    }
     // TODO: Tasks and tests cant be launched from MainController thread
@@ -496,10 +546,6 @@ public class MainController implements Initializable {
        Task<Void> task = new Task<Void>() {
            @Override
            protected Void call() throws Exception {
-
-               // TODO: This checkbox has no value. You create UI object to store values.
-               //  Plain wrong
-               //CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
 
                Platform.runLater(new Runnable() {
                    @Override
@@ -561,10 +607,6 @@ public class MainController implements Initializable {
                                buttonClose
                        );
                        trial.setGraphic(contentPane);
-
-
-
-
 
                        GridPane grid = new GridPane();
                        grid.setVgap(2);
@@ -695,6 +737,7 @@ public class MainController implements Initializable {
 
     public void modifyTest()
     {
+        Main.setModified(false);
         boolean trialmodified = false;
         CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
         if(selectedTrial == null)
@@ -712,9 +755,19 @@ public class MainController implements Initializable {
                 goThroughTable("Actions");
                 if (checkVariablesFormat(procesedActionList))
                 {
-                    H2DAO.deleteTrialActions(id);
-                    H2DAO.saveTrial(procesedActionList, id, 0);
-                    trialmodified = true;
+                    if (checkWaitingForTime(procesedActionList)) {
+                        H2DAO.deleteTrialActions(id);
+                        H2DAO.saveTrial(procesedActionList, id, 0);
+                        trialmodified = true;
+                    }else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Algun tiempo de los waiting for no es un entero");
+                        alert.setContentText("Estas tonto o que? :)");
+                        alert.initModality(Modality.APPLICATION_MODAL);
+                        alert.initOwner(testList.getScene().getWindow());
+                        alert.show();
+                    }
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
@@ -731,8 +784,19 @@ public class MainController implements Initializable {
                 goThroughTable("Validations");
                 if (checkVariablesFormat(procesedValidationList))
                 {
-                    H2DAO.deleteTrialValidations(id);
-                    H2DAO.saveTrial(procesedValidationList, id, 1);
+                    if (checkWaitingForTime(procesedValidationList))
+                    {
+                        H2DAO.deleteTrialValidations(id);
+                        H2DAO.saveTrial(procesedValidationList, id, 1);
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Algun tiempo de los waiting for no es un entero");
+                        alert.setContentText("Estas tonto o que? :)");
+                        alert.initModality(Modality.APPLICATION_MODAL);
+                        alert.initOwner(testList.getScene().getWindow());
+                        alert.show();
+                    }
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
@@ -756,6 +820,90 @@ public class MainController implements Initializable {
         // ALERTA
     }
 
+    public void modifyTestListener(CheckBox trial)
+    {
+        boolean trialmodified = false;
+        //CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+        /*if(selectedTrial == null)
+        {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("No hay ningún test seleccionado");
+            alert.setContentText("Contacta con tu administrador :)");
+            alert.showAndWait();
+        } else {*/
+            String trialName = trial.getText();
+            String id = H2DAO.getTrialID(trialName);
+            if (tabActions.isSelected()) {
+                procesedActionList.clear();
+                goThroughTable("Actions");
+                if (checkVariablesFormat(procesedActionList))
+                {
+                    if (checkWaitingForTime(procesedActionList))
+                    {
+                        H2DAO.deleteTrialActions(id);
+                        H2DAO.saveTrial(procesedActionList, id, 0);
+                        trialmodified = true;
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Algun tiempo de los waiting for no es un entero");
+                        alert.setContentText("Estas tonto o que? :)");
+                        alert.initModality(Modality.APPLICATION_MODAL);
+                        alert.initOwner(testList.getScene().getWindow());
+                        alert.show();
+                    }
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Alguna de las variables no tiene el formato adecuado");
+                    alert.setContentText("Estas tonto o que? :)");
+                    alert.initModality(Modality.APPLICATION_MODAL);
+                    alert.initOwner(testList.getScene().getWindow());
+                    alert.show();
+                }
+
+            }
+            if (tabValidation.isSelected()) {
+                procesedValidationList.clear();
+                goThroughTable("Validations");
+                if (checkVariablesFormat(procesedValidationList))
+                {
+                    if (checkWaitingForTime(procesedValidationList))
+                    {
+                        H2DAO.deleteTrialValidations(id);
+                        H2DAO.saveTrial(procesedValidationList, id, 1);
+                    }else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Algun tiempo de los waiting for no es un entero");
+                        alert.setContentText("Estas tonto o que? :)");
+                        alert.initModality(Modality.APPLICATION_MODAL);
+                        alert.initOwner(testList.getScene().getWindow());
+                        alert.show();
+                    }
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Alguna de las variables no tiene el formato adecuado");
+                    alert.setContentText("Estas tonto o que? :)");
+                    alert.initModality(Modality.APPLICATION_MODAL);
+                    alert.initOwner(testList.getScene().getWindow());
+                    alert.show();
+                }
+
+            }
+
+        //}
+
+        if (trialmodified) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Cambios comfirmados");
+            alert.setHeaderText("Cambios efectuados con éxito");
+            alert.showAndWait();
+        }
+        // ALERTA
+    }
     public void saveTest()
     {
         bottomButtons.setDisable(false);
@@ -935,6 +1083,26 @@ public class MainController implements Initializable {
         return formatOk;
     }
 
+    private boolean checkWaitingForTime(List<Action> actions)
+    {
+        boolean timeOk = true;
+        for (Action action : actions)
+        {
+            if (action.getActionTypeS().equals("Waiting For"))
+            {
+                try{
+                    if (Double.isNaN(Integer.parseInt(action.getSecondValueArgsS())))
+                    {
+                        timeOk = false;
+                    }
+                }catch (NumberFormatException e){
+                    return false;
+                }
+            }
+        }
+        return timeOk;
+    }
+
     private void resetFields() {
         comboBoxActionType= "";
         comboBoxSelectElementBy = "";
@@ -998,6 +1166,7 @@ public class MainController implements Initializable {
 
     public void runSelectedTrials()
     {
+        ArrayList<Thread> threads = new ArrayList<>();
         int times = Integer.parseInt(spinner.getValue().toString());
         for(CheckBox trial : testList.getItems())
         {
@@ -1007,8 +1176,15 @@ public class MainController implements Initializable {
                 ArrayList<Action> actions = H2DAO.getTrialActions(trial.getText());
                 for (int i = 0; i < times; i++)
                 {
-                    executeTest(actions, trialName);
+                    Thread thread = new Thread(() -> executeTest(actions, trialName));
+                    threads.add(thread);
+                    thread.start();
                 }
+                /*for (Thread thread : threads){
+                    thread.start();
+                }*/
+                //ExecutorService service = Executors.newCachedThreadPool();
+                //service.invokeAll(threads);
             }
         }
     }
@@ -1618,12 +1794,4 @@ public class MainController implements Initializable {
         }
     }
 
-
-    public boolean isModified() {
-        return modified;
-    }
-
-    public void setModified(boolean modified) {
-        this.modified = modified;
-    }
 }

@@ -52,25 +52,6 @@ public class ActionController
     {
 
         Main.setModified(false);
-
-        //MainController mainController = new MainController();
-        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainController.java"));
-        //loader.setController(mainController);
-
-
-
-        /*try {
-            loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-                //loader.getController();
-
-
-
-
-        //mainController.setModified(false);
         hBox = new HBox();
         hBox.setFillHeight(true);
         hBox.setMinWidth(2000);
@@ -90,10 +71,9 @@ public class ActionController
 
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
-            System.out.println("Modified 1 actionController -> "+Main.isModified());
-            if (oldValue != newValue && oldValue != null) {
+            if (oldValue != newValue && oldValue != null)
+            {
                 Main.setModified(true);
-                System.out.println("Modified 2 actionController -> "+Main.isModified());
             }
             lastType = actionType.getValue().toString();
             checkboxNotGenerated = true;
@@ -101,20 +81,15 @@ public class ActionController
                 case "Click":
                     initializeComboBox(hBox);
                     selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                    //gridParent.addRow(rowIndex, selectElementBy);
                     dragAndDrop(gridParent, selectElementBy);
                     hBox.getChildren().add(selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
-                        if (oldValue != newValue && oldValue != null) {
+                        if (oldValueSelect != newValueSelect && oldValueSelect != null)
+                        {
                             Main.setModified(true);
-                            System.out.println(Main.isModified());
                         }
                         generatedTextField(hBox, "FirstValueArgs", firstValueArgsValue);
-                        /*if (checkboxNotGenerated) {
-                            drawCheckBox(hBox);
-                            checkboxNotGenerated = false;
-                        }*/
                     });
                     selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
                     break;
@@ -122,40 +97,34 @@ public class ActionController
                     placeNotGenerated = true;
                     initializeComboBox(hBox);
                     selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                    //gridParent.addRow(rowIndex, selectElementBy);
                     dragAndDrop(gridParent, selectElementBy);
                     hBox.getChildren().add(selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
-                        if (oldValue != newValue && oldValue != null) {
+                        if (oldValueSelect != newValueSelect && oldValueSelect != null)
+                        {
                             Main.setModified(true);
-                            System.out.println(Main.isModified());
                         }
                         if (placeNotGenerated) {
                             firstValueArgs = new TextField(firstValueArgsValue);
                             firstValueArgs.textProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->{
-                                if (oldValueSelect1 != newValueSelect1) {
+                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect != null)
+                                {
                                     Main.setModified(true);
                                 }
                             });
-                            //firstValueArgs.setText(firstValueArgsValue);
-                            //gridParent.addRow(rowIndex, firstValueArgs);
                             hBox.getChildren().add(firstValueArgs);
                             selectPlaceBy = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                             dragAndDrop(gridParent, selectPlaceBy);
-                            //gridParent.addRow(rowIndex, selectPlaceBy);
                             hBox.getChildren().add(selectPlaceBy);
                             placeNotGenerated = false;
                             selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
                             {
-                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null) {
+                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null)
+                                {
                                     Main.setModified(true);
                                 }
                                 generatedTextField(hBox, "SecondValueArgs", secondValueArgsValue);
-                                /*if (checkboxNotGenerated) {
-                                    drawCheckBox(hBox);
-                                    checkboxNotGenerated = false;
-                                }*/
                             });
                             selectPlaceBy.setValue(Action.getSelectElementById(selectPlaceByValue));
                         }
@@ -165,30 +134,27 @@ public class ActionController
                 case "WriteTo":
                     initializeComboBox(hBox);
                     selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                    //gridParent.addRow(rowIndex, selectElementBy);
                     dragAndDrop(gridParent,selectElementBy);
                     hBox.getChildren().add(selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
-                        if (oldValueSelect != newValueSelect && oldValueSelect != null) {
+                        if (oldValueSelect != newValueSelect && oldValueSelect != null)
+                        {
                             Main.setModified(true);
                         }
                         if (textFieldNotGenerated) {
                             firstValueArgs = new TextField(firstValueArgsValue);
                             firstValueArgs.textProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->{
-                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null) {
-                                    System.out.println("writeTo "+Main.isModified());
+                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null)
+                                {
                                     Main.setModified(true);
                                 }
                             });
-                            //firstValueArgs.setText(firstValueArgsValue);
-                            //gridParent.addRow(rowIndex, firstValueArgs);
                             hBox.getChildren().add(firstValueArgs);
 
                             value.setText("Value");
                             value.setPadding(new Insets(5,0,0,0));
                             dragAndDrop(gridParent, value);
-                            //gridParent.addRow(rowIndex,value);
                             hBox.getChildren().add(value);
 
                             uniqueValue = new HBox();
@@ -198,29 +164,22 @@ public class ActionController
                             Label unique = new Label("Unique");
 
                             uniqueValue.getChildren().addAll(unique,uniqueCheckBox);
-                            //gridParent.addRow(rowIndex, uniqueValue);
                             dragAndDrop(gridParent, uniqueValue);
                             hBox.getChildren().add(uniqueValue);
 
                             secondValueArgs = new TextField(secondValueArgsValue);
                             secondValueArgs.textProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->{
-                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null) {
+                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null)
+                                {
                                     Main.setModified(true);
                                 }
                             });
-                            //secondValueArgs.setText(secondValueArgsValue);
-                            //gridParent.addRow(rowIndex,secondValueArgs);
                             addFileButton(secondValueArgs,hBox);
                             for (Node child : stackPane.getChildren()){
                                 if (child instanceof TextField){
                                     ((TextField) child).setText(secondValueArgsValue);
                                 }
                             }
-                            //hBox.getChildren().add(secondValueArgs);
-                            /*if (checkboxNotGenerated) {
-                                drawCheckBox(hBox);
-                                checkboxNotGenerated = false;
-                            }*/
                         }
                         textFieldNotGenerated = false;
                     });
@@ -233,11 +192,9 @@ public class ActionController
                     dragAndDrop(gridParent, selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
-                        System.out.println("ReadForm modified "+Main.isModified());
                         if (oldValueSelect != newValueSelect && oldValueSelect != null)
                         {
                             Main.setModified(true);
-                            System.out.println("ReadForm modified 2 "+Main.isModified());
                         }
                         if (textFieldNotGenerated) {
                             generatedTextField(hBox, "FirstValueArgs", firstValueArgsValue);
@@ -248,16 +205,12 @@ public class ActionController
 
                             secondValueArgs = new TextField(secondValueArgsValue);
                             secondValueArgs.textProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->{
-                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null) {
+                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null)
+                                {
                                     Main.setModified(true);
                                 }
                             });
-                            //secondValueArgs.setText(secondValueArgsValue);
                             hBox.getChildren().add(secondValueArgs);
-                            /*if (checkboxNotGenerated) {
-                                drawCheckBox(hBox);
-                                checkboxNotGenerated = false;
-                            }*/
                         }
                     });
                     selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
@@ -267,43 +220,34 @@ public class ActionController
                 case "NavigateTo":
                     initializeComboBox(hBox);
                     generatedTextField(hBox, "FirstValueArgs", firstValueArgsValue);
-                    /*if (checkboxNotGenerated){
-                        drawCheckBox(hBox);
-                    }*/
                     break;
                 case "Waiting For":
                     initializeComboBox(hBox);
 
                     value.setText("Element");
                     value.setPadding(new Insets(5,0,0,0));
-                    //gridParent.addRow(rowIndex,value);
                     dragAndDrop(gridParent, value);
                     hBox.getChildren().add(value);
 
                     selectElementBy = new ComboBox(FXCollections.observableArrayList(persistence.H2DAO.getSelectElementBy()));
-                    //gridParent.addRow(rowIndex, selectElementBy);
                     dragAndDrop(gridParent, selectElementBy);
                     hBox.getChildren().add(selectElementBy);
                     selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                     {
-                        if (oldValueSelect != newValueSelect && oldValueSelect != null) {
+                        if (oldValueSelect != newValueSelect && oldValueSelect != null)
+                        {
                             Main.setModified(true);
                         }
                         if (textFieldNotGenerated) {
                             firstValueArgs = new TextField(firstValueArgsValue);
                             firstValueArgs.textProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->{
-                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null) {
+                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null)
+                                {
                                     Main.setModified(true);
                                 }
                             });
-                            //firstValueArgs.setText(firstValueArgsValue);
-                            //gridParent.addRow(rowIndex, firstValueArgs);
                             hBox.getChildren().add(firstValueArgs);
                             generatedTextField(hBox, "SecondValueArgs", secondValueArgsValue);
-                            /*if (checkboxNotGenerated) {
-                                drawCheckBox(hBox);
-                                checkboxNotGenerated = false;
-                            }*/
                         }
                     });
                     selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
@@ -333,16 +277,12 @@ public class ActionController
         rowIndexLabel = new Label("# "+rowIndex);
         dragAndDrop(gridParent, rowIndexLabel);
         rowIndexLabel.setPadding(new Insets(5,0,0,0));
-        //gridParent.addRow(rowIndex,rowIndexLabel);
-        //hBox.setHgrow(rowIndexLabel, Priority.ALWAYS);
-
 
         hBox.getChildren().add(rowIndexLabel);
 
 
 
         actionType = new ComboBox<>(FXCollections.observableArrayList(H2DAO.getTypeAction()));
-        //gridParent.addRow(rowIndex, actionType);
         hBox.getChildren().add(actionType);
         actionType.valueProperty().addListener((observable, oldValue, newValue) ->
         {
@@ -613,26 +553,18 @@ public class ActionController
 
     private void drawElements(HBox hBox, String type, GridPane gridParent)
     {
-        //int rowIndex = gridParent.getRowIndex(actionType);
         switch (type) {
             case "Click":
                 selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                //gridParent.addRow(rowIndex, selectElementBy);
                 hBox.getChildren().add(selectElementBy);
                 dragAndDrop(gridParent, selectElementBy);
                 selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
                 {
-
                     generatedTextField(hBox,"FirstValueArgs","");
-                    /*if (checkboxNotGenerated) {
-                        drawCheckBox(hBox);
-                        checkboxNotGenerated = false;
-                    }*/
                 });
                 break;
             case "DragAndDrop":
                 selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
-                //gridParent.addRow(rowIndex, selectElementBy);
                 hBox.getChildren().add(selectElementBy);
                 dragAndDrop(gridParent, selectElementBy);
                 selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->

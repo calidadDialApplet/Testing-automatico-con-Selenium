@@ -2,6 +2,9 @@ package main;
 
 import gui.MainController;
 import javafx.application.Application;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,10 +22,14 @@ public class Main extends Application {
 
         private static Scene scene;
         private static boolean modified;
+        BooleanBinding modify = new BooleanBinding() {
+                @Override
+                protected boolean computeValue() {
+                        return false;
+                }
+        };
 
-        public static void main(String[] args) {
-                launch(args);
-        }
+        public static void main(String[] args) { launch(args);}
 
         @Override
         public void start(Stage primaryStage) throws Exception{

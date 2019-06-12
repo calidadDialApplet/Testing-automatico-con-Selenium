@@ -102,6 +102,19 @@ public class Action {
        String result = "Fail";
 
        String trialID = H2DAO.getTrialID(trialName);
+       for (Variable variable :variables)
+       {
+            if (this.firstValueArgsS.contains(variable.getVariableName()))
+            {
+                this.firstValueArgsS = this.firstValueArgsS.replace(variable.getVariableName(), variable.getValue());
+            }
+
+            if (!this.getActionTypeS().equals("ReadFrom")) {
+                if (this.secondValueArgsS.contains(variable.getVariableName())) {
+                    this.secondValueArgsS = this.secondValueArgsS.replace(variable.getVariableName(), variable.getValue());
+                }
+            }
+       }
 
        try
         {
@@ -188,7 +201,16 @@ public class Action {
                message = "El elemento seleccionado no es interactuable con la acción indicada.";
                break;
            case "NoSuchFrameException":
-               message = "No se puede cambiar a un frame no válido o que no está disponible";
+               message = "No se puede cambiar a un frame no válido o que no está disponible.";
+               break;
+           case "NoSuchSessionException":
+               message = "¿Has cerrado el navegador o qué? Se ha perdido la sesión en uso.";
+               break;
+           case "WebDriverException":
+               message = "El webdriver estaba realizando la acción inmediatamente después de cerrar el navegador.";
+               message = "Has cerrado el puto navegador mientras estaba trabajando ...";
+               break;
+           case "PatternSyntaxException":
                break;
        }
 
