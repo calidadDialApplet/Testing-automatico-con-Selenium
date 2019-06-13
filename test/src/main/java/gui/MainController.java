@@ -39,10 +39,6 @@ import persistence.H2DAO;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 
@@ -65,6 +61,12 @@ public class MainController implements Initializable {
 
     @FXML
     private Button buttonPlayTrials;
+
+    @FXML
+    private Button buttonCopy;
+
+    @FXML
+    private Button buttonPaste;
 
     @FXML
     private ListView<CheckBox> testList;
@@ -106,11 +108,12 @@ public class MainController implements Initializable {
     private List<Action> validationList;
     private List<Action> procesedActionList;
     private List<Action> procesedValidationList;
+    private List<Action> copiedActionList;
     private ArrayList<Variable> variablesList;
 
     private int actionsRowIndex = 0;
     private int validationRowIndex = 0;
-    private CheckBox lastTrialSelected;
+    private int copiedActions = 0;
 
     String comboBoxActionType = "";
     String comboBoxSelectElementBy = "";
@@ -129,6 +132,7 @@ public class MainController implements Initializable {
         //tableColumnTestCol.setCellValueFactory( (param) -> new SimpleStringProperty( param.getValue().toString()));
         actionList = new ArrayList<>();
         validationList = new ArrayList<>();
+        copiedActionList = new ArrayList<>();
         procesedActionList = new ArrayList<>();
         procesedValidationList = new ArrayList<>();
         variablesList = new ArrayList<>();
@@ -136,7 +140,28 @@ public class MainController implements Initializable {
         SpinnerValueFactory<Integer> executions = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,5,1);
         spinner.setValueFactory(executions);
 
+        /*final ProgressIndicator progress = new ProgressIndicator();
+        progress.setMaxSize(50, 50);
 
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Platform.runLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        //rootPane.setCenter(new Label("done"));
+                    }
+                });
+            }
+        }).start();*/
 
         if(!H2DAO.checkDB()){
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -223,7 +248,6 @@ public class MainController implements Initializable {
         {
             bottomButtons.setDisable(true);
         }
-
 
 
         poblateTestList();
@@ -351,32 +375,12 @@ public class MainController implements Initializable {
         Main.setModified(true);
         if(tabActions.isSelected())
         {
-            /*List<Node> deleteNodes = new ArrayList<>();
-            for (Node child : gridPaneTrialList.getChildren()) {
-                if (gridPaneTrialList.getRowIndex(child) == actionsRowIndex - 1) {
-                    deleteNodes.add(child);
-                }
-            }
-            gridPaneTrialList.getChildren().removeAll(deleteNodes);
-            if (actionsRowIndex > 0) {
-                actionsRowIndex--;
-            }*/
             deleteSelectedActions(gridPaneTrialList);
             reorderIndex(gridPaneTrialList);
             actionsRowIndex = getRowCount(gridPaneTrialList);
         }
         if(tabValidation.isSelected())
         {
-           /* List<Node> deleteNodes = new ArrayList<>();
-            for (Node child : gridPaneValidationList.getChildren()) {
-                if (gridPaneValidationList.getRowIndex(child) == validationRowIndex - 1) {
-                    deleteNodes.add(child);
-                }
-            }
-            gridPaneValidationList.getChildren().removeAll(deleteNodes);
-            if (validationRowIndex > 0) {
-                validationRowIndex--;
-            }*/
            deleteSelectedActions(gridPaneValidationList);
            reorderIndex(gridPaneValidationList);
            validationRowIndex = getRowCount(gridPaneValidationList);
@@ -435,7 +439,7 @@ public class MainController implements Initializable {
             }
             gridPane.getChildren().removeAll(nodesToDelete);
         }
-        // Repartir nuevos índices entre filas restantes
+
     }
 
     public void deletePanel()
@@ -788,6 +792,7 @@ public class MainController implements Initializable {
                     {
                         H2DAO.deleteTrialValidations(id);
                         H2DAO.saveTrial(procesedValidationList, id, 1);
+                        trialmodified = true;
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
@@ -1047,6 +1052,7 @@ public class MainController implements Initializable {
             if (unique)
             {
                 textFieldSecondValueArgs = Utils.generateUniqueID(textFieldSecondValueArgs);
+                unique = false;
             }
 
             Action currentAction = new Action(comboBoxActionType,comboBoxSelectElementBy,textFieldFirstValueArgs,comboBoxSelectPlaceBy,textFieldSecondValueArgs);
@@ -1279,6 +1285,122 @@ public class MainController implements Initializable {
             poblateTestList();
         }
 
+    }
+
+    public void copyActions()
+    {
+        copiedActionList.clear();
+        copiedActions = 0;
+        int rowToCopy = -1;
+
+        GridPane gridPane = new GridPane();
+
+        if (tabActions.isSelected())
+        {
+            gridPane = gridPaneTrialList;
+        }
+        if (tabValidation.isSelected())
+        {
+            gridPane = gridPaneValidationList;
+        }
+
+        for (Node hbox : gridPane.getChildren())
+        {
+            if (hbox instanceof  HBox){
+                for (Node child : ((HBox) hbox).getChildren())
+                {
+                    if (child instanceof CheckBox && ((CheckBox)child).isSelected())
+                    {
+                        rowToCopy = gridPane.getRowIndex(child.getParent());
+                        break;
+                    }
+                }
+            }
+
+            int i = 0;
+            int j = 0;
+            if (rowToCopy != -1)
+            {
+                if (gridPane.getRowIndex(hbox) == rowToCopy)
+                {
+                    if (hbox instanceof HBox){
+                        for (Node hboxChild : ((HBox) hbox).getChildren())
+                        {
+                            if (hboxChild instanceof ComboBox && i == 0)
+                            {
+                                comboBoxActionType = ((ComboBox) hboxChild).getValue().toString();
+                                i++;
+                            } else if(hboxChild instanceof ComboBox && i == 1)
+                            {
+                                comboBoxSelectElementBy = ((ComboBox) hboxChild).getValue().toString();
+                                i++;
+                            } else if(hboxChild instanceof ComboBox && i == 2)
+                            {
+                                comboBoxSelectPlaceBy = ((ComboBox) hboxChild).getValue().toString();
+                            }
+
+                            if (hboxChild instanceof TextField && j == 0)
+                            {
+                                textFieldFirstValueArgs = ((TextField) hboxChild).getText();
+                                j++;
+                            } else if (hboxChild instanceof TextField && j ==1)
+                            {
+                                textFieldSecondValueArgs = ((TextField) hboxChild).getText();
+
+                            }
+
+                            if(hboxChild instanceof StackPane && j == 1)
+                            {
+                                for (Node stackChild : ((StackPane) hboxChild).getChildren())
+                                {
+                                    if (stackChild instanceof TextField)
+                                    {
+                                        textFieldSecondValueArgs = ((TextField) stackChild).getText();
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    Action action = new Action(comboBoxActionType, comboBoxSelectElementBy, textFieldFirstValueArgs, comboBoxSelectPlaceBy, textFieldSecondValueArgs);
+                    copiedActionList.add(action);
+                    resetFields();
+                }
+            }
+        }
+    }
+
+    public void pasteActions()
+    {
+        Main.setModified(true);
+        ActionController actionController = new ActionController();
+        if (tabActions.isSelected())
+        {
+            for (Action action : copiedActionList)
+            {
+
+                actionController.setAction(gridPaneTrialList, actionsRowIndex, action.getActionTypeS(),
+                        action.getSelectElementByS(), action.getFirstValueArgsS(),
+                        action.getSelectPlaceByS(),action.getSecondValueArgsS());
+                actionList.add(action);
+                actionsRowIndex++;
+            }
+
+        }
+
+        if (tabValidation.isSelected())
+        {
+            for (Action action : copiedActionList)
+            {
+
+                actionController.setAction(gridPaneValidationList, validationRowIndex, action.getActionTypeS(),
+                        action.getSelectElementByS(), action.getFirstValueArgsS(),
+                        action.getSelectPlaceByS(),action.getSecondValueArgsS());
+                validationList.add(action);
+                validationRowIndex++;
+            }
+
+        }
     }
 
 

@@ -1,0 +1,17 @@
+Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation
+WriteTo,id,adminusername,,admin,false
+WriteTo,id,adminpassword,,admin,false
+Click,id,login,,,false
+Click,id,ADMIN,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[1]/a[1]/img,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[3]/div[2]/table/tbody/tr[3]/td[1]/a/img,,,false
+WriteTo,id,new_groupname,,AGENTE1Y2rc3verXYZ794,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[3]/div/table/tbody/tr[93]/td[1]/img,,,false
+ReadFrom,cssSelector,tbody :nth-last-child(3) ~ tr :first-child,,${grupo},false
+WriteTo,id,adminusername,,admin,true
+WriteTo,id,adminpassword,,admin,true
+Click,id,login,,,true
+Click,id,ADMIN,,,true
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[1]/a[1]/img,,,true
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[3]/div[2]/table/tbody/tr[3]/td[1]/a/img,,,true
+ReadFrom,cssSelector,tbody :nth-last-child(3) ~ tr :first-child,,${groupComprobation},true

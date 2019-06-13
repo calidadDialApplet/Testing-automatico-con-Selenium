@@ -200,10 +200,10 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <HBox spacing="280.0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
+            <HBox spacing="225.0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
                <children>
-                  <Spinner fx:id="spinner" nodeOrientation="LEFT_TO_RIGHT" prefWidth="80.0" />
-                    <HBox fx:id="bottomButtons" alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" spacing="5.0">
+                  <Spinner fx:id="spinner" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="74.0" />
+                    <HBox fx:id="bottomButtons" alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" prefHeight="26.0" prefWidth="320.0" spacing="5.0">
                         <children>
                             <Button fx:id="buttonAdd" mnemonicParsing="true" onAction="#addActionRow">
                                 <graphic>
@@ -218,7 +218,7 @@
                                 <graphic>
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                         <image>
-                                            <Image url="@/icons/sharp_remove_black_24dp.png" />
+                                            <Image url="@../icons/sharp_delete_black_24dp.png" />
                                         </image>
                                     </ImageView>
                                 </graphic>
@@ -253,7 +253,25 @@
                                     <Insets />
                                 </HBox.margin>
                             </Button>
-                            <Label fx:id="labelStatus" alignment="CENTER" text="Label" wrapText="true" HBox.hgrow="NEVER" />
+                        <Button fx:id="buttonPaste" layoutX="10.0" layoutY="10.0" mnemonicParsing="true" onAction="#pasteActions">
+                           <graphic>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/baseline_flip_to_front_black_18dp.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="buttonCopy" layoutX="205.0" layoutY="13.0" mnemonicParsing="true" onAction="#copyActions">
+                           <graphic>
+                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/baseline_flip_to_back_black_18dp.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                            <Label fx:id="labelStatus" alignment="CENTER" prefHeight="26.0" prefWidth="38.0" text="Label" wrapText="true" HBox.hgrow="NEVER" />
                         </children>
                     </HBox>
                </children>

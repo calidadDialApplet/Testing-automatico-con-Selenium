@@ -316,6 +316,7 @@ public class ActionController
 
     private void dragAndDrop(GridPane gridParent, Node node)
     {
+        Main.setModified(true);
         node.setOnDragDetected(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {

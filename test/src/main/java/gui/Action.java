@@ -212,6 +212,9 @@ public class Action {
                break;
            case "PatternSyntaxException":
                break;
+           case "StaleElementReferenceException":
+               message = "Elemento obsoleto en el DOM";
+               break;
        }
 
        return message;
