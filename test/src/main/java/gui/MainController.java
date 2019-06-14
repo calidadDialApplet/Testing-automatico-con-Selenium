@@ -124,6 +124,7 @@ public class MainController implements Initializable {
     String variablesColumnsHeadersCSV = "TrialID,VariableName,Value";
 
     private static Pattern VARIABLE_PATTERN = Pattern.compile("\\$\\{\\S+\\}");
+    private static Pattern GLOBAL_VARIABLE_PATTERN = Pattern.compile("\\€\\{\\S+\\}");
 
 
     @Override
@@ -262,7 +263,7 @@ public class MainController implements Initializable {
             stageSettings.initModality(Modality.APPLICATION_MODAL);
             stageSettings.setAlwaysOnTop(true);
             stageSettings.setTitle("Settings");
-            sceneSettings = new Scene(root,350,250);
+            sceneSettings = new Scene(root,370,270);
             if (H2DAO.isDarkTheme()){
                 setTheme("Settings","darcula");
             }else {
@@ -612,20 +613,21 @@ public class MainController implements Initializable {
                        );
                        trial.setGraphic(contentPane);
 
+
                        GridPane grid = new GridPane();
                        grid.setVgap(2);
                        if (tabActions.isSelected()) {
                            for (int i = 0; i < actionList.size(); i++) {
                                Action currentAction = actionList.get(i);
                                grid.add(new Label("Action " + i + ":"), 0, i);
-                               grid.add(new Label(" " + currentAction.executeAction(driver, variables,nameOfTrial)), 1, i);
+                               grid.add(new Label(" " + currentAction.executeAction(driver, variables,nameOfTrial, Thread.currentThread())), 1, i);
                            }
                        }
                        if (tabValidation.isSelected()){
                            for (int i = 0; i < actionList.size(); i++) {
                                Action currentValidation = actionList.get(i);
                                grid.add(new Label("Validation " + i + ":"), 0, i);
-                               grid.add(new Label(" " + currentValidation.executeAction(driver, variables,nameOfTrial)), 1, i);
+                               grid.add(new Label(" " + currentValidation.executeAction(driver, variables,nameOfTrial, Thread.currentThread())), 1, i);
                            }
                        }
                        trial.setContent(grid);
@@ -1589,6 +1591,41 @@ public class MainController implements Initializable {
         }
     }
 
+    public void exportGlobalVariables()
+    {
+        //DirectoryChooser dirChooser = new DirectoryChooser();
+        //File defaultOrigin = new File(System.getProperty("user.home"));
+        //dirChooser.setInitialDirectory(defaultOrigin);
+        //File folder = dirChooser.showDialog(stageSettings);
+
+
+        //File variablesile = new File(folder.getAbsolutePath() + "nombrenuevoFIle1");
+        //File pruebas;
+
+       /* try {
+
+            if (folder != null) {
+
+
+
+
+                        /*File globalVAriableCSV = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+trialID)+".csv");
+                        File trialFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+trialID)+".csv");
+
+                        ArrayList<Action> actions = H2DAO.getTrialActions(trial.getText());
+
+
+                        saveTrialToCSV(actions, validations, trialFile);
+                        exportJSON(actions, validations, variables, trialJSONFile);*/
+
+
+
+        /*    }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+    }
+
     public void importTrial()
     {
         deleteAllTabs();
@@ -1729,26 +1766,127 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
     }
+    
+    public void importGlobalVariables()
+    {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        List<File> files = fileChooser.showOpenMultipleDialog(stageSettings);
 
-    private void checkVariables(ArrayList<String> failedVariables, Variable variable) {
+        if (files != null){
+
+            for (File file : files)
+            {
+                String fileExtension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+                if (fileExtension.equals("json"))
+                {
+                    importJSONGlobalVariables(file);
+                }
+                if (fileExtension.equals("csv"))
+                {
+                    importCSVGlobalVariables(file);
+                }
+            }
+        } else {
+            return;
+        }   
+    }
+
+    private void importCSVGlobalVariables(File file)
+    {
+        ArrayList<String> failedVariables = new ArrayList<>();
+
+        try
+        {
+            Scanner inputStream = new Scanner(file);
+            while (inputStream.hasNext())
+            {
+                String data = inputStream.nextLine();
+                String[] values = data.split(",");
+
+                Global_Variable global_variable = new Global_Variable(values[0], values[1]);
+                checkGlobalVariables(failedVariables, global_variable);
+
+                if (failedVariables.size() > 0)
+                {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Se ha producido un error durante la importación de las variables");
+                    String error = "";
+                    for (String failedVariable : failedVariables)
+                    {
+                        error = error.concat(failedVariable+"\n");
+                    }
+                    alert.setContentText(error);
+                    alert.showAndWait();
+                }
+
+            }
+        } catch(FileNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void importJSONGlobalVariables(File file)
+    {
+        JSONParser parser = new JSONParser();
+        ArrayList<String> failedVariables = new ArrayList<>();
+
+        try
+        {
+            FileReader reader = new FileReader(file);
+            Object object = parser.parse(reader);
+
+
+            org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) object;
+
+
+            org.json.simple.JSONArray globalVariables = (org.json.simple.JSONArray) jsonObject.get("GlobalVariables");
+
+            for (int i = 0; i < globalVariables.size(); i++)
+            {
+                org.json.simple.JSONObject globalVariable = (org.json.simple.JSONObject) globalVariables.get(i);
+                Global_Variable var = new Global_Variable(globalVariable.get("variableName").toString(), globalVariable.get("value").toString());
+                checkGlobalVariables(failedVariables, var);
+            }
+
+        }catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkVariables(ArrayList<String> failedVariables, Variable variable)
+    {
 
         if (variable.getVariableName().matches(String.valueOf(VARIABLE_PATTERN)))
         {
             if (H2DAO.trialExist(variable.getVariableTrial())){
-                //Variable variable = new Variable(values[0], values[1], values[2]);
+
                 if (!H2DAO.variableExists(variable)) {
+
                     H2DAO.saveVariable(variable);
-                    //variablesList.add(variable);
                 } else {
                     failedVariables.add("Variable " + variable.getVariableName() + " Fallo: Variable existente");
                 }
             }else {
-                //Variable variable = new Variable(values[0], values[1], values[2]);
                 failedVariables.add("Variable " + variable.getVariableName() + " Fallo: No existe trial");
             }
         } else {
-            //Variable variable = new Variable(values[0], values[1], values[2]);
             failedVariables.add("Variable " + variable.getVariableName() + " Fallo: Formato");
+        }
+    }
+
+    private void checkGlobalVariables(ArrayList<String> failedVariables, Global_Variable global_variable)
+    {
+        if (global_variable.getVariableName().matches(String.valueOf(GLOBAL_VARIABLE_PATTERN)))
+        {
+            H2DAO.saveGlobalVariable(global_variable);
+        }else {
+            failedVariables.add("Variable " + global_variable.getVariableName() + " Fallo: Formato");
         }
     }
 
@@ -1801,15 +1939,9 @@ public class MainController implements Initializable {
             for (int i = 0; i < variables.size(); i++)
             {
                 org.json.simple.JSONObject variable = (org.json.simple.JSONObject) variables.get(i);
-                //if (H2DAO.trialExist(variable.get("variableTrial").toString())) {
-                    Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
-                    /*if (var.getVariableName().matches(String.valueOf(VARIABLE_PATTERN)) && H2DAO.trialExist(var.getVariableTrial()) && !H2DAO.variableExists(var))
-                    {
-                        H2DAO.saveVariable(var);
-                    }*/
-                    checkVariables(failedVariables, var);
+                Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
+                checkVariables(failedVariables, var);
 
-                //}
             }
 
             if (checkVariablesFormat(actionList) && checkVariablesFormat(validationList) && failedVariables.size() == 0)
@@ -1846,11 +1978,7 @@ public class MainController implements Initializable {
 
     }
 
-    /*public void incrementSpinner()
-    {
-        spinner.increment();
-    }*/
-
+    
 
     public static String getPathOFC()
     {

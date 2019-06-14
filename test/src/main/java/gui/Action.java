@@ -7,7 +7,7 @@ import org.openqa.selenium.WebElement;
 import persistence.H2DAO;
 
 import java.util.ArrayList;
-
+import java.util.regex.Pattern;
 
 
 // TODO: Refactor this as ActionController, use it from MainController
@@ -19,6 +19,9 @@ public class Action {
    private String selectPlaceByS = "";
    private String firstValueArgsS = "";
    private String secondValueArgsS = "";
+
+    private static Pattern GLOBAL_VARIABLE_PATTERN = Pattern.compile("\\€\\{\\S+\\}");
+    private static Pattern VARIABLE_PATTERN = Pattern.compile("\\$\\{\\S+\\}");
 
 
 
@@ -97,24 +100,14 @@ public class Action {
     }
 
 
-   public String executeAction(WebDriver driver, ArrayList<Variable> variables, String trialName){
+   public String executeAction(WebDriver driver, ArrayList<Variable> variables, String trialName, Thread thread){
 
        String result = "Fail";
 
        String trialID = H2DAO.getTrialID(trialName);
-       for (Variable variable :variables)
-       {
-            if (this.firstValueArgsS.contains(variable.getVariableName()))
-            {
-                this.firstValueArgsS = this.firstValueArgsS.replace(variable.getVariableName(), variable.getValue());
-            }
 
-            if (!this.getActionTypeS().equals("ReadFrom")) {
-                if (this.secondValueArgsS.contains(variable.getVariableName())) {
-                    this.secondValueArgsS = this.secondValueArgsS.replace(variable.getVariableName(), variable.getValue());
-                }
-            }
-       }
+       subtituteVariables(variables);
+
 
        try
         {
@@ -155,7 +148,7 @@ public class Action {
                     break;
                 case "WaitTime":
                     getValueVariables(variables);
-                    SeleniumDAO.implicitWait(Integer.parseInt(this.firstValueArgsS));
+                    SeleniumDAO.implicitWait(Integer.parseInt(this.firstValueArgsS), driver, thread);
                     result = "Ok";
                     break;
                 case "SwitchDefault":
@@ -182,7 +175,41 @@ public class Action {
 
    }
 
-   private String manageException(Exception exception)
+    private void subtituteVariables(ArrayList<Variable> variables) {
+        if (this.firstValueArgsS.matches(String.valueOf(VARIABLE_PATTERN))) {
+            for (Variable variable : variables) {
+                if (this.firstValueArgsS.contains(variable.getVariableName())) {
+                    this.firstValueArgsS = this.firstValueArgsS.replace(variable.getVariableName(), variable.getValue());
+                }
+
+                if (!this.getActionTypeS().equals("ReadFrom")) {
+                    if (this.secondValueArgsS.contains(variable.getVariableName())) {
+                        this.secondValueArgsS = this.secondValueArgsS.replace(variable.getVariableName(), variable.getValue());
+                    }
+                }
+            }
+        }
+
+        if (this.firstValueArgsS.matches(String.valueOf(GLOBAL_VARIABLE_PATTERN)))
+        {
+           ArrayList<Global_Variable> global_variables = H2DAO.getGlobalVariables();
+           for (Global_Variable variable : global_variables)
+           {
+             if (this.firstValueArgsS.contains(variable.getVariableName()))
+             {
+                 this.firstValueArgsS = this.firstValueArgsS.replace(variable.getVariableName(), variable.getValue());
+             }
+
+               if (!this.getActionTypeS().equals("ReadFrom")) {
+                   if (this.secondValueArgsS.contains(variable.getVariableName())) {
+                       this.secondValueArgsS = this.secondValueArgsS.replace(variable.getVariableName(), variable.getValue());
+                   }
+               }
+           }
+        }
+    }
+
+    private String manageException(Exception exception)
    {
        String message = "";
        String type = exception.getClass().getName().substring(exception.getClass().getName().lastIndexOf(".") + 1);

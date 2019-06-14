@@ -1,6 +1,7 @@
 package persistence;
 
 import gui.Action;
+import gui.Global_Variable;
 import gui.Variable;
 import javafx.scene.control.Alert;
 
@@ -12,10 +13,10 @@ public class H2DAO {
 
     // TODO: Once declared, this becomes constant, so should be enums, neither ArrayList<> nor String[]
      //enum matchTableName {TRIALS,TRIAL_ACTIONS,ACTION_TYPES,SELECTION_BY} ;
-     static ArrayList<String> matchesTableName = new ArrayList<>(Arrays.asList("TRIALS","TRIAL_ACTIONS","VARIABLES","ACTION_TYPES","SETTINGS","SELECTION_BY"));
-     static ArrayList<String> matchesColName = new ArrayList<>(Arrays.asList("ID","NAME","ID","NAME","NAME","VALUE","SETTINGFIELD","VALUE","ID","NAME","ID","TRIALID","ACTIONTYPEID","SELECTIONBYID1","VALUE1",
+     static ArrayList<String> matchesTableName = new ArrayList<>(Arrays.asList("TRIALS","GLOBAL_VARIABLES","TRIAL_ACTIONS","VARIABLES","ACTION_TYPES","SETTINGS","SELECTION_BY"));
+     static ArrayList<String> matchesColName = new ArrayList<>(Arrays.asList("ID","NAME","VARIABLE","VALUE","ID","NAME","NAME","VALUE","SETTINGFIELD","VALUE","ID","NAME","ID","TRIALID","ACTIONTYPEID","SELECTIONBYID1","VALUE1",
                                                                             "SELECTIONBYID2","VALUE2","VALIDATION","TRIAL","VARIABLE","VALUE"));
-     static ArrayList<String> matchesTypeName = new ArrayList<>(Arrays.asList("INTEGER","TEXT","INTEGER","TEXT","VARCHAR","VARCHAR","TEXT","TEXT","INTEGER","TEXT","INTEGER","INTEGER","INTEGER","INTEGER",
+     static ArrayList<String> matchesTypeName = new ArrayList<>(Arrays.asList("INTEGER","TEXT","TEXT","TEXT","INTEGER","TEXT","VARCHAR","VARCHAR","TEXT","TEXT","INTEGER","TEXT","INTEGER","INTEGER","INTEGER","INTEGER",
                                                                                 "TEXT","INTEGER","TEXT","INTEGER","INTEGER","TEXT","TEXT"));
      static String validationTableNameQuery = "select table_name from information_schema.tables where table_type = 'TABLE'";
 
@@ -29,7 +30,8 @@ public class H2DAO {
     };*/
 
      static String validationColNameQuery = "select column_name from information_schema.columns where table_name = 'TRIALS' or table_name = 'ACTION_TYPES'" +
-                                            "or table_name = 'SELECTION_BY' or table_name = 'TRIAL_ACTIONS' or table_name = 'SETTINGS' or table_name = 'VARIABLES'";
+                                            "or table_name = 'SELECTION_BY' or table_name = 'TRIAL_ACTIONS' or table_name = 'SETTINGS' or table_name = 'VARIABLES'" +
+                                            "or table_name = 'GLOBAL_VARIABLES'";
 
     // TODO: This could be a unique String
     /*static String[] validationColTypesQuerys = new String[]
@@ -41,7 +43,8 @@ public class H2DAO {
     };*/
 
     static String validationColTypesQuery = "select column_type from information_schema.columns where table_name = 'TRIALS' or table_name = 'ACTION_TYPES'" +
-                                            "or table_name = 'SELECTION_BY' or table_name = 'TRIAL_ACTIONS' or table_name = 'SETTINGS' or table_name = 'VARIABLES'";
+                                            "or table_name = 'SELECTION_BY' or table_name = 'TRIAL_ACTIONS' or table_name = 'SETTINGS' or table_name = 'VARIABLES'" +
+                                            "or table_name = 'GLOBAL_VARIABLES'";
     // TODO: This could be a unique String
     final static String[] createTables = new String[]
     {
@@ -73,6 +76,7 @@ public class H2DAO {
                     ")",
             "create table settings(settingField text, value text)",
             "create table variables(trial integer, variable text, value text)",
+            "create table global_variables(variable text, value text)",
             "alter table trial_actions add constraint fk_trialid foreign key(trialid) references trials(id)",
             "alter table trial_actions add constraint fk_actiontypeid foreign key(actiontypeid) references action_types(id)",
             "alter table trial_actions add constraint fk_selectionById1 foreign key(selectionbyid1) references selection_by(id)",
@@ -99,14 +103,6 @@ public class H2DAO {
             "insert into settings (settingField, value) values ('darktheme', 'true')"
     };
 
-    // TODO: This could be a unique String
-    /*static String[] dropTables = new String[]{
-        "drop table action_types",
-        "drop table selection_by",
-        "drop table trials",
-        "drop table trial_actions"
-    };*/
-
     static String dropTablesQuery = "drop table action_types,selection_by,trials,trial_actions,settings,validations";
 
     // TODO: This should be in H2DAO constructor, and main is useless
@@ -125,7 +121,7 @@ public class H2DAO {
 
         try {
             Statement st = connection.createStatement();
-            String createTable = "alter table variables add unique(variable)";
+            String createTable = "create table global_variables(variable text, value text)";
             //st.execute(createTable);
             /*
             ResultSet resultSet =  st.getResultSet();
@@ -269,6 +265,12 @@ public class H2DAO {
     {
             executeQuery("delete from variables where trial = '"+trialID+"'");
             System.out.println("Variables eliminadas");
+    }
+
+    public static void deleteGlobalVariables()
+    {
+        executeQuery("delete from global_variables");
+        System.out.println("Variables Globales eliminadas");
     }
 
     // TODO: How have "id"'s become Strings instead of int ??
@@ -668,6 +670,27 @@ public class H2DAO {
         return exist;
     }
 
+    public static boolean globalVariableExists(Global_Variable var)
+    {
+        boolean exist = false;
+        try{
+            Statement statement = connection.createStatement();
+            String existGlobalVariableQuery = "select * from global_variables where variable = '"+var.getVariableName()+"'";
+            statement.execute(existGlobalVariableQuery);
+
+            ResultSet resultSet = statement.getResultSet();
+            resultSet.last();
+            if (resultSet.getRow() > 0)
+            {
+                exist = true;
+            }
+
+        }catch (SQLException e){
+
+        }
+        return exist;
+    }
+
     public static String getWeb()
     {
        return getSettingValue("web");
@@ -707,6 +730,20 @@ public class H2DAO {
 
     }
 
+    public static void saveGlobalVariables(ArrayList<Global_Variable> variables)
+    {
+        try{
+            Statement st = connection.createStatement();
+            for (Global_Variable global_variable : variables){
+                String query = "insert into global_variables (variable, value) values ('"+global_variable.getVariableName()+"', '"+global_variable.getValue()+"')";
+                st.execute(query);
+            }
+            System.out.println("Variables Guardadas");
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
     public static void saveVariable(Variable variable)
     {
         try{
@@ -714,6 +751,18 @@ public class H2DAO {
             String query = "insert into variables (trial, variable, value) values ('"+variable.getVariableTrial()+"', '"+variable.getVariableName()+"', '"+variable.getValue()+"')";
             st.execute(query);
             System.out.println("Variable Guardada");
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveGlobalVariable(Global_Variable variable)
+    {
+        try{
+            Statement st = connection.createStatement();
+            String query = "insert into global_variables (variable, value) values ('"+variable.getVariableName()+"', '"+variable.getValue()+"')";
+            st.execute(query);
+            System.out.println("Variable Global Guardada");
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -736,7 +785,7 @@ public class H2DAO {
 
                     Statement statement = connection.createStatement();
 
-                    String updateTrialQuery = "update variables set value = '" + value + "' where value = '" + oldValue + "' ";
+                    String updateTrialQuery = "update variables set value = '" + value + "' where value = '" + oldValue + "'";
                     statement.execute(updateTrialQuery);
                     System.out.println("Variable actualizada");
                     updated = true;
@@ -747,6 +796,39 @@ public class H2DAO {
                 String saveTrialQuery = "insert into variables (trial, variable, value) values ('" + trial + "', '" + variable + "', '" + value + "')";
                 st.execute(saveTrialQuery);
                 System.out.println("Variable guardada");
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateGlobalVariable(String variable, String value)
+    {
+        boolean updated = false;
+        try {
+            Statement st = connection.createStatement();
+            String variableExistQuery = "select * from global_variables where variable = '"+variable+"'";
+            st.execute(variableExistQuery);
+
+            ResultSet resultSet = st.getResultSet();
+            while (resultSet.next()){
+                if (resultSet.getString(1).equals(variable))
+                {
+                    String oldValue = resultSet.getString(3);
+                    System.out.println(oldValue);
+
+                    Statement statement = connection.createStatement();
+
+                    String updateGlobalQuery = "update global_variables set value = '"+ value +"' where value = '" + oldValue + "'";
+                    statement.execute(updateGlobalQuery);
+                    System.out.println("Variable global actualizada");
+                    updated = true;
+                }
+            }
+            if (!updated) {
+                String saveTrialQuery = "insert into global_variables (variable, value) values ('" + variable + "', '" + value + "')";
+                st.execute(saveTrialQuery);
+                System.out.println("Variable global guardada");
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -776,6 +858,28 @@ public class H2DAO {
         }
 
         return variables;
+    }
+
+    public static ArrayList<Global_Variable> getGlobalVariables()
+    {
+        ArrayList<Global_Variable> global_variables = new ArrayList<>();
+
+        try{
+            Statement st = connection.createStatement();
+            String getVariables = "select * from global_variables";
+            st.execute(getVariables);
+            ResultSet set = st.getResultSet();
+            while (set.next())
+            {
+                Global_Variable variable = new Global_Variable(set.getString(1), set.getString(2));
+                global_variables.add(variable);
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return global_variables;
     }
 
     // TODO: More generic, args: table and field

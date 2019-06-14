@@ -29,7 +29,7 @@
     <bottom>
         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
             <children>
-              <Button fx:id="buttonAddVariable" mnemonicParsing="false" onAction="#addVariable">
+              <Button fx:id="buttonAddVariable" mnemonicParsing="false" onAction="#addGlobalVariable">
                <graphic>
                   <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -37,7 +37,7 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-                <Button fx:id="buttonDeleteAll" layoutX="217.0" layoutY="47.0" mnemonicParsing="false" onAction="#deleteAllVariables">
+                <Button fx:id="buttonDeleteAll" layoutX="217.0" layoutY="47.0" mnemonicParsing="false" onAction="#deleteAllGlobalVariables">
                     <graphic>
                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -46,7 +46,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="buttonDelete" mnemonicParsing="false" onAction="#deleteSelectedVariables">
+                <Button fx:id="buttonDelete" mnemonicParsing="false" onAction="#deleteSelectedGlobalVariables">
                     <graphic>
                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -55,15 +55,15 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="buttonSave" mnemonicParsing="false" onAction="#saveVariables" text="Save" />
-                <Button fx:id="buttonCancel" mnemonicParsing="false" onAction="#closeVariables" text="Cancel" />
+                <Button fx:id="buttonSave" mnemonicParsing="false" onAction="#saveGlobalVariables" text="Save" />
+                <Button fx:id="buttonCancel" mnemonicParsing="false" onAction="#closeGlobalVariables" text="Cancel" />
             </children>
         </HBox>
     </bottom>
     <top>
       <HBox alignment="CENTER" spacing="150.0" BorderPane.alignment="BOTTOM_LEFT">
          <children>
-            <Label text="Variable" />
+            <Label text="Global Variable" />
             <Label text="Valor" />
          </children>
          <BorderPane.margin>

@@ -1,11 +1,15 @@
 package gui;
 
 
+import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -14,6 +18,7 @@ import org.apache.commons.validator.routines.UrlValidator;
 import persistence.H2DAO;
 import persistence.settingsObject;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +38,8 @@ public class SettingsController implements Initializable {
     @FXML
     private CheckBox checkBoxDarkTheme;
 
+    private static Stage stageGlobalVariables;
+    private static Scene sceneGlobalVariables;
     private ArrayList<String> browsers = new ArrayList<>(Arrays.asList("Firefox","Chrome"));
 
     @Override
@@ -104,5 +111,58 @@ public class SettingsController implements Initializable {
 
         }
 
+    }
+
+    public void openGlobalVariables()
+    {
+        try {
+
+            GlobalVariablesController globalVariablesController = new GlobalVariablesController();
+
+
+
+            String globalID = "-1";
+            //variablesController.setTrialID(globalID);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/GlobalVariables.fxml"));
+            loader.setController(globalVariablesController);
+            Parent root = loader.load();
+            stageGlobalVariables = new Stage();
+            stageGlobalVariables.setResizable(false);
+            stageGlobalVariables.initModality(Modality.APPLICATION_MODAL);
+            stageGlobalVariables.setAlwaysOnTop(true);
+            stageGlobalVariables.setTitle("Global Variables");
+            sceneGlobalVariables = new Scene(root, 600, 400);
+            if (H2DAO.isDarkTheme()) {
+                setTheme("darcula");
+            } else {
+                setTheme("modena");
+            }
+
+            stageGlobalVariables.setScene(sceneGlobalVariables);
+            stageGlobalVariables.show();
+
+
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void closeStage()
+    {
+        stageGlobalVariables.close();
+    }
+
+    public static void setTheme(String theme)
+    {
+        sceneGlobalVariables.getStylesheets().clear();
+        if (theme.equals("darcula")) {
+            sceneGlobalVariables.getStylesheets().add("/css/darcula.css");
+        }
+        if (theme.equals("modena")) {
+            Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
+        }
     }
 }

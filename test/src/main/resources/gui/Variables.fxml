@@ -55,8 +55,8 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="buttonCancel" mnemonicParsing="false" onAction="#closeVariables" text="Cancel" />
                 <Button fx:id="buttonSave" mnemonicParsing="false" onAction="#saveVariables" text="Save" />
+                <Button fx:id="buttonCancel" mnemonicParsing="false" onAction="#closeVariables" text="Cancel" />
             </children>
         </HBox>
     </bottom>
