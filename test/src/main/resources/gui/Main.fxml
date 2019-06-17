@@ -31,13 +31,13 @@
                         <MenuItem fx:id="menuItemClose" mnemonicParsing="true" onAction="#totalClose" text="Close" />
                   <Menu mnemonicParsing="false" text="Import">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Import Global Variables" />
+                      <MenuItem mnemonicParsing="false" onAction="#importGlobalVariables" text="Import Global Variables" />
                               <MenuItem fx:id="menuItemImport" onAction="#importTrial" text="Import Trial &amp; Variables" />
                     </items>
                   </Menu>
-                  <Menu mnemonicParsing="false" text="Unspecified Menu">
+                  <Menu mnemonicParsing="false" text="Export">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Export Global Variables" />
+                      <MenuItem mnemonicParsing="false" onAction="#exportGlobalVariables" text="Export Global Variables" />
                               <MenuItem fx:id="menuItemExport" mnemonicParsing="true" onAction="#exportTrial" text="Export Trial &amp; Variables" />
                     </items>
                   </Menu>

@@ -2,6 +2,7 @@ package gui;
 
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -50,7 +51,6 @@ public class ActionController
 
     public void setAction(GridPane gridParent, int rowIndex,String actionTypeValue, String selectElementByValue, String firstValueArgsValue, String selectPlaceByValue, String secondValueArgsValue)
     {
-
         Main.setModified(false);
         hBox = new HBox();
         hBox.setFillHeight(true);
@@ -108,7 +108,7 @@ public class ActionController
                         if (placeNotGenerated) {
                             firstValueArgs = new TextField(firstValueArgsValue);
                             firstValueArgs.textProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->{
-                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect != null)
+                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null)
                                 {
                                     Main.setModified(true);
                                 }
@@ -168,18 +168,17 @@ public class ActionController
                             hBox.getChildren().add(uniqueValue);
 
                             secondValueArgs = new TextField(secondValueArgsValue);
-                            secondValueArgs.textProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->{
-                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null)
-                                {
-                                    Main.setModified(true);
-                                }
-                            });
+
+
                             addFileButton(secondValueArgs,hBox);
                             for (Node child : stackPane.getChildren()){
                                 if (child instanceof TextField){
                                     ((TextField) child).setText(secondValueArgsValue);
                                 }
                             }
+                            secondValueArgs.textProperty().addListener((observable1 -> {
+                                Main.setModified(true);
+                            }));
                         }
                         textFieldNotGenerated = false;
                     });
@@ -253,7 +252,40 @@ public class ActionController
                     selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
                     break;
                 case "SwitchDefault":
+                case "ScreenShot":
                     initializeComboBox(hBox);
+                    break;
+                case "Press Key":
+                    initializeComboBox(hBox);
+                    selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
+                    hBox.getChildren().add(selectElementBy);
+                    dragAndDrop(gridParent, selectElementBy);
+                    selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
+                    {
+                        if (oldValueSelect != newValueSelect && oldValueSelect != null)
+                        {
+                            Main.setModified(true);
+                        }
+                        if (textFieldNotGenerated) {
+                            generatedTextField(hBox, "FirstValueArgs", firstValueArgsValue);
+
+                            selectPlaceBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getKeys()));
+                            dragAndDrop(gridParent, selectPlaceBy);
+                            hBox.getChildren().add(selectPlaceBy);
+                            placeNotGenerated = false;
+                            selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
+                            {
+                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null)
+                                {
+                                    Main.setModified(true);
+                                }
+                            });
+
+                            selectPlaceBy.setValue(selectPlaceByValue);
+                        }
+                    });
+                    selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
+                    break;
                 default:
                     break;
             }
@@ -300,6 +332,7 @@ public class ActionController
                 case "WaitTime":
                 case "NavigateTo":
                 case "SwitchDefault":
+                case "Press Key":
                     drawElements(hBox, lastType, gridParent);
                     break;
                 default:
@@ -316,7 +349,6 @@ public class ActionController
 
     private void dragAndDrop(GridPane gridParent, Node node)
     {
-        Main.setModified(true);
         node.setOnDragDetected(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -518,6 +550,7 @@ public class ActionController
                 if (event.getTransferMode() == TransferMode.MOVE) {
 
                     MainController.reorderIndex(gridParent);
+                    Main.setModified(true);
                 }
 
 
@@ -661,10 +694,6 @@ public class ActionController
             case "WaitTime":
             case "NavigateTo":
                 generatedTextField(hBox,"FirstValueArgs","");
-                /*if (checkboxNotGenerated) {
-                    drawCheckBox(hBox);
-                    checkboxNotGenerated = false;
-                }*/
                 break;
             case "Waiting For":
 
@@ -689,6 +718,27 @@ public class ActionController
                             drawCheckBox(hBox);
                             checkboxNotGenerated = false;
                         }*/
+                    }
+                });
+                break;
+            case "Press Key":
+                selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
+                hBox.getChildren().add(selectElementBy);
+                dragAndDrop(gridParent, selectElementBy);
+                selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
+                {
+                    if (textFieldNotGenerated) {
+                        generatedTextField(hBox, "FirstValueArgs", "");
+
+                        selectPlaceBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getKeys()));
+                        dragAndDrop(gridParent, selectPlaceBy);
+                        hBox.getChildren().add(selectPlaceBy);
+                        placeNotGenerated = false;
+                        selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
+                        {
+
+                        });
+
                     }
                 });
                 break;

@@ -1,10 +1,9 @@
 package main;
 
 import com.sun.javafx.PlatformUtil;
+import org.apache.commons.io.FileUtils;
 import org.junit.rules.Timeout;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -15,6 +14,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Driver;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -326,8 +328,32 @@ public class SeleniumDAO {
     public static void navigateTo (String URL, WebDriver driver)
     {
         driver.navigate().to(URL);
-
     }
 
+    public static void screenShot(WebDriver driver)
+    {
+       File src = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        String path = System.getProperty("user.home");
+        try {
+            FileUtils.moveToDirectory(src, new File(path + "/git_docs/ScreenShots/"), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void pressKey(String key, WebElement element)
+    {
+        switch (key)
+        {
+            case "F5":
+                element.sendKeys(Keys.F5);
+                break;
+            case "Enter":
+                element.sendKeys(Keys.ENTER);
+                break;
+            default:
+                break;
+        }
+    }
 }
 

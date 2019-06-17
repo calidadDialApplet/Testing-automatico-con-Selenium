@@ -34,12 +34,15 @@ import org.json.simple.parser.ParseException;
 import org.json.JSONObject;
 import org.openqa.selenium.WebDriver;
 import persistence.H2DAO;
+import sun.nio.cs.ext.ISO_8859_11;
 
 
 import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
 
 
 public class MainController implements Initializable {
@@ -122,6 +125,7 @@ public class MainController implements Initializable {
     String textFieldSecondValueArgs = "";
     String trialColumnsHeadersCSV = "Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation";
     String variablesColumnsHeadersCSV = "TrialID,VariableName,Value";
+    String globalVariableHeader = "VariableName, Value";
 
     private static Pattern VARIABLE_PATTERN = Pattern.compile("\\$\\{\\S+\\}");
     private static Pattern GLOBAL_VARIABLE_PATTERN = Pattern.compile("\\€\\{\\S+\\}");
@@ -240,7 +244,6 @@ public class MainController implements Initializable {
                     getSelectedTrialActions();
                     getSelectedTrialValidations();
                 }
-
         });
 
 
@@ -373,18 +376,19 @@ public class MainController implements Initializable {
 
     public void deleteActionRow()
     {
-        Main.setModified(true);
         if(tabActions.isSelected())
         {
             deleteSelectedActions(gridPaneTrialList);
             reorderIndex(gridPaneTrialList);
             actionsRowIndex = getRowCount(gridPaneTrialList);
+            Main.setModified(true);
         }
         if(tabValidation.isSelected())
         {
            deleteSelectedActions(gridPaneValidationList);
            reorderIndex(gridPaneValidationList);
            validationRowIndex = getRowCount(gridPaneValidationList);
+           Main.setModified(true);
         }
     }
 
@@ -460,17 +464,18 @@ public class MainController implements Initializable {
 
    public void deleteSelectedTab()
    {
-       Main.setModified(true);
        if (tabActions.isSelected())
        {
            gridPaneTrialList.getChildren().remove(0, gridPaneTrialList.getChildren().size());
            actionsRowIndex = 0;
+           Main.setModified(true);
        }
 
        if (tabValidation.isSelected())
        {
            gridPaneValidationList.getChildren().remove(0, gridPaneValidationList.getChildren().size());
            validationRowIndex = 0;
+           Main.setModified(true);
        }
    }
 
@@ -829,6 +834,7 @@ public class MainController implements Initializable {
 
     public void modifyTestListener(CheckBox trial)
     {
+
         boolean trialmodified = false;
         //CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
         /*if(selectedTrial == null)
@@ -1374,7 +1380,6 @@ public class MainController implements Initializable {
 
     public void pasteActions()
     {
-        Main.setModified(true);
         ActionController actionController = new ActionController();
         if (tabActions.isSelected())
         {
@@ -1387,7 +1392,7 @@ public class MainController implements Initializable {
                 actionList.add(action);
                 actionsRowIndex++;
             }
-
+            Main.setModified(true);
         }
 
         if (tabValidation.isSelected())
@@ -1401,7 +1406,7 @@ public class MainController implements Initializable {
                 validationList.add(action);
                 validationRowIndex++;
             }
-
+            Main.setModified(true);
         }
     }
 
@@ -1476,8 +1481,33 @@ public class MainController implements Initializable {
             }
     }
 
+    private void saveGlobalVariablesToCSV(ArrayList<Global_Variable> global_variables, File file) throws IOException {
+        Writer writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(file));
+            writer.write(globalVariableHeader);
 
-    public void exportJSON(ArrayList<Action> actions, ArrayList<Action> validations,ArrayList<Variable> variables,File file)
+            for (Global_Variable global_variable : global_variables)
+            {
+                writer.write(System.lineSeparator());
+                writer.write("" + global_variable.getVariableName() + ","
+                        + global_variable.getValue() + ","
+                );
+            }
+
+
+            System.out.println("VARIABLES GLOBALES EXPORTADAS");
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            writer.flush();
+            writer.close();
+        }
+    }
+
+
+    public void exportTestJSON(ArrayList<Action> actions, ArrayList<Action> validations, ArrayList<Variable> variables, File file)
     {
 
         try {
@@ -1502,7 +1532,24 @@ public class MainController implements Initializable {
         }
 
 
+    }
 
+    public void exportGlobalVariablesJSON(ArrayList<Global_Variable> global_variables, File file)
+    {
+        try{
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("GlobalVariables", global_variables);
+            System.out.println("Variables Globales exportadas");
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(file), ISO_8859_1);
+            outputStreamWriter.write(jsonObject.toString());
+            outputStreamWriter.flush();
+            /*FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(jsonObject.toString());
+            fileWriter.flush();*/
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     private void saveVariablesToCSV(ArrayList<Variable> variables, File file) throws IOException
@@ -1576,7 +1623,7 @@ public class MainController implements Initializable {
 
                             saveTrialToCSV(actions, validations, trialFile);
                             saveVariablesToCSV(variables,variablesFile);
-                            exportJSON(actions, validations, variables, trialJSONFile);
+                            exportTestJSON(actions, validations, variables, trialJSONFile);
 
                         }
                         // Aviso de ninguno seleccionado
@@ -1593,37 +1640,27 @@ public class MainController implements Initializable {
 
     public void exportGlobalVariables()
     {
-        //DirectoryChooser dirChooser = new DirectoryChooser();
-        //File defaultOrigin = new File(System.getProperty("user.home"));
-        //dirChooser.setInitialDirectory(defaultOrigin);
-        //File folder = dirChooser.showDialog(stageSettings);
+        DirectoryChooser dirChooser = new DirectoryChooser();
+        File defaultOrigin = new File(System.getProperty("user.home"));
+        dirChooser.setInitialDirectory(defaultOrigin);
+        File folder = dirChooser.showDialog(stageSettings);
 
 
-        //File variablesile = new File(folder.getAbsolutePath() + "nombrenuevoFIle1");
-        //File pruebas;
-
-       /* try {
+        try {
 
             if (folder != null) {
 
+                File globalVariableCSV = new File(folder.getAbsolutePath().concat("/globalVariables.csv"));
+                File globalVariablesJSON = new File(folder.getAbsolutePath().concat("/globalVariables.json"));
 
+                ArrayList<Global_Variable> global_variables = H2DAO.getGlobalVariables();
 
-
-                        /*File globalVAriableCSV = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+trialID)+".csv");
-                        File trialFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+trialID)+".csv");
-
-                        ArrayList<Action> actions = H2DAO.getTrialActions(trial.getText());
-
-
-                        saveTrialToCSV(actions, validations, trialFile);
-                        exportJSON(actions, validations, variables, trialJSONFile);*/
-
-
-
-        /*    }
+                saveGlobalVariablesToCSV(global_variables, globalVariableCSV);
+                exportGlobalVariablesJSON(global_variables, globalVariablesJSON);
+            }
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     public void importTrial()
@@ -1665,7 +1702,6 @@ public class MainController implements Initializable {
             Scanner inputStream = new Scanner(file);
             while (inputStream.hasNext()) {
                 String data = inputStream.nextLine();
-                //String action = data.substring()
                 if (data.equals(trialColumnsHeadersCSV))
                 {
                     header = "Trial";
@@ -1795,6 +1831,7 @@ public class MainController implements Initializable {
     private void importCSVGlobalVariables(File file)
     {
         ArrayList<String> failedVariables = new ArrayList<>();
+        boolean header = false;
 
         try
         {
@@ -1802,29 +1839,36 @@ public class MainController implements Initializable {
             while (inputStream.hasNext())
             {
                 String data = inputStream.nextLine();
-                String[] values = data.split(",");
 
-                Global_Variable global_variable = new Global_Variable(values[0], values[1]);
-                checkGlobalVariables(failedVariables, global_variable);
-
-                if (failedVariables.size() > 0)
+                if (data.equals(globalVariableHeader))
                 {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Se ha producido un error durante la importación de las variables");
-                    String error = "";
-                    for (String failedVariable : failedVariables)
-                    {
-                        error = error.concat(failedVariable+"\n");
-                    }
-                    alert.setContentText(error);
-                    alert.showAndWait();
+                    header = true;
+                    continue;
                 }
 
+                if (header)
+                {
+                    String[] values = data.split(",");
+
+                    Global_Variable global_variable = new Global_Variable(values[0], values[1]);
+                    checkGlobalVariables(failedVariables, global_variable);
+                }
+            }
+            if (failedVariables.size() > 0) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("Se ha producido un error durante la importación de las variables");
+                String error = "";
+                for (String failedVariable : failedVariables) {
+                    error = error.concat(failedVariable + "\n");
+                }
+                alert.setContentText(error);
+                alert.showAndWait();
             }
         } catch(FileNotFoundException e){
             e.printStackTrace();
         }
+
     }
 
     private void importJSONGlobalVariables(File file)
@@ -1848,6 +1892,18 @@ public class MainController implements Initializable {
                 org.json.simple.JSONObject globalVariable = (org.json.simple.JSONObject) globalVariables.get(i);
                 Global_Variable var = new Global_Variable(globalVariable.get("variableName").toString(), globalVariable.get("value").toString());
                 checkGlobalVariables(failedVariables, var);
+            }
+
+            if (failedVariables.size() > 0) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText("Se ha producido un error durante la importación de las variables");
+                String error = "";
+                for (String failedVariable : failedVariables) {
+                    error = error.concat(failedVariable + "\n");
+                }
+                alert.setContentText(error);
+                alert.showAndWait();
             }
 
         }catch (FileNotFoundException e) {
@@ -1884,7 +1940,12 @@ public class MainController implements Initializable {
     {
         if (global_variable.getVariableName().matches(String.valueOf(GLOBAL_VARIABLE_PATTERN)))
         {
-            H2DAO.saveGlobalVariable(global_variable);
+            if (!H2DAO.globalVariableExists(global_variable))
+            {
+                H2DAO.saveGlobalVariable(global_variable);
+            }else {
+                failedVariables.add("Variable " + global_variable.getVariableName() + " Fallo: Variable existente");
+            }
         }else {
             failedVariables.add("Variable " + global_variable.getVariableName() + " Fallo: Formato");
         }

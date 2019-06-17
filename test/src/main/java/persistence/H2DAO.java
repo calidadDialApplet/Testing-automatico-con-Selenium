@@ -13,10 +13,10 @@ public class H2DAO {
 
     // TODO: Once declared, this becomes constant, so should be enums, neither ArrayList<> nor String[]
      //enum matchTableName {TRIALS,TRIAL_ACTIONS,ACTION_TYPES,SELECTION_BY} ;
-     static ArrayList<String> matchesTableName = new ArrayList<>(Arrays.asList("TRIALS","GLOBAL_VARIABLES","TRIAL_ACTIONS","VARIABLES","ACTION_TYPES","SETTINGS","SELECTION_BY"));
-     static ArrayList<String> matchesColName = new ArrayList<>(Arrays.asList("ID","NAME","VARIABLE","VALUE","ID","NAME","NAME","VALUE","SETTINGFIELD","VALUE","ID","NAME","ID","TRIALID","ACTIONTYPEID","SELECTIONBYID1","VALUE1",
+     static ArrayList<String> matchesTableName = new ArrayList<>(Arrays.asList("TRIALS","GLOBAL_VARIABLES","KEYS","TRIAL_ACTIONS","VARIABLES","ACTION_TYPES","SETTINGS","SELECTION_BY"));
+     static ArrayList<String> matchesColName = new ArrayList<>(Arrays.asList("ID","NAME","VARIABLE","VALUE","ID","NAME","ID","NAME","NAME","VALUE","SETTINGFIELD","VALUE","ID","NAME","ID","TRIALID","ACTIONTYPEID","SELECTIONBYID1","VALUE1",
                                                                             "SELECTIONBYID2","VALUE2","VALIDATION","TRIAL","VARIABLE","VALUE"));
-     static ArrayList<String> matchesTypeName = new ArrayList<>(Arrays.asList("INTEGER","TEXT","TEXT","TEXT","INTEGER","TEXT","VARCHAR","VARCHAR","TEXT","TEXT","INTEGER","TEXT","INTEGER","INTEGER","INTEGER","INTEGER",
+     static ArrayList<String> matchesTypeName = new ArrayList<>(Arrays.asList("INTEGER","TEXT","TEXT","TEXT","INTEGER","TEXT","INTEGER","TEXT","VARCHAR","VARCHAR","TEXT","TEXT","INTEGER","TEXT","INTEGER","INTEGER","INTEGER","INTEGER",
                                                                                 "TEXT","INTEGER","TEXT","INTEGER","INTEGER","TEXT","TEXT"));
      static String validationTableNameQuery = "select table_name from information_schema.tables where table_type = 'TABLE'";
 
@@ -31,7 +31,7 @@ public class H2DAO {
 
      static String validationColNameQuery = "select column_name from information_schema.columns where table_name = 'TRIALS' or table_name = 'ACTION_TYPES'" +
                                             "or table_name = 'SELECTION_BY' or table_name = 'TRIAL_ACTIONS' or table_name = 'SETTINGS' or table_name = 'VARIABLES'" +
-                                            "or table_name = 'GLOBAL_VARIABLES'";
+                                            "or table_name = 'GLOBAL_VARIABLES' or table_name = 'KEYS'";
 
     // TODO: This could be a unique String
     /*static String[] validationColTypesQuerys = new String[]
@@ -44,7 +44,7 @@ public class H2DAO {
 
     static String validationColTypesQuery = "select column_type from information_schema.columns where table_name = 'TRIALS' or table_name = 'ACTION_TYPES'" +
                                             "or table_name = 'SELECTION_BY' or table_name = 'TRIAL_ACTIONS' or table_name = 'SETTINGS' or table_name = 'VARIABLES'" +
-                                            "or table_name = 'GLOBAL_VARIABLES'";
+                                            "or table_name = 'GLOBAL_VARIABLES' or table_name = 'KEYS'";
     // TODO: This could be a unique String
     final static String[] createTables = new String[]
     {
@@ -77,6 +77,7 @@ public class H2DAO {
             "create table settings(settingField text, value text)",
             "create table variables(trial integer, variable text, value text)",
             "create table global_variables(variable text, value text)",
+            "create table keys(id integer auto_increment, name text)",
             "alter table trial_actions add constraint fk_trialid foreign key(trialid) references trials(id)",
             "alter table trial_actions add constraint fk_actiontypeid foreign key(actiontypeid) references action_types(id)",
             "alter table trial_actions add constraint fk_selectionById1 foreign key(selectionbyid1) references selection_by(id)",
@@ -97,6 +98,8 @@ public class H2DAO {
             "insert into selection_by(name) values ('cssSelector')",
             "insert into selection_by(name) values ('className')",
             "insert into selection_by(name) values ('name')",
+            "insert into keys(name) values ('Enter')",
+            "insert into keys(name) values ('F5')",
             "insert into settings (settingField, value) values ('web', 'http://www.google.es')",
             "insert into settings (settingField, value) values ('browser', 'Firefox')",
             "insert into settings (settingField, value) values ('headless', 'true')",
@@ -121,16 +124,17 @@ public class H2DAO {
 
         try {
             Statement st = connection.createStatement();
-            String createTable = "create table global_variables(variable text, value text)";
+            String createTable = "insert into keys(name) values ('F5')";
+            //String drop = "create table keys(id integer auto_increment, name text)";
             //st.execute(createTable);
-            /*
-            ResultSet resultSet =  st.getResultSet();
+
+            /*ResultSet resultSet =  st.getResultSet();
 
             while (resultSet.next())
             {
                 System.out.println(resultSet.getString("id"));
-            }
-            */
+            }*/
+
 
             System.out.println("FUNCIONA");
         } catch (SQLException e) {
@@ -163,6 +167,11 @@ public class H2DAO {
     public static ArrayList<String> getSelectElementBy()
     {
        return getComboBoxElements("selection_by");
+    }
+
+    public static ArrayList<String> getKeys()
+    {
+       return getComboBoxElements("keys");
     }
 
     public static ArrayList<String> getComboBoxElements(String comboBoxName)
@@ -202,7 +211,13 @@ public class H2DAO {
                 int actionTypeId = getIdActionType(currentAction.getActionTypeS());
                 int firstValueArgs = getIdSelectElementBy(currentAction.getSelectElementByS());
                 String value1 = currentAction.getFirstValueArgsS();
-                int secondValueArgs = getIdSelectElementBy(currentAction.getSelectPlaceByS());
+                int secondValueArgs = 0;
+                if (actionTypeId == 10)
+                {
+                    secondValueArgs = getIdSelectKeys(currentAction.getSelectPlaceByS());
+                }else {
+                    secondValueArgs = getIdSelectElementBy(currentAction.getSelectPlaceByS());
+                }
                 String value2 = currentAction.getSecondValueArgsS();
 
                 //System.out.println(""+actionTypeId+" / "+firstValueArgs+ " / "+value1+" / "+secondValueArgs+ " / "+value2);
@@ -378,6 +393,28 @@ public class H2DAO {
         return result;
     }
 
+    public static int getIdSelectKeys(String key)
+    {
+        int result = 1;
+        try{
+            Statement st = connection.createStatement();
+            String getSelectByIndex = "Select id from keys where name = '"+key+"'";
+            st.execute(getSelectByIndex);
+
+            ResultSet resultSet = st.getResultSet();
+
+            while (resultSet.next())
+            {
+                result = Integer.parseInt(resultSet.getString("id"));
+            }
+        }catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     public static ArrayList<Action> getTrialActions(String trialName)
     {
         ArrayList<Action> actions = new ArrayList<>();
@@ -397,9 +434,18 @@ public class H2DAO {
             while (actionsResultSet.next())
             {
 
-                Action currentAction = new Action(getActionType(actionsResultSet.getString("actiontypeid")), getSelectionBy(actionsResultSet.getString("selectionbyid1")),
-                        actionsResultSet.getString("value1"),getSelectionBy(actionsResultSet.getString("selectionbyid2")), actionsResultSet.getString("value2"));
-                actions.add(currentAction);
+                if (getActionType(actionsResultSet.getString("actiontypeid")).equals("Press Key"))
+                {
+                    Action currentAction = new Action(getActionType(actionsResultSet.getString("actiontypeid")),getSelectionBy(actionsResultSet.getString("selectionbyid1")),
+                            actionsResultSet.getString("value1"),getSelectionByKey(actionsResultSet.getString("selectionbyid2")), actionsResultSet.getString("value2"));
+                    System.out.println(currentAction.toString());
+                    actions.add(currentAction);
+                }else {
+                    Action currentAction = new Action(getActionType(actionsResultSet.getString("actiontypeid")), getSelectionBy(actionsResultSet.getString("selectionbyid1")),
+                            actionsResultSet.getString("value1"), getSelectionBy(actionsResultSet.getString("selectionbyid2")), actionsResultSet.getString("value2"));
+
+                    actions.add(currentAction);
+                }
             }
              System.out.println("Llega");
             st.close();
@@ -430,10 +476,17 @@ public class H2DAO {
 
             while (validationsResultSet.next())
             {
-                Action currentValidation = new Action(getActionType(validationsResultSet.getString("actiontypeid")),getSelectionBy(validationsResultSet.getString("selectionbyid1")),
-                        validationsResultSet.getString("value1"),getSelectionBy(validationsResultSet.getString("selectionbyid2")), validationsResultSet.getString("value2"));
+                if (getActionType(validationsResultSet.getString("actiontypeid")).equals("Press Key"))
+                {
+                    Action currentValidation = new Action(getActionType(validationsResultSet.getString("actiontypeid")),getSelectionBy(validationsResultSet.getString("selectionbyid1")),
+                            validationsResultSet.getString("value1"),getSelectionByKey(validationsResultSet.getString("selectionbyid2")), validationsResultSet.getString("value2"));
+                    validations.add(currentValidation);
+                }else {
+                    Action currentValidation = new Action(getActionType(validationsResultSet.getString("actiontypeid")), getSelectionBy(validationsResultSet.getString("selectionbyid1")),
+                            validationsResultSet.getString("value1"), getSelectionBy(validationsResultSet.getString("selectionbyid2")), validationsResultSet.getString("value2"));
 
-                validations.add(currentValidation);
+                    validations.add(currentValidation);
+                }
             }
             System.out.println("Llega");
             st.close();
@@ -491,6 +544,31 @@ public class H2DAO {
 
         return result;
     }
+
+    public static String getSelectionByKey(String id)
+    {
+        String result = "";
+
+        try {
+
+            Statement st = connection.createStatement();
+
+            String getName = "Select name from keys where id = '"+id+"'";
+            st.execute(getName);
+
+            ResultSet resultSet = st.getResultSet();
+            while (resultSet.next()) {
+                result = (resultSet.getString(1));
+            }
+            st.close();
+        }catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
 
     public static String getTrialID(String trialName)
     {
