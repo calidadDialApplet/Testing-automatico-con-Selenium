@@ -99,23 +99,6 @@ public class Action {
         return SelectBy;
     }
 
-    public static String getSelectKeys(String key)
-    {
-        String keyResult = ""; // No action type
-        switch (key){
-            case "1":
-                keyResult = "Enter";
-                break;
-            case "2":
-                keyResult = "F5";
-                break;
-            default:
-                break;
-        }
-        System.out.println(keyResult);
-        return keyResult;
-    }
-
 
    public String executeAction(WebDriver driver, ArrayList<Variable> variables, String trialName, Thread thread){
 
@@ -184,6 +167,10 @@ public class Action {
                 case "Press Key":
                     WebElement pressKeyElement = SeleniumDAO.selectElementBy(this.selectElementByS, this.firstValueArgsS,driver);
                     SeleniumDAO.pressKey(this.selectPlaceByS, pressKeyElement);
+                    result = "Ok";
+                    break;
+                case "Refresh":
+                    SeleniumDAO.refreshPage(driver);
                     result = "Ok";
                     break;
                 default:

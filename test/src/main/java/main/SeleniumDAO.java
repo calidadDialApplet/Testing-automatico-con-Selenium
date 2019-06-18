@@ -1,6 +1,7 @@
 package main;
 
 import com.sun.javafx.PlatformUtil;
+import javafx.animation.PauseTransition;
 import org.apache.commons.io.FileUtils;
 import org.junit.rules.Timeout;
 import org.openqa.selenium.*;
@@ -15,9 +16,11 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
+import java.time.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Driver;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -315,14 +318,14 @@ public class SeleniumDAO {
         }
     }
 
-    public static void implicitWait (int time, WebDriver driver, Thread thread)
+    public static void implicitWait (int waitingTime, WebDriver driver, Thread thread)
     {
-        //driver.manage().timeouts().implicitlyWait(time, TimeUnit.SECONDS);
         try {
-            thread.sleep(time);
+            TimeUnit.SECONDS.sleep(waitingTime);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
     public static void navigateTo (String URL, WebDriver driver)
@@ -354,6 +357,11 @@ public class SeleniumDAO {
             default:
                 break;
         }
+    }
+
+    public static void refreshPage(WebDriver driver)
+    {
+        driver.navigate().refresh();
     }
 }
 

@@ -117,6 +117,7 @@ public class MainController implements Initializable {
     private int actionsRowIndex = 0;
     private int validationRowIndex = 0;
     private int copiedActions = 0;
+    
 
     String comboBoxActionType = "";
     String comboBoxSelectElementBy = "";
@@ -134,6 +135,7 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        System.out.println(Thread.currentThread().getName());
         //tableColumnTestCol.setCellValueFactory( (param) -> new SimpleStringProperty( param.getValue().toString()));
         actionList = new ArrayList<>();
         validationList = new ArrayList<>();
@@ -144,6 +146,7 @@ public class MainController implements Initializable {
 
         SpinnerValueFactory<Integer> executions = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,5,1);
         spinner.setValueFactory(executions);
+
 
         /*final ProgressIndicator progress = new ProgressIndicator();
         progress.setMaxSize(50, 50);
@@ -553,92 +556,52 @@ public class MainController implements Initializable {
    protected void executeTest(List<Action> actionList, String trialName)
    {
 
+
+       ArrayList<String> results = new ArrayList<>();
        Task<Void> task = new Task<Void>() {
            @Override
            protected Void call() throws Exception {
-
-               Platform.runLater(new Runnable() {
-                   @Override
-                   public void run() {
                        String nameOfTrial = null;
 
                        WebDriver driver = getWebDriver();
                        driver.get(H2DAO.getWeb());
-                       TitledPane trial = new TitledPane();
-                       Label titledPaneName = new Label();
                        ArrayList<Variable> variables;
 
                        if (trialName == "")
                        {
                            CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
-                           titledPaneName.setText(selectedTrial.getText());
+                           //titledPaneName.setText(selectedTrial.getText());
                            variables = H2DAO.getTrialVariables(H2DAO.getTrialID(selectedTrial.getText()));
                            nameOfTrial = selectedTrial.getText();
                            //trial.setText(selectedTrial.getText());
 
                        }else {
-                           titledPaneName.setText(trialName);
+                           //titledPaneName.setText(trialName);
                            variables = H2DAO.getTrialVariables(H2DAO.getTrialID(trialName));
                            nameOfTrial = trialName;
                            //trial.setText(trialName);
                        }
 
 
-                       HBox contentPane = new HBox();
-                       contentPane.setAlignment(Pos.CENTER);
-                       contentPane.setPadding(new Insets(0, 30, 0, 10));
-                       contentPane.minWidthProperty().bind(trial.widthProperty());
-
-                       HBox region = new HBox();
-                       region.setMaxWidth(Double.MAX_VALUE);
-                       HBox.setHgrow(region, Priority.ALWAYS);
 
 
-
-                       Button buttonClose = new Button();
-                       buttonClose.setStyle("-fx-background-color: transparent;");
-                       Image image = new Image(getClass().getResource("/icons/sharp_delete_black_24dp.png").toString());
-                       ImageView imageView = new ImageView(image);
-                       imageView.setFitHeight(17);
-                       imageView.setFitWidth(17);
-                       buttonClose.setGraphic(imageView);
-
-
-                       buttonClose.setOnAction(new EventHandler<ActionEvent>() {
-                           @Override
-                           public void handle(ActionEvent event) {
-                               accordionComprobationList.getPanes().remove(trial);
-                           }
-                       });
-
-                       contentPane.getChildren().addAll(
-                               titledPaneName,
-                               region,
-                               buttonClose
-                       );
-                       trial.setGraphic(contentPane);
-
-
-                       GridPane grid = new GridPane();
-                       grid.setVgap(2);
                        if (tabActions.isSelected()) {
                            for (int i = 0; i < actionList.size(); i++) {
                                Action currentAction = actionList.get(i);
-                               grid.add(new Label("Action " + i + ":"), 0, i);
-                               grid.add(new Label(" " + currentAction.executeAction(driver, variables,nameOfTrial, Thread.currentThread())), 1, i);
+                               //grid.add(new Label("Action " + i + ":"), 0, i);
+                               //grid.add(new Label(" " + currentAction.executeAction(driver, variables,nameOfTrial, Thread.currentThread())), 1, i);
+                               results.add("Action "+ i + ": " +currentAction.executeAction(driver, variables, nameOfTrial, Thread.currentThread()));
                            }
                        }
                        if (tabValidation.isSelected()){
                            for (int i = 0; i < actionList.size(); i++) {
                                Action currentValidation = actionList.get(i);
-                               grid.add(new Label("Validation " + i + ":"), 0, i);
-                               grid.add(new Label(" " + currentValidation.executeAction(driver, variables,nameOfTrial, Thread.currentThread())), 1, i);
+                               //grid.add(new Label("Validation " + i + ":"), 0, i);
+                               //grid.add(new Label(" " + currentValidation.executeAction(driver, variables,nameOfTrial, Thread.currentThread())), 1, i);
+                               results.add("Validation "+ i + ": " +currentValidation.executeAction(driver, variables, nameOfTrial, Thread.currentThread()));
                            }
                        }
-                       trial.setContent(grid);
-                       accordionComprobationList.getPanes().add(trial);
-                   }
-               });
+                       //Thread.currentThread().interrupt();
                return null;
            }
        };
@@ -647,6 +610,60 @@ public class MainController implements Initializable {
         th.setDaemon(true);
         th.start();
 
+       //fillgrid(results);
+
+   }
+
+   private void fillgrid(ArrayList<String> results)
+   {
+       HBox contentPane = new HBox();
+       TitledPane trial = new TitledPane();
+       Label titledPaneName = new Label();
+
+       contentPane.setAlignment(Pos.CENTER);
+       contentPane.setPadding(new Insets(0, 30, 0, 10));
+       contentPane.minWidthProperty().bind(trial.widthProperty());
+
+       HBox region = new HBox();
+       region.setMaxWidth(Double.MAX_VALUE);
+       HBox.setHgrow(region, Priority.ALWAYS);
+
+
+
+       Button buttonClose = new Button();
+       buttonClose.setStyle("-fx-background-color: transparent;");
+       Image image = new Image(getClass().getResource("/icons/sharp_delete_black_24dp.png").toString());
+       ImageView imageView = new ImageView(image);
+       imageView.setFitHeight(17);
+       imageView.setFitWidth(17);
+       buttonClose.setGraphic(imageView);
+
+
+       buttonClose.setOnAction(new EventHandler<ActionEvent>() {
+           @Override
+           public void handle(ActionEvent event) {
+               accordionComprobationList.getPanes().remove(trial);
+           }
+       });
+
+       contentPane.getChildren().addAll(
+               titledPaneName,
+               region,
+               buttonClose
+       );
+       trial.setGraphic(contentPane);
+
+       GridPane grid = new GridPane();
+       grid.setVgap(2);
+
+       int i = 0;
+       for (String result : results)
+       {
+           grid.addRow(i, new Label(result));
+       }
+
+       trial.setContent(grid);
+       accordionComprobationList.getPanes().add(trial);
    }
 
     @Nullable

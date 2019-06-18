@@ -252,6 +252,7 @@ public class ActionController
                     selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
                     break;
                 case "SwitchDefault":
+                case "Refresh":
                 case "ScreenShot":
                     initializeComboBox(hBox);
                     break;
@@ -331,7 +332,6 @@ public class ActionController
                 case "Waiting For":
                 case "WaitTime":
                 case "NavigateTo":
-                case "SwitchDefault":
                 case "Press Key":
                     drawElements(hBox, lastType, gridParent);
                     break;
