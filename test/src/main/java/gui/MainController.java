@@ -2,6 +2,7 @@ package gui;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -117,7 +118,7 @@ public class MainController implements Initializable {
     private int actionsRowIndex = 0;
     private int validationRowIndex = 0;
     private int copiedActions = 0;
-    
+
 
     String comboBoxActionType = "";
     String comboBoxSelectElementBy = "";
@@ -558,6 +559,8 @@ public class MainController implements Initializable {
 
 
        ArrayList<String> results = new ArrayList<>();
+
+
        Task<Void> task = new Task<Void>() {
            @Override
            protected Void call() throws Exception {
@@ -601,6 +604,11 @@ public class MainController implements Initializable {
                                results.add("Validation "+ i + ": " +currentValidation.executeAction(driver, variables, nameOfTrial, Thread.currentThread()));
                            }
                        }
+
+                       synchronized (results){
+                           results.notify();
+                       }
+                       //notify();
                        //Thread.currentThread().interrupt();
                return null;
            }
@@ -610,15 +618,33 @@ public class MainController implements Initializable {
         th.setDaemon(true);
         th.start();
 
-       //fillgrid(results);
+       synchronized (results)
+       {
+           if (results.size() == 0)
+           {
+               try {
+                   results.wait();
+               } catch (InterruptedException e) {
+                   e.printStackTrace();
+               }
+           }
+       }
+       fillgrid(results, trialName);
+       /*try {
+           wait();
+       } catch (InterruptedException e) {
+           e.printStackTrace();
+       }*/
+
 
    }
 
-   private void fillgrid(ArrayList<String> results)
+   private void fillgrid(ArrayList<String> results, String trialName)
    {
        HBox contentPane = new HBox();
        TitledPane trial = new TitledPane();
        Label titledPaneName = new Label();
+       String nameOfTrial = null;
 
        contentPane.setAlignment(Pos.CENTER);
        contentPane.setPadding(new Insets(0, 30, 0, 10));
@@ -629,6 +655,20 @@ public class MainController implements Initializable {
        HBox.setHgrow(region, Priority.ALWAYS);
 
 
+       if (trialName == "")
+       {
+           CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+           titledPaneName.setText(selectedTrial.getText());
+           //variables = H2DAO.getTrialVariables(H2DAO.getTrialID(selectedTrial.getText()));
+           nameOfTrial = selectedTrial.getText();
+           trial.setText(selectedTrial.getText());
+
+       }else {
+           titledPaneName.setText(trialName);
+           //variables = H2DAO.getTrialVariables(H2DAO.getTrialID(trialName));
+           nameOfTrial = trialName;
+           trial.setText(trialName);
+       }
 
        Button buttonClose = new Button();
        buttonClose.setStyle("-fx-background-color: transparent;");
@@ -660,6 +700,7 @@ public class MainController implements Initializable {
        for (String result : results)
        {
            grid.addRow(i, new Label(result));
+           i++;
        }
 
        trial.setContent(grid);
@@ -1207,9 +1248,10 @@ public class MainController implements Initializable {
                 ArrayList<Action> actions = H2DAO.getTrialActions(trial.getText());
                 for (int i = 0; i < times; i++)
                 {
-                    Thread thread = new Thread(() -> executeTest(actions, trialName));
-                    threads.add(thread);
-                    thread.start();
+                    //Thread thread = new Thread(() -> );
+                    //threads.add(thread);
+                    //thread.start();
+                    executeTest(actions, trialName);
                 }
                 /*for (Thread thread : threads){
                     thread.start();

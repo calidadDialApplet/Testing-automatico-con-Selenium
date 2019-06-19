@@ -106,7 +106,7 @@ public class Action {
 
        String trialID = H2DAO.getTrialID(trialName);
 
-       subtituteVariables(variables);
+       substituteVariables(variables);
 
 
        try
@@ -116,6 +116,7 @@ public class Action {
                     getValueVariables(variables);
                     WebElement clickElement = SeleniumDAO.selectElementBy(this.selectElementByS, this.firstValueArgsS, driver);
                     SeleniumDAO.click(clickElement);
+                    System.out.println(clickElement.getTagName());
                     result = "Ok";
                     break;
                 case "DragAndDrop":
@@ -135,6 +136,7 @@ public class Action {
                     WebElement readFromElement = SeleniumDAO.selectElementBy(this.selectElementByS,this.firstValueArgsS,driver);
                     result = SeleniumDAO.readFrom(readFromElement);
                     H2DAO.updateTrialVariable(trialID, this.secondValueArgsS,result);
+                    System.out.println(readFromElement.getClass().toString());
                     break;
                 case "SwitchTo":
                     getValueVariables(variables);
@@ -188,8 +190,8 @@ public class Action {
 
    }
 
-    private void subtituteVariables(ArrayList<Variable> variables) {
-        if (this.firstValueArgsS.matches(String.valueOf(VARIABLE_PATTERN))) {
+    private void substituteVariables(ArrayList<Variable> variables) {
+        //if (this.firstValueArgsS.matches(String.valueOf(VARIABLE_PATTERN))) {
             for (Variable variable : variables) {
                 if (this.firstValueArgsS.contains(variable.getVariableName())) {
                     this.firstValueArgsS = this.firstValueArgsS.replace(variable.getVariableName(), variable.getValue());
@@ -199,12 +201,15 @@ public class Action {
                     if (this.secondValueArgsS.contains(variable.getVariableName())) {
                         this.secondValueArgsS = this.secondValueArgsS.replace(variable.getVariableName(), variable.getValue());
                     }
+                    if (this.firstValueArgsS.contains(variable.getVariableName())) {
+                        this.firstValueArgsS = this.firstValueArgsS.replace(variable.getVariableName(), variable.getValue());
+                    }
                 }
             }
-        }
+        //}
 
-        if (this.firstValueArgsS.matches(String.valueOf(GLOBAL_VARIABLE_PATTERN)))
-        {
+        //if (this.firstValueArgsS.matches(String.valueOf(GLOBAL_VARIABLE_PATTERN)))
+        //{
            ArrayList<Global_Variable> global_variables = H2DAO.getGlobalVariables();
            for (Global_Variable variable : global_variables)
            {
@@ -219,8 +224,9 @@ public class Action {
                    }
                }
            }
-        }
+        //}
     }
+
 
     private String manageException(Exception exception)
    {
