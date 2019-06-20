@@ -116,7 +116,6 @@ public class Action {
                     getValueVariables(variables);
                     WebElement clickElement = SeleniumDAO.selectElementBy(this.selectElementByS, this.firstValueArgsS, driver);
                     SeleniumDAO.click(clickElement);
-                    System.out.println(clickElement.getTagName());
                     result = "Ok";
                     break;
                 case "DragAndDrop":
@@ -136,7 +135,6 @@ public class Action {
                     WebElement readFromElement = SeleniumDAO.selectElementBy(this.selectElementByS,this.firstValueArgsS,driver);
                     result = SeleniumDAO.readFrom(readFromElement);
                     H2DAO.updateTrialVariable(trialID, this.secondValueArgsS,result);
-                    System.out.println(readFromElement.getClass().toString());
                     break;
                 case "SwitchTo":
                     getValueVariables(variables);
@@ -146,7 +144,7 @@ public class Action {
                 case "Waiting For":
                     getValueVariables(variables);
                     SeleniumDAO.waitForElement(Integer.parseInt(this.secondValueArgsS),this.selectElementByS, this.firstValueArgsS ,driver);
-                    result = "Ok"; // TEST
+                    result = "Ok";
                     break;
                 case "WaitTime":
                     getValueVariables(variables);

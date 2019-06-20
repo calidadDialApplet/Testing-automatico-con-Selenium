@@ -19,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -58,10 +59,19 @@ public class MainController implements Initializable {
     private  Button buttonDelete;
 
     @FXML
+    private Button buttonDeleteAll;
+
+    @FXML
+    private Button buttonSave;
+
+    @FXML
     private Button buttonDeleteTrial;
 
     @FXML
     private Button buttonModifyTrial;
+
+    @FXML
+    private Button buttonAddTrial;
 
     @FXML
     private Button buttonPlayTrials;
@@ -71,6 +81,12 @@ public class MainController implements Initializable {
 
     @FXML
     private Button buttonPaste;
+
+    @FXML
+    private Button buttonVariables;
+
+    @FXML
+    private  Button buttonClone;
 
     @FXML
     private ListView<CheckBox> testList;
@@ -120,6 +136,11 @@ public class MainController implements Initializable {
     private int copiedActions = 0;
 
 
+    private static Integer rowIndexDrag;
+    private static Integer rowIndexDrop;
+    private static List<CheckBox> draggedChildList = new ArrayList<>();;
+    private static List<CheckBox> movedChilds = new ArrayList<>();;
+
     String comboBoxActionType = "";
     String comboBoxSelectElementBy = "";
     String textFieldFirstValueArgs = "";
@@ -129,6 +150,8 @@ public class MainController implements Initializable {
     String variablesColumnsHeadersCSV = "TrialID,VariableName,Value";
     String globalVariableHeader = "VariableName, Value";
 
+    private static DataFormat checkBoxFormat = new DataFormat();
+
     private static Pattern VARIABLE_PATTERN = Pattern.compile("\\$\\{\\S+\\}");
     private static Pattern GLOBAL_VARIABLE_PATTERN = Pattern.compile("\\€\\{\\S+\\}");
 
@@ -136,7 +159,6 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        System.out.println(Thread.currentThread().getName());
         //tableColumnTestCol.setCellValueFactory( (param) -> new SimpleStringProperty( param.getValue().toString()));
         actionList = new ArrayList<>();
         validationList = new ArrayList<>();
@@ -147,6 +169,10 @@ public class MainController implements Initializable {
 
         SpinnerValueFactory<Integer> executions = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,5,1);
         spinner.setValueFactory(executions);
+
+
+        setTooltips();
+
 
 
         /*final ProgressIndicator progress = new ProgressIndicator();
@@ -259,6 +285,74 @@ public class MainController implements Initializable {
 
 
         poblateTestList();
+        dragAndDrop();
+    }
+
+    private void setTooltips() {
+        Tooltip addButtonTooltip = new Tooltip();
+        addButtonTooltip.setText("Añade una acción");
+        addButtonTooltip.setStyle("-fx-text-fill: orange;");
+        buttonAdd.setTooltip(addButtonTooltip);
+
+        Tooltip deleteButtonTooltip = new Tooltip();
+        deleteButtonTooltip.setText("Elimina las acciones checkeadas");
+        deleteButtonTooltip.setStyle("-fx-text-fill: orange;");
+        buttonDelete.setTooltip(deleteButtonTooltip);
+
+        Tooltip deleteAllButtonTooltip = new Tooltip();
+        deleteAllButtonTooltip.setText("Elimina el contenido de la tabla");
+        deleteAllButtonTooltip.setStyle("-fx-text-fill: orange;");
+        buttonDeleteAll.setTooltip(deleteAllButtonTooltip);
+
+        Tooltip saveButtonTooltip = new Tooltip();
+        saveButtonTooltip.setText("Guarda la tabla");
+        saveButtonTooltip.setStyle("-fx-text-fill: orange;");
+        buttonSave.setTooltip(saveButtonTooltip);
+
+        Tooltip playButtonTooltip = new Tooltip();
+        playButtonTooltip.setText("Ejecuta el contenido de la tabla");
+        playButtonTooltip.setStyle("-fx-text-fill: orange;");
+        buttonPlay.setTooltip(playButtonTooltip);
+
+        Tooltip copyButtonTooltip = new Tooltip();
+        copyButtonTooltip.setText("Copia las acciones checkeadas");
+        copyButtonTooltip.setStyle("-fx-text-fill: orange;");
+        buttonCopy.setTooltip(copyButtonTooltip);
+
+        Tooltip pasteButtonTooltip = new Tooltip();
+        pasteButtonTooltip.setText("Pega las acciones copiadas");
+        pasteButtonTooltip.setStyle("-fx-text-fill: orange;");
+        buttonPaste.setTooltip(pasteButtonTooltip);
+
+        Tooltip playTrialsTooltip = new Tooltip();
+        playTrialsTooltip.setText("Ejecuta las pruebas checkeadas");
+        playTrialsTooltip.setStyle("-fx-text-fill: orange;");
+        buttonPlayTrials.setTooltip(playTrialsTooltip);
+
+        Tooltip deleteTrialsTooltip = new Tooltip();
+        deleteTrialsTooltip.setText("Elimina las pruebas checkeadas");
+        deleteTrialsTooltip.setStyle("-fx-text-fill: orange;");
+        buttonDeleteTrial.setTooltip(deleteTrialsTooltip);
+
+        Tooltip addTrialTooltip = new Tooltip();
+        addTrialTooltip.setText("Crear una prueba vacía");
+        addTrialTooltip.setStyle("-fx-text-fill: orange;");
+        buttonAddTrial.setTooltip(addTrialTooltip);
+
+        Tooltip modifyTrialNameTooltip = new Tooltip();
+        modifyTrialNameTooltip.setText("Modifica el nombre de la prueba seleccionada");
+        modifyTrialNameTooltip.setStyle("-fx-text-fill: orange;");
+        buttonModifyTrial.setTooltip(modifyTrialNameTooltip);
+
+        Tooltip variablesTooltip = new Tooltip();
+        variablesTooltip.setText("Variables de la prueba seleccionada");
+        variablesTooltip.setStyle("-fx-text-fill: orange;");
+        buttonVariables.setTooltip(variablesTooltip);
+
+        Tooltip cloneTooltip = new Tooltip();
+        cloneTooltip.setText("Clona la prueba seleccionada");
+        cloneTooltip.setStyle("-fx-text-fill: orange;");
+        buttonClone.setTooltip(cloneTooltip);
     }
 
     public void openSettingsDialog()
@@ -2151,6 +2245,138 @@ public class MainController implements Initializable {
                     }
                 }
             }
+        }
+    }
+
+    public void dragAndDrop()
+    {
+        for (CheckBox child : testList.getItems()) //Poblate test List
+        {
+            child.setOnDragDetected(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    rowIndexDrop = -1;
+                    rowIndexDrag = 0;
+                    draggedChildList.clear();
+                    movedChilds.clear();
+
+                    Dragboard db = child.startDragAndDrop(TransferMode.MOVE);
+                    ClipboardContent content = new ClipboardContent();
+                    content.put(checkBoxFormat, " ");
+                    db.setContent(content);
+
+
+                    rowIndexDrag = testList.getItems().indexOf(event.getPickResult().getIntersectedNode().getParent());
+
+                    System.out.println("RowIndexDrag =  "+rowIndexDrag);
+
+
+                    if (rowIndexDrag == -1){
+                        event.consume();
+                    }else {
+                        for (CheckBox child : testList.getItems())
+                        {
+                            if (testList.getItems().indexOf(child) == rowIndexDrag)
+                            {
+                                draggedChildList.add(child);
+                            }
+                        }
+                    }
+
+
+                    event.consume();
+
+                }
+            });
+
+            child.setOnDragOver(new EventHandler<DragEvent>() {
+                @Override
+                public void handle(DragEvent event) {
+                    if (event.getPickResult().getIntersectedNode() != null){
+                        event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                    }
+
+                    event.consume();
+                }
+            });
+
+
+            child.setOnDragDropped(new EventHandler<DragEvent>() {
+                @Override
+                public void handle(DragEvent event) {
+
+                    rowIndexDrop = testList.getItems().indexOf(event.getPickResult().getIntersectedNode().getParent());
+
+
+                    System.out.println("DragIndex = "+ rowIndexDrag);
+                    System.out.println("DropIndex = "+rowIndexDrop);
+
+
+                    System.out.println(draggedChildList.toString());
+
+
+                    if  (rowIndexDrop != null && rowIndexDrag != null) {
+
+
+                        //System.out.println(testList.getItems().get(rowIndexDrag).toString());
+                        //testList.getItems().remove(rowIndexDrag); // Te cargas uno de mas
+
+
+
+                        if (rowIndexDrag >= 0 || rowIndexDrag < testList.getItems().size())                    // Si es la cabeza o medio...
+                        {
+                            for (CheckBox child : testList.getItems()){                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
+                                //System.out.println(testList.getItems().indexOf(child));
+                                if (testList.getItems().indexOf(child) > rowIndexDrag)
+                                {
+                                    //System.out.println(testList.getItems().indexOf(child));
+                                    testList.getItems().set(testList.getItems().indexOf(child)-1, child);
+                                    //System.out.println(testList.getItems().indexOf(child));
+                                }
+                            }
+                        }
+
+                        testList.getItems().removeAll(draggedChildList);
+                        testList.getItems().remove(testList.getItems().size()-1);
+
+
+                                                                                       // Insertar en cabeza o medio
+                        for (CheckBox child : testList.getItems()) {
+                            //System.out.println("Indice del checkbox = "+testList.getItems().indexOf(child));
+
+                            if (testList.getItems().indexOf(child) >= rowIndexDrop)
+                            {
+                                //testList.getItems().set(testList.getItems().indexOf(child)+1, child);
+                                movedChilds.add(child);
+                                //testList.getItems().remove(child);
+                            }
+                        }
+                        testList.getItems().removeAll(movedChilds);
+
+                        testList.getItems().add(rowIndexDrop, draggedChildList.get(0));
+
+                    } else{
+                        event.consume();
+                    }
+
+                    System.out.println("Tomaaa con to mi node " + rowIndexDrop);
+
+                    event.consume();
+                }
+            });
+
+            child.setOnDragDone(new EventHandler<DragEvent>() {
+                @Override
+                public void handle(DragEvent event) {
+
+                    if (event.getTransferMode() == TransferMode.MOVE)
+                    {
+                        testList.getItems().addAll(movedChilds);
+                    }
+
+                    event.consume();
+                }
+            });
         }
     }
 
