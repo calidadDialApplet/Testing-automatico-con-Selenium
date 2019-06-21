@@ -1,8 +1,6 @@
 package gui;
 
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -25,6 +23,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import main.Main;
 import main.SeleniumDAO;
 import main.Utils;
@@ -36,7 +35,6 @@ import org.json.simple.parser.ParseException;
 import org.json.JSONObject;
 import org.openqa.selenium.WebDriver;
 import persistence.H2DAO;
-import sun.nio.cs.ext.ISO_8859_11;
 
 
 import java.io.*;
@@ -56,7 +54,7 @@ public class MainController implements Initializable {
     private Button buttonAdd;
 
     @FXML
-    private  Button buttonDelete;
+    private Button buttonDelete;
 
     @FXML
     private Button buttonDeleteAll;
@@ -86,7 +84,10 @@ public class MainController implements Initializable {
     private Button buttonVariables;
 
     @FXML
-    private  Button buttonClone;
+    private Button buttonClone;
+
+    @FXML
+    private HBox bottomHbox;
 
     @FXML
     private ListView<CheckBox> testList;
@@ -295,7 +296,7 @@ public class MainController implements Initializable {
         buttonAdd.setTooltip(addButtonTooltip);
 
         Tooltip deleteButtonTooltip = new Tooltip();
-        deleteButtonTooltip.setText("Elimina las acciones checkeadas");
+        deleteButtonTooltip.setText("Elimina las acciones marcadas");
         deleteButtonTooltip.setStyle("-fx-text-fill: orange;");
         buttonDelete.setTooltip(deleteButtonTooltip);
 
@@ -310,12 +311,12 @@ public class MainController implements Initializable {
         buttonSave.setTooltip(saveButtonTooltip);
 
         Tooltip playButtonTooltip = new Tooltip();
-        playButtonTooltip.setText("Ejecuta el contenido de la tabla");
+        playButtonTooltip.setText("Ejecuta las acciones de la tabla");
         playButtonTooltip.setStyle("-fx-text-fill: orange;");
         buttonPlay.setTooltip(playButtonTooltip);
 
         Tooltip copyButtonTooltip = new Tooltip();
-        copyButtonTooltip.setText("Copia las acciones checkeadas");
+        copyButtonTooltip.setText("Copia las acciones marcadas");
         copyButtonTooltip.setStyle("-fx-text-fill: orange;");
         buttonCopy.setTooltip(copyButtonTooltip);
 
@@ -325,12 +326,12 @@ public class MainController implements Initializable {
         buttonPaste.setTooltip(pasteButtonTooltip);
 
         Tooltip playTrialsTooltip = new Tooltip();
-        playTrialsTooltip.setText("Ejecuta las pruebas checkeadas");
+        playTrialsTooltip.setText("Ejecuta las pruebas marcadas");
         playTrialsTooltip.setStyle("-fx-text-fill: orange;");
         buttonPlayTrials.setTooltip(playTrialsTooltip);
 
         Tooltip deleteTrialsTooltip = new Tooltip();
-        deleteTrialsTooltip.setText("Elimina las pruebas checkeadas");
+        deleteTrialsTooltip.setText("Elimina las pruebas marcadas");
         deleteTrialsTooltip.setStyle("-fx-text-fill: orange;");
         buttonDeleteTrial.setTooltip(deleteTrialsTooltip);
 
@@ -2250,11 +2251,19 @@ public class MainController implements Initializable {
 
     public void dragAndDrop()
     {
-        for (CheckBox child : testList.getItems()) //Poblate test List
+        /*testList.getSelectionModel().selectAll();
+        for (CheckBox child : testList.getSelectionModel().getSelectedItems())*/
+        //Callback<ListView<CheckBox>, ListCell<CheckBox>> cellCallback  = testList.getCellFactory();
+        //cellCallback.call().getListView().getItems();
+
+        for (CheckBox child : testList.getItems())
         {
+            //System.out.println(child.getParent().toString());
             child.setOnDragDetected(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
+                    //int index = testList.getSelectionModel().getSelectedIndex();
+                    //testList.getItems().get(index);
                     rowIndexDrop = -1;
                     rowIndexDrag = 0;
                     draggedChildList.clear();
@@ -2268,6 +2277,7 @@ public class MainController implements Initializable {
 
                     rowIndexDrag = testList.getItems().indexOf(event.getPickResult().getIntersectedNode().getParent());
 
+                    System.out.println(testList.getSelectionModel().getSelectedIndex());
                     System.out.println("RowIndexDrag =  "+rowIndexDrag);
 
 
@@ -2304,7 +2314,7 @@ public class MainController implements Initializable {
             child.setOnDragDropped(new EventHandler<DragEvent>() {
                 @Override
                 public void handle(DragEvent event) {
-
+                    //
                     rowIndexDrop = testList.getItems().indexOf(event.getPickResult().getIntersectedNode().getParent());
 
 
@@ -2317,44 +2327,45 @@ public class MainController implements Initializable {
 
                     if  (rowIndexDrop != null && rowIndexDrag != null) {
 
+                        if (rowIndexDrop == -1 || rowIndexDrag == -1){
+                            event.consume();
+                        }else {
 
-                        //System.out.println(testList.getItems().get(rowIndexDrag).toString());
-                        //testList.getItems().remove(rowIndexDrag); // Te cargas uno de mas
+                            //System.out.println(testList.getItems().get(rowIndexDrag).toString());
+                            //testList.getItems().remove(rowIndexDrag); // Te cargas uno de mas
 
 
-
-                        if (rowIndexDrag >= 0 || rowIndexDrag < testList.getItems().size())                    // Si es la cabeza o medio...
-                        {
-                            for (CheckBox child : testList.getItems()){                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
-                                //System.out.println(testList.getItems().indexOf(child));
-                                if (testList.getItems().indexOf(child) > rowIndexDrag)
-                                {
+                            if (rowIndexDrag >= 0 || rowIndexDrag < testList.getItems().size())                    // Si es la cabeza o medio...
+                            {
+                                for (CheckBox child : testList.getItems()) {                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
                                     //System.out.println(testList.getItems().indexOf(child));
-                                    testList.getItems().set(testList.getItems().indexOf(child)-1, child);
-                                    //System.out.println(testList.getItems().indexOf(child));
+                                    if (testList.getItems().indexOf(child) > rowIndexDrag) {
+                                        //System.out.println(testList.getItems().indexOf(child));
+                                        testList.getItems().set(testList.getItems().indexOf(child) - 1, child);
+                                        //System.out.println(testList.getItems().indexOf(child));
+                                    }
                                 }
                             }
-                        }
 
-                        testList.getItems().removeAll(draggedChildList);
-                        testList.getItems().remove(testList.getItems().size()-1);
-
-
-                                                                                       // Insertar en cabeza o medio
-                        for (CheckBox child : testList.getItems()) {
-                            //System.out.println("Indice del checkbox = "+testList.getItems().indexOf(child));
-
-                            if (testList.getItems().indexOf(child) >= rowIndexDrop)
-                            {
-                                //testList.getItems().set(testList.getItems().indexOf(child)+1, child);
-                                movedChilds.add(child);
-                                //testList.getItems().remove(child);
+                            testList.getItems().removeAll(draggedChildList);
+                            if (rowIndexDrag < testList.getItems().size()-1) {
+                                testList.getItems().remove(testList.getItems().size() - 1);
                             }
+
+                            // Insertar en cabeza o medio
+                            for (CheckBox child : testList.getItems()) {
+                                //System.out.println("Indice del checkbox = "+testList.getItems().indexOf(child));
+
+                                if (testList.getItems().indexOf(child) >= rowIndexDrop) {
+                                    //testList.getItems().set(testList.getItems().indexOf(child)+1, child);
+                                    movedChilds.add(child);
+                                    //testList.getItems().remove(child);
+                                }
+                            }
+                            testList.getItems().removeAll(movedChilds);
+
+                            testList.getItems().add(rowIndexDrop, draggedChildList.get(0));
                         }
-                        testList.getItems().removeAll(movedChilds);
-
-                        testList.getItems().add(rowIndexDrop, draggedChildList.get(0));
-
                     } else{
                         event.consume();
                     }

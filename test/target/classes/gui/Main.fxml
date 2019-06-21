@@ -132,7 +132,7 @@
       </GridPane>
     </left>
     <center>
-        <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+        <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
             <items>
                 <AnchorPane fx:id="anchorPaneTrial" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
@@ -189,7 +189,8 @@
                         </Tab>
                      </tabs>
                   </TabPane>
-               </children></AnchorPane>
+               </children>
+            </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="160.0">
                <children>
                   <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="168.0" prefWidth="348.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -197,23 +198,24 @@
                         <Accordion fx:id="accordionComprobationList" prefHeight="168.0" prefWidth="348.0" />
                      </content>
                   </ScrollPane>
-               </children></AnchorPane>
+               </children>
+            </AnchorPane>
             </items>
         </SplitPane>
     </center>
     <bottom>
       <GridPane alignment="CENTER_RIGHT" BorderPane.alignment="CENTER_LEFT">
          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="597.0" minWidth="10.0" prefWidth="578.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="597.0" minWidth="10.0" prefWidth="278.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="597.0" minWidth="10.0" prefWidth="322.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <HBox spacing="225.0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS">
+            <HBox spacing="225.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
                <children>
-                  <Spinner fx:id="spinner" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="74.0" />
-                    <HBox fx:id="bottomButtons" alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" prefHeight="26.0" prefWidth="320.0" spacing="5.0">
+                    <HBox fx:id="bottomButtons" alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" prefHeight="26.0" prefWidth="320.0" spacing="5.0" HBox.hgrow="ALWAYS">
                         <children>
                             <Button fx:id="buttonAdd" mnemonicParsing="true" onAction="#addActionRow">
                                 <graphic>
@@ -283,9 +285,13 @@
                         </Button>
                             <Label fx:id="labelStatus" alignment="CENTER" prefHeight="26.0" prefWidth="38.0" text="Label" wrapText="true" HBox.hgrow="NEVER" />
                         </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
                     </HBox>
                </children>
             </HBox>
+            <Spinner fx:id="spinner" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="74.0" />
          </children>
       </GridPane>
     </bottom>
