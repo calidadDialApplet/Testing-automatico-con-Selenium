@@ -204,16 +204,16 @@
         </SplitPane>
     </center>
     <bottom>
-      <GridPane alignment="CENTER_RIGHT" BorderPane.alignment="CENTER_LEFT">
+      <GridPane alignment="CENTER_LEFT">
          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="597.0" minWidth="10.0" prefWidth="278.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="597.0" minWidth="10.0" prefWidth="322.0" />
+            <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" percentWidth="47.0" />
+            <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" percentWidth="53.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <HBox spacing="225.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+            <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS">
                <children>
                     <HBox fx:id="bottomButtons" alignment="CENTER_LEFT" nodeOrientation="RIGHT_TO_LEFT" prefHeight="26.0" prefWidth="320.0" spacing="5.0" HBox.hgrow="ALWAYS">
                         <children>
@@ -291,7 +291,7 @@
                     </HBox>
                </children>
             </HBox>
-            <Spinner fx:id="spinner" nodeOrientation="LEFT_TO_RIGHT" prefHeight="26.0" prefWidth="74.0" />
+            <Spinner fx:id="spinner" prefHeight="26.0" prefWidth="74.0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" />
          </children>
       </GridPane>
     </bottom>

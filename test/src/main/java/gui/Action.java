@@ -302,6 +302,26 @@ public class Action {
         return secondValueArgsS;
     }
 
+    public void setActionTypeS(String actionTypeS) {
+        this.actionTypeS = actionTypeS;
+    }
+
+    public void setSelectElementByS(String selectElementByS) {
+        this.selectElementByS = selectElementByS;
+    }
+
+    public void setSelectPlaceByS(String selectPlaceByS) {
+        this.selectPlaceByS = selectPlaceByS;
+    }
+
+    public void setFirstValueArgsS(String firstValueArgsS) {
+        this.firstValueArgsS = firstValueArgsS;
+    }
+
+    public void setSecondValueArgsS(String secondValueArgsS) {
+        this.secondValueArgsS = secondValueArgsS;
+    }
+
     @Override
     public String toString() {
         return "Action{" +

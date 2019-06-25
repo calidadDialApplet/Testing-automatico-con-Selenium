@@ -23,7 +23,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import main.Main;
 import main.SeleniumDAO;
 import main.Utils;
@@ -122,8 +121,10 @@ public class MainController implements Initializable {
 
     private static Scene sceneSettings;
     private static Scene sceneVariables;
+    private static Scene sceneImport;
     private static Stage stageSettings;
     private static Stage stageVariables;
+    private static Stage stageImport;
 
     private List<Action> actionList;
     private List<Action> validationList;
@@ -1593,7 +1594,7 @@ public class MainController implements Initializable {
         return numCols;
     }
 
-    private void saveTrialToCSV(ArrayList<Action> actions, ArrayList<Action> validations, File file) throws IOException
+    private void exportTrialToCSV(ArrayList<Action> actions, ArrayList<Action> validations, File file) throws IOException
     {
             Writer writer = null;
             try {
@@ -1635,7 +1636,7 @@ public class MainController implements Initializable {
             }
     }
 
-    private void saveGlobalVariablesToCSV(ArrayList<Global_Variable> global_variables, File file) throws IOException {
+    private void exportGlobalVariablesToCSV(ArrayList<Global_Variable> global_variables, File file) throws IOException {
         Writer writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(file));
@@ -1670,7 +1671,7 @@ public class MainController implements Initializable {
 
             jsonObject.put("Validations", validations);
 
-            jsonObject.put("Variables", variables);
+            //jsonObject.put("Variables", variables);
 
             jsonObject.put("Actions", actions);
 
@@ -1684,8 +1685,22 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public void exportVariablesJSON(ArrayList<Variable> variables, File file)
+    {
+        try{
+            JSONObject jsonObject = new JSONObject();
 
+            jsonObject.put("Variables",variables);
+
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(jsonObject.toString());
+            fileWriter.flush();
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public void exportGlobalVariablesJSON(ArrayList<Global_Variable> global_variables, File file)
@@ -1706,7 +1721,7 @@ public class MainController implements Initializable {
         }
     }
 
-    private void saveVariablesToCSV(ArrayList<Variable> variables, File file) throws IOException
+    private void exportVariablesToCSV(ArrayList<Variable> variables, File file) throws IOException
     {
         Writer writer = null;
         try {
@@ -1717,8 +1732,10 @@ public class MainController implements Initializable {
             for (Variable variable : variables)
             {
                 writer.write(System.lineSeparator());
-                writer.write("" + variable.getVariableTrial() + ","
+                /*writer.write("" + variable.getVariableTrial() + ","
                         + variable.getVariableName() + ","
+                        + variable.getValue());*/
+                writer.write(""+ variable.getVariableName() + ","
                         + variable.getValue());
             }
 
@@ -1770,14 +1787,16 @@ public class MainController implements Initializable {
                             File trialFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+trialID)+".csv");
                             File trialJSONFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+trialID)+".json");
                             File variablesFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+"Variables"+"_"+trialID+".csv"));
+                            File variablesJSONFile = new File(folder.getAbsolutePath().concat("/"+trial.getText()+"_"+"Variables"+"_"+trialID+".json"));
 
                             ArrayList<Action> actions = H2DAO.getTrialActions(trial.getText());
                             ArrayList<Action> validations = H2DAO.getTrialValidations(trial.getText());
                             ArrayList<Variable> variables = H2DAO.getTrialVariables(H2DAO.getTrialID(trial.getText()));
 
-                            saveTrialToCSV(actions, validations, trialFile);
-                            saveVariablesToCSV(variables,variablesFile);
+                            exportTrialToCSV(actions, validations, trialFile);
+                            exportVariablesToCSV(variables,variablesFile);
                             exportTestJSON(actions, validations, variables, trialJSONFile);
+                            exportVariablesJSON(variables,variablesJSONFile);
 
                         }
                         // Aviso de ninguno seleccionado
@@ -1809,7 +1828,7 @@ public class MainController implements Initializable {
 
                 ArrayList<Global_Variable> global_variables = H2DAO.getGlobalVariables();
 
-                saveGlobalVariablesToCSV(global_variables, globalVariableCSV);
+                exportGlobalVariablesToCSV(global_variables, globalVariableCSV);
                 exportGlobalVariablesJSON(global_variables, globalVariablesJSON);
             }
         } catch (IOException e) {
@@ -1829,24 +1848,51 @@ public class MainController implements Initializable {
 
             for (File file : files)
             {
-                String fileExtension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+                /*String fileExtension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
                 if (fileExtension.equals("json"))
                 {
                     importJSONTrial(file);
                 }
                 if (fileExtension.equals("csv"))
                 {
-                    importCSVTrial(file);
-                }
+                    openImportDialog(file);
+                }*/
+                openImportDialog(file);
             }
         } else {
             return;
         }
     }
 
-    public void importCSVTrial(File file)
+    public void openImportDialog(File file)
     {
-        String header = "";
+        try {
+            ImportController importController = new ImportController();
+            importController.setFile(file);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Import.fxml"));
+            loader.setController(importController);
+            Parent root = loader.load();
+            //Parent root = FXMLLoader.load(getClass().getResource("/gui/Import.fxml"));
+            stageImport = new Stage();
+            stageImport.setResizable(false);
+            stageImport.initModality(Modality.APPLICATION_MODAL);
+            stageImport.setAlwaysOnTop(true);
+            stageImport.setTitle("Import Trial & Varaibles");
+            sceneImport = new Scene(root,470,400);
+            if (H2DAO.isDarkTheme()){
+                setTheme("Import","darcula");
+            }else {
+                setTheme("Import","modena");
+            }
+            //scene.getStylesheets().add("/css/darcula.css");
+            stageImport.setScene(sceneImport);
+            stageImport.show();
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        /* String header = "";
         boolean firstRead = true;
         String lastTrialVariable = "";
 
@@ -1954,7 +2000,7 @@ public class MainController implements Initializable {
 
         } catch(FileNotFoundException e){
             e.printStackTrace();
-        }
+        }*/
     }
     
     public void importGlobalVariables()
@@ -2124,39 +2170,41 @@ public class MainController implements Initializable {
             org.json.simple.JSONArray variables = (org.json.simple.JSONArray) jsonObject.get("Variables");
 
 
-            for (int i = 0; i < actions.size(); i++)
-            {
-                org.json.simple.JSONObject action = (org.json.simple.JSONObject) actions.get(i);
-                ActionController actionController = new ActionController();
-                actionController.setAction(gridPaneTrialList, actionsRowIndex, action.get("actionTypeS").toString(), action.get("selectElementByS").toString(),
-                        action.get("firstValueArgsS").toString(), action.get("selectPlaceByS").toString(), action.get("secondValueArgsS").toString());
-                Action act = new Action(action.get("actionTypeS").toString(), action.get("selectElementByS").toString(),
-                        action.get("firstValueArgsS").toString(), action.get("selectPlaceByS").toString(), action.get("secondValueArgsS").toString());
-                actionList.add(act);
-                actionsRowIndex++;
+            if (actions != null) {
+                for (int i = 0; i < actions.size(); i++) {
+                    org.json.simple.JSONObject action = (org.json.simple.JSONObject) actions.get(i);
+                    ActionController actionController = new ActionController();
+                    actionController.setAction(gridPaneTrialList, actionsRowIndex, action.get("actionTypeS").toString(), action.get("selectElementByS").toString(),
+                            action.get("firstValueArgsS").toString(), action.get("selectPlaceByS").toString(), action.get("secondValueArgsS").toString());
+                    Action act = new Action(action.get("actionTypeS").toString(), action.get("selectElementByS").toString(),
+                            action.get("firstValueArgsS").toString(), action.get("selectPlaceByS").toString(), action.get("secondValueArgsS").toString());
+                    actionList.add(act);
+                    actionsRowIndex++;
 
+                }
             }
 
-            for (int i = 0; i < validations.size(); i++)
-            {
-                org.json.simple.JSONObject validation = (org.json.simple.JSONObject) validations.get(i);
-                ActionController actionController = new ActionController();
-                actionController.setAction(gridPaneValidationList, validationRowIndex, validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
-                        validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());
-                Action act = new Action(validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
-                        validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());
-                validationList.add(act);
-                validationRowIndex++;
+            if (validations != null) {
+                for (int i = 0; i < validations.size(); i++) {
+                    org.json.simple.JSONObject validation = (org.json.simple.JSONObject) validations.get(i);
+                    ActionController actionController = new ActionController();
+                    actionController.setAction(gridPaneValidationList, validationRowIndex, validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
+                            validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());
+                    Action act = new Action(validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
+                            validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());
+                    validationList.add(act);
+                    validationRowIndex++;
 
+                }
             }
 
+            if (variables != null) {
+                for (int i = 0; i < variables.size(); i++) {
+                    org.json.simple.JSONObject variable = (org.json.simple.JSONObject) variables.get(i);
+                    Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
+                    checkVariables(failedVariables, var);
 
-            for (int i = 0; i < variables.size(); i++)
-            {
-                org.json.simple.JSONObject variable = (org.json.simple.JSONObject) variables.get(i);
-                Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
-                checkVariables(failedVariables, var);
-
+                }
             }
 
             if (checkVariablesFormat(actionList) && checkVariablesFormat(validationList) && failedVariables.size() == 0)
@@ -2230,6 +2278,16 @@ public class MainController implements Initializable {
                 Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
             }
         }
+
+        if (stage.equals("Import")) {
+            sceneImport.getStylesheets().clear();
+            if (theme.equals("darcula")) {
+                sceneImport.getStylesheets().add("/css/darcula.css");
+            }
+            if (theme.equals("modena")) {
+                Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
+            }
+        }
     }
 
     public static void reorderIndex(GridPane gridPane)
@@ -2258,6 +2316,8 @@ public class MainController implements Initializable {
 
         for (CheckBox child : testList.getItems())
         {
+            //testList.setOnDragDetected();      SECOND ROUND
+
             //System.out.println(child.getParent().toString());
             child.setOnDragDetected(new EventHandler<MouseEvent>() {
                 @Override
@@ -2276,6 +2336,11 @@ public class MainController implements Initializable {
 
 
                     rowIndexDrag = testList.getItems().indexOf(event.getPickResult().getIntersectedNode().getParent());
+
+                    if (rowIndexDrag == -1)
+                    {
+                        rowIndexDrag = testList.getSelectionModel().getSelectedIndex();
+                    }
 
                     System.out.println(testList.getSelectionModel().getSelectedIndex());
                     System.out.println("RowIndexDrag =  "+rowIndexDrag);
@@ -2398,6 +2463,9 @@ public class MainController implements Initializable {
         }
         if (stage.equals("Variables")){
             stageVariables.close();
+        }
+        if (stage.equals("Import")){
+            stageImport.close();
         }
     }
 

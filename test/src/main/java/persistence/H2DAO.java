@@ -521,6 +521,11 @@ public class H2DAO {
         return result;
     }
 
+    public static void saveTrialActions(String trialID, ArrayList<Action> actions, ArrayList<Action> validations)
+    {
+
+    }
+
     public static String getSelectionBy(String id)
     {
         String result = "";
@@ -589,6 +594,27 @@ public class H2DAO {
             e.printStackTrace();
         }
         return id;
+    }
+
+    public static String getTrialName(String trialID)
+    {
+        String name = "NULL";
+        try {
+            Statement st = connection.createStatement();
+
+            String getIDFromTrialName = "Select id from trials where id='" + trialID + "'";
+            st.execute(getIDFromTrialName);
+
+            ResultSet idResultSet = st.getResultSet();
+            while (idResultSet.next()) {
+                name = (idResultSet.getString(1));
+            }
+            st.close();
+        }catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return name;
     }
 
     private static List<String> fillData(ResultSet set, int index) throws SQLException {

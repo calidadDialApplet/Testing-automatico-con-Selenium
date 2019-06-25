@@ -354,8 +354,15 @@ public class SeleniumDAO {
             case "Enter":
                 element.sendKeys(Keys.ENTER);
                 break;
+            case "PageDown":
+                element.sendKeys(Keys.PAGE_DOWN);
+                break;
+            case "PageUp":
+                element.sendKeys(Keys.PAGE_UP);
+                break;
             default:
                 break;
+
         }
     }
 

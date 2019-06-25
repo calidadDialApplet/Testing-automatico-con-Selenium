@@ -1,0 +1,29 @@
+Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation
+WriteTo,id,adminusername,,admin,false
+WriteTo,id,adminpassword,,admin,false
+Click,id,login,,,false
+Click,id,ADMIN,,,false
+Click,cssSelector,#innerLeftContent > div:nth-child(2) > a:nth-child(1) > img:nth-child(1),,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[3]/div[2]/table/tbody/tr[3]/td[1]/a/img,,,false
+ReadFrom,cssSelector,tbody :nth-last-child(3) ~ tr :first-child,,${GroupID},false
+Click,xpath,/html/body/div[2]/div[1]/div[2]/div/div[1]/p[1]/a,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[4]/div[1]/div/table/tbody/tr/td[2]/a/img,,,false
+WriteTo,id,username,,Agente4rc1Nver794,false
+WriteTo,id,pswd,,contraseña1234,false
+WriteTo,id,pass2,,contraseña1234,false
+Click,id,isagent,,,false
+Click,id,submit,,,false
+Click,name,send_tabs,,,false
+Click,id,g${GroupID},,,false
+Click,name,submit-page-one,,,false
+Click,name,submit-page-two,,,false
+Click,name,submit,,,false
+WriteTo,id,adminusername,,admin,true
+WriteTo,id,adminpassword,,admin,true
+Click,id,login,,,true
+Click,id,ADMIN,,,true
+Click,cssSelector,#innerLeftContent > div:nth-child(2) > a:nth-child(1) > img:nth-child(1),,,true
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[3]/div[2]/table/tbody/tr[3]/td[1]/a/img,,,true
+Click,id,users-${GroupID},,,true
+SwitchTo,,fancybpx-frame,,,true
+ReadFrom,xpath,/html/body/form/div/div[1]/div/div[3]/div/ul/li,,${AgentOfGroup},true

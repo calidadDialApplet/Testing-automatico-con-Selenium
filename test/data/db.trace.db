@@ -3142,3 +3142,11 @@ Database is already closed (to disable automatic closing at VM shutdown, add ";D
 	at com.sun.glass.ui.gtk.GtkApplication._runLoop(Native Method)
 	at com.sun.glass.ui.gtk.GtkApplication.lambda$null$203(GtkApplication.java:139)
 	at java.lang.Thread.run(Thread.java:748)
+2019-06-25 15:18:02 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "NULL"
+Data conversion error converting "NULL"; SQL statement:
+delete from trial_actions where trialid='NULL' and validation = '0' [22018-199]
+2019-06-25 15:18:02 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"
+Data conversion error converting "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"; SQL statement:
+insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation) values(?,?,?,?,?,?,?) -- (?1, ?2, ?3, ?4, ?5, ?6, ?7) [22018-199]
