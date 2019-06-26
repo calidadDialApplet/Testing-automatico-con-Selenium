@@ -645,7 +645,7 @@ Database is already closed (to disable automatic closing at VM shutdown, add ";D
 	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1547)
 	at org.h2.jdbc.JdbcConnection.createStatement(JdbcConnection.java:262)
 	at persistence.H2DAO.getTrials(H2DAO.java:302)
-	at gui.MainController.poblateTestList(MainController.java:848)
+	at fillTestList(MainController.java:848)
 	at gui.MainController.cloneTest(MainController.java:1003)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
@@ -3147,6 +3147,70 @@ org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "NU
 Data conversion error converting "NULL"; SQL statement:
 delete from trial_actions where trialid='NULL' and validation = '0' [22018-199]
 2019-06-25 15:18:02 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"
+Data conversion error converting "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"; SQL statement:
+insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation) values(?,?,?,?,?,?,?) -- (?1, ?2, ?3, ?4, ?5, ?6, ?7) [22018-199]
+2019-06-26 15:10:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "NULL"
+Data conversion error converting "NULL"; SQL statement:
+select * from trial_actions where id ='NULL' [22018-199]
+2019-06-26 15:10:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "NULL"
+Data conversion error converting "NULL"; SQL statement:
+select * from trial_actions where id ='NULL' [22018-199]
+2019-06-26 15:14:29 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"
+Data conversion error converting "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"; SQL statement:
+insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation) values(?,?,?,?,?,?,?) -- (?1, ?2, ?3, ?4, ?5, ?6, ?7) [22018-199]
+2019-06-26 15:14:29 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "NULL"
+Data conversion error converting "NULL"; SQL statement:
+select * from trial_actions where id ='NULL' [22018-199]
+2019-06-26 15:16:39 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"
+Data conversion error converting "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"; SQL statement:
+insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation) values(?,?,?,?,?,?,?) -- (?1, ?2, ?3, ?4, ?5, ?6, ?7) [22018-199]
+2019-06-26 15:16:39 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "NULL"
+Data conversion error converting "NULL"; SQL statement:
+select * from trial_actions where id ='NULL' [22018-199]
+2019-06-26 15:20:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"
+Data conversion error converting "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"; SQL statement:
+insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation) values(?,?,?,?,?,?,?) -- (?1, ?2, ?3, ?4, ?5, ?6, ?7) [22018-199]
+2019-06-26 15:20:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "NULL"
+Data conversion error converting "NULL"; SQL statement:
+select * from trial_actions where id ='NULL' [22018-199]
+2019-06-26 15:21:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"
+Data conversion error converting "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"; SQL statement:
+insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation) values(?,?,?,?,?,?,?) -- (?1, ?2, ?3, ?4, ?5, ?6, ?7) [22018-199]
+2019-06-26 15:21:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "NULL"
+Data conversion error converting "NULL"; SQL statement:
+select * from trial_actions where id ='NULL' [22018-199]
+2019-06-26 15:23:34 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"
+Data conversion error converting "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"; SQL statement:
+insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation) values(?,?,?,?,?,?,?) -- (?1, ?2, ?3, ?4, ?5, ?6, ?7) [22018-199]
+2019-06-26 15:23:34 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "NULL"
+Data conversion error converting "NULL"; SQL statement:
+select * from trial_actions where id ='NULL' [22018-199]
+2019-06-26 15:25:21 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"
+Data conversion error converting "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"; SQL statement:
+insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation) values(?,?,?,?,?,?,?) -- (?1, ?2, ?3, ?4, ?5, ?6, ?7) [22018-199]
+2019-06-26 15:25:21 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "NULL"
+Data conversion error converting "NULL"; SQL statement:
+select * from trial_actions where id ='NULL' [22018-199]
+2019-06-26 17:36:06 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"
+Data conversion error converting "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"; SQL statement:
+insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation) values(?,?,?,?,?,?,?) -- (?1, ?2, ?3, ?4, ?5, ?6, ?7) [22018-199]
+2019-06-26 17:36:06 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLDataException: Conversión de datos fallida, convirtiendo "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"
 Data conversion error converting "'NULL' (TRIAL_ACTIONS: ""TRIALID"" INTEGER NOT NULL)"; SQL statement:
 insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation) values(?,?,?,?,?,?,?) -- (?1, ?2, ?3, ?4, ?5, ?6, ?7) [22018-199]

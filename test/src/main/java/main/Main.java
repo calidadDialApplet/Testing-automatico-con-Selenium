@@ -2,9 +2,6 @@ package main;
 
 import gui.MainController;
 import javafx.application.Application;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -22,12 +19,7 @@ public class Main extends Application {
 
         private static Scene scene;
         private static boolean modified;
-        BooleanBinding modify = new BooleanBinding() {
-                @Override
-                protected boolean computeValue() {
-                        return false;
-                }
-        };
+        private static boolean refreshTestList;
 
         public static void main(String[] args) { launch(args);}
 
@@ -111,6 +103,19 @@ public class Main extends Application {
         public static void setModified(boolean modified)
         {
                 Main.modified = modified;
+        }
+
+        public static boolean isRefreshTestList() {
+                return refreshTestList;
+        }
+
+        public static void setRefreshTestList(boolean refreshTestList) {
+                Main.refreshTestList = refreshTestList;
+                if (refreshTestList){
+                    MainController mainController = new MainController();
+                    System.out.println("PASSSSSSSSSSSSA");
+                    mainController.fillTestList();
+                }
         }
 }
 

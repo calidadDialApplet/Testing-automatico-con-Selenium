@@ -1,4 +1,4 @@
-TrialID,VariableName,Value
-53,${grupo},297
-53,${groupComprobation},297
-53,${userGroupName},Agente1Nver7816
+VariableName,Value
+${grupo},298
+${groupComprobation},298
+${userGroupName},Agente1Nver7816

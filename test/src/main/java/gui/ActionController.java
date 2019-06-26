@@ -280,6 +280,14 @@ public class ActionController
                                 {
                                     Main.setModified(true);
                                 }
+                                if (newValueSelect1.equals("PageUp") || newValueSelect1.equals("PageDown"))
+                                {
+                                    selectElementBy.setDisable(true);
+                                    firstValueArgs.setDisable(true);
+                                }else {
+                                    selectElementBy.setDisable(false);
+                                    firstValueArgs.setDisable(false);
+                                }
                             });
 
                             selectPlaceBy.setValue(selectPlaceByValue);

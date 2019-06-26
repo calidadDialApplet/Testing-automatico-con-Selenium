@@ -2,13 +2,12 @@ package gui;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
+import main.Main;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import persistence.H2DAO;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,6 +23,9 @@ public class ImportController implements Initializable {
     ListView<CheckBox> listViewTrials;
 
     @FXML
+    Button buttonImport;
+
+    @FXML
     CheckBox newTrial;
 
     int listViewRowIndex = 0;
@@ -31,10 +33,12 @@ public class ImportController implements Initializable {
 
     private ArrayList<Action> actionList;
     private ArrayList<Action> validationList;
-    private ArrayList<Variable> variablesList;
+    //private ArrayList<Variable> variablesList;
+    private ArrayList<VariableNV> variablesNVList;
+
 
     String trialColumnsHeadersCSV = "Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation";
-    String variablesColumnsHeadersCSV = "TrialID,VariableName,Value";
+    String variablesColumnsHeadersCSV = "VariableName,Value";
     String newTrialName;
 
     private static Pattern VARIABLE_PATTERN = Pattern.compile("\\$\\{\\S+\\}");
@@ -42,6 +46,10 @@ public class ImportController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        actionList = new ArrayList<>();
+        validationList = new ArrayList<>();
+        variablesNVList = new ArrayList<>();
+        //variablesList = new ArrayList<>();
         fillGrid();
     }
 
@@ -54,14 +62,13 @@ public class ImportController implements Initializable {
         }
     }
 
-    public void closeVariables()
+    public void closeImport()
     {
         MainController.closeStage("Import");
     }
 
     public void importTrial()
     {
-
         String fileExtension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
         if (fileExtension.equals("json"))
         {
@@ -72,33 +79,71 @@ public class ImportController implements Initializable {
             importCSVTrial(file);
         }
 
-
-
-
         if (newTrial.isSelected())
         {
-            newTrial();
-            String id = H2DAO.getTrialID(newTrialName);
-            H2DAO.saveTrial(actionList, id, 0);
-            H2DAO.saveTrial(validationList, id, 1);
-            setVariablesTrialAndSave(variablesList, id);
+           newTrial();
+           String id = H2DAO.getTrialID(newTrialName);
+           if (!id.equals("NULL"))
+           {
+               if (checkActionsFormat(actionList) && checkActionsFormat(validationList))
+               {
+                   H2DAO.saveTrial(actionList, id, 0);
+                   H2DAO.saveTrial(validationList, id, 1);
+               }
+               setVariablesTrialAndSave(variablesNVList, id);
+           }
+
+           //MainController mainController = new MainController();
+            closeImport();
+            //Main.setRefreshTestList(true);
 
         }
         for (CheckBox trialSelected : listViewTrials.getItems())
         {
             if (trialSelected.isSelected())
             {
-
+                String id = H2DAO.getTrialID(trialSelected.getText());
+                if (checkActionsFormat(actionList) && checkActionsFormat(validationList))
+                {
+                    H2DAO.saveTrial(actionList, id, 0);
+                    H2DAO.saveTrial(validationList, id, 1);
+                }
+                setVariablesTrialAndSave(variablesNVList, id);
             }
         }
+        closeImport();
+
     }
 
-    private void setVariablesTrialAndSave(ArrayList<Variable> variablesList, String newTrialId)
+    private void setVariablesTrialAndSave(ArrayList<VariableNV> variablesNVList, String newTrialId)
     {
-        for (Variable variable : variablesList)
+        ArrayList<String> failedVariables = new ArrayList<>();
+        ArrayList<Variable> variables = new ArrayList<>();
+        for (VariableNV variableNV : variablesNVList)
         {
-            variable.setVariableTrial(newTrialId);
-            H2DAO.saveVariable(variable);
+            variables.add(new Variable(newTrialId,variableNV.getVariableName(), variableNV.getValue()));
+        }
+
+
+        for (Variable variable : variables)
+        {
+            checkVariables(failedVariables,variable);
+            //variable.setVariableTrial(newTrialId);
+            //H2DAO.saveVariable(variable);
+        }
+        if (failedVariables.size() > 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("Se ha producido un error durante la importación de las variables en el test: "+H2DAO.getTrialName(newTrialId));
+            alert.initOwner(listViewTrials.getScene().getWindow());
+            String error = "";
+            for (String failedVariable : failedVariables)
+            {
+                error = error.concat(failedVariable+"\n");
+            }
+            alert.setContentText(error);
+            alert.showAndWait();
         }
     }
 
@@ -107,6 +152,7 @@ public class ImportController implements Initializable {
         TextInputDialog dialog = new TextInputDialog("Prueba");
         dialog.setTitle("Nueva prueba");
         dialog.setHeaderText("");
+        dialog.initOwner(buttonImport.getScene().getWindow());
         dialog.setContentText("Por favor introduzca el nombre de la prueba sin '_' :");
 
         Optional<String> result = dialog.showAndWait();
@@ -117,19 +163,21 @@ public class ImportController implements Initializable {
             alert.setTitle("Error");
             alert.setHeaderText("El nombre de la prueba contiene '_'");
             alert.setContentText("Estas tonto o que? :)");
+            alert.initOwner(buttonImport.getScene().getWindow());
             alert.show();
         } else {
             if (result.isPresent()) {
-                newTrialName = result.toString();
                 if (!checkTrialName(result.get())) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
                     alert.setHeaderText("Nombre de trial repetido");
                     alert.setContentText("Contacta con tu administrador :)");
-                    alert.showAndWait();
+                    alert.initOwner(buttonImport.getScene().getWindow());
+                    alert.show();
                 } else {
+                    newTrialName = result.get();
                     H2DAO.createTrial(result.get());
-                    //poblateTestList();
+                    //fillTestList();
                     //testList.getSelectionModel().selectLast();
                 }
 
@@ -185,7 +233,7 @@ public class ImportController implements Initializable {
                 {
                     String[] values = data.split(",");
 
-                    if (firstRead && !values[0].equals("TrialID")){
+                    /*if (firstRead && !values[0].equals("TrialID")){
 
                         Variable variable = new Variable(values[0], values[1], values[2]);
                         checkVariables(failedVariables, variable);
@@ -208,15 +256,19 @@ public class ImportController implements Initializable {
 
                             lastTrialVariable = values[0];
                         }
+                    }*/
+                    if (!values[0].equals("VariableName"))
+                    {
+                        variablesNVList.add(new VariableNV(values[0], values[1]));
                     }
                 }
             }
             if(header.equals("Trial"))
             {
-                /*if (checkVariablesFormat(actionList) && checkVariablesFormat(validationList))
+                /*if (checkActionsFormat(actionList) && checkActionsFormat(validationList))
                 {
                     saveTest();
-                    poblateTestList();
+                    fillTestList();
                 } else {
                     // Aviso formato de variables
                     deleteAllTabs();
@@ -230,21 +282,23 @@ public class ImportController implements Initializable {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle("Error");
                     alert.setHeaderText("Se ha producido un error durante la importación de las variables");
+                    alert.initOwner(buttonImport.getScene().getWindow());
                     String error = "";
                     for (String failedVariable : failedVariables)
                     {
                         error = error.concat(failedVariable+"\n");
                     }
                     alert.setContentText(error);
-                    alert.showAndWait();
+                    alert.show();
                 }
-                variablesList.clear();
+                //variablesList.clear();
             }else{
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("Se ha producido un error durante la importación del test");
                 alert.setContentText("El fichero no contienen las columnas correctas");
-                alert.showAndWait();
+                alert.initOwner(buttonImport.getScene().getWindow());
+                alert.show();
             }
 
         } catch(FileNotFoundException e){
@@ -256,7 +310,7 @@ public class ImportController implements Initializable {
     {
 
         JSONParser parser = new JSONParser();
-        ArrayList<String> failedVariables = new ArrayList<>();
+        //ArrayList<String> failedVariables = new ArrayList<>();
 
         try {
             FileReader reader = new FileReader(file);
@@ -288,7 +342,7 @@ public class ImportController implements Initializable {
             if (validations != null) {
                 for (int i = 0; i < validations.size(); i++) {
                     org.json.simple.JSONObject validation = (org.json.simple.JSONObject) validations.get(i);
-                    ActionController actionController = new ActionController();
+                    //ActionController actionController = new ActionController();
                     /*actionController.setAction(gridPaneValidationList, validationRowIndex, validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
                             validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());*/
                     Action act = new Action(validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
@@ -302,16 +356,18 @@ public class ImportController implements Initializable {
             if (variables != null) {
                 for (int i = 0; i < variables.size(); i++) {
                     org.json.simple.JSONObject variable = (org.json.simple.JSONObject) variables.get(i);
-                    Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
-                    checkVariables(failedVariables, var);
+                    VariableNV variableNV = new VariableNV(variable.get("variableName").toString(), variable.get("value").toString());
+                    variablesNVList.add(variableNV);
+                    //Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
+                    //checkVariables(failedVariables, var);
 
                 }
             }
 
-            if (checkVariablesFormat(actionList) && checkVariablesFormat(validationList) && failedVariables.size() == 0)
+            /*if (checkActionsFormat(actionList) && checkActionsFormat(validationList) && failedVariables.size() == 0)
             {
                 //saveTest();
-                //poblateTestList();
+                //fillTestList();
 
             } else {
 
@@ -329,7 +385,7 @@ public class ImportController implements Initializable {
 
                 // Aviso formato de variables
                 //deleteAllTabs();
-            }
+            }*/
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -344,7 +400,7 @@ public class ImportController implements Initializable {
         this.file = file;
     }
 
-    private boolean checkVariablesFormat(List<Action> actions)
+    private boolean checkActionsFormat(List<Action> actions)
     {
         boolean formatOk = true;
         for (Action action : actions)
@@ -371,7 +427,7 @@ public class ImportController implements Initializable {
 
                 if (!H2DAO.variableExists(variable)) {
 
-                    //H2DAO.saveVariable(variable);
+                    H2DAO.saveVariable(variable);
                 } else {
                     failedVariables.add("Variable " + variable.getVariableName() + " Fallo: Variable existente");
                 }

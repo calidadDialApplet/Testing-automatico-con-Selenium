@@ -124,7 +124,7 @@ public class H2DAO {
 
         try {
             Statement st = connection.createStatement();
-            String createTable = "insert into keys(name) values ('F5')";
+            String createTable = "insert into keys(name) values ('PageUp')";
             //String drop = "create table keys(id integer auto_increment, name text)";
             //st.execute(createTable);
 
@@ -223,19 +223,6 @@ public class H2DAO {
                 //System.out.println(""+actionTypeId+" / "+firstValueArgs+ " / "+value1+" / "+secondValueArgs+ " / "+value2);
 
 
-
-                /*String query = "insert into" +
-                        " trial_actions ("+
-                        " trialid," +
-                        " actiontypeid," +
-                        " selectionbyid1," +
-                        " value1," +
-                        " selectionbyid2," +
-                        " value2," +
-                        " validation" +
-                        ")" +
-                        " values" +
-                        "('"+id+"','"+actionTypeId+"','"+firstValueArgs+"','"+value1+"','"+secondValueArgs+"','"+value2+"','"+validation+"')";*/
                 String query = "insert into trial_actions (trialid, actiontypeid, selectionbyid1, value1, selectionbyid2, value2, validation)" +
                         " values(?,?,?,?,?,?,?) ";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -602,7 +589,7 @@ public class H2DAO {
         try {
             Statement st = connection.createStatement();
 
-            String getIDFromTrialName = "Select id from trials where id='" + trialID + "'";
+            String getIDFromTrialName = "Select name from trials where id='"+trialID+"'";
             st.execute(getIDFromTrialName);
 
             ResultSet idResultSet = st.getResultSet();
@@ -938,7 +925,6 @@ public class H2DAO {
             e.printStackTrace();
         }
     }
-
 
 
     public static ArrayList<Variable> getTrialVariables(String trial)

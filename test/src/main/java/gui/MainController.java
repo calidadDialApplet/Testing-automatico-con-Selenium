@@ -149,7 +149,7 @@ public class MainController implements Initializable {
     String comboBoxSelectPlaceBy = "";
     String textFieldSecondValueArgs = "";
     String trialColumnsHeadersCSV = "Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation";
-    String variablesColumnsHeadersCSV = "TrialID,VariableName,Value";
+    String variablesColumnsHeadersCSV = "VariableName,Value";
     String globalVariableHeader = "VariableName, Value";
 
     private static DataFormat checkBoxFormat = new DataFormat();
@@ -286,7 +286,7 @@ public class MainController implements Initializable {
         }
 
 
-        poblateTestList();
+        fillTestList();
         dragAndDrop();
     }
 
@@ -874,7 +874,7 @@ public class MainController implements Initializable {
                     alert.showAndWait();
                 } else {
                     H2DAO.createTrial(result.get());
-                    poblateTestList();
+                    fillTestList();
                     testList.getSelectionModel().selectLast();
                 }
 
@@ -1279,7 +1279,7 @@ public class MainController implements Initializable {
         textFieldSecondValueArgs = "";
     }
 
-    public void poblateTestList()
+    public void fillTestList()
     {
         testList.getItems().remove(0, testList.getItems().size());
         ObservableList<CheckBox> checkBoxesList = FXCollections.observableArrayList();
@@ -1372,7 +1372,7 @@ public class MainController implements Initializable {
                    H2DAO.deleteTrial(id);
                }
            }
-           poblateTestList();
+           fillTestList();
     }
 
     public void modifyTrialName()
@@ -1445,7 +1445,7 @@ public class MainController implements Initializable {
             H2DAO.saveTrial(validations, clonedID, 1);
             H2DAO.saveTrialVariables(variables, clonedID);
 
-            poblateTestList();
+            fillTestList();
         }
 
     }
@@ -1689,10 +1689,16 @@ public class MainController implements Initializable {
 
     public void exportVariablesJSON(ArrayList<Variable> variables, File file)
     {
+        ArrayList<VariableNV> variablesNV = new ArrayList<>();
+        for (Variable var : variables)
+        {
+            variablesNV.add(new VariableNV(var.getVariableName(), var.getValue()));
+        }
+
         try{
             JSONObject jsonObject = new JSONObject();
 
-            jsonObject.put("Variables",variables);
+            jsonObject.put("Variables", variablesNV);
 
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(jsonObject.toString());
@@ -1857,6 +1863,7 @@ public class MainController implements Initializable {
                 {
                     openImportDialog(file);
                 }*/
+                Main.setRefreshTestList(false);
                 openImportDialog(file);
             }
         } else {
@@ -1967,7 +1974,7 @@ public class MainController implements Initializable {
                 if (checkVariablesFormat(actionList) && checkVariablesFormat(validationList))
                 {
                     saveTest();
-                    poblateTestList();
+                    fillTestList();
                 } else {
                     // Aviso formato de variables
                     deleteAllTabs();
@@ -2210,7 +2217,7 @@ public class MainController implements Initializable {
             if (checkVariablesFormat(actionList) && checkVariablesFormat(validationList) && failedVariables.size() == 0)
             {
                 saveTest();
-                poblateTestList();
+                fillTestList();
 
                 System.out.println("JSON IMPORTADO");
             } else {
