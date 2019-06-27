@@ -2,6 +2,7 @@ package gui;
 
 
 import main.SeleniumDAO;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import persistence.H2DAO;
@@ -165,7 +166,13 @@ public class Action {
                     result = "Ok";
                     break;
                 case "Press Key":
-                    WebElement pressKeyElement = SeleniumDAO.selectElementBy(this.selectElementByS, this.firstValueArgsS,driver);
+                    WebElement pressKeyElement = null;
+                    if (this.selectPlaceByS.equals("PageUp") || this.selectPlaceByS.equals("PageDown"))
+                    {
+                        pressKeyElement = driver.findElement(By.cssSelector("body"));
+                    }else {
+                        pressKeyElement =SeleniumDAO.selectElementBy(this.selectElementByS, this.firstValueArgsS, driver);
+                    }
                     SeleniumDAO.pressKey(this.selectPlaceByS, pressKeyElement);
                     result = "Ok";
                     break;

@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -27,14 +28,11 @@ import main.Main;
 import main.SeleniumDAO;
 import main.Utils;
 import org.jetbrains.annotations.Nullable;
-
-
+import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.json.JSONObject;
 import org.openqa.selenium.WebDriver;
 import persistence.H2DAO;
-
 
 import java.io.*;
 import java.net.URL;
@@ -248,7 +246,7 @@ public class MainController implements Initializable {
 
         testList.getSelectionModel().selectedItemProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
         {
-            System.out.println(Main.isModified());
+            //System.out.println(Main.isModified());
                 if (Main.isModified())
                 {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -278,7 +276,12 @@ public class MainController implements Initializable {
                 }
         });
 
-
+        //testList.getSelectionModel().setSelectionMode();
+        /*testList.getSelectionModel().selectionModeProperty().addListener(((observable, oldValue, newValue) ->
+        {
+            System.out.println("OLDVALUE ->"+oldValue);
+            System.out.println("NEWVALUE ->"+newValue);
+        }));*/
 
         if (testList.getSelectionModel().selectedItemProperty().getValue() == null)
         {
@@ -395,12 +398,20 @@ public class MainController implements Initializable {
 
     }
 
+    public void miau()
+    {
+        Platform.runLater(() -> {
+            System.out.println("Miau");
+        });
+    }
+
     public void openVariablesDialog()
     {
 
         try {
 
             VariablesController variablesController = new VariablesController();
+            //variablesController.setCallback(this);
             if (testList.getSelectionModel().getSelectedItem() == null)
             {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -425,10 +436,12 @@ public class MainController implements Initializable {
                 } else {
                     setTheme("Variables", "modena");
                 }
-
                 stageVariables.setScene(sceneVariables);
                 stageVariables.show();
 
+                stageVariables.setOnHidden((event) -> {
+                    System.out.println("Soy un mago :)");
+                });
             }
 
         }
@@ -601,7 +614,7 @@ public class MainController implements Initializable {
                }else {
                    Alert alert = new Alert(Alert.AlertType.ERROR);
                    alert.setTitle("Error");
-                   alert.setHeaderText("Algun tiempo de los waiting for no es un entero");
+                   alert.setHeaderText("Algun tiempo de los waiting no es un entero");
                    alert.setContentText("Estas tonto o que? :)");
                    alert.initModality(Modality.APPLICATION_MODAL);
                    alert.initOwner(testList.getScene().getWindow());
@@ -629,7 +642,7 @@ public class MainController implements Initializable {
                } else {
                    Alert alert = new Alert(Alert.AlertType.ERROR);
                    alert.setTitle("Error");
-                   alert.setHeaderText("Algun tiempo de los waiting for no es un entero");
+                   alert.setHeaderText("Algun tiempo de los waiting no es un entero");
                    alert.setContentText("Estas tonto o que? :)");
                    alert.initModality(Modality.APPLICATION_MODAL);
                    alert.initOwner(testList.getScene().getWindow());
@@ -927,7 +940,7 @@ public class MainController implements Initializable {
                     }else {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
-                        alert.setHeaderText("Algun tiempo de los waiting for no es un entero");
+                        alert.setHeaderText("Algun tiempo de los waiting no es un entero");
                         alert.setContentText("Estas tonto o que? :)");
                         alert.initModality(Modality.APPLICATION_MODAL);
                         alert.initOwner(testList.getScene().getWindow());
@@ -957,7 +970,7 @@ public class MainController implements Initializable {
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
-                        alert.setHeaderText("Algun tiempo de los waiting for no es un entero");
+                        alert.setHeaderText("Algun tiempo de los waiting no es un entero");
                         alert.setContentText("Estas tonto o que? :)");
                         alert.initModality(Modality.APPLICATION_MODAL);
                         alert.initOwner(testList.getScene().getWindow());
@@ -1014,7 +1027,7 @@ public class MainController implements Initializable {
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
-                        alert.setHeaderText("Algun tiempo de los waiting for no es un entero");
+                        alert.setHeaderText("Algun tiempo de los waiting no es un entero");
                         alert.setContentText("Estas tonto o que? :)");
                         alert.initModality(Modality.APPLICATION_MODAL);
                         alert.initOwner(testList.getScene().getWindow());
@@ -1043,7 +1056,7 @@ public class MainController implements Initializable {
                     }else {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
-                        alert.setHeaderText("Algun tiempo de los waiting for no es un entero");
+                        alert.setHeaderText("Algun tiempo de los waiting no es un entero");
                         alert.setContentText("Estas tonto o que? :)");
                         alert.initModality(Modality.APPLICATION_MODAL);
                         alert.initOwner(testList.getScene().getWindow());
@@ -1260,6 +1273,17 @@ public class MainController implements Initializable {
             {
                 try{
                     if (Double.isNaN(Integer.parseInt(action.getSecondValueArgsS())))
+                    {
+                        timeOk = false;
+                    }
+                }catch (NumberFormatException e){
+                    return false;
+                }
+            }
+            if (action.getActionTypeS().equals("WaitTime"))
+            {
+                try{
+                    if (Double.isNaN(Integer.parseInt(action.getFirstValueArgsS())))
                     {
                         timeOk = false;
                     }
@@ -1491,15 +1515,25 @@ public class MainController implements Initializable {
                         {
                             if (hboxChild instanceof ComboBox && i == 0)
                             {
-                                comboBoxActionType = ((ComboBox) hboxChild).getValue().toString();
-                                i++;
+
+                                if (((ComboBox) hboxChild).getValue() != null)
+                                {
+                                    comboBoxActionType = ((ComboBox) hboxChild).getValue().toString();
+                                    i++;
+                                }
                             } else if(hboxChild instanceof ComboBox && i == 1)
                             {
-                                comboBoxSelectElementBy = ((ComboBox) hboxChild).getValue().toString();
-                                i++;
+                                if (((ComboBox) hboxChild).getValue() != null)
+                                {
+                                    comboBoxSelectElementBy = ((ComboBox) hboxChild).getValue().toString();
+                                    i++;
+                                }
                             } else if(hboxChild instanceof ComboBox && i == 2)
                             {
-                                comboBoxSelectPlaceBy = ((ComboBox) hboxChild).getValue().toString();
+                                if (((ComboBox) hboxChild).getValue() != null)
+                                {
+                                    comboBoxSelectPlaceBy = ((ComboBox) hboxChild).getValue().toString();
+                                }
                             }
 
                             if (hboxChild instanceof TextField && j == 0)
@@ -1852,27 +1886,18 @@ public class MainController implements Initializable {
 
         if (files != null){
 
-            for (File file : files)
-            {
-                /*String fileExtension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
-                if (fileExtension.equals("json"))
-                {
-                    importJSONTrial(file);
-                }
-                if (fileExtension.equals("csv"))
-                {
-                    openImportDialog(file);
-                }*/
-                Main.setRefreshTestList(false);
-                openImportDialog(file);
-            }
+            //for (File file : files)
+            //{
+                openImportDialog(files, 0);
+            //}
         } else {
             return;
         }
     }
 
-    public void openImportDialog(File file)
+    public void openImportDialog(List<File> files, int index)
     {
+        File file = files.get(index);
         try {
             ImportController importController = new ImportController();
             importController.setFile(file);
@@ -1884,21 +1909,33 @@ public class MainController implements Initializable {
             stageImport.setResizable(false);
             stageImport.initModality(Modality.APPLICATION_MODAL);
             stageImport.setAlwaysOnTop(true);
-            stageImport.setTitle("Import Trial & Varaibles");
-            sceneImport = new Scene(root,470,400);
-            if (H2DAO.isDarkTheme()){
-                setTheme("Import","darcula");
-            }else {
-                setTheme("Import","modena");
+            stageImport.setTitle("Importing  "+file.getName()+" file");
+            sceneImport = new Scene(root, 470, 400);
+            if (H2DAO.isDarkTheme()) {
+                setTheme("Import", "darcula");
+            } else {
+                setTheme("Import", "modena");
             }
-            //scene.getStylesheets().add("/css/darcula.css");
+
             stageImport.setScene(sceneImport);
             stageImport.show();
 
-        }
-        catch (IOException e) {
+            stageImport.setOnHidden((event) -> {
+                fillTestList();
+
+                int nextIndex = index;
+                nextIndex++;
+                if (nextIndex < files.size())       // Open files by recursion
+                {
+                    openImportDialog(files, nextIndex);
+                }
+            });
+
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
         /* String header = "";
         boolean firstRead = true;
         String lastTrialVariable = "";

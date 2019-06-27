@@ -744,7 +744,14 @@ public class ActionController
                         placeNotGenerated = false;
                         selectPlaceBy.valueProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->
                         {
-
+                            if (newValueSelect1.equals("PageUp") || newValueSelect1.equals("PageDown"))
+                            {
+                                selectElementBy.setDisable(true);
+                                firstValueArgs.setDisable(true);
+                            }else {
+                                selectElementBy.setDisable(false);
+                                firstValueArgs.setDisable(false);
+                            }
                         });
 
                     }

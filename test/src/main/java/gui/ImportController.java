@@ -92,10 +92,8 @@ public class ImportController implements Initializable {
                }
                setVariablesTrialAndSave(variablesNVList, id);
            }
-
-           //MainController mainController = new MainController();
             closeImport();
-            //Main.setRefreshTestList(true);
+
 
         }
         for (CheckBox trialSelected : listViewTrials.getItems())

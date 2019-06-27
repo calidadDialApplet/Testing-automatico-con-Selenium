@@ -38,6 +38,9 @@ public class SettingsController implements Initializable {
     @FXML
     private CheckBox checkBoxDarkTheme;
 
+    @FXML
+    private Button buttonCancel;
+
     private static Stage stageGlobalVariables;
     private static Scene sceneGlobalVariables;
     private ArrayList<String> browsers = new ArrayList<>(Arrays.asList("Firefox","Chrome"));
@@ -138,7 +141,7 @@ public class SettingsController implements Initializable {
             } else {
                 setTheme("modena");
             }
-
+            stageGlobalVariables.initOwner(buttonCancel.getScene().getWindow());
             stageGlobalVariables.setScene(sceneGlobalVariables);
             stageGlobalVariables.show();
 

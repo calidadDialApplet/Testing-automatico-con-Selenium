@@ -1,5 +1,6 @@
 package gui;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -7,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import persistence.H2DAO;
 
 
@@ -58,7 +60,10 @@ public class VariablesController implements Initializable {
 
     public void closeVariables()
     {
-        MainController.closeStage("Variables");
+        //MainController.closeStage("Variables");
+        Stage stage = (Stage) buttonCancel.getScene().getWindow();
+        stage.close();
+        //Platform.exit();
     }
 
     public void addVariable()
@@ -288,5 +293,4 @@ public class VariablesController implements Initializable {
     {
         return trialID;
     }
-
 }

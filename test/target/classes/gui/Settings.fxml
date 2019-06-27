@@ -17,7 +17,7 @@
    <bottom>
       <ToolBar nodeOrientation="RIGHT_TO_LEFT" style="-fx-background-color: transparent;" BorderPane.alignment="CENTER">
         <items>
-            <Button mnemonicParsing="false" onAction="#closeSettings" text="Cancel" />
+            <Button fx:id="buttonCancel" mnemonicParsing="false" onAction="#closeSettings" text="Cancel" />
           <Button mnemonicParsing="false" onAction="#saveSettings" text="Save" />
             <Button fx:id="globalVariablesButton" mnemonicParsing="false" onAction="#openGlobalVariables">
                <graphic>
