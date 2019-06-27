@@ -12,38 +12,7 @@
     <bookmark url="file://$PROJECT_DIR$/src/main/java/gui/Action.java" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b76c07a0-19f3-403b-8838-158aa2f314c5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/gui/VariableNV.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/db.mv.db" beforeDir="false" afterPath="$PROJECT_DIR$/data/db.mv.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/db.trace.db" beforeDir="false" afterPath="$PROJECT_DIR$/data/db.trace.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gui/ActionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/ActionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gui/ImportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/ImportController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gui/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/main/SeleniumDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main/SeleniumDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/persistence/H2DAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/persistence/H2DAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/gui/Import.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/Import.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/ActionController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/ActionController$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/ActionController$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/ActionController$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/ActionController$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/ActionController$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/ActionController$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/ActionController$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/ActionController$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/ActionController$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/ActionController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/ActionController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/Import.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/Import.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/ImportController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/ImportController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/MainController$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/MainController$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/MainController$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/MainController$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/MainController$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/MainController$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/MainController$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/MainController$6.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/MainController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/MainController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/SettingsController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/SettingsController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/gui/VariablesController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/gui/VariablesController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/main/Main$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/main/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/main/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/main/SeleniumDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/main/SeleniumDAO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/persistence/H2DAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/persistence/H2DAO.class" afterDir="false" />
-    </list>
+    <list default="true" id="b76c07a0-19f3-403b-8838-158aa2f314c5" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -591,7 +560,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1279" y="0" width="1922" height="1080" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49848944" visible="true" weight="0.30309498" />
       <window_info id="Structure" order="1" sideWeight="0.50151056" side_tool="true" weight="0.24279615" />
@@ -603,7 +571,7 @@
       <window_info id="Favorites" order="7" sideWeight="0.50151056" side_tool="true" weight="0.24279615" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32881" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4994664" visible="true" weight="0.28601253" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4994664" weight="0.28601253" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.36534446" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
