@@ -20,6 +20,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -87,7 +88,7 @@ public class MainController implements Initializable {
     private HBox bottomHbox;
 
     @FXML
-    private ListView<CheckBox> testList;
+    private ListView<HBox> testList;
 
     @FXML
     private GridPane gridPaneTrialList;
@@ -138,8 +139,8 @@ public class MainController implements Initializable {
 
     private static Integer rowIndexDrag;
     private static Integer rowIndexDrop;
-    private static List<CheckBox> draggedChildList = new ArrayList<>();;
-    private static List<CheckBox> movedChilds = new ArrayList<>();;
+    private static List<HBox> draggedChildList = new ArrayList<>();;
+    private static List<HBox> movedChilds = new ArrayList<>();;
 
     String comboBoxActionType = "";
     String comboBoxSelectElementBy = "";
@@ -246,42 +247,34 @@ public class MainController implements Initializable {
 
         testList.getSelectionModel().selectedItemProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
         {
-            //System.out.println(Main.isModified());
-                if (Main.isModified())
+            if (Main.isModified())
+            {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Guardar trial modificado");
+                alert.setHeaderText("Los cambios no guardados se perderán\n" +
+                        "¿Quieres guardar?");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK)
                 {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Guardar trial modificado");
-                    alert.setHeaderText("Los cambios no guardados se perderán\n" +
-                                        "¿Quieres guardar?");
-                    Optional<ButtonType> result = alert.showAndWait();
-                    if (result.get() == ButtonType.OK)
-                    {
-                        modifyTestListener(oldValueSelect);
-                        Main.setModified(false);
-                        deleteAllTabs();
-                        getSelectedTrialActions();
-                        getSelectedTrialValidations();
-                    } else {
-                        Main.setModified(false);
-                        bottomButtons.setDisable(false);
-                        deleteAllTabs();
-                        getSelectedTrialActions();
-                        getSelectedTrialValidations();
-                    }
-                }else {
+                    modifyTestListener((CheckBox) oldValueSelect.getChildren().get(0));
+                    Main.setModified(false);
+                    deleteAllTabs();
+                    getSelectedTrialActions();
+                    getSelectedTrialValidations();
+                } else {
+                    Main.setModified(false);
                     bottomButtons.setDisable(false);
                     deleteAllTabs();
                     getSelectedTrialActions();
                     getSelectedTrialValidations();
                 }
+            }else {
+                bottomButtons.setDisable(false);
+                deleteAllTabs();
+                getSelectedTrialActions();
+                getSelectedTrialValidations();
+            }
         });
-
-        //testList.getSelectionModel().setSelectionMode();
-        /*testList.getSelectionModel().selectionModeProperty().addListener(((observable, oldValue, newValue) ->
-        {
-            System.out.println("OLDVALUE ->"+oldValue);
-            System.out.println("NEWVALUE ->"+newValue);
-        }));*/
 
         if (testList.getSelectionModel().selectedItemProperty().getValue() == null)
         {
@@ -398,13 +391,6 @@ public class MainController implements Initializable {
 
     }
 
-    public void miau()
-    {
-        Platform.runLater(() -> {
-            System.out.println("Miau");
-        });
-    }
-
     public void openVariablesDialog()
     {
 
@@ -420,7 +406,9 @@ public class MainController implements Initializable {
                 alert.setContentText("No lo ves o que? :)");
                 alert.showAndWait();
             }else {
-                variablesController.setTrialID(H2DAO.getTrialID(testList.getSelectionModel().getSelectedItem().getText())); // Separa vista y logica!
+                HBox hBoxTrialSelected = testList.getSelectionModel().getSelectedItem();
+                CheckBox checkBoxTrialSelected = (CheckBox) hBoxTrialSelected.getChildren().get(0);
+                variablesController.setTrialID(H2DAO.getTrialID(checkBoxTrialSelected.getText())); // Separa vista y logica!
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Variables.fxml"));
                 loader.setController(variablesController);
@@ -681,7 +669,7 @@ public class MainController implements Initializable {
 
                        if (trialName == "")
                        {
-                           CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+                           CheckBox selectedTrial = (CheckBox) testList.getSelectionModel().getSelectedItem().getChildren().get(0);
                            //titledPaneName.setText(selectedTrial.getText());
                            variables = H2DAO.getTrialVariables(H2DAO.getTrialID(selectedTrial.getText()));
                            nameOfTrial = selectedTrial.getText();
@@ -766,7 +754,7 @@ public class MainController implements Initializable {
 
        if (trialName == "")
        {
-           CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+           CheckBox selectedTrial = (CheckBox) testList.getSelectionModel().getSelectedItem().getChildren().get(0);
            titledPaneName.setText(selectedTrial.getText());
            //variables = H2DAO.getTrialVariables(H2DAO.getTrialID(selectedTrial.getText()));
            nameOfTrial = selectedTrial.getText();
@@ -903,8 +891,9 @@ public class MainController implements Initializable {
     {
         boolean nameOk = true;
         List<String> trialNames = new ArrayList<>();
-        for (CheckBox item : testList.getItems()) {
-            trialNames.add(item.getText());
+        for (HBox item : testList.getItems()) {
+            CheckBox checkBox = (CheckBox) item.getChildren().get(0);
+            trialNames.add(checkBox.getText());
         }
         if (trialNames.contains(name)){
             nameOk = false;
@@ -917,7 +906,7 @@ public class MainController implements Initializable {
     {
         Main.setModified(false);
         boolean trialmodified = false;
-        CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+        CheckBox selectedTrial = (CheckBox) testList.getSelectionModel().getSelectedItem().getChildren().get(0);
         if(selectedTrial == null)
         {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -926,7 +915,8 @@ public class MainController implements Initializable {
             alert.setContentText("Contacta con tu administrador :)");
             alert.showAndWait();
         } else {
-            String trialName = testList.getSelectionModel().getSelectedItem().getText();
+            CheckBox checkBox = (CheckBox) testList.getSelectionModel().getSelectedItem().getChildren().get(0);
+            String trialName = checkBox.getText();
             String id = H2DAO.getTrialID(trialName);
             if (tabActions.isSelected()) {
                 procesedActionList.clear();
@@ -1176,15 +1166,21 @@ public class MainController implements Initializable {
 
                             if (child instanceof ComboBox && i == 0)
                             {
-                                comboBoxActionType = ((ComboBox) child).getValue().toString();
-                                i++;
+                                if (((ComboBox) child).getValue() != null) {
+                                    comboBoxActionType = ((ComboBox) child).getValue().toString();
+                                    i++;
+                                }
                             } else if(child instanceof ComboBox && i == 1)
                             {
-                                comboBoxSelectElementBy = ((ComboBox) child).getValue().toString();
-                                i++;
+                                if (((ComboBox) child).getValue() != null) {
+                                    comboBoxSelectElementBy = ((ComboBox) child).getValue().toString();
+                                    i++;
+                                }
                             } else if(child instanceof ComboBox && i == 2)
                             {
-                                comboBoxSelectPlaceBy = ((ComboBox) child).getValue().toString();
+                                if (((ComboBox) child).getValue() != null) {
+                                    comboBoxSelectPlaceBy = ((ComboBox) child).getValue().toString();
+                                }
                             }
 
                             if (child instanceof TextField && j == 0)
@@ -1305,103 +1301,118 @@ public class MainController implements Initializable {
 
     public void fillTestList()
     {
-        testList.getItems().remove(0, testList.getItems().size());
+        //testList.getItems().remove(0, testList.getItems().size());
+        testList.getItems().clear();
         ObservableList<CheckBox> checkBoxesList = FXCollections.observableArrayList();
+        ObservableList<HBox> hBoxesList = FXCollections.observableArrayList();
+
         for (String trial: H2DAO.getTrials())
         {
-            checkBoxesList.add(new CheckBox(trial));
+            //checkBoxesList.add(new CheckBox(trial));
+            CheckBox checkBox = new CheckBox(trial);
+            hBoxesList.add(new HBox(checkBox));
         }
-        testList.getItems().addAll(checkBoxesList);
+        //testList.getItems().addAll(checkBoxesList);
+        testList.getItems().addAll(hBoxesList);
     }
 
     public void getSelectedTrialActions()
     {
-       ObservableList<CheckBox> trialsSelected = testList.getSelectionModel().getSelectedItems();
+       //ObservableList<CheckBox> trialsSelected = testList.getSelectionModel().getSelectedItems();
+        HBox trialsSelected = testList.getSelectionModel().getSelectedItem();
 
-       for(CheckBox trial: trialsSelected)
-       {
-           String trialName = trial.getText();
-           ArrayList<Action> trialActions = H2DAO.getTrialActions(trialName);
-           for(Action actionOfTrial : trialActions)
-           {
-               ActionController actionController = new ActionController();
-               actionController.setAction(gridPaneTrialList, actionsRowIndex,actionOfTrial.getActionTypeS(),actionOfTrial.getSelectElementByS(),actionOfTrial.getFirstValueArgsS(),
-                       actionOfTrial.getSelectPlaceByS(), actionOfTrial.getSecondValueArgsS());
-               //System.out.println(actionOfTrial.toString());
-               //Action action = new Action(gridPaneTrialList, actionsRowIndex,actionOfTrial.getActionTypeS(),actionOfTrial.getSelectElementByS(),
-               //                             actionOfTrial.getFirstValueArgsS(),actionOfTrial.getSelectPlaceByS(),actionOfTrial.getSecondValueArgsS());
-               //actionList.add(action);
-               actionsRowIndex++;
-           }
-       }
+       //for(CheckBox trial: trialsSelected)
+       //{
+        if (trialsSelected != null) {
+            CheckBox trial = (CheckBox) trialsSelected.getChildren().get(0);
+            String trialName = trial.getText();
+            ArrayList<Action> trialActions = H2DAO.getTrialActions(trialName);
+            for (Action actionOfTrial : trialActions) {
+                ActionController actionController = new ActionController();
+                actionController.setAction(gridPaneTrialList, actionsRowIndex, actionOfTrial.getActionTypeS(), actionOfTrial.getSelectElementByS(), actionOfTrial.getFirstValueArgsS(),
+                        actionOfTrial.getSelectPlaceByS(), actionOfTrial.getSecondValueArgsS());
+                //System.out.println(actionOfTrial.toString());
+                //Action action = new Action(gridPaneTrialList, actionsRowIndex,actionOfTrial.getActionTypeS(),actionOfTrial.getSelectElementByS(),
+                //                             actionOfTrial.getFirstValueArgsS(),actionOfTrial.getSelectPlaceByS(),actionOfTrial.getSecondValueArgsS());
+                //actionList.add(action);
+                actionsRowIndex++;
+            }
+        }
+       //}
     }
 
     public void getSelectedTrialValidations(){
-        ObservableList<CheckBox> trialsSelected = testList.getSelectionModel().getSelectedItems();
-
-        for(CheckBox trial: trialsSelected)
-        {
+        //ObservableList<CheckBox> trialsSelected = testList.getSelectionModel().getSelectedItems();
+        HBox trialsSelected = testList.getSelectionModel().getSelectedItem();
+        //for(CheckBox trial: trialsSelected)
+        //{
+        if (trialsSelected != null) {
+            CheckBox trial = (CheckBox) trialsSelected.getChildren().get(0);
             String trialName = trial.getText();
             ArrayList<Action> trialActions = H2DAO.getTrialValidations(trialName);
-            for(Action validation : trialActions)
-            {
+            for (Action validation : trialActions) {
                 ActionController actionController = new ActionController();
-                actionController.setAction(gridPaneValidationList, validationRowIndex,validation.getActionTypeS(),validation.getSelectElementByS(),
-                         validation.getFirstValueArgsS(),validation.getSelectPlaceByS(),validation.getSecondValueArgsS());
+                actionController.setAction(gridPaneValidationList, validationRowIndex, validation.getActionTypeS(), validation.getSelectElementByS(),
+                        validation.getFirstValueArgsS(), validation.getSelectPlaceByS(), validation.getSecondValueArgsS());
                 //Action action = new Action(gridPaneValidationList, validationRowIndex,validation.getActionTypeS(),validation.getSelectElementByS(),
                 //        validation.getFirstValueArgsS(),validation.getSelectPlaceByS(),validation.getSecondValueArgsS());
                 //validationList.add(action);
                 validationRowIndex++;
             }
         }
+        //}
     }
 
     public void runSelectedTrials()
     {
         ArrayList<Thread> threads = new ArrayList<>();
         int times = Integer.parseInt(spinner.getValue().toString());
-        for(CheckBox trial : testList.getItems())
-        {
-            if(trial.isSelected())
-            {
-                String trialName = trial.getText();
-                ArrayList<Action> actions = H2DAO.getTrialActions(trial.getText());
-                for (int i = 0; i < times; i++)
-                {
-                    //Thread thread = new Thread(() -> );
-                    //threads.add(thread);
-                    //thread.start();
-                    executeTest(actions, trialName);
-                }
+        for (HBox hBox : testList.getItems()) {
+            //for (CheckBox trial : testList.getItems()) {
+                CheckBox trial = (CheckBox) hBox.getChildren().get(0);
+                if (trial.isSelected()) {
+                    String trialName = trial.getText();
+                    ArrayList<Action> actions = H2DAO.getTrialActions(trial.getText());
+                    for (int i = 0; i < times; i++) {
+                        //Thread thread = new Thread(() -> );
+                        //threads.add(thread);
+                        //thread.start();
+                        executeTest(actions, trialName);
+                    }
                 /*for (Thread thread : threads){
                     thread.start();
                 }*/
-                //ExecutorService service = Executors.newCachedThreadPool();
-                //service.invokeAll(threads);
-            }
+                    //ExecutorService service = Executors.newCachedThreadPool();
+                    //service.invokeAll(threads);
+                }
+            //}
         }
     }
 
     public void deleteSelectedTrial()
     {
-        ObservableList<CheckBox> trials = testList.getItems();
-        for (CheckBox trial : trials)
-           {
-               if (trial.isSelected())
-               {
-                   String id = H2DAO.getTrialID(trial.getText());
-                   H2DAO.deleteTrialActions(id);
-                   H2DAO.deleteTrialValidations(id);
-                   H2DAO.deleteTrialVariables(id);
-                   H2DAO.deleteTrial(id);
-               }
-           }
-           fillTestList();
+        //ObservableList<CheckBox> trials = testList.getItems();
+        ObservableList<HBox> trials = testList.getItems();
+
+        for (HBox trialHBox : trials)
+        {
+            CheckBox trial = (CheckBox) trialHBox.getChildren().get(0);
+            if (trial.isSelected())
+            {
+                String id = H2DAO.getTrialID(trial.getText());
+                H2DAO.deleteTrialActions(id);
+                H2DAO.deleteTrialValidations(id);
+                H2DAO.deleteTrialVariables(id);
+                H2DAO.deleteTrial(id);
+            }
+        }
+        fillTestList();
     }
 
     public void modifyTrialName()
     {
-        CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+        HBox hBox = testList.getSelectionModel().getSelectedItem();
+        CheckBox selectedTrial = (CheckBox) hBox.getChildren().get(0);
 
         if (selectedTrial == null)
         {
@@ -1446,7 +1457,8 @@ public class MainController implements Initializable {
 
     public void cloneTest()
     {
-        CheckBox selectedTrial = testList.getSelectionModel().getSelectedItem();
+        HBox hBox = testList.getSelectionModel().getSelectedItem();
+        CheckBox selectedTrial = (CheckBox) hBox.getChildren().get(0);
 
         if (selectedTrial == null)
         {
@@ -1793,13 +1805,14 @@ public class MainController implements Initializable {
     public void exportTrial()
     {
         boolean oneSelected = false;
-        for (CheckBox item : testList.getItems())
-        {
-            if (item.isSelected()){
-                oneSelected = true;
-            }
+        for (HBox hBox : testList.getItems()) {
+            CheckBox item = (CheckBox) hBox.getChildren().get(0);
+            //for (CheckBox item : testList.getItems()) {
+                if (item.isSelected()) {
+                    oneSelected = true;
+                }
+            //}
         }
-
         if (!oneSelected) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error");
@@ -1819,7 +1832,8 @@ public class MainController implements Initializable {
             try {
 
                 if (folder != null) {
-                    for (CheckBox trial : testList.getItems()) {
+                    for (HBox hBox : testList.getItems()) {
+                        CheckBox trial = (CheckBox) hBox.getChildren().get(0);
                         if (trial.isSelected()) {
 
                             String trialID = H2DAO.getTrialID(trial.getText());
@@ -1936,115 +1950,6 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
 
-        /* String header = "";
-        boolean firstRead = true;
-        String lastTrialVariable = "";
-
-        ArrayList<String> failedVariables = new ArrayList<>();
-
-        try {
-            Scanner inputStream = new Scanner(file);
-            while (inputStream.hasNext()) {
-                String data = inputStream.nextLine();
-                if (data.equals(trialColumnsHeadersCSV))
-                {
-                    header = "Trial";
-                }
-                if (data.equals(variablesColumnsHeadersCSV))
-                {
-                    header = "Variables";
-                    continue;
-                }
-                if (header.equals("Trial"))
-                {
-
-                    String[] values = data.split(",");
-                    if (values[5].equals("false")) {
-                        ActionController actionController = new ActionController();
-                        actionController.setAction(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
-                        Action act = new Action( values[0], values[1], values[2], values[3], values[4]);
-                        actionList.add(act);
-                        actionsRowIndex++;
-                    }
-                    if (values[5].equals("true")) {
-                        ActionController actionController = new ActionController();
-                        actionController.setAction(gridPaneValidationList, validationRowIndex, values[0], values[1], values[2], values[3], values[4]);
-                        Action act = new Action(values[0], values[1], values[2], values[3], values[4]);
-                        validationList.add(act);
-                        validationRowIndex++;
-                    }
-                }
-
-
-                if (header.equals("Variables"))
-                {
-                    String[] values = data.split(",");
-
-                    if (firstRead && !values[0].equals("TrialID")){
-
-                        Variable variable = new Variable(values[0], values[1], values[2]);
-                        checkVariables(failedVariables, variable);
-
-                        lastTrialVariable = values[0];
-                        firstRead = false;
-                    } else {
-                        if (values[0].equals(lastTrialVariable))
-                        {
-                            Variable variable = new Variable(values[0], values[1], values[2]);
-                            checkVariables(failedVariables, variable);
-
-                            lastTrialVariable = values[0];
-                        } else {
-                            H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
-                            variablesList.clear();
-
-                            Variable variable = new Variable(values[0], values[1], values[2]);
-                            checkVariables(failedVariables, variable);
-
-                            lastTrialVariable = values[0];
-                        }
-                    }
-                }
-            }
-            if(header.equals("Trial"))
-            {
-                if (checkVariablesFormat(actionList) && checkVariablesFormat(validationList))
-                {
-                    saveTest();
-                    fillTestList();
-                } else {
-                    // Aviso formato de variables
-                    deleteAllTabs();
-                }
-                inputStream.close();
-            }else if (header.equals("Variables"))
-            {
-                //H2DAO.saveTrialVariables(variablesList,lastTrialVariable);
-                if (failedVariables.size() > 0)
-                {
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Se ha producido un error durante la importación de las variables");
-                    String error = "";
-                    for (String failedVariable : failedVariables)
-                    {
-                        error = error.concat(failedVariable+"\n");
-                    }
-                    alert.setContentText(error);
-                    alert.showAndWait();
-                }
-                variablesList.clear();
-            }else{
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Error");
-                alert.setHeaderText("Se ha producido un error durante la importación del test");
-                alert.setContentText("El fichero no contienen las columnas correctas");
-                alert.showAndWait();
-            }
-
-        } catch(FileNotFoundException e){
-            e.printStackTrace();
-        }*/
     }
     
     public void importGlobalVariables()
@@ -2353,151 +2258,156 @@ public class MainController implements Initializable {
 
     public void dragAndDrop()
     {
-        /*testList.getSelectionModel().selectAll();
-        for (CheckBox child : testList.getSelectionModel().getSelectedItems())*/
-        //Callback<ListView<CheckBox>, ListCell<CheckBox>> cellCallback  = testList.getCellFactory();
-        //cellCallback.call().getListView().getItems();
-
-        for (CheckBox child : testList.getItems())
+        for (HBox hBoxTrial : testList.getItems())      // Drag And Drop para las Hbox de las filas
         {
-            //testList.setOnDragDetected();      SECOND ROUND
+            dragAndDrop(hBoxTrial);
 
-            //System.out.println(child.getParent().toString());
-            child.setOnDragDetected(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    //int index = testList.getSelectionModel().getSelectedIndex();
-                    //testList.getItems().get(index);
-                    rowIndexDrop = -1;
-                    rowIndexDrag = 0;
-                    draggedChildList.clear();
-                    movedChilds.clear();
+            for (Node child : hBoxTrial.getChildren())  // Drag And Drop para los elementos de las HBox
+            {
+                dragAndDrop(child);
+            }
+        }
+    }
 
-                    Dragboard db = child.startDragAndDrop(TransferMode.MOVE);
-                    ClipboardContent content = new ClipboardContent();
-                    content.put(checkBoxFormat, " ");
-                    db.setContent(content);
+    private void dragAndDrop(Node child) {
+        child.setOnDragDetected(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                rowIndexDrop = -1;
+                rowIndexDrag = -1;
+                draggedChildList.clear();
+                movedChilds.clear();
+
+                Dragboard db = child.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent content = new ClipboardContent();
+                content.put(checkBoxFormat, " ");
+                db.setContent(content);
+
+                System.out.println(event.getPickResult().getIntersectedNode());
+                Node drag = event.getPickResult().getIntersectedNode();
+                //System.out.println("Index "+testList.getItems().indexOf(drag.getParent().getParent()));
+
+                if (drag instanceof HBox)                       // Dependiendo del elemento que sea tiene una profundidad u otra dentro de la listview
+                {
+                    rowIndexDrag = testList.getItems().indexOf(drag);
+
+                } else if (drag instanceof CheckBox)
+                {
+                    rowIndexDrag = testList.getItems().indexOf(drag.getParent());
+                }else if (drag instanceof Text){
+                    rowIndexDrag = testList.getItems().indexOf(drag.getParent().getParent());
+                }else if (drag instanceof StackPane){
+                    rowIndexDrag = testList.getItems().indexOf(drag.getParent().getParent().getParent());
+                }
+
+                System.out.println("DragIndex = "+ rowIndexDrag);
 
 
-                    rowIndexDrag = testList.getItems().indexOf(event.getPickResult().getIntersectedNode().getParent());
-
-                    if (rowIndexDrag == -1)
+                if (rowIndexDrag == -1){            // No se ha cogido nada
+                    event.consume();
+                }else {
+                    for (HBox child : testList.getItems())      // Coger los elementos de la fila
                     {
-                        rowIndexDrag = testList.getSelectionModel().getSelectedIndex();
+                        if (testList.getItems().indexOf(child) == rowIndexDrag)
+                        {
+                            draggedChildList.add(child);
+                        }
                     }
-
-                    System.out.println(testList.getSelectionModel().getSelectedIndex());
-                    System.out.println("RowIndexDrag =  "+rowIndexDrag);
+                }
 
 
-                    if (rowIndexDrag == -1){
+                event.consume();
+
+            }
+        });
+
+        child.setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                if (event.getPickResult().getIntersectedNode() != null){
+                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                }
+
+                event.consume();
+            }
+        });
+
+
+        child.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                //
+                Node drop = event.getPickResult().getIntersectedNode();
+
+                if (drop instanceof HBox)
+                {
+                    rowIndexDrop = testList.getItems().indexOf(drop);
+                } else if (drop instanceof Text)
+                {
+                    rowIndexDrop = testList.getItems().indexOf(drop.getParent().getParent());
+                }else if (drop instanceof StackPane){
+                    rowIndexDrop = testList.getItems().indexOf(drop.getParent().getParent().getParent());
+                }
+
+
+
+
+                System.out.println("DropIndex = "+rowIndexDrop);
+
+
+                System.out.println(draggedChildList.toString());
+
+
+                if  (rowIndexDrop != null && rowIndexDrag != null) {
+
+                    if (rowIndexDrop == -1 || rowIndexDrag == -1){
                         event.consume();
                     }else {
-                        for (CheckBox child : testList.getItems())
+                        if (rowIndexDrag >= 0 || rowIndexDrag < testList.getItems().size())                    // Si es la cabeza o medio...
                         {
-                            if (testList.getItems().indexOf(child) == rowIndexDrag)
-                            {
-                                draggedChildList.add(child);
-                            }
-                        }
-                    }
-
-
-                    event.consume();
-
-                }
-            });
-
-            child.setOnDragOver(new EventHandler<DragEvent>() {
-                @Override
-                public void handle(DragEvent event) {
-                    if (event.getPickResult().getIntersectedNode() != null){
-                        event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                    }
-
-                    event.consume();
-                }
-            });
-
-
-            child.setOnDragDropped(new EventHandler<DragEvent>() {
-                @Override
-                public void handle(DragEvent event) {
-                    //
-                    rowIndexDrop = testList.getItems().indexOf(event.getPickResult().getIntersectedNode().getParent());
-
-
-                    System.out.println("DragIndex = "+ rowIndexDrag);
-                    System.out.println("DropIndex = "+rowIndexDrop);
-
-
-                    System.out.println(draggedChildList.toString());
-
-
-                    if  (rowIndexDrop != null && rowIndexDrag != null) {
-
-                        if (rowIndexDrop == -1 || rowIndexDrag == -1){
-                            event.consume();
-                        }else {
-
-                            //System.out.println(testList.getItems().get(rowIndexDrag).toString());
-                            //testList.getItems().remove(rowIndexDrag); // Te cargas uno de mas
-
-
-                            if (rowIndexDrag >= 0 || rowIndexDrag < testList.getItems().size())                    // Si es la cabeza o medio...
-                            {
-                                for (CheckBox child : testList.getItems()) {                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
-                                    //System.out.println(testList.getItems().indexOf(child));
-                                    if (testList.getItems().indexOf(child) > rowIndexDrag) {
-                                        //System.out.println(testList.getItems().indexOf(child));
-                                        testList.getItems().set(testList.getItems().indexOf(child) - 1, child);
-                                        //System.out.println(testList.getItems().indexOf(child));
-                                    }
+                            for (HBox child : testList.getItems()) {                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
+                                if (testList.getItems().indexOf(child) > rowIndexDrag) {
+                                    testList.getItems().set(testList.getItems().indexOf(child) - 1, child);
                                 }
                             }
-
-                            testList.getItems().removeAll(draggedChildList);
-                            if (rowIndexDrag < testList.getItems().size()-1) {
-                                testList.getItems().remove(testList.getItems().size() - 1);
-                            }
-
-                            // Insertar en cabeza o medio
-                            for (CheckBox child : testList.getItems()) {
-                                //System.out.println("Indice del checkbox = "+testList.getItems().indexOf(child));
-
-                                if (testList.getItems().indexOf(child) >= rowIndexDrop) {
-                                    //testList.getItems().set(testList.getItems().indexOf(child)+1, child);
-                                    movedChilds.add(child);
-                                    //testList.getItems().remove(child);
-                                }
-                            }
-                            testList.getItems().removeAll(movedChilds);
-
-                            testList.getItems().add(rowIndexDrop, draggedChildList.get(0));
                         }
-                    } else{
-                        event.consume();
+
+                        testList.getItems().removeAll(draggedChildList);
+                        if (rowIndexDrag < testList.getItems().size()-1) {
+                            testList.getItems().remove(testList.getItems().size() - 1);
+                        }
+
+                        // Insertar en cabeza o medio
+                        for (HBox child : testList.getItems()) {
+                            if (testList.getItems().indexOf(child) >= rowIndexDrop) {
+                                movedChilds.add(child);
+                            }
+                        }
+                        testList.getItems().removeAll(movedChilds);
+
+                        testList.getItems().add(rowIndexDrop, draggedChildList.get(0));
                     }
-
-                    System.out.println("Tomaaa con to mi node " + rowIndexDrop);
-
+                } else{
                     event.consume();
                 }
-            });
 
-            child.setOnDragDone(new EventHandler<DragEvent>() {
-                @Override
-                public void handle(DragEvent event) {
+                System.out.println("Tomaaa con to mi node " + rowIndexDrop);
+                event.consume();
+            }
+        });
 
-                    if (event.getTransferMode() == TransferMode.MOVE)
-                    {
-                        testList.getItems().addAll(movedChilds);
-                    }
+        child.setOnDragDone(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
 
-                    event.consume();
+                if (event.getTransferMode() == TransferMode.MOVE)
+                {
+                    testList.getItems().addAll(movedChilds);
                 }
-            });
-        }
+
+                event.consume();
+            }
+        });
     }
 
     public static void closeStage(String stage)

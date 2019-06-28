@@ -252,21 +252,21 @@ public class H2DAO {
     // TODO: How have "id"'s become Strings instead of int ??
     public static void deleteTrialActions(String trialID)
     {
-            executeQuery("delete from trial_actions where trialid='"+trialID+"' and validation = '0'");
-            System.out.println("Acciones eliminadas");
+        executeQuery("delete from trial_actions where trialid='"+trialID+"' and validation = '0'");
+        System.out.println("Acciones eliminadas");
     }
 
     // TODO: How have "id"'s become Strings instead of int ??
     public static void deleteTrialValidations(String trialID)
     {
-            executeQuery("delete from trial_actions where trialid='"+trialID+"' and validation = '1'");
-            System.out.println("Validaciones eliminadas");
+        executeQuery("delete from trial_actions where trialid='"+trialID+"' and validation = '1'");
+        System.out.println("Validaciones eliminadas");
     }
 
     public static void deleteTrialVariables(String trialID)
     {
-            executeQuery("delete from variables where trial = '"+trialID+"'");
-            System.out.println("Variables eliminadas");
+        executeQuery("delete from variables where trial = '"+trialID+"'");
+        System.out.println("Variables eliminadas");
     }
 
     public static void deleteGlobalVariables()
@@ -278,8 +278,8 @@ public class H2DAO {
     // TODO: How have "id"'s become Strings instead of int ??
     public static void deleteTrial(String trialID)
     {
-            executeQuery("delete from trials where id='"+trialID+"'");
-            System.out.println("Trial Eliminado");
+        executeQuery("delete from trials where id='"+trialID+"'");
+        System.out.println("Trial Eliminado");
     }
 
     public static void createTrial(String name)
@@ -411,12 +411,12 @@ public class H2DAO {
 
             String id = getTrialID(trialName);
 
-            System.out.println("ID: "+id);
+            //System.out.println("ID: "+id);
 
             String getActionsFromTrial = "Select * from trial_actions where trialid ='"+id+"' and validation = '0'";
             st.execute(getActionsFromTrial);
             ResultSet actionsResultSet = st.getResultSet();
-            System.out.println(actionsResultSet.toString());
+            //System.out.println(actionsResultSet.toString());
 
             while (actionsResultSet.next())
             {
@@ -425,7 +425,7 @@ public class H2DAO {
                 {
                     Action currentAction = new Action(getActionType(actionsResultSet.getString("actiontypeid")),getSelectionBy(actionsResultSet.getString("selectionbyid1")),
                             actionsResultSet.getString("value1"),getSelectionByKey(actionsResultSet.getString("selectionbyid2")), actionsResultSet.getString("value2"));
-                    System.out.println(currentAction.toString());
+                    //System.out.println(currentAction.toString());
                     actions.add(currentAction);
                 }else {
                     Action currentAction = new Action(getActionType(actionsResultSet.getString("actiontypeid")), getSelectionBy(actionsResultSet.getString("selectionbyid1")),
@@ -434,7 +434,7 @@ public class H2DAO {
                     actions.add(currentAction);
                 }
             }
-             System.out.println("Llega");
+             //System.out.println("Llega");
             st.close();
         }catch (SQLException e)
         {
@@ -454,12 +454,12 @@ public class H2DAO {
 
             String id = getTrialID(trialName);
 
-            System.out.println("ID: "+id);
+            //System.out.println("ID: "+id);
 
             String getValidationsFromTrial = "Select * from trial_actions where trialid ='"+id+"' and validation = '1'";
             st.execute(getValidationsFromTrial);
             ResultSet validationsResultSet = st.getResultSet();
-            System.out.println(validationsResultSet.toString());
+            //System.out.println(validationsResultSet.toString());
 
             while (validationsResultSet.next())
             {
@@ -475,7 +475,7 @@ public class H2DAO {
                     validations.add(currentValidation);
                 }
             }
-            System.out.println("Llega");
+            //System.out.println("Llega");
             st.close();
         }catch (SQLException e)
         {

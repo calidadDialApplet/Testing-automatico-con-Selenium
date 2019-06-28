@@ -50,7 +50,7 @@
                     <graphic>
                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../icons/sharp_remove_black_24dp.png" />
+                                <Image url="@../../../src/main/resources/icons/sharp_delete_black_24dp.png" />
                             </image>
                         </ImageView>
                     </graphic>
