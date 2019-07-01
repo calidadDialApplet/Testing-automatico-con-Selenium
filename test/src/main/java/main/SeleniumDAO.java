@@ -364,5 +364,10 @@ public class SeleniumDAO {
     {
         driver.navigate().refresh();
     }
+
+    public static String getAttribute(WebElement element, String attribute)
+    {
+        return element.getAttribute(attribute);
+    }
 }
 

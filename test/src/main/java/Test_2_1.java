@@ -328,8 +328,8 @@ public class Test_2_1 {
         driver.switchTo().frame("showflow_page_editor");
 
         WebElement insertElementField = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div[1]/ul/li[5]/a/div/div[1]"));
-
         insertElementField.click();
+
         WebElement nameField = driver.findElement(By.id(""+contactFieldsName.firstElement()));
         contactFieldsName.remove(0);
         WebElement placeField = driver.findElement(By.xpath("/html/body/div[2]/div[3]/ul[1]/li/div"));

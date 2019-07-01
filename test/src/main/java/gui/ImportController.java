@@ -3,7 +3,6 @@ package gui;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import main.Main;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import persistence.H2DAO;
@@ -30,10 +29,10 @@ public class ImportController implements Initializable {
 
     int listViewRowIndex = 0;
     File file;
+    private boolean error;
 
     private ArrayList<Action> actionList;
     private ArrayList<Action> validationList;
-    //private ArrayList<Variable> variablesList;
     private ArrayList<VariableNV> variablesNVList;
 
 
@@ -46,10 +45,10 @@ public class ImportController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        error = false;
         actionList = new ArrayList<>();
         validationList = new ArrayList<>();
         variablesNVList = new ArrayList<>();
-        //variablesList = new ArrayList<>();
         fillGrid();
     }
 
@@ -79,37 +78,41 @@ public class ImportController implements Initializable {
             importCSVTrial(file);
         }
 
-        if (newTrial.isSelected())
-        {
-           newTrial();
-           String id = H2DAO.getTrialID(newTrialName);
-           if (!id.equals("NULL"))
-           {
-               if (checkActionsFormat(actionList) && checkActionsFormat(validationList))
-               {
-                   H2DAO.saveTrial(actionList, id, 0);
-                   H2DAO.saveTrial(validationList, id, 1);
-               }
-               setVariablesTrialAndSave(variablesNVList, id);
-           }
-            closeImport();
-
-
-        }
-        for (CheckBox trialSelected : listViewTrials.getItems())
-        {
-            if (trialSelected.isSelected())
+        if (!error){
+            if (newTrial.isSelected())
             {
-                String id = H2DAO.getTrialID(trialSelected.getText());
-                if (checkActionsFormat(actionList) && checkActionsFormat(validationList))
+                newTrial();
+                String id = H2DAO.getTrialID(newTrialName);
+                if (!id.equals("NULL"))
                 {
-                    H2DAO.saveTrial(actionList, id, 0);
-                    H2DAO.saveTrial(validationList, id, 1);
+                    if (checkActionsFormat(actionList) && checkActionsFormat(validationList))
+                    {
+                        H2DAO.saveTrial(actionList, id, 0);
+                        H2DAO.saveTrial(validationList, id, 1);
+                    }
+                    setVariablesTrialAndSave(variablesNVList, id);
                 }
-                setVariablesTrialAndSave(variablesNVList, id);
+                closeImport();
+
+
             }
+            for (CheckBox trialSelected : listViewTrials.getItems())
+            {
+                if (trialSelected.isSelected())
+                {
+                    String id = H2DAO.getTrialID(trialSelected.getText());
+                    if (checkActionsFormat(actionList) && checkActionsFormat(validationList))
+                    {
+                        H2DAO.saveTrial(actionList, id, 0);
+                        H2DAO.saveTrial(validationList, id, 1);
+                    }
+                    setVariablesTrialAndSave(variablesNVList, id);
+                }
+            }
+        }else{
+
         }
-        closeImport();
+
 
     }
 
@@ -131,6 +134,7 @@ public class ImportController implements Initializable {
         }
         if (failedVariables.size() > 0)
         {
+            error = true;
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error");
             alert.setHeaderText("Se ha producido un error durante la importación de las variables en el test: "+H2DAO.getTrialName(newTrialId));
@@ -211,18 +215,12 @@ public class ImportController implements Initializable {
 
                     String[] values = data.split(",");
                     if (values[5].equals("false")) {
-                        //ActionController actionController = new ActionController();
-                        //actionController.setAction(gridPaneTrialList, actionsRowIndex, values[0], values[1], values[2], values[3], values[4]);
                         Action act = new Action( values[0], values[1], values[2], values[3], values[4]);
                         actionList.add(act);
-                        //actionsRowIndex++;
                     }
                     if (values[5].equals("true")) {
-                        //ActionController actionController = new ActionController();
-                        //actionController.setAction(gridPaneValidationList, validationRowIndex, values[0], values[1], values[2], values[3], values[4]);
                         Action act = new Action(values[0], values[1], values[2], values[3], values[4]);
                         validationList.add(act);
-                        //validationRowIndex++;
                     }
                 }
 
@@ -230,31 +228,6 @@ public class ImportController implements Initializable {
                 if (header.equals("Variables"))
                 {
                     String[] values = data.split(",");
-
-                    /*if (firstRead && !values[0].equals("TrialID")){
-
-                        Variable variable = new Variable(values[0], values[1], values[2]);
-                        checkVariables(failedVariables, variable);
-
-                        lastTrialVariable = values[0];
-                        firstRead = false;
-                    } else {
-                        if (values[0].equals(lastTrialVariable))
-                        {
-                            Variable variable = new Variable(values[0], values[1], values[2]);
-                            checkVariables(failedVariables, variable);
-
-                            lastTrialVariable = values[0];
-                        } else {
-                            //H2DAO.saveTrialVariables(variablesList, lastTrialVariable);
-                            variablesList.clear();
-
-                            Variable variable = new Variable(values[0], values[1], values[2]);
-                            checkVariables(failedVariables, variable);
-
-                            lastTrialVariable = values[0];
-                        }
-                    }*/
                     if (!values[0].equals("VariableName"))
                     {
                         variablesNVList.add(new VariableNV(values[0], values[1]));
@@ -263,20 +236,12 @@ public class ImportController implements Initializable {
             }
             if(header.equals("Trial"))
             {
-                /*if (checkActionsFormat(actionList) && checkActionsFormat(validationList))
-                {
-                    saveTest();
-                    fillTestList();
-                } else {
-                    // Aviso formato de variables
-                    deleteAllTabs();
-                }*/
                 inputStream.close();
             }else if (header.equals("Variables"))
             {
-                //H2DAO.saveTrialVariables(variablesList,lastTrialVariable);
                 if (failedVariables.size() > 0)
                 {
+                    error = true;
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle("Error");
                     alert.setHeaderText("Se ha producido un error durante la importación de las variables");
@@ -289,8 +254,8 @@ public class ImportController implements Initializable {
                     alert.setContentText(error);
                     alert.show();
                 }
-                //variablesList.clear();
             }else{
+                error = true;
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Error");
                 alert.setHeaderText("Se ha producido un error durante la importación del test");
@@ -428,12 +393,15 @@ public class ImportController implements Initializable {
                     H2DAO.saveVariable(variable);
                 } else {
                     failedVariables.add("Variable " + variable.getVariableName() + " Fallo: Variable existente");
+                    error = true;
                 }
             }else {
                 failedVariables.add("Variable " + variable.getVariableName() + " Fallo: No existe trial");
+                error = true;
             }
         } else {
             failedVariables.add("Variable " + variable.getVariableName() + " Fallo: Formato");
+            error = true;
         }
     }
 

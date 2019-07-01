@@ -114,5 +114,10 @@
             <version>16.0.2</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>8.40.15</version>
+        </dependency>
     </dependencies>
 </project>

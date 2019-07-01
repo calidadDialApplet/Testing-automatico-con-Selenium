@@ -25,9 +25,11 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import main.Main;
 import main.SeleniumDAO;
 import main.Utils;
+import org.controlsfx.control.Notifications;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -173,7 +175,6 @@ public class MainController implements Initializable {
 
 
         setTooltips();
-
 
 
         /*final ProgressIndicator progress = new ProgressIndicator();
@@ -1577,6 +1578,13 @@ public class MainController implements Initializable {
                 }
             }
         }
+        Notifications notificationBuilder =  Notifications.create().title("Copiado completado")
+                .text("Acciones copiadas")
+                .graphic(null)
+                .hideAfter(Duration.seconds(2))
+                .position(Pos.TOP_RIGHT);
+        notificationBuilder.darkStyle();
+        notificationBuilder.showConfirm();
     }
 
     public void pasteActions()
@@ -1609,6 +1617,14 @@ public class MainController implements Initializable {
             }
             Main.setModified(true);
         }
+
+        Notifications notificationBuilder =  Notifications.create().title("Pegado completado")
+                .text("Acciones pegadas")
+                .graphic(null)
+                .hideAfter(Duration.seconds(2))
+                .position(Pos.TOP_RIGHT);
+        notificationBuilder.darkStyle();
+        notificationBuilder.showConfirm();
     }
 
 

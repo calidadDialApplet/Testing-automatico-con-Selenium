@@ -180,6 +180,11 @@ public class Action {
                     SeleniumDAO.refreshPage(driver);
                     result = "Ok";
                     break;
+                case "ReadAttributeFrom":
+                    //WebElement readAttributeFrom = SeleniumDAO.selectElementBy(this.selectElementByS,this.firstValueArgsS,driver);
+                    //result = SeleniumDAO.getAttribute(readAttributeFrom);
+                    //H2DAO.updateTrialVariable(trialID, this.secondValueArgsS,result);
+                    break;
                 default:
                     break;
             }
@@ -265,6 +270,12 @@ public class Action {
                break;
            case "StaleElementReferenceException":
                message = "Elemento obsoleto en el DOM";
+               break;
+           case "UnhandledAlertException":
+               message = "No se puede realizar la acción en la alerta";
+               break;
+           case "ElementClickInterceptedException":
+               message = "Otro elemento con la misma clase o con el mismo xpath / css aparece en la pantalla";
                break;
        }
 
