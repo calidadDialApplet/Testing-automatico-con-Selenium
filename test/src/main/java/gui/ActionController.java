@@ -295,6 +295,31 @@ public class ActionController
                     });
                     selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
                     break;
+                case "SelectOptionByValue":
+                    initializeComboBox(hBox);
+                    selectElementBy = new ComboBox(FXCollections.observableArrayList(persistence.H2DAO.getSelectElementBy()));
+                    dragAndDrop(gridParent, selectElementBy);
+                    hBox.getChildren().add(selectElementBy);
+                    selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
+                    {
+                        if (oldValueSelect != newValueSelect && oldValueSelect != null)
+                        {
+                            Main.setModified(true);
+                        }
+                        if (textFieldNotGenerated) {
+                            firstValueArgs = new TextField(firstValueArgsValue);
+                            firstValueArgs.textProperty().addListener((observableSelect1, oldValueSelect1, newValueSelect1) ->{
+                                if (oldValueSelect1 != newValueSelect1 && oldValueSelect1 != null)
+                                {
+                                    Main.setModified(true);
+                                }
+                            });
+                            hBox.getChildren().add(firstValueArgs);
+                            generatedTextField(hBox, "SecondValueArgs", secondValueArgsValue);
+                        }
+                    });
+                    selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
+                    break;
                 default:
                     break;
             }
@@ -341,6 +366,7 @@ public class ActionController
                 case "WaitTime":
                 case "NavigateTo":
                 case "Press Key":
+                case "SelectOptionByValue":
                     drawElements(hBox, lastType, gridParent);
                     break;
                 default:
@@ -757,7 +783,19 @@ public class ActionController
                     }
                 });
                 break;
-
+            case "SelectOptionByValue":
+                selectElementBy = new ComboBox(FXCollections.observableArrayList(persistence.H2DAO.getSelectElementBy()));
+                hBox.getChildren().add(selectElementBy);
+                dragAndDrop(gridParent, selectElementBy);
+                selectElementBy.valueProperty().addListener((observableSelect, oldValueSelect, newValueSelect) ->
+                {
+                    if (textFieldNotGenerated) {
+                        firstValueArgs = new TextField();
+                        hBox.getChildren().add(firstValueArgs);
+                        generatedTextField(hBox, "SecondValueArgs", "");
+                    }
+                });
+                break;
         }
     }
 

@@ -5,6 +5,7 @@ import main.SeleniumDAO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import persistence.H2DAO;
 
 import java.util.ArrayList;
@@ -65,6 +66,18 @@ public class Action {
                 break;
             case "9":
                 type = "NavigateTo";
+                break;
+            case "10":
+                type = "Press Key";
+                break;
+            case "11":
+                type = "ScreenShot";
+                break;
+            case "12":
+                type = "Refresh";
+                break;
+            case "13":
+                type = "SelectOptionByValue";
                 break;
             default:
                 break;
@@ -181,9 +194,14 @@ public class Action {
                     result = "Ok";
                     break;
                 case "ReadAttributeFrom":
-                    //WebElement readAttributeFrom = SeleniumDAO.selectElementBy(this.selectElementByS,this.firstValueArgsS,driver);
-                    //result = SeleniumDAO.getAttribute(readAttributeFrom);
-                    //H2DAO.updateTrialVariable(trialID, this.secondValueArgsS,result);
+                    WebElement readAttributeFrom = SeleniumDAO.selectElementBy(this.selectElementByS,this.firstValueArgsS,driver);
+                    result = SeleniumDAO.getAttribute(readAttributeFrom,this.secondValueArgsS);
+                    H2DAO.updateTrialVariable(trialID, this.secondValueArgsS,result);
+                    break;
+                case "SelectOptionByValue":
+                    Select selectElement = new Select(SeleniumDAO.selectElementBy(this.selectElementByS, this.firstValueArgsS, driver));
+                    SeleniumDAO.selectOption(selectElement,this.secondValueArgsS);
+                    result = "Ok";
                     break;
                 default:
                     break;

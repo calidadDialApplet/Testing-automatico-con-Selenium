@@ -85,7 +85,7 @@ public class Main extends Application {
                 passWebClient.sendKeys(password);
 
                 Select tlf = SeleniumDAO.findSelectElementBy("id","selectType",driver);
-                SeleniumDAO.selectOption("index",""+tlfOption, tlf);
+                //SeleniumDAO.selectOption("index",""+tlfOption, tlf);
                 //tlf.selectByIndex(1);
 
                 WebElement entryWebClient = SeleniumDAO.selectElementBy("id","checklogin",driver);

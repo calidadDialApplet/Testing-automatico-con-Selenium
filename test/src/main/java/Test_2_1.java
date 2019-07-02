@@ -96,6 +96,7 @@ public class Test_2_1 {
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div[class='sweet-alert showSweetAlert visible']")));
         WebElement sweetAlert2 = driver.findElement(By.cssSelector("div[class='sweet-alert showSweetAlert visible']"));
         WebElement ok2 = sweetAlert2.findElement(By.className("sa-confirm-button-container"));
+
         ok2.click();
 
         // Showflow fields

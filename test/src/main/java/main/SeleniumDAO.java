@@ -261,7 +261,7 @@ public class SeleniumDAO {
         return hmap;
     }
 
-    public static void selectOption (String mode, String args, Select selector)
+    /*public static void selectOption (String mode, String args, Select selector)
     {
         switch (mode) {
             case "index":
@@ -276,7 +276,7 @@ public class SeleniumDAO {
             default:
                 break;
         }
-    }
+    }*/
 
     public static void writeInTo (WebElement element, String value)
     {
@@ -369,5 +369,11 @@ public class SeleniumDAO {
     {
         return element.getAttribute(attribute);
     }
+
+    public static void selectOption(Select select, String value)
+    {
+        select.selectByValue(value);
+    }
+
 }
 
