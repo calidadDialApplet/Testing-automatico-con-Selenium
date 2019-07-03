@@ -1,0 +1,164 @@
+Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation
+WriteTo,id,adminusername,,admin,false
+WriteTo,id,adminpassword,,admin,false
+Click,id,login,,,false
+Click,id,SHOWFLOW,,,false
+Click,xpath,/html/body/div[2]/div[1]/div/div/div[1]/p[2]/a,,,false
+WriteTo,id,workflow-name,,ShowflowRCNver794,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div/form/div[9]/div[2]/input[1],,,false
+Click,id,workflow-send,,,false
+Waiting For,cssSelector,div[class='sweet-alert showSweetAlert visible'],,10,false
+Click,className,confirm,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[21]/td[1]/input,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[22]/td[1]/input,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[24]/td[1]/input,,,false
+WriteTo,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[24]/td[2]/input[2],,Es cliente,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[24]/td[3]/select/option[4],,,false
+Waiting For,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[24]/td[8]/select[1],,10,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[24]/td[8]/select[2]/option[10],,,false
+Click,id,save-fields-and-go,,,false
+Waiting For,cssSelector,div[class='sweet-alert showSweetAlert visible'],,10,false
+Click,className,sa-confirm-button-container,,,false
+WriteTo,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/thead/tr[2]/td[1]/input,,¿Que m'has dixho?,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/thead/tr[2]/td[10]/a/img,,,false
+GetAttribute,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr,,${ShowflowField1},false
+WriteTo,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/thead/tr[2]/td[1]/input,,¿La verdad o la verdaaaad?,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/thead/tr[2]/td[10]/a/img,,,false
+GetAttribute,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table[2]/tbody/tr[1],,${ShowflowField2},false
+Click,id,save-fields-and-go,,,false
+Waiting For,cssSelector,div[class='sweet-alert showSweetAlert visible'],,10,false
+Click,className,sa-confirm-button-container,,,false
+Click,id,action-id-1,,,false
+Click,id,action-id-6,,,false
+Click,id,save-fields,,,false
+Waiting For,cssSelector,div[class='sweet-alert showSweetAlert visible'],,10,false
+Click,className,sa-confirm-button-container,,,false
+Waiting For,xpath,/html/body/div[2]/div[3]/div[2]/div/div[1]/div[2]/table/tbody/tr[1]/td[4]/a/img,,10,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div[1]/div[2]/table/tbody/tr[1]/td[4]/a/img,,,false
+WriteTo,id,new-typology-field,,MAQUINA,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/thead/tr[2]/td[2]/a/img,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/tbody/tr/td[2]/a[1]/img,,,false
+Waiting For,id,fancybox-frame,,10,false
+SwitchTo,,fancybox-frame,,,false
+WriteTo,id,new-subtypology-name,,INVALIDO,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[3]/select/option[4],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[4]/select/option[3],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[6]/a/img,,,false
+Click,id,save-subtypologies,,,false
+WriteTo,id,new-subtypology-name,,NUM MAX INTENTOS,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[3]/select/option[4],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[4]/select/option[3],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[6]/a/img,,,false
+Click,id,save-subtypologies,,,false
+WriteTo,id,new-subtypology-name,,ROBINSON,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[3]/select/option[4],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[4]/select/option[3],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[6]/a/img,,,false
+Click,id,save-subtypologies,,,false
+Click,id,cancel-subtypologies,,,false
+SwitchDefault,,,,,false
+Refresh,,,,,false
+WriteTo,id,new-typology-field,,NO INTERESA,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/thead/tr[2]/td[2]/a/img,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/tbody/tr[2]/td[2]/a[1]/img,,,false
+Waiting For,id,fancybox-frame,,10,false
+SwitchTo,,fancybox-frame,,,false
+WriteTo,id,new-subtypology-name,,SE QUEDA CON EL OPERADOR,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[3]/select/option[1],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[4]/select/option[2],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[6]/a/img,,,false
+Click,id,save-subtypologies,,,false
+WriteTo,id,new-subtypology-name,,TARIFA MAS CARA,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[3]/select/option[1],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[4]/select/option[2],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[6]/a/img,,,false
+Click,id,save-subtypologies,,,false
+WriteTo,id,new-subtypology-name,,YA ES CLIENTE,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[3]/select/option[1],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[4]/select/option[3],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[6]/a/img,,,false
+Click,id,save-subtypologies,,,false
+Click,id,cancel-subtypologies,,,false
+Refresh,,,,,false
+WriteTo,id,new-typology-field,,PENDIENTE,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/thead/tr[2]/td[2]/a/img,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/tbody/tr[3]/td[2]/a[1]/img,,,false
+Waiting For,id,fancybox-frame,,10,false
+SwitchTo,,fancybox-frame,,,false
+WriteTo,id,new-subtypology-name,,AGENDADA,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[6]/a/img,,,false
+Click,id,save-subtypologies,,,false
+Click,id,cancel-subtypologies,,,false
+Refresh,,,,,false
+WriteTo,id,new-typology-field,,VENTA,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/thead/tr[2]/td[2]/a/img,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div[2]/div[2]/table[2]/tbody/tr[4]/td[2]/a[1]/img,,,false
+Waiting For,id,fancybox-frame,,10,false
+SwitchTo,,fancybox-frame,,,false
+WriteTo,id,new-subtypology-name,,ADSL,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[4]/select/option[1],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[6]/a/img,,,false
+Click,id,save-subtypologies,,,false
+WriteTo,id,new-subtypology-name,,MOVIL,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[4]/select/option[1],,,false
+Click,xpath,/html/body/table[1]/thead/tr[2]/td[6]/a/img,,,false
+Click,id,save-subtypologies,,,false
+Click,id,cancel-subtypologies,,,false
+Refresh,,,,,false
+WriteTo,id,csvfile,,/home/david/git_docs/Archivos de prueba/Tipologias.csv,false
+Click,id,submitcsv,,,false
+Click,id,save-typologies,,,false
+Waiting For,cssSelector,div[class='sweet-alert showSweetAlert visible'],,10,false
+Click,className,sa-confirm-button-container,,,false
+Click,xpath,/html/body/div[2]/div[1]/div/div/div[4]/p[1]/a,,,false
+WriteTo,id,page-name,,Pagina Inicial,false
+Click,id,page-initial,,,false
+Click,cssSelector,img[src='imagenes/add2.png'],,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table/tbody/tr[1]/td[5]/a[3]/img,,,false
+Waiting For,id,showflow_page_editor,,10,false
+SwitchTo,,showflow_page_editor,,,false
+Click,xpath,/html/body/div[2]/div[1]/div[1]/ul/li[5]/a/div/div[1],,,false
+Click,xpath,/html/body/div[2]/div[1]/div[1]/ul/li[5]/a/div/div[1],,,false
+Click,xpath,/html/body/div[2]/div[1]/div[1]/ul/li[5]/a/div/div[1],,,false
+Click,xpath,/html/body/div[2]/div[1]/div[1]/ul/li[5]/a/div/div[1],,,false
+Click,xpath,/html/body/div[2]/div[1]/div[1]/ul/li[5]/a/div/div[1],,,false
+DragAndDrop,id,contact-field-name,xpath,/html/body/div[2]/div[3]/ul[1]/li/div,false
+DragAndDrop,id,contact-field-phone,xpath,/html/body/div[2]/div[3]/ul[1]/li/div,false
+DragAndDrop,id,contact-field-city,xpath,/html/body/div[2]/div[3]/ul[1]/li/div,false
+DragAndDrop,id,contact-field-country,xpath,/html/body/div[2]/div[3]/ul[1]/li/div,false
+DragAndDrop,id,contact-field-aux1,xpath,/html/body/div[2]/div[3]/ul[1]/li/div,false
+Waiting For,id,saving-indicator,,10,false
+SwitchDefault,,,,,false
+Click,cssSelector,img[src='imagenes/menus/back.png'],,,false
+WriteTo,id,page-name,,Pagina Intermedia,false
+Click,cssSelector,img[src='imagenes/add2.png'],,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table/tbody/tr[2]/td[5]/a[3]/img,,,false
+Waiting For,id,showflow_page_editor,,10,false
+SwitchTo,,showflow_page_editor,,,false
+Click,xpath,/html/body/div[2]/div[1]/div[1]/ul/li[5]/a/div/div[1],,,false
+DragAndDrop,id,contact-field-name,xpath,/html/body/div[2]/div[3]/ul[1]/li/div,false
+Waiting For,id,saving-indicator,,10,false
+SwitchDefault,,,,,false
+Click,cssSelector,img[src='imagenes/menus/back.png'],,,false
+WriteTo,id,page-name,,Pagina Final,false
+Click,id,page-final,,,false
+Click,cssSelector,img[src='imagenes/add2.png'],,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table/tbody/tr[3]/td[5]/a[3]/img,,,false
+Waiting For,id,showflow_page_editor,,10,false
+SwitchTo,,showflow_page_editor,,,false
+Click,xpath,/html/body/div[2]/div[1]/div[1]/ul/li[5]/a/div/div[1],,,false
+Click,id,workflow-fields,,,false
+DragAndDrop,id,workflow-field-${Showflowfield1},xpath,/html/body/div[2]/div[3]/ul[1]/li/div,false
+Click,xpath,/html/body/div[2]/div[1]/div[1]/ul/li[5]/a/div/div[1],,,false
+Click,xpath,/html/body/div[2]/div[1]/div[1]/ul/li[5]/a/div/div[1],,,false
+Click,xpath,/html/body/div[2]/div[1]/div[1]/ul/li[5]/a/div/div[1],,,false
+DragAndDrop,id,workflow-field-${Showflowfield2},xpath,/html/body/div[2]/div[3]/ul[1]/li[1]/div,false
+Waiting For,id,saving-indicator,,10,false
+SwitchDefault,,,,,false
+Click,cssSelector,img[src='imagenes/menus/back.png'],,,false
+Click,xpath,/html/body/div[2]/div[1]/div/div/div[4]/p[2]/a,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table/tfoot/tr/td[2]/select/option,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table/tfoot/tr/td[3]/select/option[1],,,false
+WriteTo,id,input-match-value,,Antonio,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div/div/div[2]/table/tfoot/tr/td[6]/select/option,,,false
+Click,cssSelector,img[src='imagenes/add2.png'],,,false

@@ -1868,6 +1868,14 @@ public class MainController implements Initializable {
                             exportTestJSON(actions, validations, variables, trialJSONFile);
                             exportVariablesJSON(variables,variablesJSONFile);
 
+                            Notifications notificationBuilder =  Notifications.create().title("Exportación completada")
+                                    .text("Test exportado")
+                                    .graphic(null)
+                                    .hideAfter(Duration.seconds(2))
+                                    .position(Pos.TOP_RIGHT);
+                            notificationBuilder.darkStyle();
+                            notificationBuilder.showConfirm();
+
                         }
                         // Aviso de ninguno seleccionado
                     }
@@ -2080,7 +2088,7 @@ public class MainController implements Initializable {
         }
     }
 
-    private void checkVariables(ArrayList<String> failedVariables, Variable variable)
+    /*private void checkVariables(ArrayList<String> failedVariables, Variable variable)
     {
 
         if (variable.getVariableName().matches(String.valueOf(VARIABLE_PATTERN)))
@@ -2099,13 +2107,13 @@ public class MainController implements Initializable {
         } else {
             failedVariables.add("Variable " + variable.getVariableName() + " Fallo: Formato");
         }
-    }
+    }*/
 
     private void checkGlobalVariables(ArrayList<String> failedVariables, Global_Variable global_variable)
     {
-        if (global_variable.getVariableName().matches(String.valueOf(GLOBAL_VARIABLE_PATTERN)))
+        if (global_variable.getVariableName().matches(String.valueOf(GLOBAL_VARIABLE_PATTERN))) // Comprobar el patron
         {
-            if (!H2DAO.globalVariableExists(global_variable))
+            if (!H2DAO.globalVariableExists(global_variable)) // Comprobar que la variable global no existe
             {
                 H2DAO.saveGlobalVariable(global_variable);
             }else {
@@ -2116,95 +2124,7 @@ public class MainController implements Initializable {
         }
     }
 
-    public void importJSONTrial(File file)
-    {
 
-        JSONParser parser = new JSONParser();
-        ArrayList<String> failedVariables = new ArrayList<>();
-
-        try {
-            FileReader reader = new FileReader(file);
-            Object object = parser.parse(reader);
-
-
-            org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) object;
-
-
-            org.json.simple.JSONArray actions = (org.json.simple.JSONArray) jsonObject.get("Actions");
-            org.json.simple.JSONArray validations = (org.json.simple.JSONArray) jsonObject.get("Validations");
-            org.json.simple.JSONArray variables = (org.json.simple.JSONArray) jsonObject.get("Variables");
-
-
-            if (actions != null) {
-                for (int i = 0; i < actions.size(); i++) {
-                    org.json.simple.JSONObject action = (org.json.simple.JSONObject) actions.get(i);
-                    ActionController actionController = new ActionController();
-                    actionController.setAction(gridPaneTrialList, actionsRowIndex, action.get("actionTypeS").toString(), action.get("selectElementByS").toString(),
-                            action.get("firstValueArgsS").toString(), action.get("selectPlaceByS").toString(), action.get("secondValueArgsS").toString());
-                    Action act = new Action(action.get("actionTypeS").toString(), action.get("selectElementByS").toString(),
-                            action.get("firstValueArgsS").toString(), action.get("selectPlaceByS").toString(), action.get("secondValueArgsS").toString());
-                    actionList.add(act);
-                    actionsRowIndex++;
-
-                }
-            }
-
-            if (validations != null) {
-                for (int i = 0; i < validations.size(); i++) {
-                    org.json.simple.JSONObject validation = (org.json.simple.JSONObject) validations.get(i);
-                    ActionController actionController = new ActionController();
-                    actionController.setAction(gridPaneValidationList, validationRowIndex, validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
-                            validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());
-                    Action act = new Action(validation.get("actionTypeS").toString(), validation.get("selectElementByS").toString(),
-                            validation.get("firstValueArgsS").toString(), validation.get("selectPlaceByS").toString(), validation.get("secondValueArgsS").toString());
-                    validationList.add(act);
-                    validationRowIndex++;
-
-                }
-            }
-
-            if (variables != null) {
-                for (int i = 0; i < variables.size(); i++) {
-                    org.json.simple.JSONObject variable = (org.json.simple.JSONObject) variables.get(i);
-                    Variable var = new Variable(variable.get("variableTrial").toString(), variable.get("variableName").toString(), variable.get("value").toString());
-                    checkVariables(failedVariables, var);
-
-                }
-            }
-
-            if (checkVariablesFormat(actionList) && checkVariablesFormat(validationList) && failedVariables.size() == 0)
-            {
-                saveTest();
-                fillTestList();
-
-                System.out.println("JSON IMPORTADO");
-            } else {
-
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Error");
-                alert.setHeaderText("Se ha producido un error durante la importación de las variables");
-                //alert.initOwner(buttonSave.getScene().getWindow());
-                String error = "";
-                for (String failedVariable : failedVariables)
-                {
-                    error = error.concat(failedVariable+"\n");
-                }
-                alert.setContentText(error);
-                alert.showAndWait();
-
-                // Aviso formato de variables
-                deleteAllTabs();
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     
 
@@ -2326,7 +2246,7 @@ public class MainController implements Initializable {
                     {
                         if (testList.getItems().indexOf(child) == rowIndexDrag)
                         {
-                            draggedChildList.add(child);
+                            draggedChildList.add(child);    // Se añaden los elementos a la lista para ser introducidos posteriormente
                         }
                     }
                 }
@@ -2341,7 +2261,7 @@ public class MainController implements Initializable {
             @Override
             public void handle(DragEvent event) {
                 if (event.getPickResult().getIntersectedNode() != null){
-                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);     // Admitir solo acciones de copia o movimiento
                 }
 
                 event.consume();
@@ -2355,7 +2275,7 @@ public class MainController implements Initializable {
                 //
                 Node drop = event.getPickResult().getIntersectedNode();
 
-                if (drop instanceof HBox)
+                if (drop instanceof HBox)               // Al igual que en el caso del dragElement, dependiendo de la profundidad del elemento en el que se suelte se calcula de una manera u otra el indice
                 {
                     rowIndexDrop = testList.getItems().indexOf(drop);
                 } else if (drop instanceof Text)
@@ -2379,21 +2299,22 @@ public class MainController implements Initializable {
                     if (rowIndexDrop == -1 || rowIndexDrag == -1){
                         event.consume();
                     }else {
-                        if (rowIndexDrag >= 0 || rowIndexDrag < testList.getItems().size())                    // Si es la cabeza o medio...
+                        if (rowIndexDrag >= 0 || rowIndexDrag < testList.getItems().size())                    // Introducir en la cabeza o medio...
                         {
-                            for (HBox child : testList.getItems()) {                                        // Reducir el rowIndex de las que estan por debajo de la seleccionada -1
+                            for (HBox child : testList.getItems()) {                                        // Reducir el rowIndex de las que estan por debajo del nodo en el que se suelta -1
                                 if (testList.getItems().indexOf(child) > rowIndexDrag) {
                                     testList.getItems().set(testList.getItems().indexOf(child) - 1, child);
                                 }
                             }
                         }
 
-                        testList.getItems().removeAll(draggedChildList);
+                        testList.getItems().removeAll(draggedChildList);  // Eliminar los elementos agarrados
+                        // Insertar en cabeza o medio
                         if (rowIndexDrag < testList.getItems().size()-1) {
                             testList.getItems().remove(testList.getItems().size() - 1);
                         }
 
-                        // Insertar en cabeza o medio
+
                         for (HBox child : testList.getItems()) {
                             if (testList.getItems().indexOf(child) >= rowIndexDrop) {
                                 movedChilds.add(child);
@@ -2416,7 +2337,7 @@ public class MainController implements Initializable {
             @Override
             public void handle(DragEvent event) {
 
-                if (event.getTransferMode() == TransferMode.MOVE)
+                if (event.getTransferMode() == TransferMode.MOVE) // Añadir los elementos que previamente se han desplazado (aquellos que están por debajo de rowIndexDrop)
                 {
                     testList.getItems().addAll(movedChilds);
                 }

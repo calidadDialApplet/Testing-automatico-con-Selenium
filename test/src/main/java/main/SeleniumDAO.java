@@ -354,6 +354,9 @@ public class SeleniumDAO {
             case "PageUp":
                 element.sendKeys(Keys.PAGE_UP);
                 break;
+            case "Delete":
+                element.sendKeys(Keys.BACK_SPACE);
+                break;
             default:
                 break;
 
@@ -365,9 +368,9 @@ public class SeleniumDAO {
         driver.navigate().refresh();
     }
 
-    public static String getAttribute(WebElement element, String attribute)
+    public static String getAttribute(WebElement element)
     {
-        return element.getAttribute(attribute);
+        return element.getAttribute("data-fieldid");
     }
 
     public static void selectOption(Select select, String value)

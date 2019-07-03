@@ -79,6 +79,9 @@ public class Action {
             case "13":
                 type = "SelectOptionByValue";
                 break;
+            case "14":
+                type = "GetAttribute";
+                break;
             default:
                 break;
         }
@@ -193,9 +196,9 @@ public class Action {
                     SeleniumDAO.refreshPage(driver);
                     result = "Ok";
                     break;
-                case "ReadAttributeFrom":
+                case "GetAttribute":
                     WebElement readAttributeFrom = SeleniumDAO.selectElementBy(this.selectElementByS,this.firstValueArgsS,driver);
-                    result = SeleniumDAO.getAttribute(readAttributeFrom,this.secondValueArgsS);
+                    result = SeleniumDAO.getAttribute(readAttributeFrom);
                     H2DAO.updateTrialVariable(trialID, this.secondValueArgsS,result);
                     break;
                 case "SelectOptionByValue":
@@ -225,7 +228,7 @@ public class Action {
                     this.firstValueArgsS = this.firstValueArgsS.replace(variable.getVariableName(), variable.getValue());
                 }
 
-                if (!this.getActionTypeS().equals("ReadFrom")) {
+                if (!this.getActionTypeS().equals("ReadFrom") || !this.getActionTypeS().equals("GetAttribute")) {
                     if (this.secondValueArgsS.contains(variable.getVariableName())) {
                         this.secondValueArgsS = this.secondValueArgsS.replace(variable.getVariableName(), variable.getValue());
                     }
@@ -246,7 +249,7 @@ public class Action {
                  this.firstValueArgsS = this.firstValueArgsS.replace(variable.getVariableName(), variable.getValue());
              }
 
-               if (!this.getActionTypeS().equals("ReadFrom")) {
+               if (!this.getActionTypeS().equals("ReadFrom") || !this.getActionTypeS().equals("GetAttribute")) {
                    if (this.secondValueArgsS.contains(variable.getVariableName())) {
                        this.secondValueArgsS = this.secondValueArgsS.replace(variable.getVariableName(), variable.getValue());
                    }

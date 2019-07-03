@@ -124,7 +124,7 @@ public class H2DAO {
 
         try {
             Statement st = connection.createStatement();
-            String createTable = "insert into keys(name) values ('PageUp')";
+            //String createTable = "insert into keys(name) values ('Delete')";
             //String drop = "create table keys(id integer auto_increment, name text)";
             //st.execute(createTable);
 

@@ -69,7 +69,7 @@ public class ImportController implements Initializable {
     public void importTrial()
     {
         String fileExtension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
-        if (fileExtension.equals("json"))
+        if (fileExtension.equals("json"))                               // Dependiendo de la extension se ejecuta el método correspondiente
         {
             importJSONTrial(file);
         }
@@ -78,14 +78,14 @@ public class ImportController implements Initializable {
             importCSVTrial(file);
         }
 
-        if (!error){
-            if (newTrial.isSelected())
+        if (!error){        // Se ha comprobado previamente que las cabeceras de los ficheros están correctamente
+            if (newTrial.isSelected())      // Crear nueva prueba en el caso de que se encuentre la checkbox checkeada
             {
                 newTrial();
-                String id = H2DAO.getTrialID(newTrialName);
+                String id = H2DAO.getTrialID(newTrialName);  // Obtener el ID de la prueba
                 if (!id.equals("NULL"))
                 {
-                    if (checkActionsFormat(actionList) && checkActionsFormat(validationList))
+                    if (checkActionsFormat(actionList) && checkActionsFormat(validationList)) // Comprobar el formato de las acciones y guardarlas
                     {
                         H2DAO.saveTrial(actionList, id, 0);
                         H2DAO.saveTrial(validationList, id, 1);
@@ -96,7 +96,7 @@ public class ImportController implements Initializable {
 
 
             }
-            for (CheckBox trialSelected : listViewTrials.getItems())
+            for (CheckBox trialSelected : listViewTrials.getItems())        // Si no se crea una prueba nueva se recorren las marcadas y se añaden las acciones y las variables
             {
                 if (trialSelected.isSelected())
                 {
@@ -116,7 +116,7 @@ public class ImportController implements Initializable {
 
     }
 
-    private void setVariablesTrialAndSave(ArrayList<VariableNV> variablesNVList, String newTrialId)
+    private void setVariablesTrialAndSave(ArrayList<VariableNV> variablesNVList, String newTrialId)  // Cambiar el formato de las variables, añadirle el ID de la prueba y comprobar que no tiene errores
     {
         ArrayList<String> failedVariables = new ArrayList<>();
         ArrayList<Variable> variables = new ArrayList<>();
@@ -178,7 +178,7 @@ public class ImportController implements Initializable {
                     alert.show();
                 } else {
                     newTrialName = result.get();
-                    H2DAO.createTrial(result.get());
+                    H2DAO.createTrial(result.get());        // guardar la prueba en BBDD
                     //fillTestList();
                     //testList.getSelectionModel().selectLast();
                 }
@@ -201,7 +201,7 @@ public class ImportController implements Initializable {
             Scanner inputStream = new Scanner(file);
             while (inputStream.hasNext()) {
                 String data = inputStream.nextLine();
-                if (data.equals(trialColumnsHeadersCSV))
+                if (data.equals(trialColumnsHeadersCSV))        // Se comprueba la cabecera del fichero para saber si es de variables o de acciones
                 {
                     header = "Trial";
                 }
@@ -213,7 +213,7 @@ public class ImportController implements Initializable {
                 if (header.equals("Trial"))
                 {
 
-                    String[] values = data.split(",");
+                    String[] values = data.split(",");      // Se escanean las acciones y se guardan en las listas
                     if (values[5].equals("false")) {
                         Action act = new Action( values[0], values[1], values[2], values[3], values[4]);
                         actionList.add(act);
@@ -225,7 +225,7 @@ public class ImportController implements Initializable {
                 }
 
 
-                if (header.equals("Variables"))
+                if (header.equals("Variables"))     // Se escanean las variables y se almacenan en la lista
                 {
                     String[] values = data.split(",");
                     if (!values[0].equals("VariableName"))
@@ -237,7 +237,7 @@ public class ImportController implements Initializable {
             if(header.equals("Trial"))
             {
                 inputStream.close();
-            }else if (header.equals("Variables"))
+            }else if (header.equals("Variables")) // Se imprime el mensaje de error en el caso de que se haya producido algún error
             {
                 if (failedVariables.size() > 0)
                 {
@@ -283,12 +283,12 @@ public class ImportController implements Initializable {
             org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) object;
 
 
-            org.json.simple.JSONArray actions = (org.json.simple.JSONArray) jsonObject.get("Actions");
+            org.json.simple.JSONArray actions = (org.json.simple.JSONArray) jsonObject.get("Actions");          // Se separan en listas las acciones, las validaciones y las variables
             org.json.simple.JSONArray validations = (org.json.simple.JSONArray) jsonObject.get("Validations");
             org.json.simple.JSONArray variables = (org.json.simple.JSONArray) jsonObject.get("Variables");
 
 
-            if (actions != null) {
+            if (actions != null) {  // En el caso de que no sea vacía se crean las acciones y se guardan en la lista
                 for (int i = 0; i < actions.size(); i++) {
                     org.json.simple.JSONObject action = (org.json.simple.JSONObject) actions.get(i);
                     /*ActionController actionController = new ActionController();
@@ -302,7 +302,7 @@ public class ImportController implements Initializable {
                 }
             }
 
-            if (validations != null) {
+            if (validations != null) {  // En el caso de que no sea vacía se crean las validaciones y se guardan en la lista
                 for (int i = 0; i < validations.size(); i++) {
                     org.json.simple.JSONObject validation = (org.json.simple.JSONObject) validations.get(i);
                     //ActionController actionController = new ActionController();
@@ -316,7 +316,7 @@ public class ImportController implements Initializable {
                 }
             }
 
-            if (variables != null) {
+            if (variables != null) {    // En el caso de que no sea vacía se crean las variables y se guardan en la lista
                 for (int i = 0; i < variables.size(); i++) {
                     org.json.simple.JSONObject variable = (org.json.simple.JSONObject) variables.get(i);
                     VariableNV variableNV = new VariableNV(variable.get("variableName").toString(), variable.get("value").toString());

@@ -185,6 +185,7 @@ public class ActionController
                     selectElementBy.setValue(Action.getSelectElementById(selectElementByValue));
                     break;
                 case "ReadFrom":
+                case "GetAttribute":
                     initializeComboBox(hBox);
                     selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                     hBox.getChildren().add(selectElementBy);
@@ -367,6 +368,7 @@ public class ActionController
                 case "NavigateTo":
                 case "Press Key":
                 case "SelectOptionByValue":
+                case "GetAttribute":
                     drawElements(hBox, lastType, gridParent);
                     break;
                 default:
@@ -703,6 +705,7 @@ public class ActionController
 
                 break;
             case "ReadFrom":
+            case "GetAttribute":
                 selectElementBy = new ComboBox(FXCollections.observableArrayList(H2DAO.getSelectElementBy()));
                 hBox.getChildren().add(selectElementBy);
                 dragAndDrop(gridParent, selectElementBy);

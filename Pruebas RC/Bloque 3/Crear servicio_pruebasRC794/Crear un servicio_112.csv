@@ -1,0 +1,111 @@
+Action,FirstSelectBy,FirstValue,SecondSelectBy,SecondValue,Validation
+WriteTo,id,adminusername,,admin,false
+WriteTo,id,adminpassword,,admin,false
+Click,id,login,,,false
+Click,xpath,/html/body/div[2]/div[1]/div[1]/div/div[1]/p[2]/a,,,false
+WriteTo,id,name,,Servicio_pruebasRC794,false
+WaitTime,,2,,,false
+SelectOptionByValue,cssSelector,html body div#bodyGlobal div#leftContent div#innerLeftContent div#contenido div.subContent form#newService table#createServiceTable.isAdminOrSuper tbody tr td table#createServiceTable1 tbody tr td select#actionsid,,1,false
+WaitTime,,2,,,false
+SelectOptionByValue,cssSelector,html body div#bodyGlobal div#leftContent div#innerLeftContent div#contenido div.subContent form#newService table#createServiceTable.isAdminOrSuper tbody tr td table#createServiceTable1 tbody tr.useArgumentary td select#workflow,,383,false
+SelectOptionByValue,id,recordingrate,,100,false
+Click,id,group-id-€{Grupo1},,,false
+Click,id,group-id-€{Grupo2},,,false
+Click,id,day1,,,false
+WriteTo,id,since_day1_mor,,08:30:00,false
+WriteTo,id,until_day1_mor,,18:00:00,false
+Click,className,copyToFriday,,,false
+Click,id,robinsonyes,,,false
+WriteTo,id,audioformat,,RC3v794%20-%21-%1-%9-%8-%6,false
+Click,id,f_trigger_g1,,,false
+Click,xpath,/html/body/div[7]/table/thead/tr[2]/td[4],,,false
+Click,xpath,/html/body/div[7]/table/tbody/tr[5]/td[3],,,false
+Click,id,f_trigger_g2,,,false
+Click,xpath,/html/body/div[7]/table/thead/tr[2]/td[4],,,false
+Click,xpath,/html/body/div[7]/table/thead/tr[2]/td[4],,,false
+Click,xpath,/html/body/div[7]/table/tbody/tr[5]/td[1],,,false
+Click,id,send,,,false
+Click,id,closecontactsyes,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/table/tbody/tr[14]/td[2]/select/optgroup[1]/option[2],,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/table/tbody/tr[15]/td[2]/select/optgroup[1]/option[1],,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/table/tbody/tr[16]/td[2]/select/optgroup[1]/option[3],,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/table/tbody/tr[18]/td[2]/input[1],,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/table/tbody/tr[20]/td[2]/input[1],,,false
+Click,id,submit,,,false
+Click,id,createCampaign,,,false
+WriteTo,id,name,,PREDICTIVA RCN794,false
+Click,id,add,,,false
+Waiting For,id,fancybox-frame,,10,false
+SwitchTo,,fancybox-frame,,,false
+WaitTime,,2,,,false
+WriteTo,name,notcontactedSlot,,1,false
+Click,cssSelector,#slots > table:nth-child(3) > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(1) > input:nth-child(1),,,false
+Click,cssSelector,tr.impar:nth-child(2) > td:nth-child(1) > input:nth-child(1),,,false
+Click,id,send,,,false
+SwitchDefault,,,,,false
+Refresh,,,,,false
+Click,id,createCampaign,,,false
+SelectOptionByValue,id,dialingmode,,manual,false
+WriteTo,id,name,,TRANSF RCN794,false
+Click,id,add,,,false
+SwitchTo,,fancybox-frame,,,false
+Click,id,send,,,false
+SwitchDefault,,,,,false
+Refresh,,,,,false
+Click,id,createCampaign,,,false
+WriteTo,id,name,,MANUAL RCN794,false
+SelectOptionByValue,id,dialingmode,,manual,false
+Click,id,add,,,false
+SwitchTo,,fancybox-frame,,,false
+Click,id,send,,,false
+SwitchDefault,,,,,false
+Refresh,,,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/table/tbody/tr[1]/td[10]/a[1]/img,,,false
+Waiting For,id,fancybox-frame,,10,false
+SwitchTo,,fancybox-frame,,,false
+SelectOptionByValue,id,maximumtype,,8,false
+WaitTime,,2,,,false
+Press Key,name,notcontactedDelays,Delete,,false
+WriteTo,name,notcontactedDelays,,20,false
+WriteTo,name,unanswered+t,,5,false
+WriteTo,name,congestion+t,,5,false
+WriteTo,name,rejected+t,,5,false
+WriteTo,name,default,,10,false
+WriteTo,name,contacted_default,,20,false
+Click,cssSelector,#r1_2789 > td:nth-child(1) > label:nth-child(2) > input:nth-child(1),,,false
+Click,id,send,,,false
+SwitchDefault,,,,,false
+Refresh,,,,,false
+Click,id,next,,,false
+DragAndDrop,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/div[1]/div/table/tbody[17]/tr,id,unionList,false
+WaitTime,,2,,,false
+DragAndDrop,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/div[3]/div/table[1]/tbody/tr[2]/td,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/div[2]/div/table/tbody,false
+WaitTime,,2,,,false
+Click,name,send,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/table/tbody/tr[1]/td/table[2]/tbody/tr[25]/td[2]/input,,,false
+WriteTo,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/table/tbody/tr[1]/td/table[2]/tbody/tr[25]/td[3]/input[2],,Tiempo,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/table/tbody/tr[1]/td/table[2]/tbody/tr[25]/td[5]/input,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/table/tbody/tr[1]/td/table[2]/tbody/tr[26]/td[2]/input,,,false
+WriteTo,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/table/tbody/tr[1]/td/table[2]/tbody/tr[26]/td[3]/input[2],,Notas,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/table/tbody/tr[1]/td/table[2]/tbody/tr[26]/td[4]/select/option[2],,,false
+Click,id,submit-btn,,,false
+Waiting For,xpath,//*[@id="submit"],,2,false
+Click,xpath,//*[@id="submit"],,,false
+Waiting For,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/p/input[1],,2,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/form/p/input[1],,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[3]/div/div/table/tbody/tr/td[3]/a/img,,,false
+WriteTo,id,fileUpload,,path del archivo de la lista robinson,false
+Click,xpath,//*[@id="submit"],,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[2]/div[1]/ul/li[8]/a,,,false
+WriteTo,xpath,/html/body/div[2]/div[3]/div[2]/div[5]/form[1]/table/tbody/tr/td[2]/input[4],,BBDD1,false
+Click,id,f_trigger_start,,,false
+Click,xpath,/html/body/div[7]/table/tbody/tr[4]/td[1],,,false
+Click,id,f_trigger_end,,,false
+Click,xpath,/html/body/div[7]/table/thead/tr[2]/td[4],,,false
+Click,xpath,/html/body/div[7]/table/thead/tr[2]/td[4],,,false
+Click,xpath,/html/body/div[7]/table/tbody/tr[5]/td[3],,,false
+Click,id,newBDGroup,,,false
+Click,id,enableCampaign,,,false
+Click,xpath,/html/body/div[2]/div[3]/div[2]/div[5]/form[1]/table/tbody/tr[1]/td[10]/a[1]/img,,,false
+WaitTime,,2,,,false
+Click,xpath,/html/body/div[8]/div[7]/div/button,,,false
