@@ -8,6 +8,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -29,7 +30,10 @@ public class SeleniumDAO {
         {
             System.setProperty("webdriver.gecko.driver", "geckodriver");
         }
-        WebDriver driver = new FirefoxDriver();
+        //Para evitar que salgan popUps
+        FirefoxOptions noPopUp = new FirefoxOptions();
+        noPopUp.addPreference("dom.disable_beforeunload", true);
+        WebDriver driver = new FirefoxDriver(noPopUp);
         return driver;
     }
 

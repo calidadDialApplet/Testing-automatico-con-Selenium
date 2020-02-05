@@ -65,15 +65,12 @@ public class Main extends Application {
         public static void loginDialappletWeb(String name, String password, WebDriver driver){
                 WebElement user = driver.findElement(By.id("adminusername"));
                 user.sendKeys(name);
+
                 WebElement pass = driver.findElement(By.id("adminpassword"));
                 pass.sendKeys(password);
-                WebElement loggin = driver.findElement(By.id("login"));
-                loggin.click();
-                try{
-                     WebElement error = driver.findElement(By.className("mensajer-error"));
-                }catch (Exception e){
-                        System.out.println(e);
-                }
+
+                WebElement login = driver.findElement(By.id("login"));
+                login.click();
         }
 
         // TODO: Garbage clean
@@ -84,15 +81,11 @@ public class Main extends Application {
                 WebElement passWebClient = SeleniumDAO.selectElementBy("id","passwordBridge",driver);
                 passWebClient.sendKeys(password);
 
-                Select tlf = SeleniumDAO.findSelectElementBy("id","selectType",driver);
-                //SeleniumDAO.selectOption("index",""+tlfOption, tlf);
-                //tlf.selectByIndex(1);
+                Select tlf = SeleniumDAO.findSelectElementBy("id","selectType", driver);
+                tlf.selectByIndex(tlfOption);
 
                 WebElement entryWebClient = SeleniumDAO.selectElementBy("id","checklogin",driver);
                 SeleniumDAO.click(entryWebClient);
-
-                WebElement enter = driver.findElement(By.id("login"));
-                enter.click();
         }
 
         public static boolean isModified()

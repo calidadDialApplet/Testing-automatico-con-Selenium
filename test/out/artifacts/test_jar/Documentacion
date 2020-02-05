@@ -1,0 +1,12 @@
+DOCUMENTACION AUTOMATIZACION DE LAS PRUEBAS CHECKLIST
+
+Para ejecutar el .jar, primero hay que situarse en la carpeta donde está localizado, después, ejecutar el comando <path donde esté localizado el binario del openjdk11> -jar test.jar 
+Ejecutando este comando se lanzarán todos los test del checklist, por el contrario, si se le añade un argumento referente a cada test, se ejecutará solo ese. Destacar que los test, en este caso, se lanzan de uno en uno. Esto significa que si se añaden 2 argumentos, fallará.
+Los argumentos pueden ser: coordinator, calls, report o exportReport. Por ejemplo: <path donde esté localizado el binario del openjdk11> -jar test.jar calls
+
+El paquete contiene un fichero de configuracion .ini donde se pueden cambiar los parametros de los test. Un parametro clave es: headless, que, dependiendo de si está a true o false, lanzará a ejecucion el navegador (false) o ejecutará el test en segundo plano (true).
+El test exportReport deberá lanzarse con headless=false, de lo contrario fallará.
+
+Otro de los parametros clave es chromePath, que deberá contener la ruta donde esté binario del google-chrome.
+
+Para la ejecucion del test calls, debe tenerse instalado jitsi. A su vez, a la hora de lanzar a ejecucion el test, jitsi debe estar en ejecución, con una cuenta configurada con la extension que se le vaya a indicar en el fichero de configuracion .ini. Finalmente, en las opciones de jitsi se debe marcar la opcion de auto responer, localizada en Herramientas>Auto Responder y desvio de llamada>Todas las llamadas.

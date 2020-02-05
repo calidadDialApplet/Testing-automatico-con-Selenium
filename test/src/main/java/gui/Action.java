@@ -199,6 +199,7 @@ public class Action {
                 case "GetAttribute":
                     WebElement readAttributeFrom = SeleniumDAO.selectElementBy(this.selectElementByS,this.firstValueArgsS,driver);
                     result = SeleniumDAO.getAttribute(readAttributeFrom);
+
                     H2DAO.updateTrialVariable(trialID, this.secondValueArgsS,result);
                     break;
                 case "SelectOptionByValue":
