@@ -104,7 +104,7 @@ public class AddAgentsToNewGroup {
                 e.printStackTrace();
             }
             // Click on send button to finish the modification
-            git
+
 
             // Checking that the test works correctly
             if (numberOfRowsBefore < numberOfRowsAfter)

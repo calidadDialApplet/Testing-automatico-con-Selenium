@@ -81,6 +81,7 @@ public class ParteDeAgentesTest extends Test {
 
             results.put("Connection Test -> ", connectionTest());
             results.put("Add agents to a new group -> ", addAgentsToNewGroup());
+            results.put("Add new group: " + groupName1y2 + " -> ", newGroup());
             return results;
 
         } catch (Exception e)
@@ -107,9 +108,12 @@ public class ParteDeAgentesTest extends Test {
             return e.toString();
         }
     }
-    public String addAgentsToNewGroup() throws InterruptedException {
+    public String addAgentsToNewGroup() throws InterruptedException
+    {
         try
         {
+            String idNewGroupAdded = "";
+
             WebElement adminTab = SeleniumDAO.selectElementBy("id", "ADMIN", firefoxDriver);
             SeleniumDAO.click(adminTab);
             // Click on "Users" left menu
@@ -130,6 +134,8 @@ public class ParteDeAgentesTest extends Test {
             try
             {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-error animateErrorIcon']")));
+                WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                SeleniumDAO.click(okButton);
                 //System.err.println("ERROR: The group: " + groupName + " already exists. Delete it and try again");
                 return "ERROR: The group: " + groupName + " already exists. Delete it and try again";
             } catch (Exception e)
@@ -144,7 +150,7 @@ public class ParteDeAgentesTest extends Test {
 
             int lastRowAdded = listOfRows.size()-1;
             WebElement newGroupAdded = listOfRows.get(lastRowAdded);
-            String idNewGroupAdded = newGroupAdded.findElement(By.xpath("//tbody/tr["+ lastRowAdded +"]/td[1]")).getText();
+            idNewGroupAdded = newGroupAdded.findElement(By.xpath("//tbody/tr["+ lastRowAdded +"]/td[1]")).getText();
 
 
 
@@ -178,8 +184,10 @@ public class ParteDeAgentesTest extends Test {
             SeleniumDAO.click(sendButton);
             SeleniumDAO.switchToDefaultContent(firefoxDriver);
 
+            Thread.sleep(1500);
+
             //System.out.println(pilotAgentName1 + " and " + pilotAgentName2 + " added to " + groupName);
-            return "Test OK. " + pilotAgentName1 + " and " + pilotAgentName2 + " added to " + groupName;
+            return "Test OK. " + pilotAgentName1 + " and " + pilotAgentName2 + " added to " + groupName + "with id = " + idNewGroupAdded;
         } catch (Exception e)
         {
             //System.err.println("Failed while adding " + pilotAgentName1 + " and " + pilotAgentName2 + " to " + groupName);
@@ -188,5 +196,49 @@ public class ParteDeAgentesTest extends Test {
 
 
 
+    }
+    public String newGroup() throws InterruptedException
+    {
+        try
+        {
+            String idNewGroupAdded = "";
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("new_groupname")));
+            WebElement newGroupNameInput = SeleniumDAO.selectElementBy("id", "new_groupname", firefoxDriver);
+            newGroupNameInput.clear();
+            newGroupNameInput.sendKeys(groupName1y2);
+
+            WebElement addNewGroupButton = SeleniumDAO.selectElementBy("cssSelector", "img[src='imagenes/add2.png']", firefoxDriver);
+            SeleniumDAO.click(addNewGroupButton);
+
+            try
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-error animateErrorIcon']")));
+                //System.err.println("ERROR: The group: " + groupName + " already exists. Delete it and try again");
+                return "ERROR: The group: " + groupName1y2 + " already exists. Delete it and try again";
+            } catch (Exception e)
+            { }
+
+
+            try
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@class = 'tabla-principal']//tbody")));
+                WebElement table = SeleniumDAO.selectElementBy("xpath", "//table[@class = 'tabla-principal']//tbody", firefoxDriver);
+                List<WebElement> listOfRows = table.findElements(By.tagName("tr"));
+
+                int lastRowAdded = listOfRows.size()-1;
+                WebElement newGroupAdded = listOfRows.get(lastRowAdded);
+                idNewGroupAdded = newGroupAdded.findElement(By.xpath("//tbody/tr["+ lastRowAdded +"]/td[1]")).getText();
+            } catch (Exception e)
+            {
+                return e.toString() + "\n ERROR: The group " + groupName1y2 + " could not be added";
+            }
+
+            return "Test OK. " + groupName1y2 + " added successfully with id = " + idNewGroupAdded;
+
+        } catch(Exception e)
+        {
+            return e.toString();
+        }
     }
 }
