@@ -14,6 +14,7 @@ public class main {
 
         // Add some vehicles.
         tests.put("parteDeAgentes", new ParteDeAgentesTest());
+        tests.put("parteDeShowflow", new ParteDeShowflow());
 
         if (args.length == 0) {
             for (String testName : tests.keySet()) {
@@ -24,7 +25,9 @@ public class main {
             for (String name: results.keySet()){
                 String key = name.toString();
                 String value = results.get(name).toString();
-                System.out.println(key + " " + value);
+                if(value.contains("OK")) System.out.println(key + " " + "\u001B[32m" + value + "\u001B[0m");
+                else if(value.contains("ERROR")) System.out.println(key + " " + "\u001B[31m" + value + "\u001B[0m");
+
             }
         }
         else {

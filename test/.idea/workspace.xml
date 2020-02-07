@@ -10,11 +10,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b76c07a0-19f3-403b-8838-158aa2f314c5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeShowflow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/AddAgentsToNewGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/AddAgentsToNewGroup.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InicializationSettingsRC.ini" beforeDir="false" afterPath="$PROJECT_DIR$/InicializationSettingsRC.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/AddAgentsToNewGroup.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/ConnectionTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/NewCoordAgent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/NewGroup.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/Test_1_10.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/Test_1_11.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/Test_1_12.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/Test_1_5.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/Test_1_6.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/Test_1_7.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/Test_1_8.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/Test_1_9.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/agentesTexto.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/agentesTexto.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/AddAgentsToNewGroup.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/AddAgentsToNewGroup.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ProcedimientoRC/main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/AddAgentsToNewGroup.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/ConnectionTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/NewCoordAgent.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/NewGroup.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/Test_1_10.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/Test_1_11.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/Test_1_12.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/Test_1_5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/Test_1_6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/Test_1_7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/Test_1_8.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentes/Test_1_9.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentesTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ProcedimientoRC/ParteDeAgentesTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ProcedimientoRC/main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ProcedimientoRC/main.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -146,7 +173,7 @@
     <configuration name="mainRC" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="ProcedimientoRC.main" />
       <module name="test" />
-      <option name="PROGRAM_PARAMETERS" value="parteDeAgentes" />
+      <option name="PROGRAM_PARAMETERS" value="parteDeShowflow" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="ProcedimientoRC.*" />
@@ -262,10 +289,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="671" y="176" width="924" height="736" key="#Project_Structure/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580809353920" />
-    <state x="420" y="248" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1580819306501">
+    <state x="420" y="248" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1581075524585">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="420" y="248" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580819306501" />
+    <state x="420" y="248" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1581075524585" />
     <state x="285" y="249" key="#com.intellij.execution.impl.EditConfigurationsDialog/1600.0.1280.1024/0.49.1600.900@0.49.1600.900" timestamp="1580462702418" />
     <state x="497" y="329" width="595" height="383" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1580125060958">
       <screen x="0" y="0" width="1280" height="984" />
@@ -314,52 +341,52 @@
       <screen x="0" y="0" width="1280" height="984" />
     </state>
     <state width="1238" height="265" key="GridCell.Tab.-1.right/1280.0.1280.1024/0.0.1280.984@0.0.1280.984" timestamp="1579777905933" />
-    <state width="1878" height="279" key="GridCell.Tab.0.bottom" timestamp="1580906654412">
+    <state width="1878" height="241" key="GridCell.Tab.0.bottom" timestamp="1581078817002">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1878" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580906654412" />
+    <state width="1878" height="241" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1581078817002" />
     <state width="1558" height="204" key="GridCell.Tab.0.bottom/1280.0.1280.1024/0.0.1280.984@0.0.1280.984" timestamp="1580125403247" />
     <state width="1558" height="369" key="GridCell.Tab.0.bottom/1600.0.1280.1024/0.49.1600.900@0.49.1600.900" timestamp="1580475567726" />
-    <state width="1878" height="279" key="GridCell.Tab.0.center" timestamp="1580906654412">
+    <state width="1878" height="241" key="GridCell.Tab.0.center" timestamp="1581078817002">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1878" height="279" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580906654412" />
+    <state width="1878" height="241" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1581078817002" />
     <state width="1558" height="204" key="GridCell.Tab.0.center/1280.0.1280.1024/0.0.1280.984@0.0.1280.984" timestamp="1580125403247" />
     <state width="1558" height="369" key="GridCell.Tab.0.center/1600.0.1280.1024/0.49.1600.900@0.49.1600.900" timestamp="1580475567725" />
-    <state width="1878" height="279" key="GridCell.Tab.0.left" timestamp="1580906654412">
+    <state width="1878" height="241" key="GridCell.Tab.0.left" timestamp="1581078817001">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1878" height="279" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580906654412" />
+    <state width="1878" height="241" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1581078817001" />
     <state width="1558" height="204" key="GridCell.Tab.0.left/1280.0.1280.1024/0.0.1280.984@0.0.1280.984" timestamp="1580125403246" />
     <state width="1558" height="369" key="GridCell.Tab.0.left/1600.0.1280.1024/0.49.1600.900@0.49.1600.900" timestamp="1580475567725" />
-    <state width="1878" height="279" key="GridCell.Tab.0.right" timestamp="1580906654412">
+    <state width="1878" height="241" key="GridCell.Tab.0.right" timestamp="1581078817002">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1878" height="279" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580906654412" />
+    <state width="1878" height="241" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1581078817002" />
     <state width="1558" height="204" key="GridCell.Tab.0.right/1280.0.1280.1024/0.0.1280.984@0.0.1280.984" timestamp="1580125403247" />
     <state width="1558" height="369" key="GridCell.Tab.0.right/1600.0.1280.1024/0.49.1600.900@0.49.1600.900" timestamp="1580475567725" />
-    <state width="1878" height="279" key="GridCell.Tab.1.bottom" timestamp="1580906654413">
+    <state width="1878" height="340" key="GridCell.Tab.1.bottom" timestamp="1581078613000">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1878" height="279" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580906654413" />
+    <state width="1878" height="340" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1581078613000" />
     <state width="1558" height="224" key="GridCell.Tab.1.bottom/1280.0.1280.1024/0.0.1280.984@0.0.1280.984" timestamp="1580118133006" />
     <state width="1558" height="397" key="GridCell.Tab.1.bottom/1600.0.1280.1024/0.49.1600.900@0.49.1600.900" timestamp="1580475567717" />
-    <state width="1878" height="279" key="GridCell.Tab.1.center" timestamp="1580906654412">
+    <state width="1878" height="340" key="GridCell.Tab.1.center" timestamp="1581078613000">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1878" height="279" key="GridCell.Tab.1.center/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580906654412" />
+    <state width="1878" height="340" key="GridCell.Tab.1.center/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1581078613000" />
     <state width="1558" height="224" key="GridCell.Tab.1.center/1280.0.1280.1024/0.0.1280.984@0.0.1280.984" timestamp="1580118133005" />
     <state width="1558" height="397" key="GridCell.Tab.1.center/1600.0.1280.1024/0.49.1600.900@0.49.1600.900" timestamp="1580475567717" />
-    <state width="1878" height="279" key="GridCell.Tab.1.left" timestamp="1580906654412">
+    <state width="1878" height="340" key="GridCell.Tab.1.left" timestamp="1581078613000">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1878" height="279" key="GridCell.Tab.1.left/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580906654412" />
+    <state width="1878" height="340" key="GridCell.Tab.1.left/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1581078613000" />
     <state width="1558" height="224" key="GridCell.Tab.1.left/1280.0.1280.1024/0.0.1280.984@0.0.1280.984" timestamp="1580118133005" />
     <state width="1558" height="397" key="GridCell.Tab.1.left/1600.0.1280.1024/0.49.1600.900@0.49.1600.900" timestamp="1580475567717" />
-    <state width="1878" height="279" key="GridCell.Tab.1.right" timestamp="1580906654412">
+    <state width="1878" height="340" key="GridCell.Tab.1.right" timestamp="1581078613000">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1878" height="279" key="GridCell.Tab.1.right/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580906654412" />
+    <state width="1878" height="340" key="GridCell.Tab.1.right/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1581078613000" />
     <state width="1558" height="224" key="GridCell.Tab.1.right/1280.0.1280.1024/0.0.1280.984@0.0.1280.984" timestamp="1580118133005" />
     <state width="1558" height="397" key="GridCell.Tab.1.right/1600.0.1280.1024/0.49.1600.900@0.49.1600.900" timestamp="1580475567717" />
     <state x="308" y="69" width="1024" height="840" key="SettingsEditor" timestamp="1580805032273">
@@ -368,20 +395,20 @@
     <state x="308" y="69" width="1024" height="840" key="SettingsEditor/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580805032273" />
     <state x="112" y="144" width="1024" height="840" key="SettingsEditor/1280.0.1280.1024/0.0.1280.984@0.0.1280.984" timestamp="1579609877622" />
     <state x="257" y="109" width="1288" height="840" key="SettingsEditor/1600.0.1280.1024/0.49.1600.900@0.49.1600.900" timestamp="1580387451356" />
-    <state x="485" y="357" key="com.intellij.ide.util.TipDialog" timestamp="1580889881948">
+    <state x="485" y="357" key="com.intellij.ide.util.TipDialog" timestamp="1581062863388">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="485" y="357" key="com.intellij.ide.util.TipDialog/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580889881948" />
+    <state x="485" y="357" key="com.intellij.ide.util.TipDialog/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1581062863388" />
     <state x="323" y="338" key="com.intellij.ide.util.TipDialog/1280.0.1280.1024/0.0.1280.984@0.0.1280.984" timestamp="1580112461155" />
     <state x="404" y="358" key="com.intellij.ide.util.TipDialog/1600.0.1280.1024/0.49.1600.900@0.49.1600.900" timestamp="1580471302783" />
-    <state x="1920" y="0" width="1280" height="1000" key="dock-window-1" timestamp="1580905083585">
+    <state x="961" y="0" width="959" height="1039" key="dock-window-1" timestamp="1580976715502">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="961" y="0" width="959" height="1039" key="dock-window-1/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580976715502" />
+    <state x="1920" y="202" width="1280" height="674" key="dock-window-2" timestamp="1581062872794">
       <screen x="1920" y="0" width="1280" height="1024" />
     </state>
-    <state x="1920" y="0" width="1280" height="1000" key="dock-window-1/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580905083585" />
-    <state x="1920" y="76" width="1280" height="734" key="dock-window-2" timestamp="1580818300128">
-      <screen x="1920" y="0" width="1280" height="1024" />
-    </state>
-    <state x="1920" y="76" width="1280" height="734" key="dock-window-2/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1580818300128" />
+    <state x="1920" y="202" width="1280" height="674" key="dock-window-2/0.0.1920.1040/1920.0.1280.1024@0.0.1920.1040" timestamp="1581062872794" />
     <state x="1920" y="90" width="1280" height="734" key="dock-window-3" timestamp="1580819289950">
       <screen x="1920" y="0" width="1280" height="1024" />
     </state>
@@ -485,34 +512,29 @@
           <option name="timeStamp" value="263" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/NewCoordAgent.java</url>
-          <line>45</line>
-          <option name="timeStamp" value="276" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/AddAgentsToNewGroup.java</url>
-          <line>69</line>
-          <option name="timeStamp" value="291" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentes/AddAgentsToNewGroup.java</url>
-          <line>51</line>
-          <option name="timeStamp" value="292" />
+          <url>file://$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java</url>
+          <line>403</line>
+          <option name="timeStamp" value="318" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java</url>
-          <line>205</line>
-          <option name="timeStamp" value="306" />
+          <line>694</line>
+          <option name="timeStamp" value="320" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java</url>
-          <line>135</line>
-          <option name="timeStamp" value="307" />
+          <line>895</line>
+          <option name="timeStamp" value="322" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java</url>
-          <line>179</line>
-          <option name="timeStamp" value="308" />
+          <line>110</line>
+          <option name="timeStamp" value="324" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ProcedimientoRC/ParteDeShowflow.java</url>
+          <line>93</line>
+          <option name="timeStamp" value="328" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
