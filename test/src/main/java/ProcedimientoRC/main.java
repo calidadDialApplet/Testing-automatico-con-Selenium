@@ -14,7 +14,7 @@ public class main {
 
         // Add some vehicles.
         tests.put("parteDeAgentes", new ParteDeAgentesTest());
-        tests.put("parteDeShowflow", new ParteDeShowflow());
+        tests.put("parteDeShowflow", new ParteDeShowflowTest());
 
         if (args.length == 0) {
             for (String testName : tests.keySet()) {

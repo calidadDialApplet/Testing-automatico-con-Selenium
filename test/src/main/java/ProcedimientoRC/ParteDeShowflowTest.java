@@ -1,5 +1,6 @@
 package ProcedimientoRC;
 
+import ProcedimientoRC.ParteDeShowflow.Subtypology;
 import javafx.scene.web.WebEngine;
 import org.ini4j.Wini;
 import main.Main;
@@ -13,12 +14,10 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class ParteDeShowflow extends Test {
+public class ParteDeShowflowTest extends Test {
     static String url;
     static String headless;
     static String adminName;
@@ -31,6 +30,10 @@ public class ParteDeShowflow extends Test {
     static String showflowOption3;
     static String showflowQuestion1;
     static String showflowQuestion2;
+    /*static String showflowTypologies;
+    static String showflowSubtypologies;
+    static String showflowResults;
+    static String showflowVisibleBy;*/
 
 
     static WebDriver firefoxDriver;
@@ -57,6 +60,11 @@ public class ParteDeShowflow extends Test {
                 showflowOption3 = ini.get("Showflow", "showflowOption3");
                 showflowQuestion1 = ini.get("Showflow", "showflowQuestion1");
                 showflowQuestion2 = ini.get("Showflow", "showflowQuestion2");
+                /*showflowTypologies = ini.get("Showflow", "showflowTypologies");
+                showflowSubtypologies = ini.get("Showflow", "showflowSubtypologies");
+                showflowVisibleBy = ini.get("Showflow", "showflowVisibleBy");
+                showflowResults = ini.get("Showflow", "showflowResults");*/
+
 
             } catch (Exception e)
             {
@@ -306,9 +314,10 @@ public class ParteDeShowflow extends Test {
     }
     public String createTypologies()
     {
+        HashMap<String, List<Subtypology>> typologiesData = new HashMap<>();
         try
         {
-            WebElement actionFields = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'auxSubItems']//a[@href = 'actionFields.php?workflow=215']", firefoxDriver);
+            WebElement actionFields = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'auxSubItems']//p[@id = 'edit_showflow_actions']]", firefoxDriver);
             SeleniumDAO.click(actionFields);
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("action-field")));
@@ -327,15 +336,68 @@ public class ParteDeShowflow extends Test {
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("typologies-table")));
 
-            List<WebElement> typologies = firefoxDriver.findElements(By.xpath("//tbody"));
-            //typologies.get(0).getAttribute(̈́"data-typology")
-            //typologies
-            
+            typologiesData = loadTypologiesAttributes();
+            List<WebElement> tableElementsAux = new ArrayList<>();
 
+            for(Map.Entry<String, List<Subtypology>> entry : typologiesData.entrySet())
+            {
+                WebElement typologyNameInput = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'typologies-table']//input[@id = 'new-typology-field']", firefoxDriver);
+                typologyNameInput.sendKeys(entry.getKey());
+
+                WebElement addTypologyButton = SeleniumDAO.selectElementBy("id", "add-new-typology", firefoxDriver);
+                SeleniumDAO.click(addTypologyButton);
+
+                List<WebElement> tableElements = firefoxDriver.findElements(By.xpath("//table[@id = 'typologies-table']//tbody"));
+                if(tableElements.size() == 1) {
+                    String elementID = tableElements.get(0).getAttribute("data-typology");
+                    WebElement typologyConfigurationButton = SeleniumDAO.selectElementBy("xpath", "//tr[@data-typology = '" + elementID + "']" +
+                            "//a[@class = 'configure-subtypologies']", firefoxDriver);
+                    SeleniumDAO.click(typologyConfigurationButton);
+
+                } else
+                {
+                     if(tableElementsAux.removeAll(tableElements))
+                     {
+                        String elementID = tableElements.get(0).getAttribute("data-typology");
+                         WebElement typologyConfigurationButton = SeleniumDAO.selectElementBy("xpath", "//tr[@data-typology = '" + elementID + "']" +
+                                 "//a[@class = 'configure-subtypologies']", firefoxDriver);
+                         SeleniumDAO.click(typologyConfigurationButton);
+                     }
+                }
+
+
+            }
+            return "Test OK";
         } catch (Exception e)
         {
-
+            return e.toString() + "\nERROR";
         }
+    }
+
+    public HashMap<String, List<Subtypology>> loadTypologiesAttributes()
+    {
+        HashMap<String, List<Subtypology>> result = new HashMap<>();
+
+        result.put("MAQUINA", new ArrayList<Subtypology>() {{
+            add(new Subtypology("TRANSFERENCIA", "NULL", "4"));
+            add(new Subtypology("INVALIDO", "NEGATIVE", "4"));
+            add(new Subtypology("NUM MAX INTENTOS", "NEGATIVE", "4"));
+            add(new Subtypology("ROBINSON", "NEGATIVE", "4"));
+        }});
+        result.put("NO INTERESA", new ArrayList<Subtypology>() {{
+            add(new Subtypology("SE QUEDA CON EL OPERADOR", "NS", "1"));
+            add(new Subtypology("TARIFA MAS CARA", "NS", "1"));
+            add(new Subtypology("YA ES CLIENTE", "NEGATIVE", "1"));
+        }});
+        result.put("PENDIENTE", new ArrayList<Subtypology>() {{
+            add(new Subtypology("AGENDADA", "NULL", "1"));
+        }});
+        result.put("VENTA", new ArrayList<Subtypology>() {{
+            add(new Subtypology("ADSL", "POSITIVE", "1"));
+            add(new Subtypology("MOVIL", "POSITIVE", "1"));
+        }});
+
+        return result;
     }
 
 
