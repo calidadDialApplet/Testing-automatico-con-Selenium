@@ -1,24 +1,20 @@
 package CheckListRafa;
 
-import main.Main;
 import main.SeleniumDAO;
 import main.Utils;
+import Utils.TestWithConfig;
+import Utils.DriversConfig;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.ini4j.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.HashMap;
 
-public class CordinatorTest extends Test {
+public class CordinatorTest extends TestWithConfig {
     static String cordinatorName;
     static String cordiantorPassword;
     static String agentName;
@@ -31,11 +27,16 @@ public class CordinatorTest extends Test {
     static ChromeDriver chromeDriver;
     static String chromePath;
 
-    public void check() {
+    HashMap<String, String> results = new HashMap<>();
+
+    public CordinatorTest(Wini ini) {
+        super(ini);
+    }
+
+    public HashMap<String, String> check() {
         try {
             //Load inicializacion settings
             try {
-                Wini ini = new Wini(new File("InicializationSettings.ini"));
                 agentName = ini.get("Agent", "agentName");
                 agentPassword = ini.get("Agent", "agentPassword");
                 cordinatorName = ini.get("Cordinator", "cordinatorName");
@@ -43,16 +44,15 @@ public class CordinatorTest extends Test {
                 url = ini.get("Red", "url");
                 headless = ini.get("Red", "headless");
                 chromePath = ini.get("Red", "chromePath");
-            } catch (IOException e) {
-                System.out.println("The inicialization file can't be loaded");
-                e.printStackTrace();
-                return;
+            } catch (Exception e) {
+                results.put(e.toString() + "\nERROR. The inicialization file can't be loaded", "Tests can't be runned");
+                return results;
             }
 
-            firefoxDriver = headlessOrNot(headless);
+            firefoxDriver = DriversConfig.headlessOrNot(headless);
             firefoxWaiting = new WebDriverWait(firefoxDriver, 10);
 
-            chromeDriver = headlessOrNot(headless, chromePath);
+            chromeDriver = DriversConfig.headlessOrNot(headless, chromePath);
             chromeWaiting = new WebDriverWait(chromeDriver, 10);
 
 
@@ -64,23 +64,62 @@ public class CordinatorTest extends Test {
             //Login agent on Firefox
             loginOnFirefox();
 
-            //Checks if the agent appears on the coordinator view
-            if(!checkAgentAppears()) return;
+            results.put("--Coordinator and agent test  -->  ", coordinatorTest());
+            return results;
 
-            //Change the state of the agent
-            changeAgentState();
-
-            //Checks if the agent state has changed on Cordinator View
-            if (!checkAgentStateUpdated()) return;
+        } catch(Exception e)
+        {
+            results.put("--Coordinator and agent test  -->  ", "ERROR. Unexpected exception");
+            return results;
 
         } finally {
             chromeDriver.close();
             firefoxDriver.close();
-            System.out.println("CordinatorTest has finished. Drivers closed.");
         }
     }
 
-    public boolean checkAgentStateUpdated() {
+    public String coordinatorTest(){
+        try
+        {
+            //Checks if the agent appears on the coordinator view
+            chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("ui-id-4")));
+            WebElement coordinatorTab = SeleniumDAO.selectElementBy("id", "ui-id-4", chromeDriver);
+            SeleniumDAO.click(coordinatorTab);
+
+            try {
+                chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[contains(., " + agentName + ")]")));
+            } catch (Exception e) {
+                return e.toString() + "ERROR. The agent does not appear connected on the coordinator view";
+            }
+
+            //Change the state of the agent
+            WebElement agentStatusOnAgentView = SeleniumDAO.selectElementBy("id", "agent-name", firefoxDriver);
+            SeleniumDAO.click(agentStatusOnAgentView);
+
+            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("available")));
+
+
+            WebElement availableStateOnAgentView = SeleniumDAO.selectElementBy("id", "available", firefoxDriver);
+            SeleniumDAO.click(availableStateOnAgentView);
+
+            SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+            //Checks if the agent state has changed on Cordinator View
+            try {
+                chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@status = 'available']")));
+            } catch (Exception e) {
+                return e.toString() + "\nERROR. The agent state has not been updated correctly on the coordinator view";
+            }
+            return "Test OK. The agent appears connected on the coordinator view, the agent has changed his state to available " +
+                    "and the agent state has been updated correctly on the coordinator view ";
+        } catch (Exception e)
+        {
+            return e.toString() + "ERROR. Unexpected exception";
+        }
+    }
+
+    /*public boolean checkAgentStateUpdated() {
         try {
             chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@status = 'available']")));
             System.out.println("The agent state has been updated correctly on the coordinator view");
@@ -90,19 +129,19 @@ public class CordinatorTest extends Test {
             return false;
         }
         return true;
-    }
+    }*/
 
     public void loginOnFirefox()
     {
-        Main.loginWebClient(agentName, agentPassword, 2, firefoxDriver);
+        Utils.loginWebClient(agentName, agentPassword, 2, firefoxDriver);
         firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));
     }
     public void loginOnChrome()
     {
-        Main.loginWebClient(cordinatorName, cordiantorPassword, 2, chromeDriver);
+        Utils.loginWebClient(cordinatorName, cordiantorPassword, 2, chromeDriver);
         chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));
     }
-    public boolean checkAgentAppears()
+    /*public boolean checkAgentAppears()
     {
         chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("ui-id-4")));
         WebElement coordinatorTab = SeleniumDAO.selectElementBy("id", "ui-id-4", chromeDriver);
@@ -132,5 +171,5 @@ public class CordinatorTest extends Test {
         System.out.println("The agent has changed his state to available");
 
         SeleniumDAO.switchToDefaultContent(firefoxDriver);
-    }
+    }*/
 }

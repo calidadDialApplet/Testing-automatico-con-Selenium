@@ -1,14 +1,14 @@
 package ProcedimientoRC;
 
 import ProcedimientoRC.ParteDeShowflow.Subtypology;
-import javafx.scene.web.WebEngine;
 import org.ini4j.Wini;
-import main.Main;
+import Utils.TestWithConfig;
+import Utils.DriversConfig;
+import main.Utils;
 import main.SeleniumDAO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -17,7 +17,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class ParteDeShowflowTest extends Test {
+public class ParteDeShowflowTest extends TestWithConfig {
     static String url;
     static String headless;
     static String adminName;
@@ -41,13 +41,16 @@ public class ParteDeShowflowTest extends Test {
 
     HashMap<String, String> results = new HashMap<>();
 
+    public ParteDeShowflowTest(Wini ini) {
+        super(ini);
+    }
+
     @Override
     public HashMap<String, String> check() {
         try
         {
             try
             {
-                Wini ini = new Wini(new File("InicializationSettingsRC.ini"));
                 url = ini.get("Red", "url");
                 headless = ini.get("Red", "headless");
                 adminName = ini.get("Admin", "adminName");
@@ -68,13 +71,11 @@ public class ParteDeShowflowTest extends Test {
 
             } catch (Exception e)
             {
-                System.err.println("The inicialization file can't be loaded");
-                e.printStackTrace();
-                results.put("The inicialization file can't be loaded", "Tests can't be runned");
+                results.put(e.toString() + "\nERROR. The inicialization file can't be loaded", "Tests can't be runned");
                 return results;
             }
 
-            firefoxDriver = headlessOrNot(headless);
+            firefoxDriver = DriversConfig.headlessOrNot(headless);
             firefoxWaiting = new WebDriverWait(firefoxDriver, 6);
 
             results.put("--Create showflow  ->  ", createShowflow());
@@ -99,7 +100,7 @@ public class ParteDeShowflowTest extends Test {
         try
         {
             firefoxDriver.get(url + "dialapplet-web");
-            Main.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
+            Utils.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
             try {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("mainMenu")));
             } catch (Exception e) {

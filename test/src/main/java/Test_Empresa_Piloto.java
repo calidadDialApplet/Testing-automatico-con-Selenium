@@ -9,7 +9,7 @@ public class Test_Empresa_Piloto {
 
     public static void main(String[] args) {
 
-        System.setProperty("webdriver.gecko.driver", "geckodriver");
+        System.setProperty("webdriver.gecko.driver", "Settings/geckodriver");
         WebDriver driver = new FirefoxDriver();
         driver.get("http://pruebas7.dialcata.com/dialapplet-web/");
         // Login

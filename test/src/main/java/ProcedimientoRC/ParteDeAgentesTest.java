@@ -1,7 +1,10 @@
 package ProcedimientoRC;
 
 import org.ini4j.Wini;
-import main.Main;
+import main.Utils;
+import Utils.TestWithConfig;
+import Utils.DriversConfig;
+
 import main.SeleniumDAO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -14,7 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-public class ParteDeAgentesTest extends Test {
+public class ParteDeAgentesTest extends TestWithConfig {
     static String adminName;
     static String adminPassword;
     static String url;
@@ -41,11 +44,13 @@ public class ParteDeAgentesTest extends Test {
 
     HashMap<String, String> results = new HashMap<>();
 
+    public ParteDeAgentesTest(Wini ini) {
+        super(ini);
+    }
 
     public HashMap<String, String> check() {
         try {
             try {
-                Wini ini = new Wini(new File("InicializationSettingsRC.ini"));
                 adminName = ini.get("Admin", "adminName");
                 adminPassword = ini.get("Admin", "adminPassword");
                 url = ini.get("Red", "url");
@@ -71,14 +76,12 @@ public class ParteDeAgentesTest extends Test {
                 csvPath = ini.get("CSV", "csvPath");
                 serviceID = ini.get("Service", "serviceID");
 
-            } catch (IOException e) {
-                System.err.println("The inicialization file can't be loaded");
-                e.printStackTrace();
-                results.put("The inicialization file can't be loaded", "Tests can't be runned");
+            } catch (Exception e) {
+                results.put(e.toString() + "\nERROR. The inicialization file can't be loaded", "Tests can't be runned");
                 return results;
             }
 
-            firefoxDriver = headlessOrNot(headless);
+            firefoxDriver = DriversConfig.headlessOrNot(headless);
             firefoxWaiting = new WebDriverWait(firefoxDriver, 6);
 
             results.put("--Connection Test  ->  ", connectionTest());
@@ -110,7 +113,7 @@ public class ParteDeAgentesTest extends Test {
     public String connectionTest()
     {
         firefoxDriver.get(url + "dialapplet-web");
-        Main.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
+        Utils.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
         try {
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("mainMenu")));
             //System.out.println("Login successfully");
@@ -403,7 +406,7 @@ public class ParteDeAgentesTest extends Test {
 
             firefoxDriver.get(url + "clienteweb/login.php");
 
-            Main.loginWebClient(agentName1, agentPassword, 2, firefoxDriver);
+            Utils.loginWebClient(agentName1, agentPassword, 2, firefoxDriver);
             // Wait to take a rest button
             try {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));
@@ -506,7 +509,7 @@ public class ParteDeAgentesTest extends Test {
 
             firefoxDriver.get(url + "clienteweb/login.php");
 
-            Main.loginWebClient(agentName2, agentPassword, 2, firefoxDriver);
+            Utils.loginWebClient(agentName2, agentPassword, 2, firefoxDriver);
             // Wait to take a rest button
             try {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));

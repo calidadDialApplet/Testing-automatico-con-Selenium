@@ -8,7 +8,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -28,7 +27,7 @@ public class SeleniumDAO {
         }
         else
         {
-            System.setProperty("webdriver.gecko.driver", "geckodriver");
+            System.setProperty("webdriver.gecko.driver", "Settings/geckodriver");
         }
         //Para evitar que salgan popUps
         FirefoxOptions noPopUp = new FirefoxOptions();
@@ -44,7 +43,7 @@ public class SeleniumDAO {
         }
         else
         {
-            System.setProperty("webdriver.chrome.driver", "chromedriver");
+            System.setProperty("webdriver.chrome.driver", "Settings/chromedriver");
         }
         WebDriver driver = new ChromeDriver();
         return driver;
@@ -58,7 +57,7 @@ public class SeleniumDAO {
         }
         else
         {
-            System.setProperty("webdriver.gecko.driver", "geckodriver");
+            System.setProperty("webdriver.gecko.driver", "Settings/geckodriver");
         }
         FirefoxBinary firefoxBinary = new FirefoxBinary();
         firefoxBinary.addCommandLineOptions("--headless");
@@ -76,7 +75,7 @@ public class SeleniumDAO {
         }
         else
         {
-            System.setProperty("webdriver.chrome.driver", "chromedriver");
+            System.setProperty("webdriver.chrome.driver", "Settings/chromedriver");
         }
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");

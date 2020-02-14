@@ -9,5 +9,8 @@
         <module name="dialselenium" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="dialselenium" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
