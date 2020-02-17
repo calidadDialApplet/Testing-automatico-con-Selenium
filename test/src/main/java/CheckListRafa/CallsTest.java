@@ -68,6 +68,7 @@ public class CallsTest extends TestWithConfig {
                 return results;
             }
 
+            //Inicialize firefox driver
             firefoxDriver = DriversConfig.noDownloadPopUp(headless);
             firefoxWaiting = new WebDriverWait(firefoxDriver, 5);
 
@@ -129,6 +130,7 @@ public class CallsTest extends TestWithConfig {
                 return "ERROR. The callmode selected does not exist";
             }
 
+            //call parameter on InicializationSettings=true. Do a call and checks the showflow and records
             if(call.equals("true"))
             {
                 SeleniumDAO.click(callButton);

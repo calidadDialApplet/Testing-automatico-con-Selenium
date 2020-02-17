@@ -7,7 +7,12 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
+//*
+// This class is for the instantiation of drivers
+// */
 public class DriversConfig {
+
+    //Instance a firefox driver
     public static FirefoxDriver headlessOrNot(String headless)
     {
         if (headless.equals("true")) {
@@ -25,6 +30,7 @@ public class DriversConfig {
         }
     }
 
+    //Instance a chrome driver
     public static ChromeDriver headlessOrNot(String headless, String chromePath)
     {
         if (headless.equals("true")) {
@@ -41,6 +47,7 @@ public class DriversConfig {
         }
     }
 
+    //Instance a firefox driver that hides the pop up that shows up when trying to download
     public static FirefoxDriver noDownloadPopUp(String headless)
     {
         System.setProperty("webdriver.gecko.driver", "./geckodriver");

@@ -49,9 +49,9 @@ public class CordinatorTest extends TestWithConfig {
                 return results;
             }
 
+            //Inicialize the drivers
             firefoxDriver = DriversConfig.headlessOrNot(headless);
             firefoxWaiting = new WebDriverWait(firefoxDriver, 10);
-
             chromeDriver = DriversConfig.headlessOrNot(headless, chromePath);
             chromeWaiting = new WebDriverWait(chromeDriver, 10);
 

@@ -3,13 +3,16 @@ package Utils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 
+
+//*
+// This class is for manage files.
+// */
 public class File {
+
+    //Waits until the file is downloaded
     public static String waitToDownload(String filePath, int wait) throws IOException
     {
         java.io.File tempFile = new java.io.File(filePath);
@@ -36,6 +39,7 @@ public class File {
         return "Downloaded";
     }
 
+    //Waits until the file is download searching it by his extension
     public static String waitToDownloadByExtension(String extension, int wait) throws IOException
     {
         java.io.File dir = new java.io.File(".");
@@ -65,6 +69,7 @@ public class File {
         return "Downloaded";
     }
 
+    //Deletes the file to prevent them from accumulating
     public static void deleteExistingFile(String filePath) throws IOException
     {
         java.io.File tempFile = new java.io.File(filePath);
@@ -72,6 +77,7 @@ public class File {
 
     }
 
+    //Deletes the file to prevent them from accumulating searching it by his extension
     public static void deleteExistingFileByExtension(String extension) throws IOException {
         java.io.File dir = new java.io.File(".");
         FileFilter fileFilter = new WildcardFileFilter("*." + extension);

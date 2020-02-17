@@ -12,5 +12,4 @@ import java.util.HashMap;
 
 public abstract class Test {
     abstract public HashMap<String, String> check();
-    //abstract public String checkStringReturn();
 }

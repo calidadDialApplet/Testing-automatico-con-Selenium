@@ -24,6 +24,7 @@ public class Utils {
     }
 
     // TODO: Garbage clean
+    //Login on DialAppletWeb
     public static void loginDialappletWeb(String name, String password, WebDriver driver){
         WebElement user = driver.findElement(By.id("adminusername"));
         user.sendKeys(name);
@@ -36,6 +37,7 @@ public class Utils {
     }
 
     // TODO: Garbage clean
+    //Login on WebClient
     public static void loginWebClient(String name, String password, int tlfOption, WebDriver driver){
         WebElement usernameWebClient = SeleniumDAO.selectElementBy("id","userName",driver);
         usernameWebClient.sendKeys(name);
@@ -50,6 +52,7 @@ public class Utils {
         SeleniumDAO.click(entryWebClient);
     }
 
+    //Checks if the login fails on WebCliente
     public static String checkCorrectLoginWebClient(WebDriver driver)
     {
         try {
@@ -62,6 +65,7 @@ public class Utils {
         }
     }
 
+    //checks if the login fails on DialApplet Web
     public static String checkCorrectLoginDialappletWeb(WebDriver driver)
     {
         try {

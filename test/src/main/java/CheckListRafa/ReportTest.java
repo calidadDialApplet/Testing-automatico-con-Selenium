@@ -112,6 +112,7 @@ public class ReportTest extends TestWithConfig {
                 WebElement startDate = SeleniumDAO.selectElementBy("id", "trigger_start_date_hour", firefoxDriver);
                 SeleniumDAO.click(startDate);
 
+                //Searchs 2 month before
                 WebElement previousMonthButton = SeleniumDAO.selectElementBy("xpath", "//tr[@class = 'headrow']/td[contains(., '‹')]", firefoxDriver);
                 SeleniumDAO.click(previousMonthButton);
                 SeleniumDAO.click(previousMonthButton);
@@ -131,34 +132,7 @@ public class ReportTest extends TestWithConfig {
             WebElement sendButton = SeleniumDAO.selectElementBy("id","submit_form",firefoxDriver);
             SeleniumDAO.click(sendButton);
 
-            /*Thread.sleep(1500);
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("tabs-agents")));
-            graphList = firefoxDriver.findElements(By.xpath("//div[@id = 'tabs-agents']/div[@class = 'tableProductivity']"));
-            System.out.println("The size of the list is " + graphList.size());
-
-            int count = 0;
-            try
-            {
-                Thread.sleep(500);
-            } catch (Exception e)
-            {
-                return e.toString() + "ERROR. Unexpected exception";
-            }
-            for(int i = 0; i < graphList.size(); i++)
-            {
-                WebElement actualElement = graphList.get(i);
-                String styleAttribute = actualElement.getAttribute("style");
-                System.out.println(styleAttribute);
-                if(styleAttribute.equals("display: block;"))
-                {
-                    count++;
-                }
-            }
-            System.out.println("For the " + graphList.size() + " graph elements to be shown, it shows " + count + " of them");
-
-            if(graphList.size() == count){return "Test OK. The report graphs appear";}
-            else {return "ERROR. You should check this test without headless mode";}*/
-
+            //Takes a screenshot of the driver to check it manually after the test finishes
             try
             {
                 Thread.sleep(2000);

@@ -28,13 +28,17 @@ public class main {
             String testsListAsString = ini.get("Test", "testsList");
             List<String> testsList;
 
+            //InicializationSettings has tests parameter with the tests to execute
             if (testsListAsString != null)
                 testsList = Arrays.asList(testsListAsString.split(","));
+            //The tests are given by console
             else if (args.length == 2)
                 testsList = Arrays.asList(args[1].split(","));
+            //All tests are executed
             else
                 testsList = new ArrayList<String>(tests.keySet());
 
+            //Prints the results
             for (String testName : testsList)
             {
                 if(tests.containsKey(testName))

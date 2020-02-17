@@ -102,6 +102,7 @@ public class ExportReportTest extends TestWithConfig {
     {
         try
         {
+            //Login
             Utils.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
             String loginStatus = Utils.checkCorrectLoginDialappletWeb(firefoxDriver);
             if(loginStatus.contains("ERROR")) return loginStatus;
@@ -141,17 +142,18 @@ public class ExportReportTest extends TestWithConfig {
             WebElement startDate = SeleniumDAO.selectElementBy("id", "trigger_start_date_hour", firefoxDriver);
             SeleniumDAO.click(startDate);
 
+            //Searchs 2 month before
             WebElement previousMonthButton = SeleniumDAO.selectElementBy("xpath", "//tr[@class = 'headrow']/td[contains(., '‹')]", firefoxDriver);
             SeleniumDAO.click(previousMonthButton);
             SeleniumDAO.click(previousMonthButton);
 
-            //Clicks on download button
+            //Clicks on download button of the first report of the table
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'table-configurations']")));
             List<WebElement> tableElements = firefoxDriver.findElementsByXPath("//table[@id = 'table-configurations']//tbody");
             WebElement downloadButton = tableElements.get(0).findElement(By.xpath("//img[@title = 'Download report']"));
             SeleniumDAO.click(downloadButton);
 
-
+            //Deletes the file if it exists
             File.deleteExistingFile("./contactsqualification.csv");
 
             String downloadStatus = File.waitToDownload("./contactsqualification.csv", 100);
@@ -185,8 +187,6 @@ public class ExportReportTest extends TestWithConfig {
                 boolean res = true;
                 while ((line = reader.readLine()) != null) {
                     String[] splitedLine = line.split(";",100);
-                    //System.out.println(splitedLine[columnDate]);
-
                     if(splitedLine[columnDate].matches("(\"\")|(\"\\d{4}-\\d{2}-\\d{2}( \\d{2}:\\d{2}:\\d{2})?\")"));
                     else{
                         res = false;
