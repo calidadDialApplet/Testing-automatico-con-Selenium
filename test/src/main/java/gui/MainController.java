@@ -1,7 +1,7 @@
 package gui;
 
+import Utils.Utils;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -28,7 +28,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.Main;
 import main.SeleniumDAO;
-import main.Utils;
 import org.controlsfx.control.Notifications;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;

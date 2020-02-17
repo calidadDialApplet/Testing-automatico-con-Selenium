@@ -39,13 +39,13 @@ public class main {
             {
                 if(tests.containsKey(testName))
                 {
-                    System.out.println("\u001B[34m" + "Beggining test: " + testName + "\u001B[0m");
+                    System.out.println("\u001B[36m" + "Beggining test: " + testName + "\u001B[0m");
                     HashMap<String, String> results = tests.get(testName).check();
                     for (String name: results.keySet()){
                         String key = name.toString();
                         String value = results.get(name).toString();
-                        if(value.contains("OK")) System.out.println("\u001B[34m" + key + "\u001B[0m" + " " + "\u001B[32m" + value + "\u001B[0m");
-                        else if(value.contains("ERROR")) System.out.println("\u001B[34m" + key + "\u001B[0m" + " " + "\u001B[31m" + value + "\u001B[0m");
+                        if(value.contains("OK")) System.out.println("\u001B[36m" + key + "\u001B[0m" + " " + "\u001B[32m" + value + "\u001B[0m");
+                        else if(value.contains("ERROR")) System.out.println("\u001B[36m" + key + "\u001B[0m" + " " + "\u001B[31m" + value + "\u001B[0m");
 
                     }
 

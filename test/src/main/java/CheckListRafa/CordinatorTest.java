@@ -1,7 +1,7 @@
 package CheckListRafa;
 
 import main.SeleniumDAO;
-import main.Utils;
+import Utils.Utils;
 import Utils.TestWithConfig;
 import Utils.DriversConfig;
 import org.openqa.selenium.By;
@@ -59,11 +59,6 @@ public class CordinatorTest extends TestWithConfig {
             chromeDriver.get(url + "clienteweb");
             firefoxDriver.get(url + "clienteweb");
 
-            //Login Cordinator on Chrome
-            loginOnChrome();
-            //Login agent on Firefox
-            loginOnFirefox();
-
             results.put("--Coordinator and agent test  -->  ", coordinatorTest());
             return results;
 
@@ -81,14 +76,21 @@ public class CordinatorTest extends TestWithConfig {
     public String coordinatorTest(){
         try
         {
+            //Login Cordinator on Chrome
+            String loginStatus = loginOnChrome();
+            if(loginStatus.contains("ERROR")) return loginStatus;
+            //Login agent on Firefox
+            loginStatus = loginOnFirefox();
+            if(loginStatus.contains("ERROR")) return loginStatus;
+
             //Checks if the agent appears on the coordinator view
             chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("ui-id-4")));
             WebElement coordinatorTab = SeleniumDAO.selectElementBy("id", "ui-id-4", chromeDriver);
             SeleniumDAO.click(coordinatorTab);
 
             try {
-                chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[contains(., " + agentName + ")]")));
-            } catch (Exception e) {
+                chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@username = '" + agentName + "']")));
+            } catch (Exception e) {                                                         //div[@username = agenteSebas]
                 return e.toString() + "ERROR. The agent does not appear connected on the coordinator view";
             }
 
@@ -119,57 +121,22 @@ public class CordinatorTest extends TestWithConfig {
         }
     }
 
-    /*public boolean checkAgentStateUpdated() {
-        try {
-            chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@status = 'available']")));
-            System.out.println("The agent state has been updated correctly on the coordinator view");
-        } catch (Exception e) {
-            System.out.println("ERROR: The agent state has not been updated correctly on the coordinator view");
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }*/
-
-    public void loginOnFirefox()
+    public String loginOnFirefox()
     {
         Utils.loginWebClient(agentName, agentPassword, 2, firefoxDriver);
+        String res =Utils.checkCorrectLoginWebClient(firefoxDriver);
+        if(res.contains("ERROR")) return res;
         firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));
+        return res;
+
     }
-    public void loginOnChrome()
+    public String loginOnChrome()
     {
         Utils.loginWebClient(cordinatorName, cordiantorPassword, 2, chromeDriver);
+        String res = Utils.checkCorrectLoginWebClient(firefoxDriver);
+        if(res.contains("ERROR")) return res;
         chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));
+        return res;
     }
-    /*public boolean checkAgentAppears()
-    {
-        chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("ui-id-4")));
-        WebElement coordinatorTab = SeleniumDAO.selectElementBy("id", "ui-id-4", chromeDriver);
-        SeleniumDAO.click(coordinatorTab);
 
-        try {
-            chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[contains(., " + agentName + ")]")));
-            System.out.println("The agent appears connected on the coordinator view");
-        } catch (Exception e) {
-            System.out.println("ERROR: The agent does not appear connected on the coordinator view");
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-    public void changeAgentState()
-    {
-        WebElement agentStatusOnAgentView = SeleniumDAO.selectElementBy("id", "agent-name", firefoxDriver);
-        SeleniumDAO.click(agentStatusOnAgentView);
-
-        SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
-        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("available")));
-
-
-        WebElement availableStateOnAgentView = SeleniumDAO.selectElementBy("id", "available", firefoxDriver);
-        SeleniumDAO.click(availableStateOnAgentView);
-        System.out.println("The agent has changed his state to available");
-
-        SeleniumDAO.switchToDefaultContent(firefoxDriver);
-    }*/
 }

@@ -1,20 +1,19 @@
 package CheckListRafa;
 
-import main.Utils;
 import main.SeleniumDAO;
 import Utils.TestWithConfig;
 import Utils.DriversConfig;
+import Utils.File;
+import Utils.Utils;
 import org.ini4j.Wini;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.Keys;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Date;
@@ -36,6 +35,7 @@ public class CallsTest extends TestWithConfig {
     static String callMode;
     static String url;
     static String number;
+    static String call;
     static String extension;
     static String headless;
     static FirefoxDriver firefoxDriver;
@@ -59,6 +59,7 @@ public class CallsTest extends TestWithConfig {
                 serviceID = ini.get("Service", "serviceID");
                 url = ini.get("Red", "url");
                 number = ini.get("Contact", "number");
+                call = ini.get("Contact", "call");
                 extension = ini.get("Agent", "extension");
                 headless = ini.get("Red", "headless");
                 callMode = ini.get("Agent", "callMode");
@@ -123,86 +124,105 @@ public class CallsTest extends TestWithConfig {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//option[@value = '" + callMode + "']")));
                 Select whichCallMode = SeleniumDAO.findSelectElementBy("id", "manualCampaigns", firefoxDriver);
                 whichCallMode.selectByValue(callMode);
-                System.out.println("Selecting the callmode");
+                System.out.println("Selecting the callmode: " + callMode);
             } catch (Exception e) {
                 return "ERROR. The callmode selected does not exist";
             }
 
-            SeleniumDAO.click(callButton);
-
-            WebElement numberField = SeleniumDAO.selectElementBy("id", "clickToCallDirect", firefoxDriver);
-            SeleniumDAO.click(numberField);
-            numberField.sendKeys(number);
-            numberField.sendKeys(Keys.ENTER);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='contactCall']")));
-
-            callButton = SeleniumDAO.selectElementBy("xpath", "//button[@class='contactCall']", firefoxDriver);
-            SeleniumDAO.click(callButton);
-            String[] currentTimeSplited = java.time.LocalTime.now().toString().split(Pattern.quote(".")); //Aux array to delete the milisecs
-            String currentTime = currentTimeSplited[0];
-
-
-            //Checks if the showflow appears
-            try {
-                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(
-                        By.xpath("//ul[@class = 'ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all']//a[contains(., '" + number + "')]")));
-                System.out.println("The showflow appears");
-            } catch (Exception e)
+            if(call.equals("true"))
             {
-                return "ERROR. The showflow does not appear";
-            }
+                SeleniumDAO.click(callButton);
 
-            System.out.println("Calling...");
-            Thread.sleep(15000);
+                WebElement numberField = SeleniumDAO.selectElementBy("id", "clickToCallDirect", firefoxDriver);
+                SeleniumDAO.click(numberField);
+                numberField.sendKeys(number);
+                numberField.sendKeys(Keys.ENTER);
 
-            firefoxDriver.get(url + "dialapplet-web");
-            Utils.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='contactCall']")));
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("REPORTS")));
-            WebElement analyzeTab = SeleniumDAO.selectElementBy("id", "REPORTS", firefoxDriver);
-            SeleniumDAO.click(analyzeTab);
+                callButton = SeleniumDAO.selectElementBy("xpath", "//button[@class='contactCall']", firefoxDriver);
+                SeleniumDAO.click(callButton);
+                String[] currentTimeSplited = LocalTime.now().toString().split(Pattern.quote(".")); //Aux array to delete the milisecs
+                String currentTime = currentTimeSplited[0];
 
-            Select company = SeleniumDAO.findSelectElementBy("id", "companySelect", firefoxDriver);
-            company.selectByVisibleText(companyName);
-            Select service = SeleniumDAO.findSelectElementBy("id", "serviceSelect", firefoxDriver);
-            service.selectByValue(serviceID);
 
-            WebElement startDate = SeleniumDAO.selectElementBy("id", "f_trigger_start", firefoxDriver);
-            SeleniumDAO.click(startDate);
+                //Checks if the showflow appears
+                try {
+                    firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(
+                            By.xpath("//ul[@class = 'ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all']//a[contains(., '" + number + "')]")));
+                    System.out.println("The showflow appears");
+                } catch (Exception e)
+                {
+                    System.out.println("Warning. The showflow does not appear");
+                }
 
-            WebElement previousMonthButton = SeleniumDAO.selectElementBy("xpath", "//tr[@class = 'headrow']/td[contains(., '‹')]", firefoxDriver);
-            SeleniumDAO.click(previousMonthButton);
+                System.out.println("Calling...");
+                Thread.sleep(15000);
 
-            WebElement showButton = SeleniumDAO.selectElementBy("id","submit", firefoxDriver);
-            SeleniumDAO.click(showButton);
+                //Checks the call panel to see the last call and download the record
+                firefoxDriver.get(url + "dialapplet-web");
+                Utils.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'activity_info']//tbody")));
-            Thread.sleep(2000);
-            List<WebElement> callsTable = firefoxDriver.findElements(By.xpath("//table[@id = 'activity_info']//tbody"));
-            String lastCallNumber = callsTable.get(0).findElement(By.xpath("//td[contains(., '" + number + "')]")).getText();
-            String lastCallTime = callsTable.get(0).findElement(By.xpath("//td[10]")).getText();
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("REPORTS")));
+                WebElement analyzeTab = SeleniumDAO.selectElementBy("id", "REPORTS", firefoxDriver);
+                SeleniumDAO.click(analyzeTab);
 
-            //Substracts the times to ensure that the interval between them is small
-            SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-            Date timeOnCall = format.parse(currentTime);
-            Date timeOnTableCalls = format.parse(lastCallTime);
-            long difference = timeOnTableCalls.getTime() - timeOnCall.getTime();
+                Select company = SeleniumDAO.findSelectElementBy("id", "companySelect", firefoxDriver);
+                company.selectByVisibleText(companyName);
+                Select service = SeleniumDAO.findSelectElementBy("id", "serviceSelect", firefoxDriver);
+                service.selectByValue(serviceID);
 
-            if(difference < 10 && lastCallNumber.equals(number))
-            {
-                WebElement saveRecord = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'activity_info']//tbody//tr[1]//img[@class = 'record']", firefoxDriver);
-                SeleniumDAO.click(saveRecord);
+                WebElement startDate = SeleniumDAO.selectElementBy("id", "f_trigger_start", firefoxDriver);
+                SeleniumDAO.click(startDate);
+
+                WebElement previousMonthButton = SeleniumDAO.selectElementBy("xpath", "//tr[@class = 'headrow']/td[contains(., '‹')]", firefoxDriver);
+                SeleniumDAO.click(previousMonthButton);
+
+                WebElement showButton = SeleniumDAO.selectElementBy("id","submit", firefoxDriver);
+                SeleniumDAO.click(showButton);
+
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'activity_info']//tbody")));
                 Thread.sleep(2000);
+                String lastCallNumberOnTable;
+                String lastCallTimeOnTable;
+                try
+                {
+                    List<WebElement> callsTable = firefoxDriver.findElements(By.xpath("//table[@id = 'activity_info']//tbody"));
+                    lastCallNumberOnTable = callsTable.get(0).findElement(By.xpath("//tr[1]//td[contains(., '" + number + "')]")).getText();
+                    lastCallTimeOnTable = callsTable.get(0).findElement(By.xpath("//tr[1]//td[10]")).getText();
+                } catch(Exception e)
+                {
+                    return e.toString() + "\nERROR. The phone number or the time of the last call have not been found on the calls panel";
+                }
 
-                File folder = new File();
-                folder.listFiles()[0].getName().
-            } else
-            {
-                return "ERROR. The call was done but the report calls does not show it right";
+
+                //Substracts the times to ensure that the interval between them is small
+                SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+                Date timeOnCall = format.parse(currentTime);
+                Date timeOnTableCalls = format.parse(lastCallTimeOnTable);
+                long difference = timeOnTableCalls.getTime() - timeOnCall.getTime();
+
+                if(difference < 10000 && lastCallNumberOnTable.equals(number))
+                {
+                    File.deleteExistingFileByExtension("wav");
+
+                    WebElement saveRecord = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'activity_info']//tbody//tr[1]//img[@class = 'record']", firefoxDriver);
+                    SeleniumDAO.click(saveRecord);
+                    Thread.sleep(2000);
+
+                    String downloadState = File.waitToDownloadByExtension("wav",100);
+                    if(downloadState.contains("ERROR")) return downloadState;
+
+                } else
+                {
+                    return "ERROR. The call was done but the report calls does not show it right";
+                }
+
+                return "Test OK. If you had an entry call the test worked. The showflow tab, the calls panel and the records download work too.";
+
+            } else {
+                return "Test OK. The agent view works. If you want to do a call change de call parameter to 'true' in InicializationSettings.ini";
             }
-
-            return "Test OK. Check the phone number for a entry call. The showflow appears too.";
 
 
         } catch (Exception e)

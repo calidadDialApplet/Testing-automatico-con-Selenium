@@ -1,7 +1,7 @@
 package ProcedimientoRC;
 
+import Utils.Utils;
 import org.ini4j.Wini;
-import main.Utils;
 import Utils.TestWithConfig;
 import Utils.DriversConfig;
 
@@ -12,8 +12,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 

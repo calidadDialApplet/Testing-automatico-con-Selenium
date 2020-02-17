@@ -1,11 +1,11 @@
 package CheckListRafa;
 
-import main.Utils;
 import main.SeleniumDAO;
 import org.ini4j.Wini;
 import Utils.TestWithConfig;
 import Utils.DriversConfig;
 import Utils.File;
+import Utils.Utils;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -15,7 +15,6 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.*;
 
 public class ExportReportTest extends TestWithConfig {
@@ -62,7 +61,7 @@ public class ExportReportTest extends TestWithConfig {
             firefoxDriver.get(url + "dialapplet-web");
             firefoxWaiting = new WebDriverWait(firefoxDriver, 10);
 
-            Utils.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
+
             //TODO: En el futuro se podra crear el reporte en vez de descargar uno ya creado
             /*
             //Introduce the name of the exportReport
@@ -103,6 +102,9 @@ public class ExportReportTest extends TestWithConfig {
     {
         try
         {
+            Utils.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
+            String loginStatus = Utils.checkCorrectLoginDialappletWeb(firefoxDriver);
+            if(loginStatus.contains("ERROR")) return loginStatus;
             //Searchs the service
             try
             {
@@ -144,35 +146,16 @@ public class ExportReportTest extends TestWithConfig {
             SeleniumDAO.click(previousMonthButton);
 
             //Clicks on download button
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[@id = 'download-" + reportID + "']")));
-            WebElement downloadButton = SeleniumDAO.selectElementBy("xpath","//img[@id = 'download-" + reportID + "']", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'table-configurations']")));
+            List<WebElement> tableElements = firefoxDriver.findElementsByXPath("//table[@id = 'table-configurations']//tbody");
+            WebElement downloadButton = tableElements.get(0).findElement(By.xpath("//img[@title = 'Download report']"));
             SeleniumDAO.click(downloadButton);
 
-            //Waits until the report exists
-            /*File tempFile = new File( "./contactsqualification.csv");
-            boolean aux = Files.deleteIfExists(tempFile.toPath()); //Deletes the file if already exists
-            //Wait for the download to finish
-            int i = 0;
-            for(; i < 100; i++){
-                if(tempFile.exists()){break;}
-                else
-                {
-                    try
-                    {
-                        System.out.println("Waiting the download to finish");
-                        Thread.sleep(1000);
 
-                    } catch(Exception e)
-                    { }
-                }
-            }
-
-            if(i == 100)
-            {
-                return "ERROR. Download failed";
-            }*/
+            File.deleteExistingFile("./contactsqualification.csv");
 
             String downloadStatus = File.waitToDownload("./contactsqualification.csv", 100);
+
             if(downloadStatus.contains("ERROR")) return downloadStatus;
 
             //Checks the format of the csv downloaded

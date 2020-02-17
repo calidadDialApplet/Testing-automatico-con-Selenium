@@ -7,64 +7,44 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad8c7bbb-0b66-4f9c-b570-480c72567a32" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/Settings/InicializationSettings.ini" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/Settings/InicializationSettingsRC.ini" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/Settings/chromedriver" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/Settings/geckodriver" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/Utils/DriversConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/Utils/File.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/Utils/TestWithConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/src/main/java/Utils/Utils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.tar.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/1_191_769_2020_02_14_dialapplet-1581683294-96-0.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/InicializationSettings.ini" beforeDir="false" afterPath="$PROJECT_DIR$/InicializationSettings.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contactsqualification(1).csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contactsqualification.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contactsqualification.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/InicializationSettings.ini" beforeDir="false" afterPath="$PROJECT_DIR$/test/InicializationSettings.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/artifacts/test_jar.tar.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/artifacts/test_jar/Documentacion" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/artifacts/test_jar/InicializationSettings.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/artifacts/test_jar/chromedriver" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/artifacts/test_jar/geckodriver" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/artifacts/test_jar/test.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/test/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/out/Testing-automatico-con-Selenium.jar" beforeDir="false" afterPath="$PROJECT_DIR$/test/out/Testing-automatico-con-Selenium.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/CallsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/CallsTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/ExportReportTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/ExportReportTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/ReportTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/ReportTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/Utils/Test.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeShowflowTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeShowflowTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/Test.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Test_2_1.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/Test_2_1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Test_Empresa_Piloto.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/Test_Empresa_Piloto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Test_Piloto.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/Test_Piloto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/main/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/main/SeleniumDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/main/SeleniumDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/main/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/main/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/src/main/java/Utils/File.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/Utils/File.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/src/main/java/gui/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/gui/MainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/src/main/java/main/Utils.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CallsTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CallsTest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CordinatorTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CordinatorTest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/ExportReportTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/CheckListRafa/ExportReportTest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/ReportTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/CheckListRafa/ReportTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/Test.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/main.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/CheckListRafa/main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/META-INF/test.kotlin_module" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeAgentesTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeAgentesTest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$3.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$4.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/Test.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/main.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Test_2_1.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Test_2_1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Test_Empresa_Piloto.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Test_Empresa_Piloto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Test_Piloto.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Test_Piloto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/main/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/main/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/main/SeleniumDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/main/SeleniumDAO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/main/Utils.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/main/Utils.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/maven-archiver/pom.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/File.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Utils/File.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/gui/MainController$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/gui/MainController$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/gui/MainController$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/gui/MainController$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/gui/MainController$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/gui/MainController$6.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/gui/MainController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/main/Utils.class" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,10 +128,10 @@
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
     <state x="555" y="186" width="800" height="672" key="#Project_Structure/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581583301649" />
-    <state x="328" y="216" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1581683526071">
+    <state x="328" y="216" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1581931046129">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state x="328" y="216" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581683526071" />
+    <state x="328" y="216" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581931046129" />
     <state x="649" y="330" width="611" height="383" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1581582774961">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
@@ -164,90 +144,94 @@
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
     <state x="687" y="309" width="525" height="421" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581582497418" />
-    <state x="693" y="274" width="524" height="495" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1581594908033">
+    <state x="693" y="274" width="524" height="495" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1581937871423">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state x="693" y="274" width="524" height="495" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581594908033" />
+    <state x="693" y="274" width="524" height="495" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581937871423" />
     <state x="720" y="266" width="469" height="506" key="FileChooserDialogImpl" timestamp="1581673792461">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
     <state x="720" y="266" width="469" height="506" key="FileChooserDialogImpl/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581673792461" />
-    <state width="1878" height="280" key="GridCell.Tab.0.bottom" timestamp="1581684777653">
+    <state width="1878" height="526" key="GridCell.Tab.0.bottom" timestamp="1581941705289">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="280" key="GridCell.Tab.0.bottom/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581684777653" />
-    <state width="1878" height="280" key="GridCell.Tab.0.center" timestamp="1581684777653">
+    <state width="1878" height="526" key="GridCell.Tab.0.bottom/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581941705289" />
+    <state width="1878" height="526" key="GridCell.Tab.0.center" timestamp="1581941705289">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="280" key="GridCell.Tab.0.center/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581684777653" />
-    <state width="1878" height="280" key="GridCell.Tab.0.left" timestamp="1581684777653">
+    <state width="1878" height="526" key="GridCell.Tab.0.center/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581941705289" />
+    <state width="1878" height="526" key="GridCell.Tab.0.left" timestamp="1581941705289">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="280" key="GridCell.Tab.0.left/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581684777653" />
-    <state width="1878" height="280" key="GridCell.Tab.0.right" timestamp="1581684777653">
+    <state width="1878" height="526" key="GridCell.Tab.0.left/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581941705289" />
+    <state width="1878" height="526" key="GridCell.Tab.0.right" timestamp="1581941705289">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="280" key="GridCell.Tab.0.right/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581684777653" />
-    <state width="1878" height="346" key="GridCell.Tab.1.bottom" timestamp="1581683538286">
+    <state width="1878" height="526" key="GridCell.Tab.0.right/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581941705289" />
+    <state width="1878" height="346" key="GridCell.Tab.1.bottom" timestamp="1581940800840">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="346" key="GridCell.Tab.1.bottom/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581683538286" />
-    <state width="1878" height="346" key="GridCell.Tab.1.center" timestamp="1581683538286">
+    <state width="1878" height="346" key="GridCell.Tab.1.bottom/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581940800840" />
+    <state width="1878" height="346" key="GridCell.Tab.1.center" timestamp="1581940800840">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="346" key="GridCell.Tab.1.center/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581683538286" />
-    <state width="1878" height="346" key="GridCell.Tab.1.left" timestamp="1581683538286">
+    <state width="1878" height="346" key="GridCell.Tab.1.center/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581940800840" />
+    <state width="1878" height="346" key="GridCell.Tab.1.left" timestamp="1581940800840">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="346" key="GridCell.Tab.1.left/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581683538286" />
-    <state width="1878" height="346" key="GridCell.Tab.1.right" timestamp="1581683538286">
+    <state width="1878" height="346" key="GridCell.Tab.1.left/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581940800840" />
+    <state width="1878" height="346" key="GridCell.Tab.1.right" timestamp="1581940800840">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="346" key="GridCell.Tab.1.right/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581683538286" />
+    <state width="1878" height="346" key="GridCell.Tab.1.right/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581940800840" />
     <state x="443" y="102" width="1024" height="840" key="SettingsEditor" timestamp="1581583114194">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
     <state x="443" y="102" width="1024" height="840" key="SettingsEditor/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581583114194" />
-    <state x="643" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1581667663129">
+    <state x="643" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1581926823994">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state x="643" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581667663129" />
+    <state x="643" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581926823994" />
     <state x="564" y="76" width="791" height="897" key="find.popup" timestamp="1581584995105">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
     <state x="564" y="76" width="791" height="897" key="find.popup/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581584995105" />
-    <state x="624" y="240" width="672" height="677" key="run.anything.popup" timestamp="1581512478312">
+    <state x="624" y="240" width="672" height="677" key="run.anything.popup" timestamp="1581931380250">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state x="624" y="240" width="672" height="677" key="run.anything.popup/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581512478312" />
+    <state x="624" y="240" width="672" height="677" key="run.anything.popup/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581931380250" />
+    <state x="623" y="230" width="672" height="678" key="search.everywhere.popup" timestamp="1581939350637">
+      <screen x="0" y="0" width="1920" height="1051" />
+    </state>
+    <state x="623" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581939350637" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeShowflowTest.java</url>
-          <line>320</line>
+          <line>319</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/ExportReportTest.java</url>
-          <line>137</line>
+          <line>139</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/ReportTest.java</url>
-          <line>80</line>
+          <line>86</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/CallsTest.java</url>
-          <line>189</line>
-          <option name="timeStamp" value="13" />
+          <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/ReportTest.java</url>
+          <line>130</line>
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/CallsTest.java</url>
-          <line>179</line>
-          <option name="timeStamp" value="20" />
+          <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java</url>
+          <line>87</line>
+          <option name="timeStamp" value="30" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
