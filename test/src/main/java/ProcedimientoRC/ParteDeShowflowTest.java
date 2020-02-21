@@ -2,6 +2,7 @@ package ProcedimientoRC;
 
 import ProcedimientoRC.ParteDeShowflow.Subtypology;
 import Utils.Utils;
+import exceptions.MissingParameterException;
 import org.ini4j.Wini;
 import Utils.TestWithConfig;
 import Utils.DriversConfig;
@@ -45,23 +46,35 @@ public class ParteDeShowflowTest extends TestWithConfig {
     }
 
     @Override
-    public HashMap<String, String> check() {
+    public HashMap<String, List<String>> getRequiredParameters() {
+        HashMap<String, List<String>> requiredParameters = new HashMap<>();
+        requiredParameters.put("General", new ArrayList<>(Arrays.asList("url", "headless")));
+        requiredParameters.put("Admin", new ArrayList<>(Arrays.asList("adminName", "adminPassword")));
+        requiredParameters.put("Showflow", new ArrayList<>(Arrays.asList("showflowName", "showflowAuxField", "showflowOptionsGroupName", "showflowOption1", "showflowOption2",
+                "showflowOption3", "showflowQuestion1", "showflowQuestion2")));
+
+        return requiredParameters;
+    }
+
+    @Override
+    public HashMap<String, String> check() throws MissingParameterException {
+        super.checkParameters();
         try
         {
             try
             {
-                url = ini.get("Red", "url");
-                headless = ini.get("Red", "headless");
-                adminName = ini.get("Admin", "adminName");
-                adminPassword = ini.get("Admin", "adminPassword");
-                showflowName = ini.get("Showflow", "showflowName");
-                showflowAuxField = ini.get("Showflow", "showflowAuxField");
-                showflowOptionsGroupName = ini.get("Showflow", "showflowOptionsGroupName");
-                showflowOption1 = ini.get("Showflow", "showflowOption1");
-                showflowOption2 = ini.get("Showflow", "showflowOption2");
-                showflowOption3 = ini.get("Showflow", "showflowOption3");
-                showflowQuestion1 = ini.get("Showflow", "showflowQuestion1");
-                showflowQuestion2 = ini.get("Showflow", "showflowQuestion2");
+                url = commonIni.get("General", "url");
+                headless = commonIni.get("General", "headless");
+                adminName = commonIni.get("Admin", "adminName");
+                adminPassword = commonIni.get("Admin", "adminPassword");
+                showflowName = commonIni.get("Showflow", "showflowName");
+                showflowAuxField = commonIni.get("Showflow", "showflowAuxField");
+                showflowOptionsGroupName = commonIni.get("Showflow", "showflowOptionsGroupName");
+                showflowOption1 = commonIni.get("Showflow", "showflowOption1");
+                showflowOption2 = commonIni.get("Showflow", "showflowOption2");
+                showflowOption3 = commonIni.get("Showflow", "showflowOption3");
+                showflowQuestion1 = commonIni.get("Showflow", "showflowQuestion1");
+                showflowQuestion2 = commonIni.get("Showflow", "showflowQuestion2");
                 /*showflowTypologies = ini.get("Showflow", "showflowTypologies");
                 showflowSubtypologies = ini.get("Showflow", "showflowSubtypologies");
                 showflowVisibleBy = ini.get("Showflow", "showflowVisibleBy");

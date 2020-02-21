@@ -1,6 +1,7 @@
 package ProcedimientoRC;
 
 import Utils.Utils;
+import exceptions.MissingParameterException;
 import org.ini4j.Wini;
 import Utils.TestWithConfig;
 import Utils.DriversConfig;
@@ -12,6 +13,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,37 +45,55 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
     HashMap<String, String> results = new HashMap<>();
 
-    public ParteDeAgentesTest(Wini ini) {
-        super(ini);
+    public ParteDeAgentesTest(Wini commonIni) {
+        super(commonIni);
     }
 
-    public HashMap<String, String> check() {
+    @Override
+    public HashMap<String, List<String>> getRequiredParameters() {
+        HashMap<String, List<String>> requiredParameters = new HashMap<>();
+        requiredParameters.put("General", new ArrayList<>(Arrays.asList("url", "headless")));
+        requiredParameters.put("Admin", new ArrayList<>(Arrays.asList("adminName", "adminPassword")));
+        requiredParameters.put("Group", new ArrayList<>(Arrays.asList("groupName", "groupName1y2", "groupName3")));
+        requiredParameters.put("Agent", new ArrayList<>(Arrays.asList("agentName1", "agentName2", "agentName3", "agentName4", "agentName5",
+                "agentPassword", "pilotAgentName1", "pilotAgentName2")));
+        requiredParameters.put("Coordinator", new ArrayList<>(Arrays.asList("agentCoordName1", "agentCoordName6", "coordinatorPassword")));
+        requiredParameters.put("CSV", new ArrayList<>(Arrays.asList("csvPath")));
+        requiredParameters.put("Service", new ArrayList<>(Arrays.asList("serviceID")));
+
+        return requiredParameters;
+    }
+
+    public HashMap<String, String> check() throws MissingParameterException {
+        super.checkParameters();
+
+        //TODO El try catch de los ini.get no es necesario
         try {
             try {
-                adminName = ini.get("Admin", "adminName");
-                adminPassword = ini.get("Admin", "adminPassword");
-                url = ini.get("Red", "url");
+                url = commonIni.get("General", "url");
+                headless = commonIni.get("General", "headless");
+                adminName = commonIni.get("Admin", "adminName");
+                adminPassword = commonIni.get("Admin", "adminPassword");
 
-                groupName = ini.get("Group", "groupName");
-                groupName1y2 = ini.get("Group", "groupName1y2");
-                groupName3 = ini.get("Group", "groupName3");
+                groupName = commonIni.get("Group", "groupName");
+                groupName1y2 = commonIni.get("Group", "groupName1y2");
+                groupName3 = commonIni.get("Group", "groupName3");
 
-                agentName1 = ini.get("Agent", "agentName1");
-                agentName2 = ini.get("Agent", "agentName2");
-                agentName3 = ini.get("Agent", "agentName3");
-                agentName4 = ini.get("Agent", "agentName4");
-                agentName5 = ini.get("Agent", "agentName5");
-                agentPassword = ini.get("Agent", "agentPassword");
-                pilotAgentName1 = ini.get("Agent", "pilotAgentName1");
-                pilotAgentName2 = ini.get("Agent", "pilotAgentName2");
+                agentName1 = commonIni.get("Agent", "agentName1");
+                agentName2 = commonIni.get("Agent", "agentName2");
+                agentName3 = commonIni.get("Agent", "agentName3");
+                agentName4 = commonIni.get("Agent", "agentName4");
+                agentName5 = commonIni.get("Agent", "agentName5");
+                agentPassword = commonIni.get("Agent", "agentPassword");
+                pilotAgentName1 = commonIni.get("Agent", "pilotAgentName1");
+                pilotAgentName2 = commonIni.get("Agent", "pilotAgentName2");
 
-                agentCoordName1 = ini.get("Coordinator", "agentCoordName1");
-                agentCoordName6 = ini.get("Coordinator", "agentCoordName6");
-                coordinatorPassword = ini.get("Coordinator", "coordinatorPassword");
+                agentCoordName1 = commonIni.get("Coordinator", "agentCoordName1");
+                agentCoordName6 = commonIni.get("Coordinator", "agentCoordName6");
+                coordinatorPassword = commonIni.get("Coordinator", "coordinatorPassword");
 
-                headless = ini.get("Red", "headless");
-                csvPath = ini.get("CSV", "csvPath");
-                serviceID = ini.get("Service", "serviceID");
+                csvPath = commonIni.get("CSV", "csvPath");
+                serviceID = commonIni.get("Service", "serviceID");
 
             } catch (Exception e) {
                 results.put(e.toString() + "\nERROR. The inicialization file can't be loaded", "Tests can't be runned");

@@ -58,7 +58,7 @@ public class Utils {
         try {
             WebDriverWait waitingError = new WebDriverWait(driver, 5);
             //If the error dialog is not found means that the username and password are correct so the problem is the extension
-            waitingError.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-error animateErrorIcon']")));
+            waitingError.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'sa-icon sa-error animateErrorIcon']")));
             return "ERROR. The username and/or password is invalid";
         } catch (Exception e2) {
             return "Logged correctly";
@@ -70,11 +70,11 @@ public class Utils {
     {
         try {
             WebDriverWait waitingError = new WebDriverWait(driver, 5);
-            //If the error dialog is not found means that the username and password are correct so the problem is the extension
-            waitingError.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//p[@class = 'mensaje-error']")));
-            return "ERROR. The username and/or password is invalid";
-        } catch (Exception e2) {
+            waitingError.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'mainMenu']")));
             return "Logged correctly";
+        } catch (Exception e2) {
+            return "ERROR. The username and/or password is invalid";
+
         }
     }
 

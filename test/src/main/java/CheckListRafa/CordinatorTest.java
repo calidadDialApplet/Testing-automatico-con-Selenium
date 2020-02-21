@@ -1,5 +1,6 @@
 package CheckListRafa;
 
+import exceptions.MissingParameterException;
 import main.SeleniumDAO;
 import Utils.Utils;
 import Utils.TestWithConfig;
@@ -12,11 +13,14 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.ini4j.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class CordinatorTest extends TestWithConfig {
-    static String cordinatorName;
-    static String cordiantorPassword;
+    static String coordinatorName;
+    static String coordiantorPassword;
     static String agentName;
     static String agentPassword;
     static String url;
@@ -33,17 +37,28 @@ public class CordinatorTest extends TestWithConfig {
         super(ini);
     }
 
-    public HashMap<String, String> check() {
+    @Override
+    public HashMap<String, List<String>> getRequiredParameters() {
+        HashMap<String, List<String>> requiredParameters = new HashMap<>();
+        requiredParameters.put("Agent", new ArrayList<>(Arrays.asList("agentName", "agentPassword", "extension", "callMode")));
+        requiredParameters.put("Coordinator", new ArrayList<>(Arrays.asList("coordinatorName", "coordinatorPassword")));
+        requiredParameters.put("General", new ArrayList<>(Arrays.asList("url", "headless", "chromePath")));
+
+        return requiredParameters;
+    }
+
+    public HashMap<String, String> check() throws MissingParameterException {
+        super.checkParameters();
         try {
             //Load inicializacion settings
             try {
-                agentName = ini.get("Agent", "agentName");
-                agentPassword = ini.get("Agent", "agentPassword");
-                cordinatorName = ini.get("Cordinator", "cordinatorName");
-                cordiantorPassword = ini.get("Cordinator", "cordinatorPassword");
-                url = ini.get("Red", "url");
-                headless = ini.get("Red", "headless");
-                chromePath = ini.get("Red", "chromePath");
+                agentName = commonIni.get("Agent", "agentName");
+                agentPassword = commonIni.get("Agent", "agentPassword");
+                coordinatorName = commonIni.get("Coordinator", "coordinatorName");
+                coordiantorPassword = commonIni.get("Coordinator", "coordinatorPassword");
+                url = commonIni.get("General", "url");
+                headless = commonIni.get("General", "headless");
+                chromePath = commonIni.get("General", "chromePath");
             } catch (Exception e) {
                 results.put(e.toString() + "\nERROR. The inicialization file can't be loaded", "Tests can't be runned");
                 return results;
@@ -51,9 +66,9 @@ public class CordinatorTest extends TestWithConfig {
 
             //Inicialize the drivers
             firefoxDriver = DriversConfig.headlessOrNot(headless);
-            firefoxWaiting = new WebDriverWait(firefoxDriver, 10);
+            firefoxWaiting = new WebDriverWait(firefoxDriver, 5);
             chromeDriver = DriversConfig.headlessOrNot(headless, chromePath);
-            chromeWaiting = new WebDriverWait(chromeDriver, 10);
+            chromeWaiting = new WebDriverWait(chromeDriver, 5);
 
 
             chromeDriver.get(url + "clienteweb");
@@ -124,7 +139,7 @@ public class CordinatorTest extends TestWithConfig {
     public String loginOnFirefox()
     {
         Utils.loginWebClient(agentName, agentPassword, 2, firefoxDriver);
-        String res =Utils.checkCorrectLoginWebClient(firefoxDriver);
+        String res = Utils.checkCorrectLoginWebClient(firefoxDriver);
         if(res.contains("ERROR")) return res;
         firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));
         return res;
@@ -132,7 +147,7 @@ public class CordinatorTest extends TestWithConfig {
     }
     public String loginOnChrome()
     {
-        Utils.loginWebClient(cordinatorName, cordiantorPassword, 2, chromeDriver);
+        Utils.loginWebClient(coordinatorName, coordiantorPassword, 2, chromeDriver);
         String res = Utils.checkCorrectLoginWebClient(firefoxDriver);
         if(res.contains("ERROR")) return res;
         chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));
