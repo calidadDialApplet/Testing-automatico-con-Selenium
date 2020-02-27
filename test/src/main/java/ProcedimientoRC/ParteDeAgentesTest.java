@@ -13,10 +13,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class ParteDeAgentesTest extends TestWithConfig {
     static String adminName;
@@ -37,8 +39,12 @@ public class ParteDeAgentesTest extends TestWithConfig {
     static String agentCoordName6;
     static String coordinatorPassword;
     static String headless;
-    static String csvPath;
+    static String agentsCsvPath;
     static String serviceID;
+
+    //These two variables are to prevent an issue with licenses when you try to login with AgentName1 and AgentName2
+    String timeAgentName1Created;
+    String timeAgentName2Created;
 
     static WebDriver firefoxDriver;
     static WebDriverWait firefoxWaiting;
@@ -58,7 +64,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
         requiredParameters.put("Agent", new ArrayList<>(Arrays.asList("agentName1", "agentName2", "agentName3", "agentName4", "agentName5",
                 "agentPassword", "pilotAgentName1", "pilotAgentName2")));
         requiredParameters.put("Coordinator", new ArrayList<>(Arrays.asList("agentCoordName1", "agentCoordName6", "coordinatorPassword")));
-        requiredParameters.put("CSV", new ArrayList<>(Arrays.asList("csvPath")));
+        requiredParameters.put("CSV", new ArrayList<>(Arrays.asList("agentsCsvPath")));
         requiredParameters.put("Service", new ArrayList<>(Arrays.asList("serviceID")));
 
         return requiredParameters;
@@ -92,7 +98,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
                 agentCoordName6 = commonIni.get("Coordinator", "agentCoordName6");
                 coordinatorPassword = commonIni.get("Coordinator", "coordinatorPassword");
 
-                csvPath = commonIni.get("CSV", "csvPath");
+                agentsCsvPath = commonIni.get("CSV", "agentsCsvPath");
                 serviceID = commonIni.get("Service", "serviceID");
 
             } catch (Exception e) {
@@ -104,6 +110,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
             firefoxWaiting = new WebDriverWait(firefoxDriver, 6);
 
             results.put("--Connection Test  ->  ", connectionTest());
+            results.put("\n--Import agents with CSV  ->  ", importCSV());
             results.put("\n--Add agents to a new group  ->  ", addAgentsToNewGroup());
             results.put("\n--Add new group: " + groupName1y2 + "  ->  ", newGroup1y2());
             results.put("\n--Create a Coordinator + Agent user: " + agentCoordName1 + "  ->  ", newCoordAgent());
@@ -114,10 +121,8 @@ public class ParteDeAgentesTest extends TestWithConfig {
             results.put("\n--Create a Agent user with name: " + agentName4 + "  ->  ", newAgent4());
             results.put("\n--Create a Agent user with name: " + agentName5 + "  ->  ", newAgent5());
             results.put("\n--Create a Agent user with name: " + agentCoordName6 + "  ->  ", newAgentC6());
-            results.put("\n--Import agents with CSV  ->  ", importCSV());
-
-
-
+            results.put("\n--Login with agent: " + agentName1 + "test  ->  ", agent1LoginTest());
+            results.put("\n--Login with agent: " + agentName2 + "test  ->  ", agent2LoginTest());
 
             return results;
 
@@ -299,11 +304,16 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
 
             try {
+                /*firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+                WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                SeleniumDAO.click(okButton);
+                return "ERROR: The user " + agentCoordName1 + " already exists. Delete it and try again.";*/
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.name("send_tabs")));
+            } catch (Exception e) {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
                 WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
                 SeleniumDAO.click(okButton);
                 return "ERROR: The user " + agentCoordName1 + " already exists. Delete it and try again.";
-            } catch (Exception e) {
             }
 
             WebElement send = SeleniumDAO.selectElementBy("name", "send_tabs", firefoxDriver);
@@ -393,13 +403,20 @@ public class ParteDeAgentesTest extends TestWithConfig {
             Thread.sleep(500);
             WebElement accept = SeleniumDAO.selectElementBy("id", "submit", firefoxDriver);
             SeleniumDAO.click(accept);
+            String[] aux = LocalTime.now().toString().split(Pattern.quote(".")); //This aux array is to split the hour without milisecs
+            timeAgentName1Created = aux[0];
 
             try {
+                /*firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+                WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                SeleniumDAO.click(okButton);
+                return "ERROR: The user " + agentCoordName1 + " already exists. Delete it and try again.";*/
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.name("send_tabs")));
+            } catch (Exception e) {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
                 WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
                 SeleniumDAO.click(okButton);
                 return "ERROR: The user " + agentName1 + " already exists. Delete it and try again.";
-            } catch (Exception e) {
             }
 
             WebElement send = SeleniumDAO.selectElementBy("name", "send_tabs", firefoxDriver);
@@ -423,41 +440,8 @@ public class ParteDeAgentesTest extends TestWithConfig {
             }
 
 
-            firefoxDriver.get(url + "clienteweb/login.php");
 
-            Utils.loginWebClient(agentName1, agentPassword, 2, firefoxDriver);
-            // Wait to take a rest button
-            try {
-                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));
-            } catch (Exception e) {
-                return "ERROR: " + agentName1 + " was created but login failed";
-            }
-
-            WebElement states = SeleniumDAO.selectElementBy("id", "agent-name", firefoxDriver);
-            SeleniumDAO.click(states);
-
-            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("rest")));
-
-            WebElement restState = SeleniumDAO.selectElementBy("id", "rest", firefoxDriver);
-            SeleniumDAO.click(restState);
-
-            SeleniumDAO.switchToDefaultContent(firefoxDriver);
-
-            System.out.println("Waiting a minute in rest state");
-            Thread.sleep(60000);
-
-            states = SeleniumDAO.selectElementBy("id", "agent-name", firefoxDriver);
-            SeleniumDAO.click(states);
-
-            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("available")));
-            WebElement availableState = SeleniumDAO.selectElementBy("id", "available", firefoxDriver);
-            SeleniumDAO.click(availableState);
-
-            SeleniumDAO.switchToDefaultContent(firefoxDriver);
-            return "Test OK. The agent: " + agentName1 + " was created, logged in and stayed a minute in rest state.";
+            return "Test OK. The agent: " + agentName1 + " was created.";
 
         } catch (Exception e) {
             return e.toString();
@@ -496,13 +480,20 @@ public class ParteDeAgentesTest extends TestWithConfig {
             Thread.sleep(500);
             WebElement accept = SeleniumDAO.selectElementBy("id", "submit", firefoxDriver);
             SeleniumDAO.click(accept);
+            String[] aux2 = LocalTime.now().toString().split(Pattern.quote(".")); //This aux2 array is to split the hour without milisecs
+            timeAgentName2Created = aux2[0];
 
             try {
+                /*firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+                WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                SeleniumDAO.click(okButton);
+                return "ERROR: The user " + agentCoordName1 + " already exists. Delete it and try again.";*/
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.name("send_tabs")));
+            } catch (Exception e) {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
                 WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
                 SeleniumDAO.click(okButton);
                 return "ERROR: The user " + agentName2 + " already exists. Delete it and try again.";
-            } catch (Exception e) {
             }
 
             WebElement send = SeleniumDAO.selectElementBy("name", "send_tabs", firefoxDriver);
@@ -526,29 +517,8 @@ public class ParteDeAgentesTest extends TestWithConfig {
             }
 
 
-            firefoxDriver.get(url + "clienteweb/login.php");
 
-            Utils.loginWebClient(agentName2, agentPassword, 2, firefoxDriver);
-            // Wait to take a rest button
-            try {
-                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));
-            } catch (Exception e) {
-                return "ERROR: " + agentName2 + " was created but login failed";
-            }
-
-            System.out.println("Waiting a minute in pre-shift state");
-            Thread.sleep(60000);
-
-            WebElement states = SeleniumDAO.selectElementBy("id", "agent-name", firefoxDriver);
-            SeleniumDAO.click(states);
-
-            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
-
-            WebElement availableState = SeleniumDAO.selectElementBy("id", "available", firefoxDriver);
-            SeleniumDAO.click(availableState);
-
-            SeleniumDAO.switchToDefaultContent(firefoxDriver);
-            return "Test OK. The agent: " + agentName2 + " was created, logged in and stayed a minute in pre-shift state.";
+            return "Test OK. The agent: " + agentName2 + " was created.";
         } catch (Exception e) {
             return e.toString();
         }
@@ -588,11 +558,16 @@ public class ParteDeAgentesTest extends TestWithConfig {
             SeleniumDAO.click(accept);
 
             try {
+                /*firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+                WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                SeleniumDAO.click(okButton);
+                return "ERROR: The user " + agentCoordName1 + " already exists. Delete it and try again.";*/
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.name("send_tabs")));
+            } catch (Exception e) {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
                 WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
                 SeleniumDAO.click(okButton);
                 return "ERROR: The user " + agentName3 + " already exists. Delete it and try again.";
-            } catch (Exception e) {
             }
 
             WebElement send = SeleniumDAO.selectElementBy("name", "send_tabs", firefoxDriver);
@@ -696,11 +671,17 @@ public class ParteDeAgentesTest extends TestWithConfig {
             SeleniumDAO.click(accept);
 
             try {
+                /*firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+                WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                SeleniumDAO.click(okButton);
+                return "ERROR: The user " + agentCoordName1 + " already exists. Delete it and try again.";*/
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.name("send_tabs")));
+            } catch (Exception e) {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
                 WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
                 SeleniumDAO.click(okButton);
                 return "ERROR: The user " + agentName4 + " already exists. Delete it and try again.";
-            } catch (Exception e) { }
+            }
 
             WebElement send = SeleniumDAO.selectElementBy("name", "send_tabs", firefoxDriver);
             SeleniumDAO.click(send);
@@ -772,11 +753,17 @@ public class ParteDeAgentesTest extends TestWithConfig {
             SeleniumDAO.click(accept);
 
             try {
+                /*firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+                WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                SeleniumDAO.click(okButton);
+                return "ERROR: The user " + agentCoordName1 + " already exists. Delete it and try again.";*/
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.name("send_tabs")));
+            } catch (Exception e) {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
                 WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
                 SeleniumDAO.click(okButton);
                 return "ERROR: The user " + agentName5 + " already exists. Delete it and try again.";
-            } catch (Exception e) { }
+            }
 
             WebElement send = SeleniumDAO.selectElementBy("name", "send_tabs", firefoxDriver);
             SeleniumDAO.click(send);
@@ -846,11 +833,17 @@ public class ParteDeAgentesTest extends TestWithConfig {
             SeleniumDAO.click(accept);
 
             try {
+                /*firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+                WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                SeleniumDAO.click(okButton);
+                return "ERROR: The user " + agentCoordName1 + " already exists. Delete it and try again.";*/
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.name("send_tabs")));
+            } catch (Exception e) {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
                 WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
                 SeleniumDAO.click(okButton);
                 return "ERROR: The user " + agentCoordName6 + " already exists. Delete it and try again.";
-            } catch (Exception e) { }
+            }
 
             WebElement send = SeleniumDAO.selectElementBy("name", "send_tabs", firefoxDriver);
             SeleniumDAO.click(send);
@@ -893,18 +886,24 @@ public class ParteDeAgentesTest extends TestWithConfig {
     {
         try
         {
-            WebElement configureUsers = SeleniumDAO.selectElementBy("xpath",
+            /*WebElement configureUsers = SeleniumDAO.selectElementBy("xpath",
                     "//div[@class = 'ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active']" +
                             "//a[@href = 'configure_users.php']", firefoxDriver);
-            SeleniumDAO.click(configureUsers);
+            SeleniumDAO.click(configureUsers);*/
+
+            WebElement adminTab = SeleniumDAO.selectElementBy("id", "ADMIN", firefoxDriver);
+            SeleniumDAO.click(adminTab);
+            // Click on "Users" left menu
+            WebElement users = SeleniumDAO.selectElementBy("xpath", "//table[@class = 'adminTable']//a[@href = 'configure_users.php']", firefoxDriver);
+            SeleniumDAO.click(users);
 
             // Import users by CSV
-            WebElement importUsersCSV = firefoxDriver.findElement(By.xpath("//a[contains(., 'Import users(CSV)')]"));
+            WebElement importUsersCSV = SeleniumDAO.selectElementBy("xpath","//a[@href = 'import-csv-users.php']", firefoxDriver);
             importUsersCSV.click();
 
             WebElement browseButton = SeleniumDAO.selectElementBy("name", "userfile", firefoxDriver);
             // Tener en cuenta la ruta del fichero y que el mismo fichero no contenga errores
-            SeleniumDAO.writeInTo(browseButton, csvPath);
+            SeleniumDAO.writeInTo(browseButton, agentsCsvPath);
 
             WebElement importCSVButton = SeleniumDAO.selectElementBy("id", "submitcsv", firefoxDriver);
             SeleniumDAO.click(importCSVButton);
@@ -940,6 +939,132 @@ public class ParteDeAgentesTest extends TestWithConfig {
         {
             return e.toString();
         }
+    }
+
+    public String agent1LoginTest() throws ParseException {
+        try
+        {
+        //try to login 30 seconds after the creation of the agent.
+        String[] actualTimeSplited = LocalTime.now().toString().split(Pattern.quote("."));
+        String actualTime = actualTimeSplited[0];
+
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        Date timeOnCreation = format.parse(timeAgentName1Created);
+        Date timeNow = format.parse(actualTime);
+        long difference = timeNow.getTime() - timeOnCreation.getTime();
+
+        if(difference < 30000)
+        {
+            System.out.println("Waiting to login to prevent licence error");
+            Thread.sleep(35000 - difference);
+        }
+
+
+        firefoxDriver.get(url + "clienteweb/login.php");
+
+        Utils.loginWebClient(agentName1, agentPassword, 2, firefoxDriver);
+        // Wait to take a rest button
+        try {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));
+        } catch (Exception e) {
+            return "ERROR: " + agentName1 + " was created but login failed";
+        }
+
+
+        WebElement states = SeleniumDAO.selectElementBy("id", "agent-name", firefoxDriver);
+        SeleniumDAO.click(states);
+
+        SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("rest")));
+
+        WebElement restState = SeleniumDAO.selectElementBy("id", "rest", firefoxDriver);
+        SeleniumDAO.click(restState);
+
+        SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+        System.out.println("Waiting a minute in rest state");
+        firefoxDriver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+
+        states = SeleniumDAO.selectElementBy("id", "agent-name", firefoxDriver);
+        Thread.sleep(1500);
+        SeleniumDAO.click(states);
+
+        SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("available")));
+        WebElement availableState = SeleniumDAO.selectElementBy("id", "available", firefoxDriver);
+        SeleniumDAO.click(availableState);
+
+        SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("logout")));
+        WebElement logOutButton = SeleniumDAO.selectElementBy("id", "logout", firefoxDriver);
+        Thread.sleep(2000);
+        SeleniumDAO.click(logOutButton);
+        Thread.sleep(2000);
+        return "Test OK. Login successfully. The agent stayed 60 seconds in rest state";
+        } catch (Exception e)
+        {
+            return e.toString() + "\nERROR. Unexpected exception";
+        }
+
+    }
+
+    public String agent2LoginTest() throws ParseException {
+        try
+        {
+        //try to login 30 seconds after the creation of the agent.
+        String[] actualTimeSplited = LocalTime.now().toString().split(Pattern.quote("."));
+        String actualTime = actualTimeSplited[0];
+
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        Date timeOnCreation = format.parse(timeAgentName2Created);
+        Date timeNow = format.parse(actualTime);
+        long difference = timeNow.getTime() - timeOnCreation.getTime();
+
+        if(difference < 30000)
+        {
+            System.out.println("Waiting to login to prevent licence error");
+            Thread.sleep(35000 - difference);
+        }
+
+
+        firefoxDriver.get(url + "clienteweb/login.php");
+
+        Utils.loginWebClient(agentName2, agentPassword, 2, firefoxDriver);
+        // Wait to take a rest button
+        try {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.className("headerButton")));
+        } catch (Exception e) {
+            return "ERROR: " + agentName2 + " was created but login failed";
+        }
+
+        System.out.println("Waiting a minute in pre-shift state");
+        firefoxDriver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+
+        WebElement states = SeleniumDAO.selectElementBy("id", "agent-name", firefoxDriver);
+        Thread.sleep(1500);
+        SeleniumDAO.click(states);
+
+        SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+
+        WebElement availableState = SeleniumDAO.selectElementBy("id", "available", firefoxDriver);
+        SeleniumDAO.click(availableState);
+
+        SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("logout")));
+        WebElement logOutButton = SeleniumDAO.selectElementBy("id", "logout", firefoxDriver);
+        Thread.sleep(2000);
+        SeleniumDAO.click(logOutButton);
+        Thread.sleep(2000);
+
+        return "Test OK. Login successfully. The agent stayed 60 seconds on pre-sift state";
+        } catch (Exception e)
+        {
+            return e.toString() + "\nERROR. Unexpected exception";
+        }
+
     }
 }
 

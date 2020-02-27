@@ -7,49 +7,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad8c7bbb-0b66-4f9c-b570-480c72567a32" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentes/CleanParteDeAgentes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/Utils/CleanTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/Utils/Color.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/exceptions/MissingParameterException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeShowflow/CleanParteDeShowflow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/1_191_769_2020_02_17_dialapplet-1581936824-212-0.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/InicializationSettings.ini" beforeDir="false" afterPath="$PROJECT_DIR$/InicializationSettings.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contactsqualification.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/screenshot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/InicializationSettings.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/InicializationSettingsRC.ini" beforeDir="false" afterPath="$PROJECT_DIR$/InicializationSettingsRC.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/InicializationSettingsRafa.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/chromedriver" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/geckodriver" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/geckodriver.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/1_191_769_2020_02_17_dialapplet-1581941279-222-0.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/Checklist.tar.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/Testing-automatico-con-Selenium.jar" beforeDir="false" afterPath="$PROJECT_DIR$/test/out/Testing-automatico-con-Selenium.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/contactsqualification.csv" beforeDir="false" afterPath="$PROJECT_DIR$/test/out/contactsqualification.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/screenshot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/CallsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/CallsTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/ExportReportTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/ProductivityExportTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/ReportTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/ProductivityAgentsTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InicializationSettingsRC.ini" beforeDir="false" afterPath="$PROJECT_DIR$/InicializationSettingsRC.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScreenShots/screenshot1029034540108517170.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScreenShots/screenshot1787214284177765766.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScreenShots/screenshot1934955949998853693.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScreenShots/screenshot2358598726986239575.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScreenShots/screenshot2918555718987286837.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScreenShots/screenshot4855103250726415664.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScreenShots/screenshot5806797245794459318.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScreenShots/screenshot5864874258461042786.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScreenShots/screenshot6354458996303083342.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScreenShots/screenshot6424022971183721139.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScreenShots/screenshot6561984721124770193.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScreenShots/screenshot6836123448876945941.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentes/CleanParteDeAgentes.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentes/CleanParteDeAgentes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeShowflowTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeShowflowTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Settings/InicializationSettings.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Settings/InicializationSettingsRC.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Settings/chromedriver" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Settings/geckodriver" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Test_2_1.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Test_Empresa_Piloto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Test_Piloto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Utils/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/Utils/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Utils/TestWithConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/Utils/TestWithConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/src/main/java/Utils/DriversConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/Utils/DriversConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/src/main/java/Utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/Utils/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CallsTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CallsTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CordinatorTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CordinatorTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/ExportReportTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/ReportTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/main.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/CheckListRafa/main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeAgentes/CleanParteDeAgentes.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeAgentes/CleanParteDeAgentes.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeAgentesTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeAgentesTest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$2.class" afterDir="false" />
@@ -57,19 +36,16 @@
       <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$4.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/main.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Test_2_1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Test_Empresa_Piloto.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Test_Piloto.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/DriversConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Utils/DriversConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/File.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Utils/File.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/Test.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Utils/Test.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/TestWithConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Utils/TestWithConfig.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/Utils.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Utils/Utils.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageViewManager">
+    <option name="myElementSize" value="238" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -96,12 +72,12 @@
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/test/src/main/java" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/test/src/main/java/Settings" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/test/src/main/java" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -110,8 +86,8 @@
       <command value="mvn install" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.mainChecklist">
-    <configuration name="mainChecklist" type="Application" factoryName="Application" temporary="true">
+  <component name="RunManager" selected="Application.mainRC">
+    <configuration name="mainChecklist" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="CheckListRafa.main" />
       <module name="dialselenium" />
       <option name="PROGRAM_PARAMETERS" value="InicializationSettings.ini InicializationSettingsSelf.ini      productivityAgents, productivityExport,calls,coordinator" />
@@ -128,7 +104,7 @@
     <configuration name="mainRC" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="ProcedimientoRC.main" />
       <module name="dialselenium" />
-      <option name="PROGRAM_PARAMETERS" value="InicializationSettingsRC.ini parteDeAgentes" />
+      <option name="PROGRAM_PARAMETERS" value="./InicializationSettingsRC.ini parteDeShowflow" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -137,11 +113,6 @@
       <item itemvalue="Application.mainRC" />
       <item itemvalue="Application.mainChecklist" />
     </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Application.mainChecklist" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -161,18 +132,18 @@
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
     <state x="555" y="186" width="800" height="672" key="#Project_Structure/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581583301649" />
-    <state x="328" y="291" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582272590410">
+    <state x="641" y="200" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582794162181">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state x="328" y="291" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582272590410" />
+    <state x="641" y="200" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582794162181" />
     <state x="649" y="330" width="611" height="383" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1581582774961">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
     <state x="649" y="330" width="611" height="383" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581582774961" />
-    <state x="768" y="237" width="374" height="570" key="#com.intellij.ide.util.MemberChooser" timestamp="1582204806427">
+    <state x="768" y="237" width="374" height="570" key="#com.intellij.ide.util.MemberChooser" timestamp="1582792561445">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state x="768" y="237" width="374" height="570" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582204806427" />
+    <state x="768" y="237" width="374" height="570" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582792561445" />
     <state x="687" y="309" width="525" height="421" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1582199944884">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
@@ -193,54 +164,62 @@
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
     <state x="720" y="266" width="469" height="506" key="FileChooserDialogImpl/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581673792461" />
-    <state width="1878" height="318" key="GridCell.Tab.0.bottom" timestamp="1582273925387">
+    <state width="1878" height="554" key="GridCell.Tab.0.bottom" timestamp="1582796197241">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="318" key="GridCell.Tab.0.bottom/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582273925387" />
+    <state width="1878" height="554" key="GridCell.Tab.0.bottom/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582796197241" />
     <state width="1238" height="142" key="GridCell.Tab.0.bottom/0.0.1920.1051/1920.0.1280.1024@1920.0.1280.1024" timestamp="1582017514861" />
-    <state width="1878" height="318" key="GridCell.Tab.0.center" timestamp="1582273925387">
+    <state width="1878" height="554" key="GridCell.Tab.0.center" timestamp="1582796197241">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="318" key="GridCell.Tab.0.center/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582273925387" />
+    <state width="1878" height="554" key="GridCell.Tab.0.center/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582796197241" />
     <state width="1238" height="142" key="GridCell.Tab.0.center/0.0.1920.1051/1920.0.1280.1024@1920.0.1280.1024" timestamp="1582017514861" />
-    <state width="1878" height="318" key="GridCell.Tab.0.left" timestamp="1582273925387">
+    <state width="1878" height="554" key="GridCell.Tab.0.left" timestamp="1582796197241">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="318" key="GridCell.Tab.0.left/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582273925387" />
+    <state width="1878" height="554" key="GridCell.Tab.0.left/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582796197241" />
     <state width="1238" height="142" key="GridCell.Tab.0.left/0.0.1920.1051/1920.0.1280.1024@1920.0.1280.1024" timestamp="1582017514861" />
-    <state width="1878" height="318" key="GridCell.Tab.0.right" timestamp="1582273925387">
+    <state width="1878" height="554" key="GridCell.Tab.0.right" timestamp="1582796197241">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="318" key="GridCell.Tab.0.right/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582273925387" />
+    <state width="1878" height="554" key="GridCell.Tab.0.right/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582796197241" />
     <state width="1238" height="142" key="GridCell.Tab.0.right/0.0.1920.1051/1920.0.1280.1024@1920.0.1280.1024" timestamp="1582017514861" />
-    <state width="1878" height="360" key="GridCell.Tab.1.bottom" timestamp="1582205842610">
+    <state width="1878" height="360" key="GridCell.Tab.1.bottom" timestamp="1582796074189">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="360" key="GridCell.Tab.1.bottom/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582205842610" />
+    <state width="1878" height="360" key="GridCell.Tab.1.bottom/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582796074189" />
     <state width="1238" height="346" key="GridCell.Tab.1.bottom/0.0.1920.1051/1920.0.1280.1024@1920.0.1280.1024" timestamp="1582016822131" />
-    <state width="1878" height="360" key="GridCell.Tab.1.center" timestamp="1582205842610">
+    <state width="1878" height="360" key="GridCell.Tab.1.center" timestamp="1582796074189">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="360" key="GridCell.Tab.1.center/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582205842610" />
+    <state width="1878" height="360" key="GridCell.Tab.1.center/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582796074189" />
     <state width="1238" height="346" key="GridCell.Tab.1.center/0.0.1920.1051/1920.0.1280.1024@1920.0.1280.1024" timestamp="1582016822131" />
-    <state width="1878" height="360" key="GridCell.Tab.1.left" timestamp="1582205842610">
+    <state width="1878" height="360" key="GridCell.Tab.1.left" timestamp="1582796074189">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="360" key="GridCell.Tab.1.left/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582205842610" />
+    <state width="1878" height="360" key="GridCell.Tab.1.left/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582796074189" />
     <state width="1238" height="346" key="GridCell.Tab.1.left/0.0.1920.1051/1920.0.1280.1024@1920.0.1280.1024" timestamp="1582016822131" />
-    <state width="1878" height="360" key="GridCell.Tab.1.right" timestamp="1582205842610">
+    <state width="1878" height="360" key="GridCell.Tab.1.right" timestamp="1582796074189">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state width="1878" height="360" key="GridCell.Tab.1.right/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582205842610" />
+    <state width="1878" height="360" key="GridCell.Tab.1.right/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582796074189" />
     <state width="1238" height="346" key="GridCell.Tab.1.right/0.0.1920.1051/1920.0.1280.1024@1920.0.1280.1024" timestamp="1582016822131" />
-    <state x="443" y="102" width="1024" height="840" key="SettingsEditor" timestamp="1581583114194">
+    <state x="443" y="102" width="1024" height="840" key="SettingsEditor" timestamp="1582290000514">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state x="443" y="102" width="1024" height="840" key="SettingsEditor/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581583114194" />
-    <state x="643" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1582272375618">
+    <state x="443" y="102" width="1024" height="840" key="SettingsEditor/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582290000514" />
+    <state x="643" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1582790774820">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state x="643" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582272375618" />
+    <state x="643" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582790774820" />
+    <state x="500" y="253" width="910" height="537" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1582795567811">
+      <screen x="0" y="0" width="1920" height="1051" />
+    </state>
+    <state x="500" y="253" width="910" height="537" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582795567811" />
+    <state x="1920" y="0" width="1280" height="1011" key="dock-window-1" timestamp="1582794665089">
+      <screen x="1920" y="0" width="1280" height="1024" />
+    </state>
+    <state x="1920" y="0" width="1280" height="1011" key="dock-window-1/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582794665089" />
     <state x="564" y="76" width="791" height="897" key="find.popup" timestamp="1581584995105">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
@@ -249,113 +228,128 @@
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
     <state x="624" y="240" width="672" height="677" key="run.anything.popup/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581931380250" />
-    <state x="623" y="230" width="672" height="678" key="search.everywhere.popup" timestamp="1581939350637">
+    <state x="623" y="230" width="672" height="678" key="search.everywhere.popup" timestamp="1582794349202">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
-    <state x="623" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581939350637" />
+    <state x="623" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582794349202" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeShowflowTest.java</url>
-          <line>332</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/ProductivityExportTest.java</url>
           <line>154</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/ProductivityAgentsTest.java</url>
           <line>99</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/ProductivityAgentsTest.java</url>
           <line>145</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/ProductivityExportTest.java</url>
           <line>144</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/CallsTest.java</url>
           <line>267</line>
           <option name="timeStamp" value="32" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/CallsTest.java</url>
           <line>263</line>
           <option name="timeStamp" value="33" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java</url>
           <line>140</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java</url>
           <line>97</line>
           <option name="timeStamp" value="35" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java</url>
           <line>95</line>
           <option name="timeStamp" value="36" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/Utils/Utils.java</url>
           <line>58</line>
           <option name="timeStamp" value="38" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/main.java</url>
-          <line>21</line>
-          <option name="timeStamp" value="42" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java</url>
           <line>94</line>
           <option name="timeStamp" value="46" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/ProductivityExportTest.java</url>
           <line>52</line>
           <option name="timeStamp" value="47" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/ProductivityExportTest.java</url>
           <line>43</line>
           <option name="timeStamp" value="48" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/test/src/main/java/Utils/TestWithConfig.java</url>
-          <line>22</line>
-          <option name="timeStamp" value="49" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/test/src/main/java/Utils/TestWithConfig.java</url>
-          <line>21</line>
-          <option name="timeStamp" value="50" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
+        <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/main.java</url>
           <line>25</line>
           <option name="timeStamp" value="51" />
         </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java</url>
+          <line>124</line>
+          <option name="timeStamp" value="69" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java</url>
+          <line>1016</line>
+          <option name="timeStamp" value="72" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java</url>
+          <line>380</line>
+          <option name="timeStamp" value="77" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java</url>
+          <line>947</line>
+          <option name="timeStamp" value="78" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java</url>
+          <line>453</line>
+          <option name="timeStamp" value="111" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java</url>
+          <line>600</line>
+          <option name="timeStamp" value="112" />
+        </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/main.java</url>
-          <line>54</line>
-          <option name="timeStamp" value="53" />
+          <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeShowflowTest.java</url>
+          <line>751</line>
+          <option name="timeStamp" value="115" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeShowflow/CleanParteDeShowflow.java</url>
+          <line>83</line>
+          <option name="timeStamp" value="116" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Testing_automatico_con_Selenium$mainRC.ic" NAME="mainRC Coverage Results" MODIFIED="1582200040253" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/Testing_automatico_con_Selenium$mainRC.ic" NAME="mainRC Coverage Results" MODIFIED="1582623239826" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

@@ -1,5 +1,6 @@
 package Utils;
 
+import org.apache.commons.lang3.math.Fraction;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -19,8 +20,11 @@ public class DriversConfig {
             FirefoxBinary firefoxBinary = new FirefoxBinary();
             firefoxBinary.addCommandLineOptions("--headless");
             System.setProperty("webdriver.gecko.driver", "./geckodriver");
+            FirefoxProfile firefoxProfile = new FirefoxProfile();
+            firefoxProfile.setPreference("dom.webnotifications.enabled", false);
             FirefoxOptions firefoxOptions = new FirefoxOptions();
             firefoxOptions.setBinary(firefoxBinary);
+            firefoxOptions.setProfile(firefoxProfile);
             FirefoxDriver firefoxDriver = new FirefoxDriver(firefoxOptions);
             return firefoxDriver;
         } else {
