@@ -1,1 +1,0 @@
-La prueba está configurada para un agente en la empresa "Empresa". Si se quiere realizar para otra empresa se deberían añadir acciones para cambiarla a la hora de crear el agente(entre las acciones 10 y 11) y a la hora de configurar el preturno(entre las acciones 17 y 18)
