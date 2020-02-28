@@ -26,16 +26,11 @@ public abstract class TestWithConfig extends Test {
                 for(String parameter : entry.getValue())
                 {
                     String res = commonIni.get(entry.getKey(), parameter);
-                    if(res == null) throw new MissingParameterException("Missing " + parameter + " parameter in section " + entry.getKey());
+                    if(res == null) throw new MissingParameterException("Missing '" + parameter + "' parameter in section '" + entry.getKey() + "'");
                 }
             } else {
-                throw new MissingParameterException("Missing section " + entry.getKey());
+                throw new MissingParameterException("Missing section '" + entry.getKey() + "'");
             }
         }
     }
-    /*public TestWithConfig(Wini commonIni, Wini selfIni)
-    {
-        this.commonIni = commonIni;
-        this.selfIni = selfIni;
-    }*/
 }

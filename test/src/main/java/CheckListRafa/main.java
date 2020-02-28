@@ -44,6 +44,7 @@ public class main {
             tests.put("coordinator", new CordinatorTest(commonIni));
             tests.put("productivityAgents", new ProductivityAgentsTest(commonIni));
             tests.put("productivityExport", new ProductivityExportTest(commonIni));
+            tests.put("oldRecordDownload", new OldRecordDownloadTest(commonIni));
 
             String testsListAsString = commonIni.get("General", "testsList");
             List<String> testsList;
@@ -71,13 +72,14 @@ public class main {
                         String value = results.get(name).toString();
                         if(value.contains("OK")) System.out.println(Color.CYAN + key + Color.RESET + " " + Color.GREEN + value + Color.RESET);
                         else if(value.contains("ERROR")) System.out.println(Color.CYAN + key + Color.RESET + " " + Color.RED + value + Color.RESET);
+                        else if(value.contains("WARNING")) System.out.println(Color.CYAN + key + Color.RESET + " " + Color.PURPLE + value + Color.RESET);
 
                     }
 
                 }
                 else
                 {
-                    System.err.println(Color.RED + "The arguments passed do not match with the tests" + Color.RESET);
+                    System.err.println(Color.RED + "The argument: '" + testName + "' from the attribute 'testsList' on the .ini file do not match with the test suite {calls, coordinator, productivityAgents, productivityExport, oldRecordDownload}" + Color.RESET);
                 }
             }
 

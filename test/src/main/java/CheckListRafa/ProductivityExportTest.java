@@ -66,7 +66,7 @@ public class ProductivityExportTest extends TestWithConfig {
                 return results;
             }
 
-            firefoxDriver = DriversConfig.noDownloadPopUp(headless);
+            firefoxDriver = DriversConfig.noDownloadPopUp(headless, "ProductivityExportOut");
 
             firefoxDriver.get(url + "dialapplet-web");
             firefoxWaiting = new WebDriverWait(firefoxDriver, 6);
@@ -159,27 +159,39 @@ public class ProductivityExportTest extends TestWithConfig {
             //Searchs 2 month before
             WebElement previousMonthButton = SeleniumDAO.selectElementBy("xpath", "//tr[@class = 'headrow']/td[contains(., '‹')]", firefoxDriver);
             SeleniumDAO.click(previousMonthButton);
+            Thread.sleep(250);
             SeleniumDAO.click(previousMonthButton);
 
             //Clicks on download button of the first report of the table
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'table-configurations']")));
             List<WebElement> tableElements = firefoxDriver.findElementsByXPath("//table[@id = 'table-configurations']//tbody");
             WebElement downloadButton = tableElements.get(0).findElement(By.xpath("//img[@title = 'Download report']"));
+
+            File.deleteExistingFileByExtension("csv", "ProductivityExportOut");
+
             SeleniumDAO.click(downloadButton);
 
             //Deletes the file if it exists
-            File.deleteExistingFile("./callsDetail.csv");
+            //File.deleteExistingFile("./callsDetail.csv");
 
-            String downloadStatus = File.waitToDownload("./callsDetail.csv", 100);
+            //String downloadStatus = File.waitToDownload("./callsDetail.csv", 100);
+            String downloadName = File.waitToDownloadByExtension("csv", "ProductivityExportOut", 100);
 
-            if(downloadStatus.contains("ERROR")) return downloadStatus;
+            if(downloadName.contains("ERROR")) return downloadName;
 
             //Checks the format of the csv downloaded
             try {
-                String archCSV = "./callsDetail.csv";
+                String archCSV = "./ProductivityExportOut/" + downloadName;
                 BufferedReader reader = new BufferedReader(new FileReader(archCSV));
-                reader.readLine();
-                String line = reader.readLine();
+
+                String line1 = reader.readLine();
+                String line2 = reader.readLine();
+
+                //TODO el formato de los csv en la ver 7 y 8 es distinto. Cuando se arregle, se debe borrar este codigo.
+                String line;
+                if(line1.equals("")) line = line2;
+                else line = line1;
+
                 ArrayList<String> firstRow = new ArrayList<>(Arrays.asList(line.split(";",0)));
                 int columnDate = -1;
 
@@ -226,6 +238,7 @@ public class ProductivityExportTest extends TestWithConfig {
 
         } catch(Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "ERROR. Unexpected exception";
         }
     }

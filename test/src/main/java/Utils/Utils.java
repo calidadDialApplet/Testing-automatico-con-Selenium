@@ -82,9 +82,9 @@ public class Utils {
         try
         {
             Thread.sleep(1000);
-            File.deleteExistingFile(path);
+            File.deleteExistingFile(path + ".png");
             java.io.File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-            FileUtils.copyFile(screenshot, new java.io.File(path));
+            FileUtils.copyFile(screenshot, new java.io.File(path + ".png"));
         } catch (Exception e)
         {
             throw e;

@@ -45,8 +45,8 @@ public class CallsTest extends TestWithConfig {
     HashMap<String, String> results = new HashMap<>();
     String currentTime;
 
-    public CallsTest(Wini ini) {
-        super(ini);
+    public CallsTest(Wini commonIni) {
+        super(commonIni);
     }
 
     @Override
@@ -66,26 +66,23 @@ public class CallsTest extends TestWithConfig {
         super.checkParameters();
         try {
             //Load inicializacion settings
-            try {
-                adminName = commonIni.get("Admin", "adminName");
-                adminPassword = commonIni.get("Admin", "adminPassword");
-                agentName = commonIni.get("Agent", "agentName");
-                agentPassword = commonIni.get("Agent", "agentPassword");
-                companyID = commonIni.get("Company", "companyID");
-                serviceID = commonIni.get("Service", "serviceID");
-                url = commonIni.get("General", "url");
-                number = commonIni.get("Contact", "number");
-                call = commonIni.get("Contact", "call");
-                extension = commonIni.get("Agent", "extension");
-                headless = commonIni.get("General", "headless");
-                callMode = commonIni.get("Agent", "callMode");
-            } catch (Exception e) {
-                results.put(e.toString() + "\nERROR. The inicialization file can't be loaded", "Tests can't be runned");
-                return results;
-            }
+
+            adminName = commonIni.get("Admin", "adminName");
+            adminPassword = commonIni.get("Admin", "adminPassword");
+            agentName = commonIni.get("Agent", "agentName");
+            agentPassword = commonIni.get("Agent", "agentPassword");
+            companyID = commonIni.get("Company", "companyID");
+            serviceID = commonIni.get("Service", "serviceID");
+            url = commonIni.get("General", "url");
+            number = commonIni.get("Contact", "number");
+            call = commonIni.get("Contact", "call");
+            extension = commonIni.get("Agent", "extension");
+            headless = commonIni.get("General", "headless");
+            callMode = commonIni.get("Agent", "callMode");
+
 
             //Inicialize firefox driver
-            firefoxDriver = DriversConfig.noDownloadPopUp(headless);
+            firefoxDriver = DriversConfig.noDownloadPopUp(headless, "CallsTestOut");
             firefoxWaiting = new WebDriverWait(firefoxDriver, 5);
 
             firefoxDriver.get(url + "clienteweb");
@@ -139,8 +136,10 @@ public class CallsTest extends TestWithConfig {
 
             //Selects the callmode
             try {
-                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//option[@value = '" + callMode + "']")));
+                //firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//option[@value = '" + callMode + "']")));
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("manualCampaigns")));
                 Select whichCallMode = SeleniumDAO.findSelectElementBy("id", "manualCampaigns", firefoxDriver);
+                Thread.sleep(1000);
                 whichCallMode.selectByValue(callMode);
                 System.out.println("Selecting the callmode: " + callMode);
             } catch (Exception e) {
@@ -164,17 +163,6 @@ public class CallsTest extends TestWithConfig {
                 String[] currentTimeSplited = LocalTime.now().toString().split(Pattern.quote(".")); //Aux array to delete the milisecs
                 currentTime = currentTimeSplited[0];
 
-                try
-                {
-                    Thread.sleep(2000);
-                    File.deleteExistingFile("./screenshotCalls");
-                    java.io.File screenshot = ((TakesScreenshot)firefoxDriver).getScreenshotAs(OutputType.FILE);
-                    FileUtils.copyFile(screenshot, new java.io.File("./screenshotCalls"));
-                } catch (Exception e)
-                {
-                    return e.toString() + "\nERROR. The screenshot could not be taken";
-                }
-
                 Thread.sleep(1000);
 
                 //Checks if the showflow appears
@@ -186,6 +174,8 @@ public class CallsTest extends TestWithConfig {
                 {
                     System.out.println("Warning. The showflow does not appear");
                 }
+                Utils.takeScreenshot("./CallsTestOut/screnshotCalls", firefoxDriver);
+
 
                 System.out.println("Calling...");
                 Thread.sleep(15000);
@@ -209,7 +199,7 @@ public class CallsTest extends TestWithConfig {
         try
         {
             //Deletes all the .wav files in directory before the test starts
-            File.deleteExistingFileByExtension("wav");
+            File.deleteExistingFileByExtension("wav", "CallsTestOut");
 
             //Checks the call panel to see the last call and download the record
             firefoxDriver.get(url + "dialapplet-web");
@@ -226,51 +216,12 @@ public class CallsTest extends TestWithConfig {
             Select service = SeleniumDAO.findSelectElementBy("id", "serviceSelect", firefoxDriver);
             service.selectByValue(serviceID);
 
-            System.out.println("Trying to download old record");
-
-            //First i am going to check a previous record, later the last record recently made.
-            WebElement startDate = SeleniumDAO.selectElementBy("id", "f_trigger_start", firefoxDriver);
-            SeleniumDAO.click(startDate);
-
-            WebElement previousMonthButton = SeleniumDAO.selectElementBy("xpath", "//tr[@class = 'headrow']/td[contains(., '‹')]", firefoxDriver);
-            SeleniumDAO.click(previousMonthButton);
-            SeleniumDAO.click(previousMonthButton); //Last 2 months
-
-            WebElement endDate = SeleniumDAO.selectElementBy("id", "f_trigger_end", firefoxDriver);
-            SeleniumDAO.click(endDate);
-
-            SeleniumDAO.click(previousMonthButton); //Last month
-
-            WebElement exitCalendarButton = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '×')]", firefoxDriver);
-            SeleniumDAO.click(exitCalendarButton);
 
             WebElement showButton = SeleniumDAO.selectElementBy("id","submit", firefoxDriver);
             SeleniumDAO.click(showButton);
 
-            //Try to download an old record
-            try
-            {
-                WebElement saveRecord = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'activity_info']//tbody//tr[1]//a[contains(., 'WAV')]", firefoxDriver);
-                SeleniumDAO.click(saveRecord);
-                Thread.sleep(2000);
-
-                String downloadState = File.waitToDownloadByExtension("wav",100);
-                if(downloadState.contains("ERROR")) return downloadState;
-            } catch (Exception e)
-            {
-                System.out.println(Color.PURPLE + "WARNING. No call appears in the chosen date range, or the chosen call was not recorded" + Color.RESET);
-            }
 
             System.out.println("Trying to download last record");
-            Thread.sleep(1000);
-
-            //advance a month to reach the last record
-            SeleniumDAO.click(endDate);
-            WebElement nextMonthButton = SeleniumDAO.selectElementBy("xpath", "//tr[@class = 'headrow']/td[contains(., '›')]", firefoxDriver);
-            SeleniumDAO.click(nextMonthButton);
-            SeleniumDAO.click(exitCalendarButton);
-            SeleniumDAO.click(showButton);
-
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'activity_info']//tbody")));
             Thread.sleep(2000);
@@ -290,11 +241,11 @@ public class CallsTest extends TestWithConfig {
             //Compares the time and number
             if(difference < 10000 && lastCallNumberOnTable.equals(number))
             {
-                WebElement saveRecord = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'activity_info']//tbody//tr[1]//img[@class = 'record']", firefoxDriver);
+                WebElement saveRecord = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'activity_info']//tbody/tr[1]//img[contains(@title, 'WAV')]", firefoxDriver);
                 SeleniumDAO.click(saveRecord);
                 Thread.sleep(2000);
 
-                String downloadState = File.waitToDownloadByExtension("wav",100);
+                String downloadState = File.waitToDownloadByExtension("wav", "CallsTestOut", 100);
                 if(downloadState.contains("ERROR")) return downloadState;
 
             } else
@@ -305,6 +256,7 @@ public class CallsTest extends TestWithConfig {
             return "Test OK. The call panel and the record download function work. Check the work directory to see the downloaded records";
         } catch (Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR. Unexpected exception";
         }
     }
