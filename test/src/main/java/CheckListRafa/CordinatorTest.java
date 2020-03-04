@@ -132,6 +132,7 @@ public class CordinatorTest extends TestWithConfig {
                     "and the agent state has been updated correctly on the coordinator view ";
         } catch (Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "ERROR. Unexpected exception";
         }
     }

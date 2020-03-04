@@ -39,17 +39,22 @@ public class File {
         return "Downloaded";
     }
 
-    //Waits until the file is download searching it by his extension
-    public static String waitToDownloadByExtension(String extension, int wait) throws IOException
+    //Waits until the file is download searching it by his extension and return the file name
+    public static String waitToDownloadByExtension(String extension, String folder, int wait) throws IOException
     {
-        java.io.File dir = new java.io.File(".");
+        String fileName = "";
+        java.io.File dir = new java.io.File("./" + folder);
         FileFilter fileFilter = new WildcardFileFilter("*."+ extension);
 
         //Wait for the download to finish
         int i = 0;
         for(; i < wait; i++){
             java.io.File[] files = dir.listFiles(fileFilter);
-            if(files.length != 0){break;}
+            if(files.length != 0)
+            {
+                fileName = files[0].getName();
+                break;
+            }
             else
             {
                 try
@@ -66,7 +71,7 @@ public class File {
         {
             return "ERROR. Download failed";
         }
-        return "Downloaded";
+        return fileName;
     }
 
     //Deletes the file to prevent them from accumulating
@@ -78,10 +83,15 @@ public class File {
     }
 
     //Deletes the file to prevent them from accumulating searching it by his extension
-    public static void deleteExistingFileByExtension(String extension) throws IOException {
-        java.io.File dir = new java.io.File(".");
+    public static void deleteExistingFileByExtension(String extension, String folder) throws IOException {
+        java.io.File dir = new java.io.File("./" + folder);
+        if(!dir.exists()) dir.mkdir();
         FileFilter fileFilter = new WildcardFileFilter("*." + extension);
         java.io.File[] files = dir.listFiles(fileFilter);
-        if(files.length != 0)Files.deleteIfExists(files[0].toPath());
+        if(files.length != 0){
+            for(int i = 0; i < files.length; i++){
+                Files.deleteIfExists(files[i].toPath());
+            }
+        }
     }
 }

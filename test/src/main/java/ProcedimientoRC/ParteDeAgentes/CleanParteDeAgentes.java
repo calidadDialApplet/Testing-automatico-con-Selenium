@@ -2,9 +2,14 @@ package ProcedimientoRC.ParteDeAgentes;
 
 import Utils.CleanTest;
 import Utils.DriversConfig;
+import Utils.Utils;
 import exceptions.MissingParameterException;
+import main.SeleniumDAO;
 import org.ini4j.Wini;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
@@ -48,7 +53,7 @@ public class CleanParteDeAgentes extends CleanTest {
         requiredParameters.put("Agent", new ArrayList<>(Arrays.asList("agentName1", "agentName2", "agentName3", "agentName4", "agentName5",
                 "agentPassword", "pilotAgentName1", "pilotAgentName2")));
         requiredParameters.put("Coordinator", new ArrayList<>(Arrays.asList("agentCoordName1", "agentCoordName6", "coordinatorPassword")));
-        requiredParameters.put("CSV", new ArrayList<>(Arrays.asList("csvPath")));
+        requiredParameters.put("CSV", new ArrayList<>(Arrays.asList("agentsCsvPath")));
         requiredParameters.put("Service", new ArrayList<>(Arrays.asList("serviceID")));
 
         return requiredParameters;
@@ -58,32 +63,98 @@ public class CleanParteDeAgentes extends CleanTest {
     public void clean() throws MissingParameterException {
         super.checkParameters();
 
-        url = commonIni.get("General", "url");
-        headless = commonIni.get("General", "headless");
-        adminName = commonIni.get("Admin", "adminName");
-        adminPassword = commonIni.get("Admin", "adminPassword");
+        try
+        {
+            url = commonIni.get("General", "url");
+            headless = commonIni.get("General", "headless");
+            adminName = commonIni.get("Admin", "adminName");
+            adminPassword = commonIni.get("Admin", "adminPassword");
 
-        groupName = commonIni.get("Group", "groupName");
-        groupName1y2 = commonIni.get("Group", "groupName1y2");
-        groupName3 = commonIni.get("Group", "groupName3");
+            groupName = commonIni.get("Group", "groupName");
+            groupName1y2 = commonIni.get("Group", "groupName1y2");
+            groupName3 = commonIni.get("Group", "groupName3");
 
-        agentName1 = commonIni.get("Agent", "agentName1");
-        agentName2 = commonIni.get("Agent", "agentName2");
-        agentName3 = commonIni.get("Agent", "agentName3");
-        agentName4 = commonIni.get("Agent", "agentName4");
-        agentName5 = commonIni.get("Agent", "agentName5");
-        agentPassword = commonIni.get("Agent", "agentPassword");
-        pilotAgentName1 = commonIni.get("Agent", "pilotAgentName1");
-        pilotAgentName2 = commonIni.get("Agent", "pilotAgentName2");
+            agentName1 = commonIni.get("Agent", "agentName1");
+            agentName2 = commonIni.get("Agent", "agentName2");
+            agentName3 = commonIni.get("Agent", "agentName3");
+            agentName4 = commonIni.get("Agent", "agentName4");
+            agentName5 = commonIni.get("Agent", "agentName5");
+            agentPassword = commonIni.get("Agent", "agentPassword");
+            pilotAgentName1 = commonIni.get("Agent", "pilotAgentName1");
+            pilotAgentName2 = commonIni.get("Agent", "pilotAgentName2");
 
-        agentCoordName1 = commonIni.get("Coordinator", "agentCoordName1");
-        agentCoordName6 = commonIni.get("Coordinator", "agentCoordName6");
-        coordinatorPassword = commonIni.get("Coordinator", "coordinatorPassword");
+            agentCoordName1 = commonIni.get("Coordinator", "agentCoordName1");
+            agentCoordName6 = commonIni.get("Coordinator", "agentCoordName6");
+            coordinatorPassword = commonIni.get("Coordinator", "coordinatorPassword");
 
-        csvPath = commonIni.get("CSV", "csvPath");
-        serviceID = commonIni.get("Service", "serviceID");
+            csvPath = commonIni.get("CSV", "csvPath");
+            serviceID = commonIni.get("Service", "serviceID");
 
-        firefoxDriver = DriversConfig.headlessOrNot("true");
-        firefoxWaiting = new WebDriverWait(firefoxDriver, 6);
+            firefoxDriver = DriversConfig.headlessOrNot("false");
+            firefoxWaiting = new WebDriverWait(firefoxDriver, 6);
+
+            List<String> agentsToClean = new ArrayList<String>(){{
+                add(agentName1);
+                add(agentName2);
+                add(agentName3);
+                add(agentName4);
+                add(agentName5);
+                add(pilotAgentName1);
+                add(pilotAgentName2);
+                add(agentCoordName1);
+                add(agentCoordName6);
+            }};
+
+            List<String> groupsToClean = new ArrayList<String>(){{
+                add(groupName);
+                add(groupName1y2);
+                add(groupName3);
+            }};
+
+            firefoxDriver.get(url + "/dialapplet-web");
+            Utils.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
+
+            WebElement adminTab = SeleniumDAO.selectElementBy("id", "ADMIN", firefoxDriver);
+            SeleniumDAO.click(adminTab);
+            // Click on "Users" left menu
+            WebElement users = SeleniumDAO.selectElementBy("xpath", "//table[@class = 'adminTable']//a[@href = 'configure_users.php']", firefoxDriver);
+            SeleniumDAO.click(users);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contenido")));
+            for(int i = 0; i < agentsToClean.size(); i++)
+            {
+                try
+                {
+                    WebElement deleteButton = SeleniumDAO.selectElementBy("xpath", "//table/tbody/tr[@id = 'user-" + agentsToClean.get(i) + "']//img[@src = 'imagenes/delete2.png']", firefoxDriver);
+                    SeleniumDAO.click(deleteButton);
+                    firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-confirm-button-container']//button[@class = 'confirm']")));
+                    WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sa-confirm-button-container']//button[@class = 'confirm']", firefoxDriver);
+                    Thread.sleep(500);
+                    SeleniumDAO.click(confirmButton);
+                    SeleniumDAO.click(confirmButton);
+                } catch (Exception e) { }
+            }
+
+            WebElement modAgentsGroups = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'edit-groups.php']", firefoxDriver);
+            SeleniumDAO.click(modAgentsGroups);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contenido")));
+            for (int i = 1; i <= groupsToClean.size(); i++)
+            {
+                try{
+                    WebElement deleteButton = SeleniumDAO.selectElementBy("xpath", "//tr[1]/td[8]", firefoxDriver);
+                    SeleniumDAO.click(deleteButton);
+                    WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sa-confirm-button-container']//button[@class = 'confirm']", firefoxDriver);
+                    Thread.sleep(500);
+                    SeleniumDAO.click(confirmButton);
+                    Thread.sleep(50);
+                    SeleniumDAO.click(confirmButton);
+                } catch (Exception e){}
+            }
+        } catch (Exception e){
+
+        } finally {
+            firefoxDriver.close();
+        }
     }
 }

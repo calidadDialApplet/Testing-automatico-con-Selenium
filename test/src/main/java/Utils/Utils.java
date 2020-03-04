@@ -1,13 +1,13 @@
 package Utils;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import main.SeleniumDAO;
 
+import java.io.IOException;
 import java.util.Random;
 
 public class Utils {
@@ -75,6 +75,19 @@ public class Utils {
         } catch (Exception e2) {
             return "ERROR. The username and/or password is invalid";
 
+        }
+    }
+
+    public static void takeScreenshot(String path, WebDriver driver) throws IOException, InterruptedException {
+        try
+        {
+            Thread.sleep(1000);
+            File.deleteExistingFile(path + ".png");
+            java.io.File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+            FileUtils.copyFile(screenshot, new java.io.File(path + ".png"));
+        } catch (Exception e)
+        {
+            throw e;
         }
     }
 

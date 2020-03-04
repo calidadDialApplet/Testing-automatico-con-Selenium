@@ -4,14 +4,10 @@ import exceptions.MissingParameterException;
 import main.SeleniumDAO;
 import Utils.TestWithConfig;
 import Utils.DriversConfig;
-import Utils.File;
 import Utils.Utils;
 
-import org.apache.commons.io.FileUtils;
 import org.ini4j.Wini;
 import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -147,16 +143,7 @@ public class ProductivityAgentsTest extends TestWithConfig {
             SeleniumDAO.click(sendButton);
 
             //Takes a screenshot of the driver to check it manually after the test finishes
-            try
-            {
-                Thread.sleep(2000);
-                File.deleteExistingFile("./screenshotProductivityAgents");
-                java.io.File screenshot = ((TakesScreenshot)firefoxDriver).getScreenshotAs(OutputType.FILE);
-                FileUtils.copyFile(screenshot, new java.io.File("./screenshotProductivityAgents"));
-            } catch (Exception e)
-            {
-                return e.toString() + "\nERROR. The screenshot could not be taken";
-            }
+            Utils.takeScreenshot("./ProductivityAgentsOut/screenshotProductivityAgents", firefoxDriver);
 
             return "Test OK. A screenshot of the graph has been taken. Look at the folder to check if the test has worked.";
 
@@ -164,6 +151,7 @@ public class ProductivityAgentsTest extends TestWithConfig {
 
         } catch (Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "ERROR. Unexpected exception";
         }
 

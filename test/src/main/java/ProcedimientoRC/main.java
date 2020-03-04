@@ -2,6 +2,7 @@ package ProcedimientoRC;
 
 import CheckListRafa.*;
 import ProcedimientoRC.ParteDeAgentes.CleanParteDeAgentes;
+import ProcedimientoRC.ParteDeShowflow.CleanParteDeShowflow;
 import Utils.CleanTest;
 import Utils.Color;
 import Utils.Test;
@@ -50,16 +51,17 @@ public class main {
             tests.put("parteDeShowflow", new ParteDeShowflowTest(commonIni));
 
             testsToClean.put("parteDeAgentes", new CleanParteDeAgentes(commonIni));
+            testsToClean.put("parteDeShowflow", new CleanParteDeShowflow(commonIni));
 
 
             String testsListAsString = commonIni.get("Test", "testsList");
             String testsToCleanAsString = commonIni.get("Clean", "testsToClean");
-            List<String> testsToCleanList = Arrays.asList(testsToCleanAsString.split(","));
             List<String> testsList;
 
 
-            if(testsListAsString != null)
+            if(testsToCleanAsString != null)
             {
+                List<String> testsToCleanList = Arrays.asList(testsToCleanAsString.split(","));
                 for(String testToClean : testsToCleanList)
                 {
                     testsToClean.get(testToClean).clean();

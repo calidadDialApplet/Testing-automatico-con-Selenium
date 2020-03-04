@@ -1,5 +1,9 @@
 .idea/workspace.xml
 .idea/*
 *.csv
+<<<<<<< HEAD
 *.ini
 *.class
+=======
+*.png
+>>>>>>> 0db8d541ee61d862a48e4497dc6892b7f474d209
