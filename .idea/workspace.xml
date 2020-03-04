@@ -7,64 +7,113 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad8c7bbb-0b66-4f9c-b570-480c72567a32" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentes/CleanParteDeAgentes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/Utils/CleanTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/Utils/Color.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/src/main/java/exceptions/MissingParameterException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/1_191_769_2020_02_17_dialapplet-1581936824-212-0.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/InicializationSettings.ini" beforeDir="false" afterPath="$PROJECT_DIR$/InicializationSettings.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contactsqualification.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/screenshot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/InicializationSettings.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/InicializationSettingsRC.ini" beforeDir="false" afterPath="$PROJECT_DIR$/InicializationSettingsRC.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/InicializationSettingsRafa.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/chromedriver" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/geckodriver" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/geckodriver.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/1_191_769_2020_02_17_dialapplet-1581941279-222-0.wav" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/Checklist.tar.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/Testing-automatico-con-Selenium.jar" beforeDir="false" afterPath="$PROJECT_DIR$/test/out/Testing-automatico-con-Selenium.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/contactsqualification.csv" beforeDir="false" afterPath="$PROJECT_DIR$/test/out/contactsqualification.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/out/screenshot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/CallsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/CallsTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/ExportReportTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/ProductivityExportTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/ReportTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/ProductivityAgentsTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/CheckListRafa/main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeAgentesTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeShowflowTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeShowflowTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Settings/InicializationSettings.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Settings/InicializationSettingsRC.ini" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Settings/chromedriver" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Settings/geckodriver" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Test_2_1.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Test_Empresa_Piloto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Test_Piloto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Utils/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/Utils/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Utils/TestWithConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/Utils/TestWithConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/src/main/java/Utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/Utils/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CallsTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CallsTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CordinatorTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CordinatorTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/ExportReportTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/ReportTest.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/main.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/CheckListRafa/main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeAgentesTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeAgentesTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/main.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Test_2_1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Test_Empresa_Piloto.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Test_Piloto.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/DriversConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Utils/DriversConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/File.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Utils/File.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/Test.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Utils/Test.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/TestWithConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Utils/TestWithConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/Utils.class" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/classes/Utils/Utils.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InitializationSettingsSelf.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshotCalls" beforeDir="false" afterPath="$PROJECT_DIR$/screenshotCalls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/dialselenium.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/src/main/java/main/SeleniumDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/src/main/java/main/SeleniumDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CallsTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/CordinatorTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/ProductivityAgentsTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/ProductivityExportTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/CheckListRafa/main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/META-INF/dialselenium.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeAgentes/CleanParteDeAgentes.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeAgentesTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflow/Subtypology.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/ParteDeShowflowTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/ProcedimientoRC/main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/CleanTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/Color.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/DriversConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/File.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/Test.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/TestWithConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/Utils/Utils.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/exceptions/MissingParameterException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/Action.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/ActionController$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/ActionController$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/ActionController$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/ActionController$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/ActionController$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/ActionController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/GlobalVariablesController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/Global_Variable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/ImportController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/MainController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/SettingsController$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/SettingsController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/Variable.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/VariableNV.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/gui/VariablesController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/main/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/main/SeleniumDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/persistence/H2DAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/classes/persistence/settingsObject.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/dialselenium-1.0-jar-with-dependencies.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/dialselenium-1.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/animal-sniffer-annotations-1.14.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/annotations-16.0.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/byte-buddy-1.8.15.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/checker-compat-qual-2.0.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/commons-beanutils-1.9.3.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/commons-collections-3.2.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/commons-collections4-4.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/commons-digester-1.8.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/commons-exec-1.3.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/commons-io-2.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/commons-lang3-3.8.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/commons-logging-1.2.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/commons-text-1.3.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/commons-validator-1.6.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/controlsfx-8.40.15.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/error_prone_annotations-2.1.3.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/guava-25.0-jre.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/h2-1.4.199.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/hamcrest-core-1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/ini4j-0.5.4.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/j2objc-annotations-1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/java-time-backport-1.0.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/javax.servlet-api-3.1.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/jcip-annotations-1.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/jcommander-1.72.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/jetty-repacked-9.4.12.v20180830.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/jfoenix-9.0.9.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/json-20180813.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/json-simple-1.1.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/jsr305-1.3.9.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/junit-4.10.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/okhttp-3.11.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/okio-1.14.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/opencsv-4.6.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/selenium-api-3.141.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/selenium-chrome-driver-3.141.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/selenium-edge-driver-3.141.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/selenium-firefox-driver-3.141.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/selenium-ie-driver-3.141.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/selenium-java-3.141.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/selenium-opera-driver-3.141.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/selenium-remote-driver-3.141.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/selenium-safari-driver-3.141.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/selenium-server-3.141.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/selenium-support-3.141.5.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/lib/snakeyaml-1.19.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/maven-archiver/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/test/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,10 +139,13 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/test/src/main/java" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="project.structure.side.proportion" value="0.2735632" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.tools" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -110,11 +162,25 @@
       <command value="mvn install" />
     </option>
   </component>
-  <component name="RunManager" selected="Application.mainChecklist">
-    <configuration name="mainChecklist" type="Application" factoryName="Application" temporary="true">
+  <component name="RunManager" selected="Application.main">
+    <configuration name="main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="CheckListRafa.main" />
       <module name="dialselenium" />
-      <option name="PROGRAM_PARAMETERS" value="InicializationSettings.ini InicializationSettingsSelf.ini      productivityAgents, productivityExport,calls,coordinator" />
+      <option name="PROGRAM_PARAMETERS" value="cloud6.ini self.ini" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="CheckListRafa.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="mainChecklist" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="CheckListRafa.main" />
+      <module name="Testing-automatico-con-Selenium" />
+      <option name="PROGRAM_PARAMETERS" value="../../cloud3.ini" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="Utils.*" />
@@ -136,9 +202,11 @@
     <list>
       <item itemvalue="Application.mainRC" />
       <item itemvalue="Application.mainChecklist" />
+      <item itemvalue="Application.main" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.main" />
         <item itemvalue="Application.mainChecklist" />
       </list>
     </recent_temporary>
@@ -153,18 +221,27 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1553264312087</updated>
+      <workItem from="1582289291738" duration="1126000" />
+      <workItem from="1582290432012" duration="645000" />
+      <workItem from="1582293065441" duration="546000" />
+      <workItem from="1583312010887" duration="404000" />
     </task>
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
   <component name="WindowStateProjectService">
-    <state x="555" y="186" width="800" height="672" key="#Project_Structure" timestamp="1581583301649">
-      <screen x="0" y="0" width="1920" height="1051" />
+    <state x="555" y="147" width="800" height="672" key="#Project_Structure" timestamp="1582289563398">
+      <screen x="0" y="0" width="1920" height="832" />
     </state>
     <state x="555" y="186" width="800" height="672" key="#Project_Structure/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581583301649" />
-    <state x="328" y="291" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582272590410">
-      <screen x="0" y="0" width="1920" height="1051" />
+    <state x="555" y="147" key="#Project_Structure/1920.0.1152.864/0.0.1920.832@0.0.1920.832" timestamp="1582289563398" />
+    <state x="328" y="148" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1583312249104">
+      <screen x="0" y="0" width="1920" height="832" />
     </state>
     <state x="328" y="291" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582272590410" />
+    <state x="328" y="148" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1152.864/0.0.1920.832@0.0.1920.832" timestamp="1583312249104" />
     <state x="649" y="330" width="611" height="383" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1581582774961">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
@@ -173,14 +250,23 @@
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
     <state x="768" y="237" width="374" height="570" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582204806427" />
-    <state x="687" y="309" width="525" height="421" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1582199944884">
-      <screen x="0" y="0" width="1920" height="1051" />
+    <state x="93" y="314" width="525" height="421" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1582289467133">
+      <screen x="0" y="0" width="1920" height="832" />
     </state>
     <state x="687" y="309" width="525" height="421" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582199944884" />
+    <state x="93" y="314" width="525" height="421" key="#com.intellij.ide.util.TreeClassChooserDialog/1920.0.1152.864/0.0.1920.832@0.0.1920.832" timestamp="1582289467133" />
+    <state x="808" y="415" width="293" height="211" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1582289435437">
+      <screen x="0" y="0" width="1920" height="832" />
+    </state>
+    <state x="808" y="415" width="293" height="211" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/1920.0.1152.864/0.0.1920.832@0.0.1920.832" timestamp="1582289435437" />
     <state x="693" y="274" width="524" height="495" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1581937871423">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
     <state x="693" y="274" width="524" height="495" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581937871423" />
+    <state x="656" y="122" width="598" height="705" key="#mainChecklist" timestamp="1582289533929">
+      <screen x="0" y="0" width="1920" height="832" />
+    </state>
+    <state x="656" y="122" width="598" height="705" key="#mainChecklist/1920.0.1152.864/0.0.1920.832@0.0.1920.832" timestamp="1582289533929" />
     <state x="656" y="185" width="598" height="673" key="#mainRC" timestamp="1582200023816">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
@@ -189,30 +275,35 @@
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
     <state width="451" height="486" key="DebuggerActiveHint/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582193344892" />
-    <state x="720" y="266" width="469" height="506" key="FileChooserDialogImpl" timestamp="1581673792461">
-      <screen x="0" y="0" width="1920" height="1051" />
+    <state x="720" y="211" width="637" height="506" key="FileChooserDialogImpl" timestamp="1582289963240">
+      <screen x="0" y="0" width="1920" height="832" />
     </state>
     <state x="720" y="266" width="469" height="506" key="FileChooserDialogImpl/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581673792461" />
-    <state width="1878" height="318" key="GridCell.Tab.0.bottom" timestamp="1582273925387">
-      <screen x="0" y="0" width="1920" height="1051" />
+    <state x="720" y="211" width="637" height="506" key="FileChooserDialogImpl/1920.0.1152.864/0.0.1920.832@0.0.1920.832" timestamp="1582289963240" />
+    <state width="1878" height="279" key="GridCell.Tab.0.bottom" timestamp="1583312344502">
+      <screen x="0" y="0" width="1920" height="832" />
     </state>
     <state width="1878" height="318" key="GridCell.Tab.0.bottom/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582273925387" />
     <state width="1238" height="142" key="GridCell.Tab.0.bottom/0.0.1920.1051/1920.0.1280.1024@1920.0.1280.1024" timestamp="1582017514861" />
-    <state width="1878" height="318" key="GridCell.Tab.0.center" timestamp="1582273925387">
-      <screen x="0" y="0" width="1920" height="1051" />
+    <state width="1878" height="279" key="GridCell.Tab.0.bottom/1920.0.1152.864/0.0.1920.832@0.0.1920.832" timestamp="1583312344502" />
+    <state width="1878" height="279" key="GridCell.Tab.0.center" timestamp="1583312344502">
+      <screen x="0" y="0" width="1920" height="832" />
     </state>
     <state width="1878" height="318" key="GridCell.Tab.0.center/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582273925387" />
     <state width="1238" height="142" key="GridCell.Tab.0.center/0.0.1920.1051/1920.0.1280.1024@1920.0.1280.1024" timestamp="1582017514861" />
-    <state width="1878" height="318" key="GridCell.Tab.0.left" timestamp="1582273925387">
-      <screen x="0" y="0" width="1920" height="1051" />
+    <state width="1878" height="279" key="GridCell.Tab.0.center/1920.0.1152.864/0.0.1920.832@0.0.1920.832" timestamp="1583312344502" />
+    <state width="1878" height="279" key="GridCell.Tab.0.left" timestamp="1583312344502">
+      <screen x="0" y="0" width="1920" height="832" />
     </state>
     <state width="1878" height="318" key="GridCell.Tab.0.left/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582273925387" />
     <state width="1238" height="142" key="GridCell.Tab.0.left/0.0.1920.1051/1920.0.1280.1024@1920.0.1280.1024" timestamp="1582017514861" />
-    <state width="1878" height="318" key="GridCell.Tab.0.right" timestamp="1582273925387">
-      <screen x="0" y="0" width="1920" height="1051" />
+    <state width="1878" height="279" key="GridCell.Tab.0.left/1920.0.1152.864/0.0.1920.832@0.0.1920.832" timestamp="1583312344502" />
+    <state width="1878" height="279" key="GridCell.Tab.0.right" timestamp="1583312344502">
+      <screen x="0" y="0" width="1920" height="832" />
     </state>
     <state width="1878" height="318" key="GridCell.Tab.0.right/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582273925387" />
     <state width="1238" height="142" key="GridCell.Tab.0.right/0.0.1920.1051/1920.0.1280.1024@1920.0.1280.1024" timestamp="1582017514861" />
+    <state width="1878" height="279" key="GridCell.Tab.0.right/1920.0.1152.864/0.0.1920.832@0.0.1920.832" timestamp="1583312344502" />
     <state width="1878" height="360" key="GridCell.Tab.1.bottom" timestamp="1582205842610">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
@@ -233,22 +324,25 @@
     </state>
     <state width="1878" height="360" key="GridCell.Tab.1.right/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582205842610" />
     <state width="1238" height="346" key="GridCell.Tab.1.right/0.0.1920.1051/1920.0.1280.1024@1920.0.1280.1024" timestamp="1582016822131" />
-    <state x="443" y="102" width="1024" height="840" key="SettingsEditor" timestamp="1581583114194">
-      <screen x="0" y="0" width="1920" height="1051" />
+    <state x="443" y="0" width="1024" height="827" key="SettingsEditor" timestamp="1583312185890">
+      <screen x="0" y="0" width="1920" height="832" />
     </state>
     <state x="443" y="102" width="1024" height="840" key="SettingsEditor/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581583114194" />
-    <state x="643" y="352" key="com.intellij.ide.util.TipDialog" timestamp="1582272375618">
-      <screen x="0" y="0" width="1920" height="1051" />
+    <state x="443" y="0" width="1024" height="827" key="SettingsEditor/1920.0.1152.864/0.0.1920.832@0.0.1920.832" timestamp="1583312185890" />
+    <state x="643" y="279" key="com.intellij.ide.util.TipDialog" timestamp="1583312011455">
+      <screen x="0" y="0" width="1920" height="832" />
     </state>
     <state x="643" y="352" key="com.intellij.ide.util.TipDialog/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1582272375618" />
+    <state x="643" y="279" key="com.intellij.ide.util.TipDialog/1920.0.1152.864/0.0.1920.832@0.0.1920.832" timestamp="1583312011455" />
     <state x="564" y="76" width="791" height="897" key="find.popup" timestamp="1581584995105">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
     <state x="564" y="76" width="791" height="897" key="find.popup/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581584995105" />
-    <state x="624" y="240" width="672" height="677" key="run.anything.popup" timestamp="1581931380250">
-      <screen x="0" y="0" width="1920" height="1051" />
+    <state x="624" y="190" width="672" height="536" key="run.anything.popup" timestamp="1582289729784">
+      <screen x="0" y="0" width="1920" height="832" />
     </state>
     <state x="624" y="240" width="672" height="677" key="run.anything.popup/0.0.1920.1051/1920.0.1280.1024@0.0.1920.1051" timestamp="1581931380250" />
+    <state x="624" y="190" width="672" height="536" key="run.anything.popup/1920.0.1152.864/0.0.1920.832@0.0.1920.832" timestamp="1582289729784" />
     <state x="623" y="230" width="672" height="678" key="search.everywhere.popup" timestamp="1581939350637">
       <screen x="0" y="0" width="1920" height="1051" />
     </state>
@@ -259,7 +353,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/ParteDeShowflowTest.java</url>
-          <line>332</line>
+          <line>345</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -294,17 +388,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java</url>
-          <line>140</line>
-          <option name="timeStamp" value="34" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java</url>
-          <line>97</line>
+          <line>143</line>
           <option name="timeStamp" value="35" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java</url>
-          <line>95</line>
+          <line>139</line>
           <option name="timeStamp" value="36" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -314,12 +403,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/main.java</url>
-          <line>21</line>
+          <line>66</line>
           <option name="timeStamp" value="42" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/CordinatorTest.java</url>
-          <line>94</line>
+          <line>138</line>
           <option name="timeStamp" value="46" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -344,13 +433,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/test/src/main/java/CheckListRafa/main.java</url>
-          <line>25</line>
+          <line>82</line>
           <option name="timeStamp" value="51" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/test/src/main/java/ProcedimientoRC/main.java</url>
-          <line>54</line>
-          <option name="timeStamp" value="53" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
