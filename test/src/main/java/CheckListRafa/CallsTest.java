@@ -213,7 +213,9 @@ public class CallsTest extends TestWithConfig {
 
             Select company = SeleniumDAO.findSelectElementBy("id", "companySelect", firefoxDriver);
             company.selectByValue(companyID);
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@id = 'serviceSelect']//option[@value = '" + serviceID + "']")));
             Select service = SeleniumDAO.findSelectElementBy("id", "serviceSelect", firefoxDriver);
+            Thread.sleep(500);
             service.selectByValue(serviceID);
 
 
@@ -223,8 +225,8 @@ public class CallsTest extends TestWithConfig {
 
             System.out.println("Trying to download last record");
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'activity_info']//tbody")));
             Thread.sleep(2000);
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'activity_info']//tbody/tr[1]/td[10]")));
             String lastCallNumberOnTable;
             String lastCallTimeOnTable;
 

@@ -1,6 +1,5 @@
 package main;
 
-import com.sun.javafx.PlatformUtil;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -20,15 +19,9 @@ import java.util.concurrent.TimeUnit;
 
 public class SeleniumDAO {
 
+
     public static WebDriver initializeFirefoxDriver(){
-        if(PlatformUtil.isWindows())
-        {
-            System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
-        }
-        else
-        {
-            System.setProperty("webdriver.gecko.driver", "Settings/geckodriver");
-        }
+        System.setProperty("webdriver.gecko.driver", "Settings/geckodriver");
         //Para evitar que salgan popUps
         FirefoxOptions noPopUp = new FirefoxOptions();
         noPopUp.addPreference("dom.disable_beforeunload", true);
@@ -37,28 +30,14 @@ public class SeleniumDAO {
     }
 
     public static WebDriver initializeChromeDriver(){
-        if(PlatformUtil.isWindows())
-        {
-            System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-        }
-        else
-        {
-            System.setProperty("webdriver.chrome.driver", "Settings/chromedriver");
-        }
+        System.setProperty("webdriver.chrome.driver", "Settings/chromedriver");
         WebDriver driver = new ChromeDriver();
         return driver;
     }
 
     public static WebDriver initializeFirefoxHeadlessDriver()
     {
-        if(PlatformUtil.isWindows())
-        {
-            System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
-        }
-        else
-        {
-            System.setProperty("webdriver.gecko.driver", "Settings/geckodriver");
-        }
+        System.setProperty("webdriver.gecko.driver", "Settings/geckodriver");
         FirefoxBinary firefoxBinary = new FirefoxBinary();
         firefoxBinary.addCommandLineOptions("--headless");
         FirefoxOptions firefoxOptions = new FirefoxOptions();
@@ -69,14 +48,7 @@ public class SeleniumDAO {
 
     public static WebDriver initializeChromeHeadlessDriver()
     {
-        if(PlatformUtil.isWindows())
-        {
-            System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-        }
-        else
-        {
-            System.setProperty("webdriver.chrome.driver", "Settings/chromedriver");
-        }
+        System.setProperty("webdriver.chrome.driver", "Settings/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
         return new ChromeDriver(options);
