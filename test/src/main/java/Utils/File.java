@@ -1,5 +1,6 @@
 package Utils;
 
+import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import java.io.FileFilter;
@@ -44,7 +45,7 @@ public class File {
     {
         String fileName = "";
         java.io.File dir = new java.io.File("./" + folder);
-        FileFilter fileFilter = new WildcardFileFilter("*."+ extension);
+        FileFilter fileFilter = new WildcardFileFilter("*."+ extension, IOCase.INSENSITIVE);
 
         //Wait for the download to finish
         int i = 0;

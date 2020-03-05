@@ -49,12 +49,13 @@ public class main {
 
             tests.put("parteDeAgentes", new ParteDeAgentesTest(commonIni));
             tests.put("parteDeShowflow", new ParteDeShowflowTest(commonIni));
+            tests.put("parteDeServicio", new ParteDeServicioTest(commonIni));
 
             testsToClean.put("parteDeAgentes", new CleanParteDeAgentes(commonIni));
             testsToClean.put("parteDeShowflow", new CleanParteDeShowflow(commonIni));
 
 
-            String testsListAsString = commonIni.get("Test", "testsList");
+            String testsListAsString = commonIni.get("General", "testsList");
             String testsToCleanAsString = commonIni.get("Clean", "testsToClean");
             List<String> testsList;
 
