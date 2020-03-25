@@ -129,6 +129,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
             try {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("mainMenu")));
             } catch (Exception e) {
+                e.printStackTrace();
                 //System.err.println("ERROR: Login failed");
                 return e.toString() + "\n ERROR: Login failed";
             }
@@ -158,6 +159,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
                 SeleniumDAO.click(okButton);
             } catch (Exception e)
             {
+                e.printStackTrace();
                 return e.toString() + "\nERROR: The showflow could not be created. Check if it already exists";
             }
 
@@ -171,12 +173,14 @@ public class ParteDeShowflowTest extends TestWithConfig {
                 Thread.sleep(1000);
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'showflows']//td[contains(., '" + showflowName + "')]")));
             } catch (Exception e) {
+                e.printStackTrace();
                 return e.toString() + "ERROR: Something went wrong. The showflow was created but don't appears on the showflows table";
             }
 
             return "Test OK. The showflow has been created";
         } catch (Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR: Test failed";
         }
     }
@@ -202,6 +206,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
             SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
 
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("new-option-group-name")));
             WebElement optionsGroupName = SeleniumDAO.selectElementBy("id", "new-option-group-name", firefoxDriver);
             optionsGroupName.sendKeys(showflowOptionsGroupName);
 
@@ -258,6 +263,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
                 SeleniumDAO.click(okButton);
             } catch (Exception e)
             {
+                e.printStackTrace();
                 return e.toString() + "\nERROR: Unexpected";
             }
 
@@ -286,6 +292,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
         } catch(Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR. Something went wrong";
         }
     }
@@ -334,10 +341,12 @@ public class ParteDeShowflowTest extends TestWithConfig {
                 return "Test OK. The question fields were created and apear on the table.";
             } catch (Exception e)
             {
+                e.printStackTrace();
                 return "ERROR. The questions were created but do not apear on the table";
             }
         } catch (Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR. Something went wrong";
         }
     }
@@ -412,12 +421,14 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 return e.toString() + "\nERROR. The typologies and subtypologies could not be created";
             }
 
             return "Test OK. The typologies and subtypologies have been created";
         } catch (Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR";
         }
     }
@@ -429,6 +440,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
             SeleniumDAO.writeInTo(browseButton, typologiesCsvPath);
 
             WebElement importButton = SeleniumDAO.selectElementBy("id", "submitcsv", firefoxDriver);
+            Thread.sleep(1000);
             SeleniumDAO.click(importButton);
 
             String res = "";
@@ -449,6 +461,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
             return res;
         } catch(Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR. Unexpected exception";
         }
     }
@@ -499,13 +512,14 @@ public class ParteDeShowflowTest extends TestWithConfig {
             Thread.sleep(500);
             SeleniumDAO.click(idColumn);
 
-            Utils.takeScreenshot("./screenshotDB", firefoxDriver);
+            Utils.takeScreenshot("./ParteDeShowflowOut/screenshotDB", firefoxDriver);
 
             return "Test OK. Check your work directory to see the taken screenshot of the database.";
 
 
         } catch (Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR. Unexpected exception";
         }
     }
@@ -519,6 +533,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
             try {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("mainMenu")));
             } catch (Exception e) {
+                e.printStackTrace();
                 //System.err.println("ERROR: Login failed");
                 return e.toString() + "\n ERROR: Login failed";
             }
@@ -533,10 +548,13 @@ public class ParteDeShowflowTest extends TestWithConfig {
                 Thread.sleep(1000);
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'showflows']//td[contains(., '" + showflowName + "')]")));
             } catch (Exception e) {
+                e.printStackTrace();
                 return e.toString() + "ERROR: Something went wrong. The showflow does not appear on the showflows table";
             }
 
+            Thread.sleep(1000);
             WebElement showflow = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'showflows']//td[contains(., '" + showflowName + "')]", firefoxDriver);
+            Thread.sleep(500);
             SeleniumDAO.click(showflow);
 
             WebElement configurePagesTab = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'auxSubItems']//p[@id = 'edit_showflow_pages']/a", firefoxDriver);
@@ -580,6 +598,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
         } catch(Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR. Unexpected exception";
         }
     }
@@ -628,6 +647,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
             SeleniumDAO.click(okButton);
 
             WebElement showflowPanelTab = SeleniumDAO.selectElementBy("xpath", "//a[contains(@href, 'showflowPanel.php')]", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.visibilityOf(showflowPanelTab));
             SeleniumDAO.click(showflowPanelTab);
 
             //Searchs the new showflow in the table and checks if appears
@@ -637,6 +657,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
                 Thread.sleep(1000);
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'showflows']//td[contains(., '" + showflowCopyName + "')]")));
             } catch (Exception e) {
+                e.printStackTrace();
                 return e.toString() + "ERROR: Something went wrong. The copy of the showflow does not appear on the showflows table";
             }
 
@@ -660,6 +681,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
              return "Test OK. The cloned showflow matchs with the original";
         } catch(Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR. Unexpected exception";
         }
     }
@@ -685,6 +707,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
             return "Check OK. The contact fields of the cloned showflow match with the original";
         } catch (Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR. The contact fields of the cloned showflow do not match with the original";
         }
     }
@@ -714,6 +737,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
             return "Check OK. The showflow fields of the cloned showflow match with the original";
         } catch (Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR. The showflow fields of the cloned showflow do not match with the original";
         }
     }
@@ -735,12 +759,13 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
             checkDBforShowflowCopy();
 
-            Utils.takeScreenshot("./screenshotDBcopy", firefoxDriver);
+            Utils.takeScreenshot("./ParteDeShowflowOut/screenshotDBcopy", firefoxDriver);
 
             return "Check OK. The action fields of the cloned showflow match with the original. A screenshot of the DB was taken.";
 
         } catch(Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR. The action fields of the cloned showflow do not match with the original";
         }
     }
@@ -754,6 +779,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
             try {
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("mainMenu")));
             } catch (Exception e) {
+                e.printStackTrace();
                 //System.err.println("ERROR: Login failed");
                 return e.toString() + "\n ERROR: Login failed";
             }
@@ -776,7 +802,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
             Thread.sleep(2000);
 
-            Utils.takeScreenshot("./screenshotInitialPageCopy", firefoxDriver);
+            Utils.takeScreenshot("./ParteDeShowflowOut/screenshotInitialPageCopy", firefoxDriver);
 
             WebElement backButton = SeleniumDAO.selectElementBy("xpath", "//img[@src = 'imagenes/menus/back.png']", firefoxDriver);
             SeleniumDAO.click(backButton);
@@ -787,12 +813,13 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
             Thread.sleep(2000);
 
-            Utils.takeScreenshot("./screenshotFinalPageCopy", firefoxDriver);
+            Utils.takeScreenshot("./ParteDeShowflowOut/screenshotFinalPageCopy", firefoxDriver);
 
             return "Check OK. Two screenshots have been taken to compare with the screenshots taken of the original pages";
 
         } catch (Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR. Unexpected exception";
         }
     }
@@ -839,6 +866,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
         } catch (Exception e)
         {
+            e.printStackTrace();
             throw e;
         }
     }
@@ -864,7 +892,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
         }
 
         Thread.sleep(2000);
-        Utils.takeScreenshot("./screenshotInitialPage", firefoxDriver);
+        Utils.takeScreenshot("./ParteDeShowflowOut/screenshotInitialPage", firefoxDriver);
 
         SeleniumDAO.switchToDefaultContent(firefoxDriver);
         WebElement backButton = SeleniumDAO.selectElementBy("xpath", "//img[@src = 'imagenes/menus/back.png']", firefoxDriver);
@@ -905,7 +933,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
 
         Thread.sleep(2000);
-        Utils.takeScreenshot("./screenshotFinalPage", firefoxDriver);
+        Utils.takeScreenshot("./ParteDeShowflowOut/screenshotFinalPage", firefoxDriver);
 
         SeleniumDAO.switchToDefaultContent(firefoxDriver);
         WebElement backButton = SeleniumDAO.selectElementBy("xpath", "//img[@src = 'imagenes/menus/back.png']", firefoxDriver);
@@ -929,6 +957,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
         }});
         result.put("PENDIENTE", new ArrayList<Subtypology>() {{
             add(new Subtypology("AGENDADA", "NULL", "1"));
+            add(new Subtypology("AGENDADA2", "NULL", "1"));
         }});
         result.put("VENTA", new ArrayList<Subtypology>() {{
             add(new Subtypology("ADSL", "POSITIVE", "1"));
@@ -965,6 +994,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
         }
 
         WebElement closeIframe = SeleniumDAO.selectElementBy("id", "fancybox-close", firefoxDriver);
+        Thread.sleep(1000);
         SeleniumDAO.click(closeIframe);
 
     }

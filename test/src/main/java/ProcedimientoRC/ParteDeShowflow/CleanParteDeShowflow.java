@@ -90,6 +90,7 @@ public class CleanParteDeShowflow extends CleanTest {
                     Thread.sleep(1000);
                     WebElement deleteButton = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'showflows']//td[contains(., '" + showflowName + "')]" +
                             "/following-sibling::td/a[@class = 'delete']", firefoxDriver);
+                    firefoxWaiting.until(ExpectedConditions.visibilityOf(deleteButton));
                     SeleniumDAO.click(deleteButton);
 
                     firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.className("sa-confirm-button-container")));
@@ -99,13 +100,14 @@ public class CleanParteDeShowflow extends CleanTest {
                     Thread.sleep(500);
                     SeleniumDAO.click(yesDeleteButton);
                 } catch (Exception e) {
-                    System.out.println(e.toString());
+                    e.printStackTrace();
+                    System.out.println("Clean ERROR. The Showflow could not be deleted");
                 }
 
             }
         } catch (Exception e)
         {
-
+            e.printStackTrace();
         } finally {
             firefoxDriver.close();
         }

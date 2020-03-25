@@ -997,11 +997,8 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
         SeleniumDAO.switchToDefaultContent(firefoxDriver);
 
-        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("logout")));
-        WebElement logOutButton = SeleniumDAO.selectElementBy("id", "logout", firefoxDriver);
-        Thread.sleep(2000);
-        SeleniumDAO.click(logOutButton);
-        Thread.sleep(2000);
+        Utils.logoutWebClient(firefoxWaiting, firefoxDriver);
+
         return "Test OK. Login successfully. The agent stayed 60 seconds in rest state";
         } catch (Exception e)
         {

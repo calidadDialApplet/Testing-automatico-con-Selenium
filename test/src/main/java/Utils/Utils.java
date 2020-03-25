@@ -91,4 +91,12 @@ public class Utils {
         }
     }
 
+    public static void logoutWebClient(WebDriverWait firefoxWaiting, WebDriver firefoxDriver) throws InterruptedException {
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("logout")));
+        WebElement logOutButton = SeleniumDAO.selectElementBy("id", "logout", firefoxDriver);
+        Thread.sleep(2000);
+        SeleniumDAO.click(logOutButton);
+        Thread.sleep(5000);
+    }
+
 }

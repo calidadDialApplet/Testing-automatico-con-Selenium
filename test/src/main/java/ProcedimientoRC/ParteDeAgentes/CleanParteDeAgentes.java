@@ -142,12 +142,12 @@ public class CleanParteDeAgentes extends CleanTest {
             for (int i = 1; i <= groupsToClean.size(); i++)
             {
                 try{
+                    firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//tr[1]/td[8]")));
                     WebElement deleteButton = SeleniumDAO.selectElementBy("xpath", "//tr[1]/td[8]", firefoxDriver);
                     SeleniumDAO.click(deleteButton);
                     WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sa-confirm-button-container']//button[@class = 'confirm']", firefoxDriver);
                     Thread.sleep(500);
                     SeleniumDAO.click(confirmButton);
-                    Thread.sleep(50);
                     SeleniumDAO.click(confirmButton);
                 } catch (Exception e){}
             }
