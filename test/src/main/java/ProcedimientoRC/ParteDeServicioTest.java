@@ -34,8 +34,12 @@ public class ParteDeServicioTest extends TestWithConfig {
     static String incomingCallModeName;
     static String queueName;
     static String DID;
-    static String agentCoordName1;
+    static String agentName4;
+    static String agentName5;
+    static String agentCoordName;
     static String groupName1y2;
+    static String groupName3;
+    static String groupName;
     static String robinsonListPath;
     static String importContactsPath;
 
@@ -60,8 +64,9 @@ public class ParteDeServicioTest extends TestWithConfig {
         requiredParameters.put("CallMode", new ArrayList<>(Arrays.asList("campaignBeginningDate", "campaignEndDate", "transfCallModeName", "manualCallModeName",
                 "predictCallModeName", "incomingCallModeName")));
         requiredParameters.put("Queue", new ArrayList<>(Arrays.asList("queueName", "DID")));
-        requiredParameters.put("Coordinator", new ArrayList<>(Arrays.asList("agentCoordName1")));
-        requiredParameters.put("Group", new ArrayList<>(Arrays.asList("groupName1y2")));
+        requiredParameters.put("Agent", new ArrayList<>(Arrays.asList("agentName4", "agentName5")));
+        requiredParameters.put("Coordinator", new ArrayList<>(Arrays.asList("agentCoordName6")));
+        requiredParameters.put("Group", new ArrayList<>(Arrays.asList("groupName1y2", "groupName3", "groupName")));
 
         return requiredParameters;
     }
@@ -89,8 +94,12 @@ public class ParteDeServicioTest extends TestWithConfig {
             incomingCallModeName = commonIni.get("CallMode", "incomingCallModeName");
             queueName = commonIni.get("Queue", "queueName");
             DID = commonIni.get("Queue", "DID");
-            agentCoordName1 = commonIni.get("Coordinator", "agentCoordName1");
+            agentName4 = commonIni.get("Agent", "agentName4");
+            agentName5 = commonIni.get("Agent", "agentName5");
+            agentCoordName = commonIni.get("Coordinator", "agentCoordName6");
             groupName1y2 = commonIni.get("Group", "groupName1y2");
+            groupName = commonIni.get("Group", "groupName");
+            groupName3 = commonIni.get("Group", "groupName3");
 
             firefoxDriver = DriversConfig.headlessOrNot(headless);
             firefoxWaiting = new WebDriverWait(firefoxDriver, 5);
@@ -324,6 +333,12 @@ public class ParteDeServicioTest extends TestWithConfig {
             WebElement transferRadioButton = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'campaignfortransfersyes']", firefoxDriver);
             SeleniumDAO.click(transferRadioButton);
 
+            //Se deja unicamente el grupo1y2 dentro para comprobar mas adelante en el parte de webclient el panel de extensiones
+            WebElement grupo3Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName3 + "')]", firefoxDriver);
+            SeleniumDAO.click(grupo3Checkbox);
+            WebElement gropoCheckbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName + "')]", firefoxDriver);
+            SeleniumDAO.click(gropoCheckbox);
+
             WebElement addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
             SeleniumDAO.click(addCallModeButton);
 
@@ -346,6 +361,10 @@ public class ParteDeServicioTest extends TestWithConfig {
             nameInput = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'createCampaignTable']//input[@id = 'name']", firefoxDriver);
             nameInput.sendKeys(manualCallModeName);
 
+            //Este grupo solo estará en la de transferencia para comprobar los filtros del panel de extensiones en el parte de webclient
+            WebElement grupo1y2Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName1y2 + "')]", firefoxDriver);
+            SeleniumDAO.click(grupo1y2Checkbox);
+
             addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
             SeleniumDAO.click(addCallModeButton);
 
@@ -367,7 +386,13 @@ public class ParteDeServicioTest extends TestWithConfig {
             nameInput = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'createCampaignTable']//input[@id = 'name']", firefoxDriver);
             nameInput.sendKeys(predictCallModeName);
 
+            //Este grupo solo estará en la de transferencia para comprobar los filtros del panel de extensiones en el parte de webclient
+            grupo1y2Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName1y2 + "')]", firefoxDriver);
+            Thread.sleep(1000);
+            SeleniumDAO.click(grupo1y2Checkbox);
+
             addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
+            Thread.sleep(500);
             SeleniumDAO.click(addCallModeButton);
 
             SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
@@ -395,6 +420,10 @@ public class ParteDeServicioTest extends TestWithConfig {
             Select callbackSelector = SeleniumDAO.findSelectElementBy("id", "campaigncallback", firefoxDriver);
             Thread.sleep(400);
             callbackSelector.selectByVisibleText(predictCallModeName + " Callback");
+
+            //Este grupo solo estará en la de transferencia para comprobar los filtros del panel de extensiones en el parte de webclient
+            grupo1y2Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName1y2 + "')]", firefoxDriver);
+            SeleniumDAO.click(grupo1y2Checkbox);
 
             addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
             SeleniumDAO.click(addCallModeButton);
@@ -464,8 +493,10 @@ public class ParteDeServicioTest extends TestWithConfig {
             Thread.sleep(1500);
             SeleniumDAO.click(coordinatorsTab);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'coordList']//td[contains(., '" + agentCoordName1 + "')]")));
-            WebElement coordinatorToDrag = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'coordList']//td[contains(., '" + agentCoordName1 + "')]", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'coordList']//td[contains(., '" + agentCoordName + "')]")));
+            WebElement agent4ToDrag = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'agentsList']//td[contains(., '" + agentName4 + "')]", firefoxDriver);
+            WebElement agent5ToDrag = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'agentsList']//td[contains(., '" + agentName5 + "')]", firefoxDriver);
+            WebElement coordinatorToDrag = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'coordList']//td[contains(., '" + agentCoordName + "')]", firefoxDriver);
             WebElement groupToDrag = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'groupsList']//td[contains(., '" + groupName1y2 + "')]", firefoxDriver);
             WebElement whereToDrag = SeleniumDAO.selectElementBy("id", "midContenido", firefoxDriver);
 
@@ -474,12 +505,16 @@ public class ParteDeServicioTest extends TestWithConfig {
             Thread.sleep(1000);
             actions.dragAndDrop(groupToDrag, whereToDrag).build().perform();
             Thread.sleep(400);
+            actions.dragAndDrop(agent4ToDrag, whereToDrag).build().perform();
+            Thread.sleep(400);
+            actions.dragAndDrop(agent5ToDrag, whereToDrag).build().perform();
+            Thread.sleep(400);
 
             WebElement nextButton = SeleniumDAO.selectElementBy("xpath", "//input[@type = 'submit' and @name = 'send']", firefoxDriver);
             Thread.sleep(500);
             SeleniumDAO.click(nextButton);
 
-            return "Test OK. The group " + groupName1y2 + "was assigned to " + agentCoordName1;
+            return "Test OK. The group " + groupName1y2 + "was assigned to " + agentCoordName;
         } catch (Exception e) {
             e.printStackTrace();
             return e.toString() + "\nERROR. Unexpected exception";
@@ -725,6 +760,7 @@ public class ParteDeServicioTest extends TestWithConfig {
                 Thread.sleep(1500);
                 WebElement createKPI = SeleniumDAO.selectElementBy("id", "create", firefoxDriver);
                 firefoxWaiting.until(ExpectedConditions.elementToBeClickable(createKPI));
+                Thread.sleep(500);
                 SeleniumDAO.click(createKPI);
 
                 Thread.sleep(1000);
@@ -1313,6 +1349,10 @@ public class ParteDeServicioTest extends TestWithConfig {
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@id = 'queue']//option[contains(., '" + queueName + Integer.toString(randomInt) + "')]")));
             queueSelector.selectByVisibleText(queueName + Integer.toString(randomInt));
 
+            //Este grupo solo estará en la de transferencia para comprobar los filtros del panel de extensiones en el parte de webclient
+            WebElement grupo1y2Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName1y2 + "')]", firefoxDriver);
+            SeleniumDAO.click(grupo1y2Checkbox);
+
             WebElement addButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
             SeleniumDAO.click(addButton);
 
@@ -1346,6 +1386,26 @@ public class ParteDeServicioTest extends TestWithConfig {
             WebElement showflowNameInput = SeleniumDAO.selectElementBy("id", "clone-current-showflow", firefoxDriver);
             showflowNameInput.clear();
             showflowNameInput.sendKeys(showflowCopyName + "forService");
+
+            WebElement incomingCallmodeInput = SeleniumDAO.selectElementBy("xpath", "//input[@value = '" + incomingCallModeName + "']", firefoxDriver);
+            incomingCallmodeInput.clear();
+            incomingCallmodeInput.sendKeys(incomingCallModeName + "forService");
+
+            WebElement manualCallmodeInput = SeleniumDAO.selectElementBy("xpath", "//input[@value = '" + manualCallModeName + "']", firefoxDriver);
+            manualCallmodeInput.clear();
+            manualCallmodeInput.sendKeys(manualCallModeName + "forService");
+
+            WebElement predictiveCallmodeInput = SeleniumDAO.selectElementBy("xpath", "//input[@value = '" + predictCallModeName + "']", firefoxDriver);
+            predictiveCallmodeInput.clear();
+            predictiveCallmodeInput.sendKeys(predictCallModeName + "forService");
+
+            WebElement predictiveCallbackCallmodeInput = SeleniumDAO.selectElementBy("xpath", "//input[@value = '" + predictCallModeName + " Callback" + "']", firefoxDriver);
+            predictiveCallbackCallmodeInput.clear();
+            predictiveCallbackCallmodeInput.sendKeys(predictCallModeName + " CallbackforService");
+
+            WebElement transferCallmodeInput = SeleniumDAO.selectElementBy("xpath", "//input[@value = '" + transfCallModeName + "']", firefoxDriver);
+            transferCallmodeInput.clear();
+            transferCallmodeInput.sendKeys(transfCallModeName + "forService");
 
             WebElement submitButton = SeleniumDAO.selectElementBy("id", "sendButton", firefoxDriver);
             SeleniumDAO.click(submitButton);
@@ -1459,7 +1519,8 @@ public class ParteDeServicioTest extends TestWithConfig {
 
             //Comprueba si en la tabla de modos de llamada estan los nombres que utilizamos para crearlos
             List<WebElement> callmodeNames = firefoxDriver.findElements(By.xpath("//tbody[@class = 'ui-sortable']/tr/td[3]"));
-            List<String> callmodeStringNames = new ArrayList<>(Arrays.asList(predictCallModeName, predictCallModeName + " Callback", incomingCallModeName, manualCallModeName, transfCallModeName, "auxiliarCallMode"));
+            List<String> callmodeStringNames = new ArrayList<>(Arrays.asList(predictCallModeName + "forService", predictCallModeName + " CallbackforService", incomingCallModeName + "forService",
+                    manualCallModeName + "forService", transfCallModeName + "forService", "auxiliarCallMode"));
             for(WebElement callmodeName : callmodeNames)
             {
                 if(!callmodeStringNames.contains(callmodeName.getText())) res = false;
@@ -1469,7 +1530,7 @@ public class ParteDeServicioTest extends TestWithConfig {
             WebElement favouriteCallmode = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + predictCallModeName + "')]/following-sibling::td//img[@class = 'baseStarOn']",
                     firefoxDriver);
             //Comprobamos la configuracion del modo favorito
-            WebElement phoneButton = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + predictCallModeName + "')]/following-sibling::td//img[@src = 'imagenes/oldphone.png']",
+            WebElement phoneButton = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + predictCallModeName + "forService" + "')]/following-sibling::td//img[@src = 'imagenes/oldphone.png']",
                     firefoxDriver);
             SeleniumDAO.click(phoneButton);
             SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
@@ -1503,7 +1564,7 @@ public class ParteDeServicioTest extends TestWithConfig {
             WebElement autoRadioButton = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'tipology']//table[2]//label[1]/input[@type = 'radio']", firefoxDriver);
             if(!autoRadioButton.isSelected()) res = false;
             Select destinyCallmodeSelector = SeleniumDAO.findSelectElementBy("xpath", "//div[@id = 'tipology']//table[2]//select[contains(@name, 'campaigndest_')]", firefoxDriver);
-            if(!destinyCallmodeSelector.getFirstSelectedOption().getText().equals(predictCallModeName + " Callback")) res = false;
+            if(!destinyCallmodeSelector.getFirstSelectedOption().getText().equals(predictCallModeName + " CallbackforService")) res = false;
 
             WebElement sendButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
             SeleniumDAO.click(sendButton);
@@ -1528,9 +1589,9 @@ public class ParteDeServicioTest extends TestWithConfig {
             Thread.sleep(500);
             SeleniumDAO.click(nextButton);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'midContenido']//td[contains(., '" + agentCoordName1 + "')]")));
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'midContenido']//td[contains(., '" + agentCoordName + "')]")));
             //Intenta encontrar los elementos. Si no, salta excepcion indicando que los servicios no son iguales
-            WebElement agent = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'midContenido']//td[contains(., '" + agentCoordName1 + "')]", firefoxDriver);
+            WebElement agent = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'midContenido']//td[contains(., '" + agentCoordName + "')]", firefoxDriver);
             WebElement group = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'midContenido']//td[contains(., '" + groupName1y2 + "')]", firefoxDriver);
 
             return res;
@@ -1590,7 +1651,7 @@ public class ParteDeServicioTest extends TestWithConfig {
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("campaignSelDef")));
             Select callModeSelector = SeleniumDAO.findSelectElementBy("id", "campaignSelDef", firefoxDriver);
-            if(!callModeSelector.getFirstSelectedOption().getText().equals(predictCallModeName)) res = false;
+            if(!callModeSelector.getFirstSelectedOption().getText().equals(predictCallModeName + "forService")) res = false;
 
             WebElement database = SeleniumDAO.selectElementBy("xpath", "//tr[@data-enabled = 'true']//td[contains(., 'DDBB1')]", firefoxDriver);
 

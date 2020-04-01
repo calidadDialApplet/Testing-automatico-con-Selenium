@@ -32,6 +32,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
     static String agentName3;
     static String agentName4;
     static String agentName5;
+    static String agentName7;
     static String agentPassword;
     static String pilotAgentName1;
     static String pilotAgentName2;
@@ -61,7 +62,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
         requiredParameters.put("General", new ArrayList<>(Arrays.asList("url", "headless")));
         requiredParameters.put("Admin", new ArrayList<>(Arrays.asList("adminName", "adminPassword")));
         requiredParameters.put("Group", new ArrayList<>(Arrays.asList("groupName", "groupName1y2", "groupName3")));
-        requiredParameters.put("Agent", new ArrayList<>(Arrays.asList("agentName1", "agentName2", "agentName3", "agentName4", "agentName5",
+        requiredParameters.put("Agent", new ArrayList<>(Arrays.asList("agentName1", "agentName2", "agentName3", "agentName4", "agentName5", "agentName7",
                 "agentPassword", "pilotAgentName1", "pilotAgentName2")));
         requiredParameters.put("Coordinator", new ArrayList<>(Arrays.asList("agentCoordName1", "agentCoordName6", "coordinatorPassword")));
         requiredParameters.put("CSV", new ArrayList<>(Arrays.asList("agentsCsvPath")));
@@ -90,6 +91,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
                 agentName3 = commonIni.get("Agent", "agentName3");
                 agentName4 = commonIni.get("Agent", "agentName4");
                 agentName5 = commonIni.get("Agent", "agentName5");
+                agentName7 = commonIni.get("Agent", "agentName7");
                 agentPassword = commonIni.get("Agent", "agentPassword");
                 pilotAgentName1 = commonIni.get("Agent", "pilotAgentName1");
                 pilotAgentName2 = commonIni.get("Agent", "pilotAgentName2");
@@ -121,6 +123,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
             results.put("\n--Create a Agent user with name: " + agentName4 + "  ->  ", newAgent4());
             results.put("\n--Create a Agent user with name: " + agentName5 + "  ->  ", newAgent5());
             results.put("\n--Create a Agent user with name: " + agentCoordName6 + "  ->  ", newAgentC6());
+            results.put("\n--Create a Agent user with name: " + agentName7 + "  ->  ", newAgent7toGroup1y2());
             results.put("\n--Login with agent: " + agentName1 + "test  ->  ", agent1LoginTest());
             results.put("\n--Login with agent: " + agentName2 + "test  ->  ", agent2LoginTest());
 
@@ -780,6 +783,14 @@ public class ParteDeAgentesTest extends TestWithConfig {
             WebElement submit = SeleniumDAO.selectElementBy("name", "submit-page-one", firefoxDriver);
             SeleniumDAO.click(submit);
 
+            try {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//tbody//label[contains(., '" + serviceID + "')]")));
+                WebElement service = SeleniumDAO.selectElementBy("xpath", "//tbody//label[contains(., '" + serviceID + "')]", firefoxDriver);
+                SeleniumDAO.click(service);
+            } catch (Exception e) {
+                return e.toString() + "\nERROR: The service with id = " + serviceID + " does not exists";
+            }
+
             WebElement confirmButton2 = SeleniumDAO.selectElementBy("name", "submit-page-two", firefoxDriver);
             SeleniumDAO.click(confirmButton2);
 
@@ -794,6 +805,82 @@ public class ParteDeAgentesTest extends TestWithConfig {
             }
 
             return "Test OK. The agent: " + agentName5 + " was created.";
+        } catch (Exception e) {
+            return e.toString();
+        }
+    }
+
+    public String newAgent7toGroup1y2()
+    {
+        try {
+            WebElement configureUsers = SeleniumDAO.selectElementBy("xpath",
+                    "//div[@class = 'ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active']" +
+                            "//a[@href = 'configure_users.php']", firefoxDriver);
+            SeleniumDAO.click(configureUsers);
+
+            WebElement createUser = SeleniumDAO.selectElementBy("xpath", "//tbody//a[@href = 'edit-user.php?']", firefoxDriver);
+            SeleniumDAO.click(createUser);
+
+            WebElement username = SeleniumDAO.selectElementBy("id", "username", firefoxDriver);
+            username.sendKeys(agentName7);
+
+            WebElement userPass = SeleniumDAO.selectElementBy("id", "pswd", firefoxDriver);
+            userPass.sendKeys(agentPassword);
+
+            WebElement confirmUserPass = SeleniumDAO.selectElementBy("id", "pass2", firefoxDriver);
+            confirmUserPass.sendKeys(agentPassword);
+
+            // Set agent role
+            WebElement agent = SeleniumDAO.selectElementBy("id", "isagent", firefoxDriver);
+            SeleniumDAO.click(agent);
+
+            // Click on submit button
+            Thread.sleep(500);
+            WebElement accept = SeleniumDAO.selectElementBy("id", "submit", firefoxDriver);
+            SeleniumDAO.click(accept);
+
+            try {
+                /*firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+                WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                SeleniumDAO.click(okButton);
+                return "ERROR: The user " + agentCoordName1 + " already exists. Delete it and try again.";*/
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.name("send_tabs")));
+            } catch (Exception e) {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+                WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                SeleniumDAO.click(okButton);
+                return "ERROR: The user " + agentName4 + " already exists. Delete it and try again.";
+            }
+
+            WebElement send = SeleniumDAO.selectElementBy("name", "send_tabs", firefoxDriver);
+            SeleniumDAO.click(send);
+
+            try {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contenido")));
+                WebElement grupo1y2Checkbox = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'groups']//label[contains(., '" + groupName1y2 + "')]", firefoxDriver);
+                SeleniumDAO.click(grupo1y2Checkbox);
+            } catch (Exception e) {
+                return e.toString() + "\nERROR: The group: " + groupName1y2 + " does not exists. Create it and try again.";
+            }
+
+            // Configure agent groups(default configuration)
+            WebElement submit = SeleniumDAO.selectElementBy("name", "submit-page-one", firefoxDriver);
+            SeleniumDAO.click(submit);
+
+            WebElement confirmButton2 = SeleniumDAO.selectElementBy("name", "submit-page-two", firefoxDriver);
+            SeleniumDAO.click(confirmButton2);
+
+            //Searchs the new user in the table and checks if appears
+            try {
+                WebElement searcher = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'searcher']//input[@type = 'text']", firefoxDriver);
+                searcher.sendKeys(agentName4);
+                Thread.sleep(1000);
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("user-" + agentName4)));
+            } catch (Exception e) {
+                return e.toString() + "ERROR: Something went wrong. The user was created but don't appears on the users table";
+            }
+
+            return "Test OK. The agent: " + agentName4 + " was created.";
         } catch (Exception e) {
             return e.toString();
         }

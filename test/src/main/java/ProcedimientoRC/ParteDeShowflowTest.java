@@ -134,57 +134,17 @@ public class ParteDeShowflowTest extends TestWithConfig {
                 return e.toString() + "\n ERROR: Login failed";
             }
 
-            WebElement showflowTab = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'mainMenu']//li[@id = 'SHOWFLOW']", firefoxDriver);
-            SeleniumDAO.click(showflowTab);
+            String createShowflowRes = Utils.createShowflow(firefoxDriver, firefoxWaiting, showflowName, "contact");
+            if(createShowflowRes.contains("ERROR")) return createShowflowRes;
+            else return "Test OK. The showflow has been created";
 
-            WebElement createShowflow = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'acciones']//a[@href = 'setShowflow.php']", firefoxDriver);
-            SeleniumDAO.click(createShowflow);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contenido")));
-
-            WebElement showflowNameInput = SeleniumDAO.selectElementBy("id", "workflow-name", firefoxDriver);
-            showflowNameInput.sendKeys(showflowName);
-
-            WebElement refreshRadioButton = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'form-col input radio']//input[@name = 'workflow-showrefreshbutton']", firefoxDriver);
-            SeleniumDAO.click(refreshRadioButton);
-
-            WebElement sendButton = SeleniumDAO.selectElementBy("id", "workflow-send", firefoxDriver);
-            SeleniumDAO.click(sendButton);
-
-            try
-            {
-                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-success animate']")));
-                Thread.sleep(500);
-                WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sweet-alert showSweetAlert visible']//button[@class = 'confirm']", firefoxDriver);
-                SeleniumDAO.click(okButton);
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-                return e.toString() + "\nERROR: The showflow could not be created. Check if it already exists";
-            }
-
-            WebElement showflowPanel = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'acciones']//a[@href = 'showflowPanel.php']", firefoxDriver);
-            SeleniumDAO.click(showflowPanel);
-
-            //Searchs the new showflow in the table and checks if appears
-            try {
-                WebElement searcher = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'search']", firefoxDriver);
-                searcher.sendKeys(showflowName);
-                Thread.sleep(1000);
-                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'showflows']//td[contains(., '" + showflowName + "')]")));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return e.toString() + "ERROR: Something went wrong. The showflow was created but don't appears on the showflows table";
-            }
-
-            return "Test OK. The showflow has been created";
         } catch (Exception e)
         {
             e.printStackTrace();
             return e.toString() + "\nERROR: Test failed";
         }
     }
-    public String activateShowflowFields()
+    public static String activateShowflowFields()
     {
         //List with the options of the options group
         List<String> options = new ArrayList<>();

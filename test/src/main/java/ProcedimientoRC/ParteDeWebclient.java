@@ -16,6 +16,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 
+import javax.imageio.plugins.jpeg.JPEGImageReadParam;
 import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,11 +30,14 @@ public class ParteDeWebclient extends TestWithConfig {
     static String adminPassword;
     static String agentName4;
     static String agentName5;
+    static String agentName7;
+    static String coordName;
     static String agentPassword;
     static String extension;
     static String extension2;
     static String number;
     static String manualCallModeName;
+    static String transferCallModeName;
     static String incomingCallModeName;
     static String serviceID;
     static String bdUrl;
@@ -67,9 +71,10 @@ public class ParteDeWebclient extends TestWithConfig {
         HashMap<String, List<String>> requiredParameters = new HashMap<>();
         requiredParameters.put("General", new ArrayList<>(Arrays.asList("url", "headless", "chromePath")));
         requiredParameters.put("Admin", new ArrayList<>(Arrays.asList("adminName", "adminPassword")));
-        requiredParameters.put("Agent", new ArrayList<>(Arrays.asList("agentName4", "agentName5", "agentPassword", "extension", "extension2")));
+        requiredParameters.put("Agent", new ArrayList<>(Arrays.asList("agentName4", "agentName5", "agentName7", "agentPassword", "extension", "extension2")));
+        requiredParameters.put("Coordinator", new ArrayList<>(Arrays.asList("agentCoordName6")));
         requiredParameters.put("Contact", new ArrayList<>(Arrays.asList("number")));
-        requiredParameters.put("CallMode", new ArrayList<>(Arrays.asList("manualCallModeName", "incomingCallModeName")));
+        requiredParameters.put("CallMode", new ArrayList<>(Arrays.asList("manualCallModeName", "incomingCallModeName", "transfCallModeName")));
         requiredParameters.put("Service", new ArrayList<>(Arrays.asList("serviceID")));
         requiredParameters.put("BD", new ArrayList<>(Arrays.asList("bdUrl", "bdUser", "bdPassword", "bdPhoneStatusTable")));
         requiredParameters.put("Queue", new ArrayList<>(Arrays.asList("DID")));
@@ -90,12 +95,15 @@ public class ParteDeWebclient extends TestWithConfig {
             adminPassword = commonIni.get("Admin", "adminPassword");
             agentName4 = commonIni.get("Agent", "agentName4");
             agentName5 = commonIni.get("Agent", "agentName5");
+            agentName7 = commonIni.get("Agent", "agentName7");
             agentPassword = commonIni.get("Agent", "agentPassword");
+            coordName = commonIni.get("Coordinator", "agentCoordName6");
             extension = commonIni.get("Agent", "extension");
             extension2 = commonIni.get("Agent", "extension2");
             number = commonIni.get("Contact", "number");
             manualCallModeName = commonIni.get("CallMode", "manualCallModeName");
             incomingCallModeName = commonIni.get("CallMode", "incomingCallModeName");
+            transferCallModeName = commonIni.get("CallMode", "transfCallModeName");
             serviceID = commonIni.get("Service", "serviceID");
             bdUrl = commonIni.get("BD", "bdUrl");
             bdUser = commonIni.get("BD", "bdUser");
@@ -118,7 +126,10 @@ public class ParteDeWebclient extends TestWithConfig {
             results.put("-- Wait a incoming call, park it and and unpark it  ->  ", incomingCall());
             results.put("-- Do a manual call and transfer to another agent  ->  ", manualCallAndTransfer());
             results.put("-- Wait a incoming call and transfer to anocher agent  ->  ", incomingAndTransfer());
+            results.put("-- Do an incoming call and hang up before the agent enters  ->  ", abandonedCall());
             results.put("-- Create a new agent state and check if appears on the agent view  ->  ", createNewState());
+            results.put("-- Check all options for open showflow without call  ->  ", checkOpenSF());
+            results.put("-- Check the funcionality of coordinators on web client  ->  ", checkCoordinator());
 
             return results;
         } catch (Exception e)
@@ -230,9 +241,9 @@ public class ParteDeWebclient extends TestWithConfig {
         try
         {
             //Do a call creating a contact
-            String callRes = doACall(manualCallModeName, number, true);
+            String callRes = doACall(firefoxDriver, firefoxWaiting, manualCallModeName, number, true);
             if(callRes.contains("ERROR")) return callRes;
-            selectTypology("VENTA", "ADSL");
+            selectTypology(firefoxDriver, firefoxWaiting, "VENTA", "ADSL");
 
             //Saves the contact ID
             String[] contactIDSplitted = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'col-sm-12 showflow-info']//li[1]", firefoxDriver).getText().split(" ", 0);
@@ -242,6 +253,9 @@ public class ParteDeWebclient extends TestWithConfig {
             SeleniumDAO.click(sendButton);
 
             SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+            Utils.takeScreenshot("./ParteDeWebClientOut/KpiAfterPositiveCall", firefoxDriver);
+
 
             Utils.logoutWebClient(firefoxWaiting, firefoxDriver);
 
@@ -263,10 +277,10 @@ public class ParteDeWebclient extends TestWithConfig {
             Thread.sleep(1500);
 
             //Do a call selecting the contact created before
-            String callRes = doACall(manualCallModeName, number, false);
+            String callRes = doACall(firefoxDriver, firefoxWaiting, manualCallModeName, number, false);
             if(callRes.contains("ERROR")) return callRes;
 
-            selectTypology("PENDIENTE", "AGENDADA");
+            selectTypology(firefoxDriver, firefoxWaiting, "PENDIENTE", "AGENDADA");
 
 
             programCallback();
@@ -278,6 +292,9 @@ public class ParteDeWebclient extends TestWithConfig {
             SeleniumDAO.click(sendButton);
 
             SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+            Utils.takeScreenshot("./ParteDeWebClientOut/KpiAfterTouchedCall", firefoxDriver);
+
 
             Utils.logoutWebClient(firefoxWaiting, firefoxDriver);
 
@@ -323,15 +340,18 @@ public class ParteDeWebclient extends TestWithConfig {
     {
         try
         {
-            String callRes = doACall(manualCallModeName, number, false);
+            String callRes = doACall(firefoxDriver, firefoxWaiting, manualCallModeName, number, false);
             if(callRes.contains("ERROR")) return callRes;
 
-            selectTypology("VENTA", "ADSL");
+            selectTypology(firefoxDriver, firefoxWaiting,"VENTA", "ADSL");
 
             WebElement sendButton = SeleniumDAO.selectElementBy("xpath", "//a[@class = 'send']", firefoxDriver);
             SeleniumDAO.click(sendButton);
 
             SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+            Utils.takeScreenshot("./ParteDeWebClientOut/KpiAfterPositiveCall2", firefoxDriver);
+
 
             Utils.logoutWebClient(firefoxWaiting, firefoxDriver);
 
@@ -448,6 +468,9 @@ public class ParteDeWebclient extends TestWithConfig {
 
             Thread.sleep(5000);
 
+            Utils.takeScreenshot("./ParteDeWebClientOut/KpiAfterIncomingCallCall", firefoxDriver);
+
+
             return "Test OK. A incoming call should have been entry on agent view, parked and unparked.";
         } catch (Exception e)
         {
@@ -466,7 +489,7 @@ public class ParteDeWebclient extends TestWithConfig {
             chromeWaiting = new WebDriverWait(chromeDriver, 60);
             connectAndAvailable(chromeDriver, chromeWaiting, agentName5, extension2);
 
-            String callRes = doACall(manualCallModeName, number, false);
+            String callRes = doACall(firefoxDriver, firefoxWaiting, manualCallModeName, number, false);
             if(callRes.contains("ERROR")) return callRes;
 
             WebElement transferButton = SeleniumDAO.selectElementBy("xpath", "//a[@id = 'atransferCall']/img", firefoxDriver);
@@ -474,6 +497,7 @@ public class ParteDeWebclient extends TestWithConfig {
 
             SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
 
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id = 'transferFancyBox']")));
             transferButton = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'transferFancyBox']", firefoxDriver);
             SeleniumDAO.click(transferButton);
 
@@ -504,6 +528,10 @@ public class ParteDeWebclient extends TestWithConfig {
 
             System.out.println("You must hang up");
             Thread.sleep(4000);
+
+            Utils.takeScreenshot("./ParteDeWebClientOut/KpiAfterManualTransferCall", firefoxDriver);
+
+
             return "Test OK. The call was transfered with the showflow correctly";
 
         } catch (Exception e)
@@ -564,30 +592,38 @@ public class ParteDeWebclient extends TestWithConfig {
             try
             {
                 chromeWaiting.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//a[@role = 'presentation' and contains(., '" + number + "')]")));
+                System.out.println("You must hung up");
+                Thread.sleep(5000);
             } catch(Exception e)
             {
                 e.printStackTrace();
                 return e.toString() + "\nERROR. The call could not be transfered";
             }
 
-
-            chromeDriver.switchTo().frame(chromeDriver.findElement(By.xpath("//iframe[@class = 'frmcontent']")));
-
             try
             {
-                //espera hasta que se muestren algunos elemetos del showflow transferido
-                chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id = 'contact-phone']")));
-                chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id = 'contact-city']")));
+                selectTypology(chromeDriver, chromeWaiting,"VENTA", "ADSL");
+
+                chromeWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class = 'send']")));
+                WebElement sendButton = SeleniumDAO.selectElementBy("xpath", "//a[@class = 'send']", chromeDriver);
+                SeleniumDAO.click(sendButton);
+
+                SeleniumDAO.switchToDefaultContent(chromeDriver);
             } catch (Exception e)
             {
                 e.printStackTrace();
                 return e.toString() + "\nERROR. The showflow did not transfered OK";
             }
 
+            //Tipifica el showflow en la llamada transferida como positivo
+
+
             SeleniumDAO.switchToDefaultContent(firefoxDriver);
-            Utils.logoutWebClient(firefoxWaiting, firefoxDriver);
 
             System.out.println("You must hung up");
+
+            Utils.takeScreenshot("./ParteDeWebClientOut/KpiAfterIncomingTransferCall", firefoxDriver);
+
 
             return "Test OK. The call was transfered with the showflow correctly";
 
@@ -598,6 +634,42 @@ public class ParteDeWebclient extends TestWithConfig {
         } finally
         {
             chromeDriver.close();
+        }
+    }
+
+    public String abandonedCall()
+    {
+        try
+        {
+            //go busy
+            WebElement states = SeleniumDAO.selectElementBy("id", "agent-name", firefoxDriver);
+            Thread.sleep(1500);
+            SeleniumDAO.click(states);
+
+            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("busy")));
+            WebElement busyState = SeleniumDAO.selectElementBy("id", "busy", firefoxDriver);
+            SeleniumDAO.click(busyState);
+
+            SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+            System.out.println("An abandoned call is going to be tested. Please call to the number: " + DDI);
+
+            Thread.sleep(10000);
+
+            System.out.println("Hang up. The correct behavior would be if it had not been answered");
+
+            Thread.sleep(10000);
+
+            Utils.takeScreenshot("./ParteDeWebClientOut/KpiAfterAbandonedCall", firefoxDriver);
+            Utils.logoutWebClient(firefoxWaiting, firefoxDriver);
+
+            return "Test OK. The An incoming call should has been done where the client hung up before any agent entered";
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. Unexpected exception";
         }
     }
 
@@ -643,29 +715,133 @@ public class ParteDeWebclient extends TestWithConfig {
         }
     }
 
-    public String abandonedCall()
+    public String checkOpenSF()
     {
         try
         {
+            //caso open showflow a no
+            String showflowInteractionRes = loginAndChangeShowflowInteraction("no"); //Accede a dialapplet web y cambia el modo a no
+            if(showflowInteractionRes.contains("ERROR")) return showflowInteractionRes;
 
-        } catch(Exception e)
+            connectAndAvailable(firefoxDriver, firefoxWaiting, agentName4, extension);
+
+            //En el caso en el que no puede abrirlo la comprobacion se hace directamente cuando se realizan los filtros para buscar los SF
+            String checkOpenSFToNoRes = openSF();
+            if(!checkOpenSFToNoRes.equals("OK")) return "ERROR. The setting to allow opening the showflow without calling NO does not work correctly in the web client";
+
+            Utils.logoutWebClient(firefoxWaiting, firefoxDriver);
+
+            //Caso OpenShowflow a readOnly
+            showflowInteractionRes = loginAndChangeShowflowInteraction("readonly"); //Accede a dialapplet web y cambia el modo a readonly
+            if(showflowInteractionRes.contains("ERROR")) return showflowInteractionRes;
+
+            connectAndAvailable(firefoxDriver, firefoxWaiting, agentName4, extension);
+
+            String openSFRes = openSF();
+            if(openSFRes.contains("ERROR")) return openSFRes;
+
+            String checkOpenSFReadOnlyRes = checkOpenSFToReadOnly();
+            if(checkOpenSFReadOnlyRes.contains("ERROR")) return checkOpenSFReadOnlyRes;
+
+            Utils.logoutWebClient(firefoxWaiting, firefoxDriver);
+
+            //Caso solo administradores y coordinadores
+            showflowInteractionRes = loginAndChangeShowflowInteraction("admin_coord"); //Accede a dialapplet web y cambia el modo a coordinadores y administradores
+            if(showflowInteractionRes.contains("ERROR")) return showflowInteractionRes;
+
+            connectAndAvailable(firefoxDriver, firefoxWaiting, agentName4, extension);
+
+            //En el caso en el que no puede abrirlo la comprobacion se hace directamente cuando se realizan los filtros para buscar los SF
+            String checkOpenSFAdminCoordRes = openSF();
+            //Comprueba que no puede buscar showflows del servicio
+            if(!checkOpenSFAdminCoordRes.equals("OK")) return "ERROR. The setting to allow opening the showflow without calling to Admin and coord does not work correctly in the web client";
+
+            Utils.logoutWebClient(firefoxWaiting, firefoxDriver);
+
+            //Accede con un admin para comprobar que puede abrir showflows
+            connectAndAvailable(firefoxDriver, firefoxWaiting, adminName, extension);
+
+            openSFRes = openSF();
+            if(openSFRes.contains("ERROR")) return openSFRes; //Comprueba que puede buscar showflows del servicio
+
+            //Comprueba que el coordinador puede editar el showflow
+            checkOpenSFAdminCoordRes = checkOpenSFEditable();
+            if(checkOpenSFAdminCoordRes.contains("ERROR")) return checkOpenSFAdminCoordRes;
+
+            Utils.logoutWebClient(firefoxWaiting, firefoxDriver);
+
+            //Caso si se permite edicion al agente
+            showflowInteractionRes = loginAndChangeShowflowInteraction("yes"); //Accede a dialapplet web y cambia el modo a coordinadores y administradores
+            if(showflowInteractionRes.contains("ERROR")) return showflowInteractionRes;
+
+            connectAndAvailable(firefoxDriver, firefoxWaiting, agentName4, extension);
+
+            openSFRes = openSF();
+            if(openSFRes.contains("ERROR")) return openSFRes;
+
+            String checkOpenSFYesRes = checkOpenSFEditable();
+            if(checkOpenSFYesRes.contains("ERROR")) return checkOpenSFAdminCoordRes;
+
+            Utils.logoutWebClient(firefoxWaiting, firefoxDriver);
+
+            return "Test OK";
+        } catch (Exception e)
         {
-
+            e.printStackTrace();
+            return e.toString() + "\nERROR. ";
         }
     }
-    public String dialCall(String callmode, String number) throws InterruptedException
+
+    public String checkCoordinator()
+    {
+        try
+        {
+            String connectAndAvailableRes = connectAndAvailable(firefoxDriver, firefoxWaiting, coordName, extension);
+            if(connectAndAvailableRes.contains("ERROR")) return connectAndAvailableRes;
+
+            checkKPIPanel();
+
+            String checkAgentOnCoordViewRes = checkAgentsOnCoordView();
+            if(checkAgentOnCoordViewRes.contains("ERROR")) return checkAgentOnCoordViewRes;
+
+           String checkExtensionPanelRes = checkExtensionPanel();
+           if(checkExtensionPanelRes.contains("ERROR")) return checkExtensionPanelRes;
+
+           String checkCallsPanelRes = checkCallsPanel();
+           if(checkCallsPanelRes.contains("ERROR")) return checkCallsPanelRes;
+
+           String checkOutgoingCallsPanelRes = checkOutgoingCallsPanel();
+           if(checkOutgoingCallsPanelRes.contains("ERROR")) return checkOutgoingCallsPanelRes;
+
+           String checkIncomingCallsPanelRes = checkIncomingCallsPanel();
+           if(checkIncomingCallsPanelRes.contains("ERROR")) return checkIncomingCallsPanelRes;
+
+           String checkStatusPanelRes = checkStatusPanel();
+           if(checkStatusPanelRes.contains("ERROR")) return checkStatusPanelRes;
+
+
+            return "Test OK. A screenshot from the KPI panel was taken, the agents appears on the coordinator view, the extension, calls, incoming calls, outgoing calls and status panel work. " +
+                    "Check the folder ParteDeWebClientOut to see the taken screenshots";
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return "ERROR";
+        }
+    }
+
+    public String dialCall(WebDriver driver, WebDriverWait waiting, String callmode, String number) throws InterruptedException
     {
         //Do a call
         Thread.sleep(1000);
-        firefoxWaiting.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.id("aclickToCall")));
-        WebElement callButton = SeleniumDAO.selectElementBy("id", "aclickToCall", firefoxDriver);
+        waiting.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.id("aclickToCall")));
+        WebElement callButton = SeleniumDAO.selectElementBy("id", "aclickToCall", driver);
         SeleniumDAO.click(callButton);
 
         //Selects the callmode
         try {
             //firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//option[@value = '" + callMode + "']")));
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("manualCampaigns")));
-            Select whichCallMode = SeleniumDAO.findSelectElementBy("id", "manualCampaigns", firefoxDriver);
+            waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("manualCampaigns")));
+            Select whichCallMode = SeleniumDAO.findSelectElementBy("id", "manualCampaigns", driver);
             Thread.sleep(1000);
             whichCallMode.selectByVisibleText(callmode);
         } catch (Exception e) {
@@ -675,7 +851,7 @@ public class ParteDeWebclient extends TestWithConfig {
 
         SeleniumDAO.click(callButton);
 
-        WebElement numberField = SeleniumDAO.selectElementBy("id", "clickToCallDirect", firefoxDriver);
+        WebElement numberField = SeleniumDAO.selectElementBy("id", "clickToCallDirect", driver);
         SeleniumDAO.click(numberField);
         numberField.sendKeys(number);
         numberField.sendKeys(Keys.ENTER);
@@ -683,23 +859,24 @@ public class ParteDeWebclient extends TestWithConfig {
         return "";
     }
 
-    public void selectTypology(String typology, String subtypology)
+    public void selectTypology(WebDriver driver, WebDriverWait waiting, String typology, String subtypology)
     {
-        firefoxDriver.switchTo().frame(firefoxDriver.findElement(By.xpath("//iframe[@class = 'frmcontent']")));
+        driver.switchTo().frame(driver.findElement(By.xpath("//iframe[@class = 'frmcontent']")));
 
-        WebElement timeInput = SeleniumDAO.selectElementBy("id", "contact-aux2", firefoxDriver);
+        waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contact-aux2")));
+        WebElement timeInput = SeleniumDAO.selectElementBy("id", "contact-aux2", driver);
         timeInput.sendKeys("3h");
 
-        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class = 'next']")));
-        WebElement nextButton = SeleniumDAO.selectElementBy("xpath", "//a[@class = 'next']", firefoxDriver);
+        waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class = 'next']")));
+        WebElement nextButton = SeleniumDAO.selectElementBy("xpath", "//a[@class = 'next']", driver);
         SeleniumDAO.click(nextButton);
 
-        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[contains(@class, 'action-field typology')]")));
-        Select typologySelector = SeleniumDAO.findSelectElementBy("xpath", "//select[contains(@class, 'action-field typology')]", firefoxDriver);
+        waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[contains(@class, 'action-field typology')]")));
+        Select typologySelector = SeleniumDAO.findSelectElementBy("xpath", "//select[contains(@class, 'action-field typology')]", driver);
         typologySelector.selectByVisibleText(typology);
 
-        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//option[contains(., '" + subtypology + "')]")));
-        Select subtypologySelector = SeleniumDAO.findSelectElementBy("xpath", "//select[contains(@class, 'action-field subtypology')]", firefoxDriver);
+        waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//option[contains(., '" + subtypology + "')]")));
+        Select subtypologySelector = SeleniumDAO.findSelectElementBy("xpath", "//select[contains(@class, 'action-field subtypology')]", driver);
         subtypologySelector.selectByVisibleText(subtypology);
     }
 
@@ -735,6 +912,7 @@ public class ParteDeWebclient extends TestWithConfig {
             SeleniumDAO.click(productivityTab);
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = '#tabs-www']")));
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = '#tabs-www']"))); //A veces no le da tiempo a encontrarlo
             WebElement wwwTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = '#tabs-www']", firefoxDriver);
             firefoxWaiting.until(ExpectedConditions.visibilityOf(wwwTab));
             Thread.sleep(500);
@@ -763,25 +941,25 @@ public class ParteDeWebclient extends TestWithConfig {
         }
     }
 
-    public String doACall(String callmode, String number, boolean newContact)
+    public String doACall(WebDriver driver, WebDriverWait waiting, String callmode, String number, boolean newContact)
     {
         try
         {
             //Marcar llamada
-            if(dialCall(callmode, number).contains("ERROR")) return "ERROR. The callmode selected does not exist";
+            if(dialCall(driver, waiting, callmode, number).contains("ERROR")) return "ERROR. The callmode selected does not exist";
 
-            firefoxWaiting.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@class='contactCall']")));
+            waiting.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@class='contactCall']")));
 
             if(newContact)
             {
                 //LLama creando un contacto nuevo
-                WebElement callButton = SeleniumDAO.selectElementBy("xpath", "//tr[@id = 'newcontactcall']//button[@class='contactCall']", firefoxDriver);
+                WebElement callButton = SeleniumDAO.selectElementBy("xpath", "//tr[@id = 'newcontactcall']//button[@class='contactCall']", driver);
                 SeleniumDAO.click(callButton);
             } else
             {
                 //LLama seleccionando el contacto creado
-                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='contactCall']")));
-                WebElement callButton = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + contactID + "')]/following-sibling::td//button[contains(@class, 'contactCall')]", firefoxDriver);
+                waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='contactCall']")));
+                WebElement callButton = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + contactID + "')]/following-sibling::td//button[contains(@class, 'contactCall')]", driver);
                 SeleniumDAO.click(callButton);
             }
 
@@ -886,5 +1064,383 @@ public class ParteDeWebclient extends TestWithConfig {
         }
     }
 
+    public String loginAndChangeShowflowInteraction(String selectValue)
+    {
+        try
+        {
+            //Login on dialapplet web
+            firefoxDriver.get(url + "dialapplet-web");
+            Utils.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
+            try {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("mainMenu")));
+            } catch (Exception e) {
+                //System.err.println("ERROR: Login failed");
+                return e.toString() + "\n ERROR: Login failed";
+            }
 
+            //Searchs the service on the services table
+            try {
+                WebElement searcher = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'search']", firefoxDriver);
+                searcher.sendKeys(serviceID);
+                Thread.sleep(1000);
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'services']//td[contains(., '" + serviceID + "')]")));
+            } catch (Exception e) {
+                return e.toString() + "ERROR: The service with ID: " + serviceID + "does not appears on the services table";
+            }
+
+            WebElement service = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'services']//td[contains(., '" + serviceID + "')]", firefoxDriver);
+            SeleniumDAO.click(service);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//p[@id = 'edit-service']/a")));
+            WebElement editServiceTab = SeleniumDAO.selectElementBy("xpath", "//p[@id = 'edit-service']/a", firefoxDriver);
+            SeleniumDAO.click(editServiceTab);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[contains(., 'Show Flow')]")));
+            WebElement showflowTab = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'Show Flow')]", firefoxDriver);
+            SeleniumDAO.click(showflowTab);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@name = 'allownocallshowflow']")));
+            Select allowNoCallShowflowSelector = SeleniumDAO.findSelectElementBy("xpath", "//select[@name = 'allownocallshowflow']", firefoxDriver);
+            allowNoCallShowflowSelector.selectByValue(selectValue);
+
+            WebElement saveButton = SeleniumDAO.selectElementBy("id", "submit", firefoxDriver);
+            SeleniumDAO.click(saveButton);
+
+            return "";
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. Unexpected error";
+        }
+    }
+
+    public String checkOpenSFToReadOnly()
+    {
+        try
+        {
+            SeleniumDAO.switchToFrame("frmcontent-", firefoxDriver);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contact-name")));
+            String disabledAttribute = SeleniumDAO.selectElementBy("id", "contact-name", firefoxDriver).getAttribute("disabled");
+            if(disabledAttribute == null) return "ERROR. The Showflow on ReadOnly mode can be edited";
+
+            SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+            WebElement removeTab = SeleniumDAO.selectElementBy("xpath", "//span[@class = 'ui-icon ui-icon-close']", firefoxDriver);
+            Thread.sleep(1000);
+            SeleniumDAO.click(removeTab);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'swal2-icon swal2-warning pulse-warning']")));
+            WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'swal2-confirm swal2-styled']", firefoxDriver);
+            SeleniumDAO.click(confirmButton);
+
+            return "";
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. Unexpected exception";
+        }
+    }
+
+    public String checkOpenSFEditable()
+    {
+        try
+        {
+            SeleniumDAO.switchToFrame("frmcontent-", firefoxDriver);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contact-name")));
+            String disabledAttribute = SeleniumDAO.selectElementBy("id", "contact-name", firefoxDriver).getAttribute("disabled");
+            if(disabledAttribute != null) return "ERROR. The Showflow on ReadOnly mode can't be edited";
+
+            SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+            WebElement removeTab = SeleniumDAO.selectElementBy("xpath", "//span[@class = 'ui-icon ui-icon-close']", firefoxDriver);
+            Thread.sleep(1000);
+            SeleniumDAO.click(removeTab);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'swal2-icon swal2-warning pulse-warning']")));
+            WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'swal2-confirm swal2-styled']", firefoxDriver);
+            SeleniumDAO.click(confirmButton);
+
+            return "";
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. Unexpected exception";
+        }
+    }
+
+    public String openSF()
+    {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[contains(@src, 'img/20x20/tabs/openSF')]")));
+            WebElement openSFTab = SeleniumDAO.selectElementBy("xpath", "//img[contains(@src, 'img/20x20/tabs/openSF')]", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(openSFTab);
+
+            SeleniumDAO.switchToFrame("frmcontent-openSF", firefoxDriver);
+            try
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("service")));
+                Select serviceSelector = SeleniumDAO.findSelectElementBy("id", "service", firefoxDriver);
+                serviceSelector.selectByValue(serviceID);
+            } catch (Exception e)
+            {
+                SeleniumDAO.switchToDefaultContent(firefoxDriver);
+                return "OK";
+            }
+
+            Select callmodeSelector = SeleniumDAO.findSelectElementBy("id", "callmode", firefoxDriver);
+            callmodeSelector.selectByVisibleText(manualCallModeName);
+
+            Select searchFieldSelector = SeleniumDAO.findSelectElementBy("id", "field", firefoxDriver);
+            searchFieldSelector.selectByValue("phone");
+
+            WebElement searchValueInput = SeleniumDAO.selectElementBy("id", "value", firefoxDriver);
+            searchValueInput.sendKeys(number);
+
+            WebElement searchButton = SeleniumDAO.selectElementBy("id", "search", firefoxDriver);
+            SeleniumDAO.click(searchButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'selectableContactList']")));
+            WebElement selectButton = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'selectableContactList']//button[@class = 'selectContact']", firefoxDriver);
+            SeleniumDAO.click(selectButton);
+
+            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.id("openSF")));
+            WebElement openSFButton = SeleniumDAO.selectElementBy("id", "openSF", firefoxDriver);
+            SeleniumDAO.click(openSFButton);
+
+            SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+            return "";
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. The showflow search could not be done";
+        }
+    }
+
+    public void checkKPIPanel()
+    {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[contains(@src, 'img/20x20/tabs/totalCalls')]")));
+            WebElement KPIPanelTab = SeleniumDAO.selectElementBy("xpath", "//img[contains(@src, 'img/20x20/tabs/totalCalls')]", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(KPIPanelTab);
+
+            SeleniumDAO.switchToFrame("frmcontent-kpi", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sub-panel-body']")));
+            Utils.takeScreenshot("./ParteDeWebClientOut/KPIonCoordinator", firefoxDriver);
+            SeleniumDAO.switchToDefaultContent(firefoxDriver);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public String checkAgentsOnCoordView()
+    {
+        try
+        {
+            //Se conecta el agente 4 para comprobar que le aparece al coordinador
+            chromeDriver = DriversConfig.headlessOrNot(headless, chromePath);
+            chromeWaiting = new WebDriverWait(chromeDriver, 60);
+            connectAndAvailable(chromeDriver, chromeWaiting, agentName4, extension2);
+
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = '#coordUsers']")));
+            WebElement extensionPanel = SeleniumDAO.selectElementBy("xpath", "//a[@href = '#coordUsers']", firefoxDriver);
+            SeleniumDAO.click(extensionPanel);
+
+            Thread.sleep(2000);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'coord-status-" + agentName4 + "' and @class = 'available']")));
+
+            Utils.logoutWebClient(chromeWaiting, chromeDriver);
+
+            return "";
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. The agent does not appear on the coordinator view";
+        }
+        finally
+        {
+            chromeDriver.close();
+        }
+    }
+
+    //Para comprobar el funcionamiento, unicamente el agente7 esta asignado al modo de llamada de transferencia. SI aparece en cualquier otro modo, el test falla.
+    public String checkExtensionPanel()
+    {
+        try
+        {
+            //Conectar al agente 7 que que solo esta en el modo de llamada de transferencia para comprobar los filtros
+            chromeDriver = DriversConfig.headlessOrNot(headless, chromePath);
+            chromeWaiting = new WebDriverWait(chromeDriver, 60);
+            connectAndAvailable(chromeDriver, chromeWaiting, agentName7, extension2);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@id = 'select-service-users']//option[@value = '" + serviceID + "']")));
+            Select serviceSelector = SeleniumDAO.findSelectElementBy("id", "select-service-users", firefoxDriver);
+            serviceSelector.selectByValue(serviceID);
+
+            Select callmodeSelector = SeleniumDAO.findSelectElementBy("id","select-campaigns-users", firefoxDriver);
+            callmodeSelector.selectByVisibleText(transferCallModeName);
+
+            try
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'coord-status-" + agentName7 + "']")));
+            } catch(Exception e)
+            {
+                e.printStackTrace();
+                return "ERROR. The extension panel does not work correctly";
+            }
+
+            callmodeSelector.selectByVisibleText(manualCallModeName);
+
+            try
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'coord-status-" + agentName7 + "']")));
+                return "ERROR. The extension panel does not work correctly";
+            } catch(Exception e)
+            { }
+
+            Utils.logoutWebClient(chromeWaiting, chromeDriver);
+            return "";
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. Unexpected exception";
+        } finally {
+            chromeDriver.close();
+        }
+    }
+
+    public String checkCallsPanel()
+    {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[contains(@src, 'img/20x20/tabs/outgoing.png')]")));
+            WebElement callsPanelTab = SeleniumDAO.selectElementBy("xpath", "//img[contains(@src, 'img/20x20/tabs/outgoing.png')]", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(callsPanelTab));
+            SeleniumDAO.click(callsPanelTab);
+
+            //Esta espera es debido a que tarda un poco en cargar los datos en la tabla (mas que firefoxWaiting)
+            WebDriverWait auxiliarWaiting = new WebDriverWait(firefoxDriver, 15);
+
+            auxiliarWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., '" + manualCallModeName + "')]/following-sibling::td[@class = 'highlight']")));
+            auxiliarWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., '" + incomingCallModeName + "')]/following-sibling::td[@class = 'highlight']")));
+
+            Utils.takeScreenshot("./ParteDeWebClientOut/CallsPanelScreenshot", firefoxDriver);
+
+            return "";
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. The calls panel does not work correctly";
+        }
+    }
+
+    public String checkOutgoingCallsPanel() {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[contains(@src, 'img/20x20/tabs/outgoing2.png')]")));
+            WebElement outgoingCallsPanel = SeleniumDAO.selectElementBy("xpath", "//img[contains(@src, 'img/20x20/tabs/outgoing2.png')]", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(outgoingCallsPanel));
+            SeleniumDAO.click(outgoingCallsPanel);
+
+            //Espera a que se carguen las graficas
+            Thread.sleep(2000);
+            Utils.takeScreenshot("./ParteDeWebClientOut/OutgoingPanel1", firefoxDriver);
+
+            chromeDriver = DriversConfig.headlessOrNot(headless, chromePath);
+            chromeWaiting = new WebDriverWait(chromeDriver, 60);
+            connectAndAvailable(chromeDriver, chromeWaiting, agentName4, extension2);
+
+            Utils.takeScreenshot("./ParteDeWebClientOut/OutgoingPanel2", firefoxDriver);
+
+            doACall(chromeDriver, chromeWaiting, manualCallModeName, number, false);
+
+            Utils.takeScreenshot("./ParteDeWebClientOut/OutgoingPanel3", firefoxDriver);
+            Utils.logoutWebClient(chromeWaiting, chromeDriver);
+            return "";
+
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. The outgoing calls panel could not be checked";
+        } finally {
+            chromeDriver.close();
+        }
+
+    }
+
+    public String checkIncomingCallsPanel()
+    {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[contains(@src, 'img/20x20/tabs/incoming2.png')]")));
+            WebElement incomingCallsPanel = SeleniumDAO.selectElementBy("xpath", "//img[contains(@src, 'img/20x20/tabs/incoming2.png')]", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(incomingCallsPanel));
+            SeleniumDAO.click(incomingCallsPanel);
+
+            //Espera a que se carguen las graficas
+            Thread.sleep(2000);
+            Utils.takeScreenshot("./ParteDeWebClientOut/incomingPanel1", firefoxDriver);
+
+            chromeDriver = DriversConfig.headlessOrNot(headless, chromePath);
+            chromeWaiting = new WebDriverWait(chromeDriver, 60);
+            connectAndAvailable(chromeDriver, chromeWaiting, agentName4, extension2);
+
+            Utils.takeScreenshot("./ParteDeWebClientOut/incomingPanel2", firefoxDriver);
+            WebDriverWait waitingIncomingCall = new WebDriverWait(chromeDriver, 600);
+            System.out.println("You must do a call to the number: " + DDI);
+            waitingIncomingCall.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@role = 'presentation' and contains(., '" + number + "')]")));
+
+            System.out.println("You can hang up");
+
+            Utils.takeScreenshot("./ParteDeWebClientOut/incomingPanel3", firefoxDriver);
+
+            Utils.logoutWebClient(chromeWaiting, chromeDriver);
+
+            return "";
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. The incoming calls panel could not be checked";
+        } finally
+        {
+            chromeDriver.close();
+        }
+    }
+
+    public String checkStatusPanel()
+    {
+        try
+        {
+            Thread.sleep(8000);
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[contains(@src, 'img/20x20/tabs/database2.png')]")));
+            WebElement statusPanel = SeleniumDAO.selectElementBy("xpath", "//img[contains(@src, 'img/20x20/tabs/database2.png')]", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(statusPanel));
+            SeleniumDAO.click(statusPanel);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("select-service-state")));
+            Select serviceStateSelector = SeleniumDAO.findSelectElementBy("id", "select-service-state", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@id = 'select-service-state']//option[@value = '" + serviceID + "']")));
+            serviceStateSelector.selectByValue(serviceID);
+
+            Thread.sleep(2000);
+            Utils.takeScreenshot("./ParteDeWebClientOut/statusPanel", firefoxDriver);
+
+            Utils.logoutWebClient(firefoxWaiting, firefoxDriver);
+
+            return "";
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. The status panel could not be checked";
+        }
+    }
 }

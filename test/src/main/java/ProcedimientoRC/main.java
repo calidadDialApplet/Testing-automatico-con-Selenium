@@ -87,6 +87,7 @@ public class main {
         tests.put("parteDeShowflow", new ParteDeShowflowTest(commonIni));
         tests.put("parteDeServicio", new ParteDeServicioTest(commonIni));
         tests.put("parteDeWebclient", new ParteDeWebclient(commonIni));
+        tests.put("parteDeSocialmedia", new ParteDeSocialmedia(commonIni));
 
         return tests;
     }
