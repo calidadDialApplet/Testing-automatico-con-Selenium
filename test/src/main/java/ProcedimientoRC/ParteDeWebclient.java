@@ -124,6 +124,7 @@ public class ParteDeWebclient extends TestWithConfig {
             results.put("-- Check scheduled call on agent contact view  ->  ", checkScheduledCallback());
             results.put("-- Recall a contact to tipify as POSITIVE and check the number of contacts touched decrements and positives increments  ->  ", reManualToVentaADSL());
             results.put("-- Wait a incoming call, park it and and unpark it  ->  ", incomingCall());
+            //Bug en las transferencias 7rc
             results.put("-- Do a manual call and transfer to another agent  ->  ", manualCallAndTransfer());
             results.put("-- Wait a incoming call and transfer to anocher agent  ->  ", incomingAndTransfer());
             results.put("-- Do an incoming call and hang up before the agent enters  ->  ", abandonedCall());
@@ -322,6 +323,12 @@ public class ParteDeWebclient extends TestWithConfig {
         try
         {
             connectAndAvailable(firefoxDriver, firefoxWaiting, agentName4, extension);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = '#schedCalls']")));
+            WebElement scheduledCalls = SeleniumDAO.selectElementBy("xpath", "//a[@href = '#schedCalls']", firefoxDriver);
+            Thread.sleep(1000);
+            SeleniumDAO.click(scheduledCalls);
+
             SeleniumDAO.switchToFrame("frmcontent-schedCalls", firefoxDriver);
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., '16:00')]/following-sibling::td[contains(., '" + contactID + "')]")));
@@ -401,14 +408,30 @@ public class ParteDeWebclient extends TestWithConfig {
             SeleniumDAO.click(loginButton);
 
             //go to dialapplet database
-            WebElement dialappletDB = SeleniumDAO.selectElementBy("xpath","//a[@href = 'redirect.php?subject=database&server=localhost%3A5432%3Aallow&database=dialapplet&']",
-                    firefoxDriver);
-            SeleniumDAO.click(dialappletDB);
+            //TODO eliminar este if cuando desaparezca la version 7
+            if(url.contains("8"))
+            {
+                WebElement dialappletDB = SeleniumDAO.selectElementBy("xpath","//a[@href = 'redirect.php?subject=database&server=localhost%3A5432%3Aallow&database=dialapplet&']",
+                        firefoxDriver);
+                SeleniumDAO.click(dialappletDB);
 
-            //Click on Schema->public
-            WebElement publicSchema = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'redirect.php?subject=schema&server=localhost%3A5432%3Aallow&database=dialapplet&schema=public&']",
-                    firefoxDriver);
-            SeleniumDAO.click(publicSchema);
+                //Click on Schema->public
+                WebElement publicSchema = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'redirect.php?subject=schema&server=localhost%3A5432%3Aallow&database=dialapplet&schema=public&']",
+                        firefoxDriver);
+                SeleniumDAO.click(publicSchema);
+
+            } else
+            {
+                WebElement dialappletDB = SeleniumDAO.selectElementBy("xpath","//a[@href = 'redirect.php?subject=database&server=127.0.0.1%3A5432%3Aallow&database=dialapplet&']",
+                        firefoxDriver);
+                SeleniumDAO.click(dialappletDB);
+
+                //Click on Schema->public
+                WebElement publicSchema = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'redirect.php?subject=schema&server=127.0.0.1%3A5432%3Aallow&database=dialapplet&schema=public&']",
+                        firefoxDriver);
+                SeleniumDAO.click(publicSchema);
+
+            }
 
             WebElement phoneStatusTable = SeleniumDAO.selectElementBy("xpath", "//a[contains(., '" + bdPhoneStatusTable + "')]", firefoxDriver);
             SeleniumDAO.click(phoneStatusTable);
@@ -429,6 +452,7 @@ public class ParteDeWebclient extends TestWithConfig {
 
             selectButton = SeleniumDAO.selectElementBy("xpath", "//input[@name = 'select']", firefoxDriver);
             SeleniumDAO.click(selectButton);
+
 
             try
             {
@@ -529,6 +553,7 @@ public class ParteDeWebclient extends TestWithConfig {
             System.out.println("You must hang up");
             Thread.sleep(4000);
 
+            SeleniumDAO.switchToDefaultContent(firefoxDriver);
             Utils.takeScreenshot("./ParteDeWebClientOut/KpiAfterManualTransferCall", firefoxDriver);
 
 
@@ -663,6 +688,29 @@ public class ParteDeWebclient extends TestWithConfig {
             Thread.sleep(10000);
 
             Utils.takeScreenshot("./ParteDeWebClientOut/KpiAfterAbandonedCall", firefoxDriver);
+
+            //TODO borrar este if cuando desaparezca la version 7
+            /*if(url.contains("8"))
+            {
+                WebElement removeTab = SeleniumDAO. selectElementBy("xpath", "//span[@class = 'ui-icon ui-icon-close']", firefoxDriver);
+                Thread.sleep(1000);
+                SeleniumDAO.click(removeTab);
+
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'swal2-icon swal2-warning pulse-warning']")));
+                WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'swal2-confirm swal2-styled']", firefoxDriver);
+                SeleniumDAO.click(confirmButton);
+            } else
+            {
+                WebElement removeTab = SeleniumDAO.selectElementBy("xpath", "//span[@class = 'ui-icon ui-icon-close']", firefoxDriver);
+                Thread.sleep(1000);
+                SeleniumDAO.click(removeTab);
+
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+                WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                Thread.sleep(500);
+                SeleniumDAO.click(confirmButton);
+            }*/
+
             Utils.logoutWebClient(firefoxWaiting, firefoxDriver);
 
             return "Test OK. The An incoming call should has been done where the client hung up before any agent entered";
@@ -798,6 +846,19 @@ public class ParteDeWebclient extends TestWithConfig {
         {
             String connectAndAvailableRes = connectAndAvailable(firefoxDriver, firefoxWaiting, coordName, extension);
             if(connectAndAvailableRes.contains("ERROR")) return connectAndAvailableRes;
+
+            //Go busy to ensure the calls entry to the agents
+            WebElement states = SeleniumDAO.selectElementBy("id", "agent-name", firefoxDriver);
+            Thread.sleep(1500);
+            SeleniumDAO.click(states);
+
+            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("busy")));
+            WebElement busyState = SeleniumDAO.selectElementBy("id", "busy", firefoxDriver);
+            SeleniumDAO.click(busyState);
+
+            SeleniumDAO.switchToDefaultContent(firefoxDriver);
 
             checkKPIPanel();
 
@@ -960,6 +1021,8 @@ public class ParteDeWebclient extends TestWithConfig {
                 //LLama seleccionando el contacto creado
                 waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class='contactCall']")));
                 WebElement callButton = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + contactID + "')]/following-sibling::td//button[contains(@class, 'contactCall')]", driver);
+                //WebElement callButton = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '292844')]/following-sibling::td//button[contains(@class, 'contactCall')]", driver);
+
                 SeleniumDAO.click(callButton);
             }
 
@@ -1095,8 +1158,10 @@ public class ParteDeWebclient extends TestWithConfig {
             WebElement editServiceTab = SeleniumDAO.selectElementBy("xpath", "//p[@id = 'edit-service']/a", firefoxDriver);
             SeleniumDAO.click(editServiceTab);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[contains(., 'Show Flow')]")));
-            WebElement showflowTab = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'Show Flow')]", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//li//a[contains(., 'Show Flow')]")));
+            Thread.sleep(2000);
+            WebElement showflowTab = SeleniumDAO.selectElementBy("xpath", "//li//a[contains(., 'Show Flow')]", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(showflowTab));
             SeleniumDAO.click(showflowTab);
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@name = 'allownocallshowflow']")));
@@ -1118,7 +1183,16 @@ public class ParteDeWebclient extends TestWithConfig {
     {
         try
         {
-            SeleniumDAO.switchToFrame("frmcontent-", firefoxDriver);
+            //TODO borrar este if cuando desaparezca la version 7
+            if(url.contains("8"))
+            {
+                SeleniumDAO.switchToFrame("frmcontent-", firefoxDriver);
+            } else
+            {
+                Thread.sleep(1500);
+                firefoxDriver.switchTo().frame(firefoxDriver.findElement(By.xpath("//iframe[contains(@id, 'frmcontent') and @class = 'frmcontent']")));
+            }
+
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contact-name")));
             String disabledAttribute = SeleniumDAO.selectElementBy("id", "contact-name", firefoxDriver).getAttribute("disabled");
@@ -1126,13 +1200,28 @@ public class ParteDeWebclient extends TestWithConfig {
 
             SeleniumDAO.switchToDefaultContent(firefoxDriver);
 
-            WebElement removeTab = SeleniumDAO.selectElementBy("xpath", "//span[@class = 'ui-icon ui-icon-close']", firefoxDriver);
-            Thread.sleep(1000);
-            SeleniumDAO.click(removeTab);
+            //TODO borrar este if cuando desaparezca la version 7
+            if(url.contains("8"))
+            {
+                WebElement removeTab = SeleniumDAO.selectElementBy("xpath", "//span[@class = 'ui-icon ui-icon-close']", firefoxDriver);
+                Thread.sleep(1000);
+                SeleniumDAO.click(removeTab);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'swal2-icon swal2-warning pulse-warning']")));
-            WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'swal2-confirm swal2-styled']", firefoxDriver);
-            SeleniumDAO.click(confirmButton);
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'swal2-icon swal2-warning pulse-warning']")));
+                WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'swal2-confirm swal2-styled']", firefoxDriver);
+                SeleniumDAO.click(confirmButton);
+            } else
+            {
+                WebElement removeTab = SeleniumDAO.selectElementBy("xpath", "//span[@class = 'ui-icon ui-icon-close']", firefoxDriver);
+                Thread.sleep(1000);
+                SeleniumDAO.click(removeTab);
+
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+                WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                Thread.sleep(500);
+                SeleniumDAO.click(confirmButton);
+            }
+
 
             return "";
         } catch (Exception e)
@@ -1146,21 +1235,42 @@ public class ParteDeWebclient extends TestWithConfig {
     {
         try
         {
-            SeleniumDAO.switchToFrame("frmcontent-", firefoxDriver);
-
+            //TODO borrar este if cuando desaparezca la version 7
+            if(url.contains("8"))
+            {
+                SeleniumDAO.switchToFrame("frmcontent-", firefoxDriver);
+            } else
+            {
+                Thread.sleep(1500);
+                firefoxDriver.switchTo().frame(firefoxDriver.findElement(By.xpath("//iframe[contains(@id, 'frmcontent') and @class = 'frmcontent']")));
+            }
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contact-name")));
             String disabledAttribute = SeleniumDAO.selectElementBy("id", "contact-name", firefoxDriver).getAttribute("disabled");
             if(disabledAttribute != null) return "ERROR. The Showflow on ReadOnly mode can't be edited";
 
             SeleniumDAO.switchToDefaultContent(firefoxDriver);
 
-            WebElement removeTab = SeleniumDAO.selectElementBy("xpath", "//span[@class = 'ui-icon ui-icon-close']", firefoxDriver);
-            Thread.sleep(1000);
-            SeleniumDAO.click(removeTab);
+            //TODO borrar este if cuando desaparezca la version 7
+            if(url.contains("8"))
+            {
+                WebElement removeTab = SeleniumDAO.selectElementBy("xpath", "//span[@class = 'ui-icon ui-icon-close']", firefoxDriver);
+                Thread.sleep(1000);
+                SeleniumDAO.click(removeTab);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'swal2-icon swal2-warning pulse-warning']")));
-            WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'swal2-confirm swal2-styled']", firefoxDriver);
-            SeleniumDAO.click(confirmButton);
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'swal2-icon swal2-warning pulse-warning']")));
+                WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'swal2-confirm swal2-styled']", firefoxDriver);
+                SeleniumDAO.click(confirmButton);
+            } else
+            {
+                WebElement removeTab = SeleniumDAO.selectElementBy("xpath", "//span[@class = 'ui-icon ui-icon-close']", firefoxDriver);
+                Thread.sleep(1000);
+                SeleniumDAO.click(removeTab);
+
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+                WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                Thread.sleep(500);
+                SeleniumDAO.click(confirmButton);
+            }
 
             return "";
         } catch (Exception e)
@@ -1176,7 +1286,7 @@ public class ParteDeWebclient extends TestWithConfig {
         {
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[contains(@src, 'img/20x20/tabs/openSF')]")));
             WebElement openSFTab = SeleniumDAO.selectElementBy("xpath", "//img[contains(@src, 'img/20x20/tabs/openSF')]", firefoxDriver);
-            Thread.sleep(500);
+            Thread.sleep(1500);
             SeleniumDAO.click(openSFTab);
 
             SeleniumDAO.switchToFrame("frmcontent-openSF", firefoxDriver);
@@ -1420,15 +1530,19 @@ public class ParteDeWebclient extends TestWithConfig {
     {
         try
         {
-            Thread.sleep(8000);
+            Thread.sleep(2000);
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[contains(@src, 'img/20x20/tabs/database2.png')]")));
             WebElement statusPanel = SeleniumDAO.selectElementBy("xpath", "//img[contains(@src, 'img/20x20/tabs/database2.png')]", firefoxDriver);
             firefoxWaiting.until(ExpectedConditions.elementToBeClickable(statusPanel));
             SeleniumDAO.click(statusPanel);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("select-service-state")));
+            Thread.sleep(9000);
+
+            WebDriverWait auxWait = new WebDriverWait(firefoxDriver, 20);
+
+            auxWait.until(ExpectedConditions.presenceOfElementLocated(By.id("select-service-state")));
             Select serviceStateSelector = SeleniumDAO.findSelectElementBy("id", "select-service-state", firefoxDriver);
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@id = 'select-service-state']//option[@value = '" + serviceID + "']")));
+            auxWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@id = 'select-service-state']//option[@value = '" + serviceID + "']")));
             serviceStateSelector.selectByValue(serviceID);
 
             Thread.sleep(2000);

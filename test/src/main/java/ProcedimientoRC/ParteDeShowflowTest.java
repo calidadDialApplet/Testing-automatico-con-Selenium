@@ -2,6 +2,7 @@ package ProcedimientoRC;
 
 import ProcedimientoRC.ParteDeShowflow.Subtypology;
 import Utils.Utils;
+import Utils.ShowflowUtils;
 import Utils.File;
 import exceptions.MissingParameterException;
 import gui.Action;
@@ -100,12 +101,13 @@ public class ParteDeShowflowTest extends TestWithConfig {
             firefoxWaiting = new WebDriverWait(firefoxDriver, 6);
 
             results.put("--Create showflow  ->  ", createShowflow());
-            results.put("--Activate showflow fields  ->  ", activateShowflowFields());
+            results.put("--Activate showflow fields  ->  ", activateContactFields());
             results.put("--Create different questions  ->  ", createQuestions());
             results.put("--Create typologies and subtipologies  ->  ", createTypologies());
             results.put("--Import typologies as CSV  ->", importTypologiesCSV());
             results.put("--Check typologies on DB  ->  ",  checkDB());
             results.put("--Configure pages  ->  ", configurePages());
+            results.put("Joint two pages  ->  ", jointTwoPages());
             results.put("--Clone showflow and check it  ->  ", cloneShowflow());
 
 
@@ -134,7 +136,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
                 return e.toString() + "\n ERROR: Login failed";
             }
 
-            String createShowflowRes = Utils.createShowflow(firefoxDriver, firefoxWaiting, showflowName, "contact");
+            String createShowflowRes = ShowflowUtils.createShowflow(firefoxDriver, firefoxWaiting, showflowName, "contact", url);
             if(createShowflowRes.contains("ERROR")) return createShowflowRes;
             else return "Test OK. The showflow has been created";
 
@@ -144,7 +146,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
             return e.toString() + "\nERROR: Test failed";
         }
     }
-    public static String activateShowflowFields()
+    public static String activateContactFields()
     {
         //List with the options of the options group
         List<String> options = new ArrayList<>();
@@ -153,107 +155,14 @@ public class ParteDeShowflowTest extends TestWithConfig {
         options.add(showflowOption3);
         try
         {
-            WebElement showflow = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'showflows']//td[contains(., '" + showflowName + "')]", firefoxDriver);
-            SeleniumDAO.click(showflow);
+            String activateShowflowFieldsRes = ShowflowUtils.createContactFields(firefoxDriver, firefoxWaiting, options, showflowName, showflowOptionsGroupName, showflowAuxField, false);
+            if(activateShowflowFieldsRes.contains("ERROR")) return activateShowflowFieldsRes;
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("edit_showflow")));
-            WebElement contactFields = SeleniumDAO.selectElementBy("id", "edit_showflow_contact", firefoxDriver);
-            SeleniumDAO.click(contactFields);
-
-            //Add options group
-            WebElement addOptionsGroup = SeleniumDAO.selectElementBy("id", "addOptionsGroup", firefoxDriver);
-            SeleniumDAO.click(addOptionsGroup);
-
-            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("new-option-group-name")));
-            WebElement optionsGroupName = SeleniumDAO.selectElementBy("id", "new-option-group-name", firefoxDriver);
-            optionsGroupName.sendKeys(showflowOptionsGroupName);
-
-            WebElement addOptionsGroupButton = SeleniumDAO.selectElementBy("id", "add_new_group", firefoxDriver);
-            SeleniumDAO.click(addOptionsGroupButton);
-
-            Thread.sleep(1000);
-
-            WebElement editOptionGroup = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'option_groups']" +
-                    "//td[contains(., '" + showflowOptionsGroupName + "')]//following-sibling::td[@style = 'text-align: center;']//a[@class = 'edit_group_options']", firefoxDriver);
-            SeleniumDAO.click(editOptionGroup);
-
-            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
-
-            for(int i = 0; i < options.size(); i++)
-            {
-                WebElement newOptionNameInput = SeleniumDAO.selectElementBy("id", "new-option-name", firefoxDriver);
-                WebElement addNewOptionButton = SeleniumDAO.selectElementBy("id", "add_new_option", firefoxDriver);
-                newOptionNameInput.clear();
-                newOptionNameInput.sendKeys(options.get(i));
-                SeleniumDAO.click(addNewOptionButton);
-            }
-
-            SeleniumDAO.switchToDefaultContent(firefoxDriver);
-
-            //Closes the iframe of the options group
-            WebElement closeIframe = SeleniumDAO.selectElementBy("id", "fancybox-close", firefoxDriver);
-            firefoxDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-            SeleniumDAO.click(closeIframe);
-
-            WebElement cityCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'city']//td[@style = 'text-align: center;']/input", firefoxDriver);
-            SeleniumDAO.click(cityCheckbox);
-
-            WebElement countryCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'country']//td[@style = 'text-align: center;']/input", firefoxDriver);
-            SeleniumDAO.click(countryCheckbox);
-
-            WebElement auxFieldInput = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'aux1']//input[@class = 'name']", firefoxDriver);
-            auxFieldInput.sendKeys(showflowAuxField);
-
-            Select auxFieldType = SeleniumDAO.findSelectElementBy("xpath", "//tr[@data-fieldname = 'aux1']//select[@class = 'type']", firefoxDriver);
-            auxFieldType.selectByValue("radiobutton");
-
-            Select optionGroup = SeleniumDAO.findSelectElementBy("xpath", "//select[@class = 'optiongroup active']", firefoxDriver);
-            optionGroup.selectByVisibleText(showflowOptionsGroupName);
-
-            WebElement saveAndConfigureButton = SeleniumDAO.selectElementBy("id", "save-fields-and-go", firefoxDriver);
-            SeleniumDAO.click(saveAndConfigureButton);
-
-            try
-            {
-                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-success animate']")));
-                Thread.sleep(500);
-                WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sweet-alert showSweetAlert visible']//button[@class = 'confirm']", firefoxDriver);
-                SeleniumDAO.click(okButton);
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-                return e.toString() + "\nERROR: Unexpected";
-            }
-
-            //Checks if the fields are checked
-            WebElement showflowPanel = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'acciones']//a[@href = 'showflowPanel.php']", firefoxDriver);
-            SeleniumDAO.click(showflowPanel);
-
-            showflow = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'showflows']//td[contains(., '" + showflowName + "')]", firefoxDriver);
-            SeleniumDAO.click(showflow);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("edit_showflow")));
-            contactFields = SeleniumDAO.selectElementBy("id", "edit_showflow_contact", firefoxDriver);
-            SeleniumDAO.click(contactFields);
-
-            cityCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'city']//td[@style = 'text-align: center;']/input", firefoxDriver);
-            countryCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'country']//td[@style = 'text-align: center;']/input", firefoxDriver);
-            WebElement auxFieldCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'aux1']//td[@style = 'text-align: center;']/input", firefoxDriver);
-
-            if(cityCheckbox.isSelected() && countryCheckbox.isSelected() && auxFieldCheckbox.isSelected())
-            {
-                return "Test OK. The showflow fields name, phone, city, country and aux field: " + showflowAuxField + ", have been activated.";
-            } else
-            {
-                return "ERROR. The showflow fields were activated but they are not saved";
-            }
-
+            return "Test OK. The showflow fields name, phone, city, country and aux field: \" + showflowAuxField + \", have been activated.";
         } catch(Exception e)
         {
             e.printStackTrace();
-            return e.toString() + "\nERROR. Something went wrong";
+            return e.toString() + "\nERROR. Unexpected exception";
         }
     }
     public String createQuestions()
@@ -263,47 +172,10 @@ public class ParteDeShowflowTest extends TestWithConfig {
         questions.add(showflowQuestion2);
         try
         {
-            //Go to showflow fields
-            WebElement showflowFields = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'auxSubItems']//p[@id = 'edit_showflow_fields']", firefoxDriver);
-            SeleniumDAO.click(showflowFields);
+            String createQuestionsRes = ShowflowUtils.createQuestions(firefoxDriver, firefoxWaiting, questions, showflowOptionsGroupName, false);
+            if(createQuestionsRes.contains("ERROR")) return createQuestionsRes;
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("workflow_fields")));
-
-            for(int i = 0; i < questions.size(); i++)
-            {
-                WebElement questionNameInput = SeleniumDAO.selectElementBy("xpath", "//tr[@id = 'new-field']//input[@class = 'label']", firefoxDriver);
-                questionNameInput.sendKeys(questions.get(i));
-
-                Thread.sleep(1000);
-                Select questionType = SeleniumDAO.findSelectElementBy("xpath", "//table[@id = 'workflow_fields']//tr[@id = 'new-field']//select[@class = 'type']", firefoxDriver);
-                if(i == 0) questionType.selectByVisibleText("Checkbox");
-                else questionType.selectByVisibleText("Text");
-
-                Select optionGroup = SeleniumDAO.findSelectElementBy("xpath", "//tr[@id = 'new-field']//select[@class = 'optiongroup']", firefoxDriver);
-                optionGroup.selectByVisibleText(showflowOptionsGroupName);
-
-                WebElement addNewQuestionButton = SeleniumDAO.selectElementBy("id", "add_new_field", firefoxDriver);
-                SeleniumDAO.click(addNewQuestionButton);
-                Thread.sleep(500);
-            }
-
-            firefoxWaiting.until(ExpectedConditions.visibilityOfElementLocated(By.id("save-fields")));
-            WebElement saveButton = SeleniumDAO.selectElementBy("id", "save-fields", firefoxDriver);
-            SeleniumDAO.click(saveButton);
-
-            WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sa-confirm-button-container']//button[@class = 'confirm']", firefoxDriver);
-            SeleniumDAO.click(okButton);
-
-            try
-            {
-                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@value = '" + showflowQuestion1 + "']")));
-                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@value = '" + showflowQuestion2 + "']")));
-                return "Test OK. The question fields were created and apear on the table.";
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-                return "ERROR. The questions were created but do not apear on the table";
-            }
+            return "Test OK. The question fields were created and apear on the table.";
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -396,6 +268,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
     {
         try
         {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("csvfile")));
             WebElement browseButton = SeleniumDAO.selectElementBy("id", "csvfile", firefoxDriver);
             SeleniumDAO.writeInTo(browseButton, typologiesCsvPath);
 
@@ -449,26 +322,25 @@ public class ParteDeShowflowTest extends TestWithConfig {
             SeleniumDAO.click(loginButton);
 
             //go to dialapplet database
-            WebElement dialappletDB = SeleniumDAO.selectElementBy("xpath","//a[@href = 'redirect.php?subject=database&server=localhost%3A5432%3Aallow&database=dialapplet&']",
-                    firefoxDriver);
+            WebElement dialappletDB = SeleniumDAO.selectElementBy("xpath","//a[contains(., 'dialapplet')]",
+                  firefoxDriver);
             SeleniumDAO.click(dialappletDB);
 
             //Click on Schema->public
-            WebElement publicSchema = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'redirect.php?subject=schema&server=localhost%3A5432%3Aallow&database=dialapplet&schema=public&']",
-                    firefoxDriver);
+            WebElement publicSchema = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'public')]", firefoxDriver);
             SeleniumDAO.click(publicSchema);
 
             WebElement typologiesTable = SeleniumDAO.selectElementBy("xpath", "//a[contains(., '" + bdTypologiesTable + "')]", firefoxDriver);
             SeleniumDAO.click(typologiesTable);
 
             //Click on browse
-            WebElement browseButton = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'display.php?server=localhost%3A5432%3Aallow&database=dialapplet&schema=public&table=dialapplet_predictivedialer_decisiontipology&subject=table&return=table']", firefoxDriver);
+            WebElement browseButton = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'Browse')]", firefoxDriver);
             SeleniumDAO.click(browseButton);
 
             //Click 2 times on id column to order the rows by id
-            WebElement idColumn = SeleniumDAO.selectElementBy("xpath", "//a[@href = '?server=localhost%3A5432%3Aallow&database=dialapplet&schema=public&table=dialapplet_predictivedialer_decisiontipology&subject=table&return=table&sortkey=1&sortdir=asc&strings=collapsed&page=1']", firefoxDriver);
+            WebElement idColumn = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'id')]", firefoxDriver);
             SeleniumDAO.click(idColumn);
-            idColumn = SeleniumDAO.selectElementBy("xpath", "//a[@href = '?server=localhost%3A5432%3Aallow&database=dialapplet&schema=public&table=dialapplet_predictivedialer_decisiontipology&subject=table&return=table&sortkey=1&sortdir=desc&strings=collapsed&page=1']", firefoxDriver);
+            idColumn = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'id')]", firefoxDriver);
             Thread.sleep(500);
             SeleniumDAO.click(idColumn);
 
@@ -517,40 +389,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
             Thread.sleep(500);
             SeleniumDAO.click(showflow);
 
-            WebElement configurePagesTab = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'auxSubItems']//p[@id = 'edit_showflow_pages']/a", firefoxDriver);
-            SeleniumDAO.click(configurePagesTab);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("workflow-pages")));
-            //Creates a final page
-            WebElement pageNameInput = SeleniumDAO.selectElementBy("id", "page-name", firefoxDriver);
-            pageNameInput.sendKeys("Final page");
-
-            WebElement finalRadioButton = SeleniumDAO.selectElementBy("id", "page-final", firefoxDriver);
-            SeleniumDAO.click(finalRadioButton);
-
-            WebElement addPageButton = SeleniumDAO.selectElementBy("xpath", "//img[@src = 'imagenes/add2.png']", firefoxDriver);
-            SeleniumDAO.click(addPageButton);
-
-            Thread.sleep(1000);
-            WebElement configurePage = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'workflow-pages']//tbody/tr[1]//a[@class = 'edit-page-template']", firefoxDriver);
-            SeleniumDAO.click(configurePage);
-            configureFinalPage(); //Configures final page
-
-            //Creates a initial page
-            pageNameInput = SeleniumDAO.selectElementBy("id", "page-name", firefoxDriver);
-            pageNameInput.clear();
-            pageNameInput.sendKeys("Initial page");
-
-            WebElement initialRadioButton = SeleniumDAO.selectElementBy("id", "page-initial", firefoxDriver);
-            SeleniumDAO.click(initialRadioButton);
-
-            addPageButton = SeleniumDAO.selectElementBy("xpath", "//img[@src = 'imagenes/add2.png']", firefoxDriver);
-            SeleniumDAO.click(addPageButton);
-
-            Thread.sleep(1000);
-            configurePage = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'workflow-pages']//tbody/tr[2]//a[@class = 'edit-page-template']", firefoxDriver);
-            SeleniumDAO.click(configurePage);
-            configureInitialPage(); //Configures initial page
+            ShowflowUtils.configurePages(firefoxDriver, firefoxWaiting, false);
 
 
             return "Test OK. Check your work directory to see the taken screenshots of the initial and final pages.";
@@ -560,6 +399,17 @@ public class ParteDeShowflowTest extends TestWithConfig {
         {
             e.printStackTrace();
             return e.toString() + "\nERROR. Unexpected exception";
+        }
+    }
+
+    public String jointTwoPages() {
+        try {
+            ShowflowUtils.configureJoints(firefoxDriver, firefoxWaiting);
+
+            return "Test OK. The initial page and the final page were joined with the condition name = Sebas";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. The pages could not be joined";
         }
     }
 
@@ -627,10 +477,10 @@ public class ParteDeShowflowTest extends TestWithConfig {
             WebElement contactFieldsTab = SeleniumDAO.selectElementBy("xpath", "//p[@id = 'edit_showflow_contact']/a", firefoxDriver);
             SeleniumDAO.click(contactFieldsTab);
 
-            String contactFieldsRes = checkContactFields();
-            String showflowFieldsRes = checkShowflowFields();
-            String actionFieldsRes = checkActionFields();
-            String checkPagesRes = checkPages();
+            String contactFieldsRes = ShowflowUtils.checkContactFields(firefoxDriver, firefoxWaiting, showflowOptionsGroupName, showflowAuxField);
+            String showflowFieldsRes = ShowflowUtils.checkShowflowFields(firefoxDriver, firefoxWaiting, showflowQuestion1, showflowQuestion2, showflowOptionsGroupName, false);
+            String actionFieldsRes = checkActionFields(); //Este metodo no está en showflow utils porque solo sirve para showflows de contacto, no para tipo ticket.
+            String checkPagesRes = ShowflowUtils.checkPages(firefoxDriver, firefoxWaiting, showflowCopyName, false);
 
             if(contactFieldsRes.contains("ERROR")) return contactFieldsRes;
             if(showflowFieldsRes.contains("ERROR")) return showflowFieldsRes;
@@ -646,61 +496,6 @@ public class ParteDeShowflowTest extends TestWithConfig {
         }
     }
 
-    public String checkContactFields()
-    {
-        try
-        {
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("workflow_fields")));
-
-            WebElement aux1Checkbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'aux1' and contains(@class, 'contact-field visible isactive')]", firefoxDriver);
-            WebElement cityCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'city' and contains(@class, 'contact-field visible isactive')]", firefoxDriver);
-            WebElement clienteCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'country' and contains(@class, 'contact-field visible isactive')]", firefoxDriver);
-
-            WebElement aux1NameInput = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'aux1']//td/input[@value = '" + showflowAuxField + "']", firefoxDriver);
-            WebElement aux1TypeSelected = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'aux1']//select[@class = 'type']" +
-                    "//option[@value = 'radiobutton' and @selected = '']", firefoxDriver);
-            WebElement aux1OptionGroup = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'aux1']//select[@class = 'optiongroup active']" +
-                    "//option[contains(., '" + showflowOptionsGroupName + "')]", firefoxDriver);
-            boolean res = aux1OptionGroup.isSelected();
-            if(!res) throw new Exception();
-
-            return "Check OK. The contact fields of the cloned showflow match with the original";
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            return e.toString() + "\nERROR. The contact fields of the cloned showflow do not match with the original";
-        }
-    }
-
-    public String checkShowflowFields()
-    {
-        try
-        {
-            WebElement showflowFieldsTab = SeleniumDAO.selectElementBy("xpath", "//p[@id = 'edit_showflow_fields']/a", firefoxDriver);
-            SeleniumDAO.click(showflowFieldsTab);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("workflow_fields")));
-
-            WebElement question1Name = SeleniumDAO.selectElementBy("xpath", "//input[@value = '" + showflowQuestion1 + "']", firefoxDriver);
-            WebElement question2Name = SeleniumDAO.selectElementBy("xpath", "//input[@value = '" + showflowQuestion2 + "']", firefoxDriver);
-
-            WebElement question1Type = SeleniumDAO.selectElementBy("xpath", "//select[@class = 'type']" +
-                    "//option[@value = 'text' and @selected = '']", firefoxDriver);
-            WebElement question2Type = SeleniumDAO.selectElementBy("xpath", "//select[@class = 'type']" +
-                    "//option[@value = 'checkbox' and @selected = '']", firefoxDriver);
-
-            WebElement question2OptionGroup = SeleniumDAO.selectElementBy("xpath", "//select[@class = 'optiongroup']" +
-                    "//option[contains(., '" + showflowOptionsGroupName + "')]", firefoxDriver);
-            boolean res = question2OptionGroup.isSelected();
-            if(!res) throw new Exception();
-
-            return "Check OK. The showflow fields of the cloned showflow match with the original";
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            return e.toString() + "\nERROR. The showflow fields of the cloned showflow do not match with the original";
-        }
-    }
 
     public String checkActionFields()
     {
@@ -721,19 +516,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
             Utils.takeScreenshot("./ParteDeShowflowOut/screenshotDBcopy", firefoxDriver);
 
-            return "Check OK. The action fields of the cloned showflow match with the original. A screenshot of the DB was taken.";
-
-        } catch(Exception e)
-        {
-            e.printStackTrace();
-            return e.toString() + "\nERROR. The action fields of the cloned showflow do not match with the original";
-        }
-    }
-
-    public String checkPages()
-    {
-        try
-        {
+            //Inicia sesion para la proxima prueba
             firefoxDriver.get(url + "dialapplet-web");
             Utils.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
             try {
@@ -744,45 +527,17 @@ public class ParteDeShowflowTest extends TestWithConfig {
                 return e.toString() + "\n ERROR: Login failed";
             }
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'mainMenu']//li[@id = 'SHOWFLOW']")));
-            WebElement showflowTab = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'mainMenu']//li[@id = 'SHOWFLOW']", firefoxDriver);
-            SeleniumDAO.click(showflowTab);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'showflows']//td[contains(., '" + showflowCopyName + "')]")));
-            WebElement showflow = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'showflows']//td[contains(., '" + showflowCopyName + "')]", firefoxDriver);
-            SeleniumDAO.click(showflow);
+            return "Check OK. The action fields of the cloned showflow match with the original. A screenshot of the DB was taken.";
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//p[@id = 'edit_showflow_pages']/a")));
-            WebElement configurePagesTab = SeleniumDAO.selectElementBy("xpath", "//p[@id = 'edit_showflow_pages']/a", firefoxDriver);
-            SeleniumDAO.click(configurePagesTab);
-
-            Thread.sleep(1000);
-            WebElement configurePage = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'workflow-pages']//tbody/tr[1]//a[@class = 'edit-page-template']", firefoxDriver);
-            SeleniumDAO.click(configurePage);
-
-            Thread.sleep(2000);
-
-            Utils.takeScreenshot("./ParteDeShowflowOut/screenshotInitialPageCopy", firefoxDriver);
-
-            WebElement backButton = SeleniumDAO.selectElementBy("xpath", "//img[@src = 'imagenes/menus/back.png']", firefoxDriver);
-            SeleniumDAO.click(backButton);
-
-            Thread.sleep(1000);
-            configurePage = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'workflow-pages']//tbody/tr[2]//a[@class = 'edit-page-template']", firefoxDriver);
-            SeleniumDAO.click(configurePage);
-
-            Thread.sleep(2000);
-
-            Utils.takeScreenshot("./ParteDeShowflowOut/screenshotFinalPageCopy", firefoxDriver);
-
-            return "Check OK. Two screenshots have been taken to compare with the screenshots taken of the original pages";
-
-        } catch (Exception e)
+        } catch(Exception e)
         {
             e.printStackTrace();
-            return e.toString() + "\nERROR. Unexpected exception";
+            return e.toString() + "\nERROR. The action fields of the cloned showflow do not match with the original";
         }
     }
+
+
 
     public void checkDBforShowflowCopy() throws InterruptedException
     {
@@ -831,74 +586,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
         }
     }
 
-    public void configureInitialPage() throws InterruptedException, IOException
-    {
-        SeleniumDAO.switchToFrame("showflow_page_editor", firefoxDriver);
-        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'sidebar-fields']")));
 
-        WebElement thirdSquareRow = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sel-cols']//div[@data-cols = '3']", firefoxDriver);
-        SeleniumDAO.click(thirdSquareRow);
-        Thread.sleep(250);
-        WebElement secondSquareRow = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sel-cols']//div[@data-cols = '2']", firefoxDriver);
-        SeleniumDAO.click(secondSquareRow);
-
-        Actions actions = new Actions(firefoxDriver);
-
-        List<WebElement> elementsToDrag = firefoxDriver.findElements(By.xpath("//div[@id = 'sidebar-fields']/div[@data-context = 'contact']"));
-        List<WebElement> elementsDroppable = firefoxDriver.findElements(By.xpath("//ul[@id = 'showflow-canvas']//div[contains(@class, 'container ui-droppable')]"));
-        for(int i = 0; i < elementsToDrag.size(); i++)
-        {
-            actions.dragAndDrop(elementsToDrag.get(i), elementsDroppable.get(i)).perform();
-        }
-
-        Thread.sleep(2000);
-        Utils.takeScreenshot("./ParteDeShowflowOut/screenshotInitialPage", firefoxDriver);
-
-        SeleniumDAO.switchToDefaultContent(firefoxDriver);
-        WebElement backButton = SeleniumDAO.selectElementBy("xpath", "//img[@src = 'imagenes/menus/back.png']", firefoxDriver);
-        SeleniumDAO.click(backButton);
-    }
-
-    public void configureFinalPage() throws InterruptedException, IOException
-    {
-        SeleniumDAO.switchToFrame("showflow_page_editor", firefoxDriver);
-        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'sidebar-fields']")));
-
-        WebElement secondSquareRow = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sel-cols']//div[@data-cols = '2']", firefoxDriver);
-        SeleniumDAO.click(secondSquareRow);
-        Thread.sleep(250);
-        WebElement thirdSquareRow = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sel-cols']//div[@data-cols = '3']", firefoxDriver);
-        SeleniumDAO.click(thirdSquareRow);
-
-        Actions actions = new Actions(firefoxDriver);
-
-        //Get the showflow fields
-        WebElement showflowFieldsTab = SeleniumDAO.selectElementBy("id", "workflow-fields", firefoxDriver);
-        SeleniumDAO.click(showflowFieldsTab);
-        List<WebElement> showflowFieldsToDrag = firefoxDriver.findElements(By.xpath("//div[@id = 'sidebar-fields']/div[@data-context = 'workflow']"));
-
-        //Get the action fields
-        WebElement actionFieldsTab = SeleniumDAO.selectElementBy("id", "action-fields", firefoxDriver);
-        SeleniumDAO.click(actionFieldsTab);
-        List<WebElement> elementsToDrag = firefoxDriver.findElements(By.xpath("//div[@id = 'sidebar-fields']/div[@data-context = 'action']"));
-        elementsToDrag.addAll(showflowFieldsToDrag); //Concat showflow fields and action fields
-
-        List<WebElement> elementsDroppable = firefoxDriver.findElements(By.xpath("//ul[@id = 'showflow-canvas']//div[contains(@class, 'container ui-droppable')]"));
-
-        for(int i = 0; i < elementsToDrag.size(); i++)
-        {
-            if(i == 3) SeleniumDAO.click(showflowFieldsTab);
-            actions.dragAndDrop(elementsToDrag.get(i), elementsDroppable.get(i)).perform();
-        }
-
-
-        Thread.sleep(2000);
-        Utils.takeScreenshot("./ParteDeShowflowOut/screenshotFinalPage", firefoxDriver);
-
-        SeleniumDAO.switchToDefaultContent(firefoxDriver);
-        WebElement backButton = SeleniumDAO.selectElementBy("xpath", "//img[@src = 'imagenes/menus/back.png']", firefoxDriver);
-        SeleniumDAO.click(backButton);
-    }
 
     public HashMap<String, List<Subtypology>> loadTypologiesAttributes()
     {
@@ -932,6 +620,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
         for(Subtypology subtypology : subtypologies) {
             SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
 
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("new-subtypology-name")));
             WebElement subtypologyName = SeleniumDAO.selectElementBy("id", "new-subtypology-name", firefoxDriver);
             subtypologyName.clear();
             subtypologyName.sendKeys(subtypology.getName());
@@ -949,7 +638,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-confirm-button-container']//button[@class = 'confirm']")));
             WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sa-confirm-button-container']//button[@class = 'confirm']", firefoxDriver);
-            Thread.sleep(500);
+            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(okButton));
             SeleniumDAO.click(okButton);
         }
 

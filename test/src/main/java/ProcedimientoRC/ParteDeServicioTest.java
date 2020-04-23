@@ -3,6 +3,7 @@ package ProcedimientoRC;
 import Utils.DriversConfig;
 import Utils.TestWithConfig;
 import Utils.Utils;
+import Utils.ServiceUtils;
 import gui.Action;
 import okhttp3.internal.Util;
 import org.ini4j.Wini;
@@ -15,7 +16,10 @@ import main.SeleniumDAO;
 
 import java.io.IOException;
 import java.util.*;
-
+//TODO cambiar callback assignment a user de manualcallmode agendada
+//TODO cambiar en predictive callback agendada a manual y no auto
+//TODO cambiar en el modo de llamada manual, en el telefonito, assign to -> user
+//TODO Revisar las colas
 public class ParteDeServicioTest extends TestWithConfig {
 
     static String url;
@@ -162,30 +166,10 @@ public class ParteDeServicioTest extends TestWithConfig {
                 }
             }
 
-            //Selects the dates of the campaign
-            WebElement beginningDateInput = SeleniumDAO.selectElementBy("id", "periodbegin_1", firefoxDriver);
-            WebElement endDateInput = SeleniumDAO.selectElementBy("id", "periodend_1", firefoxDriver);
-            beginningDateInput.clear();
-            endDateInput.clear();
-            beginningDateInput.sendKeys(campaignBeginningDate);
-            endDateInput.sendKeys(campaignEndDate);
-
-            //Selects the schedule
-            WebElement mondayCheckbox = SeleniumDAO.selectElementBy("id", "day1", firefoxDriver);
-            SeleniumDAO.click(mondayCheckbox);
-
-            WebElement beginningHourInput = SeleniumDAO.selectElementBy("id", "since_day1_mor", firefoxDriver);
-            WebElement endHourInput = SeleniumDAO.selectElementBy("id", "until_day1_mor", firefoxDriver);
-            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.id("since_day1_mor")));
-            beginningHourInput.sendKeys("09:00:00");
-            endHourInput.sendKeys("17:00:00");
-
-            WebElement copyToFridayButton = SeleniumDAO.selectElementBy("xpath", "//input[@class = 'copyToFriday']", firefoxDriver);
-            SeleniumDAO.click(copyToFridayButton);
+            ServiceUtils.setDateTimeCampaign(firefoxDriver, firefoxWaiting, campaignBeginningDate, campaignEndDate);
 
             //100% recording rate
-            Select recordingRateSelector = SeleniumDAO.findSelectElementBy("id", "recordingrate", firefoxDriver);
-            recordingRateSelector.selectByValue("100");
+            ServiceUtils.recordRateTo100(firefoxDriver);
 
 
             JavascriptExecutor js = (JavascriptExecutor) firefoxDriver;
@@ -217,13 +201,10 @@ public class ParteDeServicioTest extends TestWithConfig {
             WebElement basicDataTab = SeleniumDAO.selectElementBy("xpath", "//li[@class = 'tab_service_productivity tab_service_productivity_inactive_complete']//a[contains(., 'Basic data')]", firefoxDriver);
             SeleniumDAO.click(basicDataTab);
 
-            WebElement recordLabel = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'audioformat']", firefoxDriver);
-            recordLabel.clear();
-            recordLabel.sendKeys("RCNvXYZ%20-%21-%1-%9-%8-%6");
+            ServiceUtils.setRecordMap(firefoxDriver);
 
             //Robinson list to yes
-            WebElement robinsonRadioButton = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'robinsonyes']", firefoxDriver);
-            SeleniumDAO.click(robinsonRadioButton);
+            ServiceUtils.setRobinsonToYes(firefoxDriver);
 
             //Save
             changeButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
@@ -418,12 +399,13 @@ public class ParteDeServicioTest extends TestWithConfig {
             SeleniumDAO.click(editCallMode);
 
             Select callbackSelector = SeleniumDAO.findSelectElementBy("id", "campaigncallback", firefoxDriver);
-            Thread.sleep(400);
+            firefoxWaiting.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//option[contains(., '" + predictCallModeName + " Callback" + "')]")));
             callbackSelector.selectByVisibleText(predictCallModeName + " Callback");
 
             //Este grupo solo estará en la de transferencia para comprobar los filtros del panel de extensiones en el parte de webclient
             grupo1y2Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName1y2 + "')]", firefoxDriver);
-            SeleniumDAO.click(grupo1y2Checkbox);
+            if(grupo1y2Checkbox.isSelected()) SeleniumDAO.click(grupo1y2Checkbox);
+
 
             addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
             SeleniumDAO.click(addCallModeButton);
@@ -454,9 +436,27 @@ public class ParteDeServicioTest extends TestWithConfig {
             Thread.sleep(1000);
             SeleniumDAO.switchToDefaultContent(firefoxDriver);
 
-            //Configure predictive callmode
-            WebElement phoneCallModeButton = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + predictCallModeName + "')]/following-sibling::td/a[@class = 'maximumControl iframe']",
+
+            //Configure predictive callmode callback
+            WebElement phoneCallModeButton = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + predictCallModeName + " Callback')]/following-sibling::td/a[@class = 'maximumControl iframe']",
                     firefoxDriver);
+            SeleniumDAO.click(phoneCallModeButton);
+            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'tipology']/table[2]//input[@value = '1']")));
+            WebElement manualRadioButton = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'tipology']/table[2]//input[@value = '1']", firefoxDriver);
+            SeleniumDAO.click(manualRadioButton);
+
+            WebElement sendButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
+            SeleniumDAO.click(sendButton);
+
+            SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+            //Configure predictive callmode
+            Thread.sleep(2000);
+            phoneCallModeButton = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + predictCallModeName + "')]/following-sibling::td/a[@class = 'maximumControl iframe']",
+                    firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(phoneCallModeButton));
             SeleniumDAO.click(phoneCallModeButton);
 
             SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
@@ -464,6 +464,7 @@ public class ParteDeServicioTest extends TestWithConfig {
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("maximumtype")));
             Select calltypeSelector = SeleniumDAO.findSelectElementBy("id", "maximumtype", firefoxDriver);
             calltypeSelector.selectByVisibleText("Combined (Delay - Typology)"); //TODO refactor byValue
+
 
             Thread.sleep(1000);
             //Configuration for the phone button
@@ -473,7 +474,7 @@ public class ParteDeServicioTest extends TestWithConfig {
 
             Utils.takeScreenshot("./ParteDeServicioOut/predictiveConfigScreenshot", firefoxDriver);
 
-            WebElement sendButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
+            sendButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
             SeleniumDAO.click(sendButton);
 
             createIncomingRoute();
@@ -488,10 +489,20 @@ public class ParteDeServicioTest extends TestWithConfig {
 
     public String assignCoordToGroupTest() {
         try {
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'newServiceAssistant.php?page=5&serviceid=" + serviceID + "']")));
-            WebElement coordinatorsTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=5&serviceid=" + serviceID + "']", firefoxDriver);
-            Thread.sleep(1500);
-            SeleniumDAO.click(coordinatorsTab);
+            //TODO borrar if cuando la 7 desaparezca
+            if(url.contains("8")){
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'newServiceAssistant.php?page=5&serviceid=" + serviceID + "']")));
+                WebElement coordinatorsTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=5&serviceid=" + serviceID + "']", firefoxDriver);
+                Thread.sleep(1500);
+                SeleniumDAO.click(coordinatorsTab);
+            } else
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'newServiceAssistant.php?page=4&serviceid=" + serviceID + "']")));
+                WebElement coordinatorsTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=4&serviceid=" + serviceID + "']", firefoxDriver);
+                Thread.sleep(1500);
+                SeleniumDAO.click(coordinatorsTab);
+            }
+
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'coordList']//td[contains(., '" + agentCoordName + "')]")));
             WebElement agent4ToDrag = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'agentsList']//td[contains(., '" + agentName4 + "')]", firefoxDriver);
@@ -552,11 +563,24 @@ public class ParteDeServicioTest extends TestWithConfig {
 
     public String insertRobinsonListTest() {
         try {
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'newServiceAssistant.php?page=9&serviceid=" + serviceID + "']")));
-            Thread.sleep(1500);
-            WebElement robinsonListTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=9&serviceid=" + serviceID + "']", firefoxDriver);
-            Thread.sleep(500);
-            SeleniumDAO.click(robinsonListTab);
+            //TODO eliminar if cuando desaparezca la version 7
+            if(url.contains("8"))
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'newServiceAssistant.php?page=9&serviceid=" + serviceID + "']")));
+                Thread.sleep(1500);
+                WebElement robinsonListTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=9&serviceid=" + serviceID + "']", firefoxDriver);
+                Thread.sleep(500);
+                SeleniumDAO.click(robinsonListTab);
+            }
+            else
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[contains(., 'Robinson')]")));
+                Thread.sleep(1500);
+                WebElement robinsonListTab = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'Robinson')]", firefoxDriver);
+                Thread.sleep(500);
+                SeleniumDAO.click(robinsonListTab);
+            }
+
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[@src = 'imagenes/menus/blackListAdd.png']")));
             WebElement importNewPhonesButton = SeleniumDAO.selectElementBy("xpath", "//img[@src = 'imagenes/menus/blackListAdd.png']", firefoxDriver);
@@ -567,6 +591,7 @@ public class ParteDeServicioTest extends TestWithConfig {
             SeleniumDAO.writeInTo(browseButton, robinsonListPath);
 
             WebElement nextButton = SeleniumDAO.selectElementBy("id", "submit", firefoxDriver);
+            Thread.sleep(500);
             SeleniumDAO.click(nextButton);
 
             SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
@@ -595,10 +620,22 @@ public class ParteDeServicioTest extends TestWithConfig {
 
     public String importContactsTest() {
         try {
-            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href = 'newServiceAssistant.php?page=10&serviceid=" + serviceID + "&from=servicepanel']")));
-            Thread.sleep(700);
-            WebElement importContactsTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=10&serviceid=" + serviceID + "&from=servicepanel']", firefoxDriver);
-            SeleniumDAO.click(importContactsTab);
+            WebElement importContactsTab;
+            //TODO eliminar if cuando desaparezca la version 7
+            if(url.contains("8"))
+            {
+                firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href = 'newServiceAssistant.php?page=10&serviceid=" + serviceID + "&from=servicepanel']")));
+                Thread.sleep(700);
+                importContactsTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=10&serviceid=" + serviceID + "&from=servicepanel']", firefoxDriver);
+                SeleniumDAO.click(importContactsTab);
+            } else
+            {
+                firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href = 'newServiceAssistant.php?page=9&serviceid=" + serviceID + "&from=servicepanel']")));
+                Thread.sleep(700);
+                importContactsTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=9&serviceid=" + serviceID + "&from=servicepanel']", firefoxDriver);
+                SeleniumDAO.click(importContactsTab);
+            }
+
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("campaignSelDef")));
             Select campaignSelector = SeleniumDAO.findSelectElementBy("id", "campaignSelDef", firefoxDriver);
@@ -665,13 +702,33 @@ public class ParteDeServicioTest extends TestWithConfig {
             SeleniumDAO.switchToDefaultContent(firefoxDriver);
 
             //switch tabs to reload the page
-            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href = 'newServiceAssistant.php?page=9&serviceid=" + serviceID + "']")));
-            Thread.sleep(1000);
-            WebElement robinsonListTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=9&serviceid=" + serviceID + "']", firefoxDriver);
-            SeleniumDAO.click(robinsonListTab);
+            //TODO eliminar if cuando desaparezca la version 7
+            if(url.contains("8"))
+            {
+                firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href = 'newServiceAssistant.php?page=9&serviceid=" + serviceID + "']")));
+                Thread.sleep(1000);
+                WebElement robinsonListTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=9&serviceid=" + serviceID + "']", firefoxDriver);
+                SeleniumDAO.click(robinsonListTab);
+            } else
+            {
+                firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(., 'Robinson')]")));
+                Thread.sleep(1000);
+                WebElement robinsonListTab = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'Robinson')]", firefoxDriver);
+                SeleniumDAO.click(robinsonListTab);
+            }
 
-            importContactsTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=10&serviceid=" + serviceID + "&from=servicepanel']", firefoxDriver);
-            SeleniumDAO.click(importContactsTab);
+
+            //TODO borrar if cuando desaparezca la version 7
+            if(url.contains("8"))
+            {
+                importContactsTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=10&serviceid=" + serviceID + "&from=servicepanel']", firefoxDriver);
+                SeleniumDAO.click(importContactsTab);
+            } else
+            {
+                importContactsTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=9&serviceid=" + serviceID + "&from=servicepanel']", firefoxDriver);
+                SeleniumDAO.click(importContactsTab);
+            }
+
 
             //Takes a screenshot of the results
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@onclick = 'showHideStatisticHistory();']")));
@@ -798,6 +855,22 @@ public class ParteDeServicioTest extends TestWithConfig {
     }
 
     public String cloneServiceTest() {
+        //Login on dialapplet web
+        firefoxDriver.get(url + "dialapplet-web");
+        Utils.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
+        try {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("mainMenu")));
+        } catch (Exception e) {
+            //System.err.println("ERROR: Login failed");
+            return e.toString() + "\n ERROR: Login failed";
+        }
+
+
+
+
+
+
+
         String res = "";
         try {
             //Searchs the service on the services table
@@ -1243,7 +1316,16 @@ public class ParteDeServicioTest extends TestWithConfig {
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("selectDID")));
             Select DIDSelector = SeleniumDAO.findSelectElementBy("id", "selectDID", firefoxDriver);
-            DIDSelector.selectByVisibleText(DID + " (Ruta entrante selenium)");
+            //TODO borrar este if, es para hacer un apaño y que funcione en la 7rc
+            if(url.contains("8"))
+            {
+                DIDSelector.selectByVisibleText(DID + " (Ruta entrante selenium)");
+            }
+            else
+            {
+                DIDSelector.selectByVisibleText(DID + " (sebas)");
+            }
+
 
             Thread.sleep(500);
             WebElement editButton = SeleniumDAO.selectElementBy("xpath", "//form[@id = 'formulario-search-inbound']//input[@value = 'Edit']", firefoxDriver);
@@ -1328,9 +1410,19 @@ public class ParteDeServicioTest extends TestWithConfig {
             WebElement editServiceTab = SeleniumDAO.selectElementBy("xpath", "//p[@id = 'edit-service']/a", firefoxDriver);
             SeleniumDAO.click(editServiceTab);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'newServiceAssistant.php?page=3&serviceid=" + serviceID + "']")));
-            WebElement callmodesTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=3&serviceid=" + serviceID + "']", firefoxDriver);
-            SeleniumDAO.click(callmodesTab);
+            //TODO eliminar if cuando la 7rc desaparezca
+            if(url.contains("8"))
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'newServiceAssistant.php?page=3&serviceid=" + serviceID + "']")));
+                WebElement callmodesTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=3&serviceid=" + serviceID + "']", firefoxDriver);
+                SeleniumDAO.click(callmodesTab);
+            } else
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'newServiceAssistant.php?page=2&serviceid=" + serviceID + "']")));
+                WebElement callmodesTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php?page=2&serviceid=" + serviceID + "']", firefoxDriver);
+                SeleniumDAO.click(callmodesTab);
+            }
+
 
             //Create new callmode: manual transferencia
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("createCampaign")));
@@ -1407,8 +1499,24 @@ public class ParteDeServicioTest extends TestWithConfig {
             transferCallmodeInput.clear();
             transferCallmodeInput.sendKeys(transfCallModeName + "forService");
 
-            WebElement submitButton = SeleniumDAO.selectElementBy("id", "sendButton", firefoxDriver);
-            SeleniumDAO.click(submitButton);
+            //TODO borrar este if cuando desaparezca la version 7
+            if(url.contains("7"))
+            {
+                WebElement cloneBDCheckbox = SeleniumDAO.selectElementBy("id", "cloneDatabaseStructure", firefoxDriver);
+                SeleniumDAO.click(cloneBDCheckbox);
+            }
+
+            //TODO borrar este if cuando desparezca la version 7
+            if(url.contains("8")){
+                WebElement submitButton = SeleniumDAO.selectElementBy("id", "sendButton", firefoxDriver);
+                SeleniumDAO.click(submitButton);
+            }
+            else
+            {
+                WebElement submitButton = SeleniumDAO.selectElementBy("name", "submitButton", firefoxDriver);
+                SeleniumDAO.click(submitButton);
+            }
+
 
             SeleniumDAO.switchToDefaultContent(firefoxDriver);
 
@@ -1416,9 +1524,14 @@ public class ParteDeServicioTest extends TestWithConfig {
             WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
             SeleniumDAO.click(okButton);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-success animate']")));
-            okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
-            SeleniumDAO.click(okButton);
+            //TODO borrar este if cuando desaparezca la version 7
+            if(url.contains("8"))
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-success animate']")));
+                okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+                SeleniumDAO.click(okButton);
+            }
+
         } catch (Exception e)
         {
             e.printStackTrace();

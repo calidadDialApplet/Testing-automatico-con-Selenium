@@ -9,6 +9,7 @@ import org.ini4j.Wini;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -29,6 +30,7 @@ public class CleanParteDeAgentes extends CleanTest {
     static String agentName3;
     static String agentName4;
     static String agentName5;
+    static String agentName7;
     static String agentPassword;
     static String pilotAgentName1;
     static String pilotAgentName2;
@@ -50,7 +52,7 @@ public class CleanParteDeAgentes extends CleanTest {
         requiredParameters.put("General", new ArrayList<>(Arrays.asList("url", "headless")));
         requiredParameters.put("Admin", new ArrayList<>(Arrays.asList("adminName", "adminPassword")));
         requiredParameters.put("Group", new ArrayList<>(Arrays.asList("groupName", "groupName1y2", "groupName3")));
-        requiredParameters.put("Agent", new ArrayList<>(Arrays.asList("agentName1", "agentName2", "agentName3", "agentName4", "agentName5",
+        requiredParameters.put("Agent", new ArrayList<>(Arrays.asList("agentName1", "agentName2", "agentName3", "agentName4", "agentName5", "agentName7",
                 "agentPassword", "pilotAgentName1", "pilotAgentName2")));
         requiredParameters.put("Coordinator", new ArrayList<>(Arrays.asList("agentCoordName1", "agentCoordName6", "coordinatorPassword")));
         requiredParameters.put("CSV", new ArrayList<>(Arrays.asList("agentsCsvPath")));
@@ -79,6 +81,7 @@ public class CleanParteDeAgentes extends CleanTest {
             agentName3 = commonIni.get("Agent", "agentName3");
             agentName4 = commonIni.get("Agent", "agentName4");
             agentName5 = commonIni.get("Agent", "agentName5");
+            agentName7 = commonIni.get("Agent", "agentName7");
             agentPassword = commonIni.get("Agent", "agentPassword");
             pilotAgentName1 = commonIni.get("Agent", "pilotAgentName1");
             pilotAgentName2 = commonIni.get("Agent", "pilotAgentName2");
@@ -99,6 +102,7 @@ public class CleanParteDeAgentes extends CleanTest {
                 add(agentName3);
                 add(agentName4);
                 add(agentName5);
+                add(agentName7);
                 add(pilotAgentName1);
                 add(pilotAgentName2);
                 add(agentCoordName1);
@@ -126,9 +130,11 @@ public class CleanParteDeAgentes extends CleanTest {
                 try
                 {
                     WebElement deleteButton = SeleniumDAO.selectElementBy("xpath", "//table/tbody/tr[@id = 'user-" + agentsToClean.get(i) + "']//img[@src = 'imagenes/delete2.png']", firefoxDriver);
+                    firefoxWaiting.until(ExpectedConditions.elementToBeClickable(deleteButton));
                     SeleniumDAO.click(deleteButton);
                     firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-confirm-button-container']//button[@class = 'confirm']")));
                     WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sa-confirm-button-container']//button[@class = 'confirm']", firefoxDriver);
+                    firefoxWaiting.until(ExpectedConditions.elementToBeClickable(confirmButton));
                     Thread.sleep(500);
                     SeleniumDAO.click(confirmButton);
                     SeleniumDAO.click(confirmButton);
@@ -144,12 +150,18 @@ public class CleanParteDeAgentes extends CleanTest {
                 try{
                     firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//tr[1]/td[8]")));
                     WebElement deleteButton = SeleniumDAO.selectElementBy("xpath", "//tr[1]/td[8]", firefoxDriver);
+                    firefoxWaiting.until(ExpectedConditions.elementToBeClickable(deleteButton));
+                    Thread.sleep(250);
                     SeleniumDAO.click(deleteButton);
+                    firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-confirm-button-container']//button[@class = 'confirm']")));
                     WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sa-confirm-button-container']//button[@class = 'confirm']", firefoxDriver);
                     Thread.sleep(500);
                     SeleniumDAO.click(confirmButton);
                     SeleniumDAO.click(confirmButton);
-                } catch (Exception e){}
+
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         } catch (Exception e){
 

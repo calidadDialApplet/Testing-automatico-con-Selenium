@@ -8,7 +8,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import main.SeleniumDAO;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
@@ -99,53 +101,5 @@ public class Utils {
         Thread.sleep(5000);
     }
 
-    public static String createShowflow(WebDriver driver, WebDriverWait waiting, String showflowName, String showflowType)
-    {
-        WebElement showflowTab = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'mainMenu']//li[@id = 'SHOWFLOW']", driver);
-        SeleniumDAO.click(showflowTab);
 
-        WebElement createShowflow = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'acciones']//a[@href = 'setShowflow.php']", driver);
-        SeleniumDAO.click(createShowflow);
-
-        waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contenido")));
-
-        WebElement showflowNameInput = SeleniumDAO.selectElementBy("id", "workflow-name", driver);
-        showflowNameInput.sendKeys(showflowName);
-
-        Select showflowTypeSelector = SeleniumDAO.findSelectElementBy("id", "workflow-type", driver);
-        showflowTypeSelector.selectByValue(showflowType);
-
-        WebElement refreshRadioButton = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'form-col input radio']//input[@name = 'workflow-showrefreshbutton']", driver);
-        SeleniumDAO.click(refreshRadioButton);
-
-        WebElement sendButton = SeleniumDAO.selectElementBy("id", "workflow-send", driver);
-        SeleniumDAO.click(sendButton);
-
-        try
-        {
-            waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-success animate']")));
-            Thread.sleep(500);
-            WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'sweet-alert showSweetAlert visible']//button[@class = 'confirm']", driver);
-            SeleniumDAO.click(okButton);
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            return e.toString() + "\nERROR: The showflow could not be created. Check if it already exists";
-        }
-
-        WebElement showflowPanel = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'acciones']//a[@href = 'showflowPanel.php']", driver);
-        SeleniumDAO.click(showflowPanel);
-
-        //Searchs the new showflow in the table and checks if appears
-        try {
-            WebElement searcher = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'search']", driver);
-            searcher.sendKeys(showflowName);
-            Thread.sleep(1000);
-            waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'showflows']//td[contains(., '" + showflowName + "')]")));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return e.toString() + "ERROR: Something went wrong. The showflow was created but don't appears on the showflows table";
-        }
-        return "";
-    }
 }

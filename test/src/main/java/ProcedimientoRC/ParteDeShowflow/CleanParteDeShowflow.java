@@ -87,7 +87,7 @@ public class CleanParteDeShowflow extends CleanTest {
                     Thread.sleep(1000);
                     firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'showflows']//td[contains(., '" + showflowName + "')]" +
                             "/following-sibling::td/a[@class = 'delete']")));
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                     WebElement deleteButton = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'showflows']//td[contains(., '" + showflowName + "')]" +
                             "/following-sibling::td/a[@class = 'delete']", firefoxDriver);
                     firefoxWaiting.until(ExpectedConditions.visibilityOf(deleteButton));

@@ -74,7 +74,7 @@ public class CleanParteDeServicio extends CleanTest {
             incomingCallModeName = commonIni.get("CallMode", "incomingCallModeName");
 
             firefoxDriver = DriversConfig.headlessOrNot(headless);
-            firefoxWaiting = new WebDriverWait(firefoxDriver, 5);
+            firefoxWaiting = new WebDriverWait(firefoxDriver, 10);
 
             //deleteContacts();
             deleteServiceCopy();
@@ -370,6 +370,7 @@ public class CleanParteDeServicio extends CleanTest {
 
             //Save
             WebElement changeButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
+            Thread.sleep(500);
             SeleniumDAO.click(changeButton);
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-confirm-button-container']")));
             WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
@@ -415,7 +416,7 @@ public class CleanParteDeServicio extends CleanTest {
                     SeleniumDAO.click(deleteCallmode);
                     firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
                     WebElement deleteButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                     SeleniumDAO.click(deleteButton);
 
                     if(callmodeName.equals("PREDICTIVA RCV8.3.5 Callback"))
