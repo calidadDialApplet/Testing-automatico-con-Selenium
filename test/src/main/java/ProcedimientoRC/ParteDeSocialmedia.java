@@ -40,14 +40,21 @@ public class ParteDeSocialmedia extends TestWithConfig {
     static String showflowQuestion1;
     static String showflowQuestion2;
     static String statesCsvpath;
-    static String showflowSMrcver833Copy;
+    static String showflowSMCopyName;
     static String serviceSMName;
+    static String serviceSMCopyName;
     static String campaignBeginningDate;
     static String campaignEndDate;
     static String manualCallModeName;
     static String incomingCallModeName;
     static String emailChannelName;
     static String chatChannelName;
+    static String telegramChannelName;
+    static String twitterChannelName;
+    static String agentCoordName;
+    static String agentName4;
+    static String agentName5;
+    static String groupName1y2;
 
     static String number;
 
@@ -70,11 +77,13 @@ public class ParteDeSocialmedia extends TestWithConfig {
         requiredParameters.put("Showflow", new ArrayList(Arrays.asList("showflowOption1", "showflowOption2", "showflowOption3", "showflowOptionsGroupName",
                 "showflowAuxField", "showflowQuestion1", "showflowQuestion2")));
         requiredParameters.put("CSV", new ArrayList<>(Arrays.asList("statesCsvPath")));
-        requiredParameters.put("ServiceSM", new ArrayList<>(Arrays.asList("serviceSMName")));
-        requiredParameters.put("CallMode", new ArrayList<>(Arrays.asList("campaignBeginningDate", "campaignEndDate")));
-        requiredParameters.put("CallMode", new ArrayList<>(Arrays.asList("manualCallModeName", "incomingCallModeName")));
-        requiredParameters.put("Channel", new ArrayList<>(Arrays.asList("emailChannelName", "chatChannelName")));
+        requiredParameters.put("ServiceSM", new ArrayList<>(Arrays.asList("serviceSMName", "serviceSMCopyName")));
+        requiredParameters.put("CallMode", new ArrayList<>(Arrays.asList("campaignBeginningDate", "campaignEndDate", "manualCallModeName", "incomingCallModeName")));
+        requiredParameters.put("Channel", new ArrayList<>(Arrays.asList("emailChannelName", "chatChannelName", "telegramChannelName", "twitterChannelName")));
         requiredParameters.put("Contact", new ArrayList<>(Arrays.asList("number")));
+        requiredParameters.put("Agent", new ArrayList<>(Arrays.asList("agentName4", "agentName5")));
+        requiredParameters.put("Coordinator", new ArrayList<>(Arrays.asList("agentCoordName6")));
+        requiredParameters.put("Group", new ArrayList<>(Arrays.asList("groupName1y2")));
 
 
         return requiredParameters;
@@ -98,16 +107,25 @@ public class ParteDeSocialmedia extends TestWithConfig {
             showflowAuxField = commonIni.get("Showflow", "showflowAuxField");
             showflowQuestion1 = commonIni.get("Showflow", "showflowQuestion1");
             showflowQuestion2 = commonIni.get("Showflow", "showflowQuestion2");
-            showflowSMrcver833Copy = commonIni.get("ShowflowSM", "showflowSMCopyName");
+            showflowSMCopyName = commonIni.get("ShowflowSM", "showflowSMCopyName");
             statesCsvpath = commonIni.get("CSV", "statesCsvPath");
             serviceSMName = commonIni.get("ServiceSM", "serviceSMName");
+            serviceSMCopyName = commonIni.get("ServiceSM", "serviceSMCopyName");
             campaignBeginningDate = commonIni.get("CallMode", "campaignBeginningDate");
             campaignEndDate = commonIni.get("CallMode", "campaignEndDate");
             manualCallModeName = commonIni.get("CallMode", "manualCallModeName");
             incomingCallModeName = commonIni.get("CallMode", "incomingCallModeName");
             emailChannelName = commonIni.get("Channel", "emailChannelName");
             chatChannelName = commonIni.get("Channel", "chatChannelName");
+            telegramChannelName = commonIni.get("Channel", "telegramChannelName");
+            twitterChannelName = commonIni.get("Channel", "twitterChannelName");
             number = commonIni.get("Contact", "number");
+            agentName4 = commonIni.get("Agent", "agentName4");
+            agentName5 = commonIni.get("Agent", "agentName5");
+            agentCoordName = commonIni.get("Coordinator", "agentCoordName6");
+            groupName1y2 = commonIni.get("Group", "groupName1y2");
+
+
 
             firefoxDriver = DriversConfig.headlessOrNot(headless);
             firefoxWaiting = new WebDriverWait(firefoxDriver, 5);
@@ -122,8 +140,14 @@ public class ParteDeSocialmedia extends TestWithConfig {
             results.put("Configure contact center  ->  ", configureContactCenter());
             results.put("Create ticket service", createTicketService());
             results.put("Configure email channel  ->  ", configureEmailChannel());
+            results.put("Configure telegram channel  ->  ", configureTelegramChannel());
+            results.put("Configure twitter channel  ->  ", configureTwitterChannel());
             results.put("Configure chat channel  ->  ", configureChatChannel());
-            //results.put("Configure telegram channel", configureTelegramChannel());
+            results.put("Configure service coordinators  ->  ", configureServiceCoordinators());
+            results.put("Configure contact data  ->  ", configureContactData());
+            results.put("Confirm service  ->  ", confirmService());
+            results.put("Configure web chat  ->  ", configureWebChat());
+            results.put("Clone service and check it  ->  ", cloneService());
 
             return results;
         } catch (Exception e)
@@ -286,7 +310,7 @@ public class ParteDeSocialmedia extends TestWithConfig {
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("newShowflowCloneName")));
             WebElement showflowNameInput = SeleniumDAO.selectElementBy("id", "newShowflowCloneName", firefoxDriver);
             showflowNameInput.clear();
-            showflowNameInput.sendKeys(showflowSMrcver833Copy);
+            showflowNameInput.sendKeys(showflowSMCopyName);
 
             WebElement sendButton = SeleniumDAO.selectElementBy("id", "cloneShowflow", firefoxDriver);
             SeleniumDAO.click(sendButton);
@@ -305,15 +329,15 @@ public class ParteDeSocialmedia extends TestWithConfig {
             //Searchs the new showflow in the table and checks if appears
             try {
                 WebElement searcher = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'search']", firefoxDriver);
-                searcher.sendKeys(showflowSMrcver833Copy);
+                searcher.sendKeys(showflowSMCopyName);
                 Thread.sleep(1000);
-                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'showflows']//td[contains(., '" + showflowSMrcver833Copy + "')]")));
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'showflows']//td[contains(., '" + showflowSMCopyName + "')]")));
             } catch (Exception e) {
                 e.printStackTrace();
                 return e.toString() + "ERROR: Something went wrong. The copy of the showflow does not appear on the showflows table";
             }
 
-            WebElement showflowCopy = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'showflows']//td[contains(., '" + showflowSMrcver833Copy + "')]", firefoxDriver);
+            WebElement showflowCopy = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'showflows']//td[contains(., '" + showflowSMCopyName + "')]", firefoxDriver);
             SeleniumDAO.click(showflowCopy);
 
             WebElement contactFieldsTab = SeleniumDAO.selectElementBy("xpath", "//p[@id = 'edit_showflow_contact']/a", firefoxDriver);
@@ -325,8 +349,8 @@ public class ParteDeSocialmedia extends TestWithConfig {
             WebElement showflowPanel = SeleniumDAO.selectElementBy("xpath", "//div[@class = 'acciones']//a[@href = 'showflowPanel.php']", firefoxDriver);
             SeleniumDAO.click(showflowPanel);
 
-            String actionFieldsRes = checkShowflowStates(showflowSMrcver833Copy); //Este metodo no está en utils ya que no sirve para showflow de contacto. Solo para showflow tipo ticket
-            String checkPagesRes = ShowflowUtils.checkPages(firefoxDriver, firefoxWaiting, showflowSMrcver833Copy, true);
+            String actionFieldsRes = checkShowflowStates(showflowSMCopyName); //Este metodo no está en utils ya que no sirve para showflow de contacto. Solo para showflow tipo ticket
+            String checkPagesRes = ShowflowUtils.checkPages(firefoxDriver, firefoxWaiting, showflowSMCopyName, true);
 
             if(contactFieldsRes.contains("ERROR")) return contactFieldsRes;
             if(showflowFieldsRes.contains("ERROR")) return showflowFieldsRes;
@@ -397,6 +421,12 @@ public class ParteDeSocialmedia extends TestWithConfig {
 
             String configureEmailAcountRes = configureEmailAcount();
             if(configureEmailAcountRes.contains("ERROR")) return configureEmailAcountRes;
+
+            String configureEmailSignatureRes = configureEmailSignature();
+            if(configureEmailSignatureRes.contains("ERROR")) return configureEmailAcountRes;
+
+            String configureEmailTemplateRes = configureEmailTemplate();
+            if(configureEmailTemplateRes.contains("ERROR")) return configureEmailTemplateRes;
 
             return "Test OK.";
         } catch(Exception e)
@@ -521,53 +551,6 @@ public class ParteDeSocialmedia extends TestWithConfig {
         }
     }
 
-
-    public String configureTelegramAcount(){
-        try
-        {
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'telegramAccounts.php']")));
-            WebElement telegramAccounts = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'telegramAccounts.php']", firefoxDriver);
-            SeleniumDAO.click(telegramAccounts);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[@class = 'filter-option pull-left']")));
-            WebElement countrySelector = SeleniumDAO.selectElementBy("xpath", "//span[@class = 'filter-option pull-left']", firefoxDriver);
-            SeleniumDAO.click(countrySelector);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@class = 'input-block-level form-control']")));
-            WebElement countrySearchInput = SeleniumDAO.selectElementBy("xpath", "//input[@class = 'input-block-level form-control']", firefoxDriver);
-            countrySearchInput.sendKeys("Spain");
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//span[contains(., 'Spain')]")));
-            WebElement country = SeleniumDAO.selectElementBy("xpath", "//span[contains(., 'Spain')]", firefoxDriver);
-            SeleniumDAO.click(country);
-
-            WebElement numberInput = SeleniumDAO.selectElementBy("id", "inputPhone", firefoxDriver);
-            numberInput.sendKeys(number);
-
-            Thread.sleep(1000);
-            WebElement configureAccountButton = SeleniumDAO.selectElementBy("id", "buttonStepOne", firefoxDriver);
-            SeleniumDAO.click(configureAccountButton);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
-            WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
-            Thread.sleep(500);
-            SeleniumDAO.click(okButton);
-
-            System.out.println("A validation code was sent to the number: " + number + ". Enter it manually in the web a click on validate button");
-
-            WebDriverWait auxiliarWaiting = new WebDriverWait(firefoxDriver, 30);
-            auxiliarWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-success animate']//p[contains(,. '" + number + "')]")));
-            okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
-            SeleniumDAO.click(okButton);
-
-            return "";
-        } catch(Exception e)
-        {
-            e.printStackTrace();
-            return e.toString() + "\nERROR. Could not configurate telegram account";
-        }
-    }
-
     public String configureEmailAcount(){
         try
         {
@@ -609,7 +592,7 @@ public class ParteDeSocialmedia extends TestWithConfig {
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
             WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
-            Thread.sleep(500);
+            Thread.sleep(2000);
             SeleniumDAO.click(okButton);
 
             //outgoing email
@@ -694,7 +677,81 @@ public class ParteDeSocialmedia extends TestWithConfig {
         }
     }
 
-    public String configureChatChannel(){
+    public String configureTelegramChannel(){
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("createChannel")));
+            WebElement createChannelButton = SeleniumDAO.selectElementBy("id", "createChannel", firefoxDriver);
+            SeleniumDAO.click(createChannelButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@id = 'channelType']/option[@value = 'mail']")));
+            Select channelTypeSelector = SeleniumDAO.findSelectElementBy("id", "channelType", firefoxDriver);
+            channelTypeSelector.selectByValue("telegram");
+
+            WebElement channelNameInput = SeleniumDAO.selectElementBy("id", "name", firefoxDriver);
+            channelNameInput.sendKeys(telegramChannelName);
+
+            Select telegramAccountSelector = SeleniumDAO.findSelectElementBy("id", "accounttelegram", firefoxDriver);
+            telegramAccountSelector.selectByVisibleText("+34662179631");
+
+            selectAllGroups();
+
+            String checkChannelOutOfRangeRes = checkChannelOutOfRange();
+            if(checkChannelOutOfRangeRes.contains("ERROR")) return checkChannelOutOfRangeRes;
+
+            String checkChannelDissabledRes = checkChannelDissabled(telegramChannelName);
+            if(checkChannelDissabledRes.contains("ERROR")) return checkChannelDissabledRes;
+
+            String checkChannelEnabledRes = checkChannelEnabled(telegramChannelName);
+            if(checkChannelEnabledRes.contains("ERROR")) return checkChannelEnabledRes;
+
+            return "Test OK. The telegram channel was created";
+        } catch(Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. Unexpected exception. The telegram channel could not be created";
+        }
+    }
+
+    public String configureTwitterChannel()
+    {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("createChannel")));
+            WebElement createChannelButton = SeleniumDAO.selectElementBy("id", "createChannel", firefoxDriver);
+            SeleniumDAO.click(createChannelButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@id = 'channelType']/option[@value = 'mail']")));
+            Select channelTypeSelector = SeleniumDAO.findSelectElementBy("id", "channelType", firefoxDriver);
+            channelTypeSelector.selectByValue("twitterdm");
+
+            WebElement channelNameInput = SeleniumDAO.selectElementBy("id", "name", firefoxDriver);
+            channelNameInput.sendKeys(twitterChannelName);
+
+            Select twitterAccountSelector = SeleniumDAO.findSelectElementBy("id", "twitteraccounts", firefoxDriver);
+            twitterAccountSelector.selectByVisibleText("PruebasSelenium");
+
+            selectAllGroups();
+
+            String checkChannelOutOfRangeRes = checkChannelOutOfRange();
+            if(checkChannelOutOfRangeRes.contains("ERROR")) return checkChannelOutOfRangeRes;
+
+            String checkChannelDissabledRes = checkChannelDissabled(twitterChannelName);
+            if(checkChannelDissabledRes.contains("ERROR")) return checkChannelDissabledRes;
+
+            String checkChannelEnabledRes = checkChannelEnabled(twitterChannelName);
+            if(checkChannelEnabledRes.contains("ERROR")) return checkChannelEnabledRes;
+
+            return "Test OK. The twitter channel was created";
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. Unexpected exception. The twitter channel could not be created";
+        }
+    }
+
+    public String configureChatChannel()
+    {
         try
         {
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("createChannel")));
@@ -749,17 +806,190 @@ public class ParteDeSocialmedia extends TestWithConfig {
 
     }
 
-    /*public String configureTelegramChannel()
+
+    public String configureServiceCoordinators()
     {
         try
         {
-            
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("next")));
+            WebElement nextButton = SeleniumDAO.selectElementBy("id", "next", firefoxDriver);
+            SeleniumDAO.click(nextButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'coordList']//td[contains(., '" + agentCoordName + "')]")));
+            WebElement agent4ToDrag = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'agentsList']//td[contains(., '" + agentName4 + "')]", firefoxDriver);
+            WebElement agent5ToDrag = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'agentsList']//td[contains(., '" + agentName5 + "')]", firefoxDriver);
+            WebElement coordinatorToDrag = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'coordList']//td[contains(., '" + agentCoordName + "')]", firefoxDriver);
+            WebElement groupToDrag = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'groupsList']//td[contains(., '" + groupName1y2 + "')]", firefoxDriver);
+            WebElement whereToDrag = SeleniumDAO.selectElementBy("id", "midContenido", firefoxDriver);
+
+            Actions actions = new Actions(firefoxDriver);
+            actions.dragAndDrop(coordinatorToDrag, whereToDrag).build().perform();
+            Thread.sleep(1000);
+            actions.dragAndDrop(groupToDrag, whereToDrag).build().perform();
+            Thread.sleep(400);
+            actions.dragAndDrop(agent4ToDrag, whereToDrag).build().perform();
+            Thread.sleep(400);
+            actions.dragAndDrop(agent5ToDrag, whereToDrag).build().perform();
+            Thread.sleep(400);
+
+            nextButton = SeleniumDAO.selectElementBy("xpath", "//input[@type = 'submit' and @name = 'send']", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(nextButton);
+
+            return "Test OK. The coordinators were configurated correctly";
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. The coodinator could not be configured on the service";
+        }
+    }
+
+    public String configureContactData()
+    {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@class = 'name']")));
+            WebElement aux2NameInput = SeleniumDAO.selectElementBy("xpath", "//p[contains(., 'aux2')]/following-sibling::input", firefoxDriver);
+            aux2NameInput.clear();
+            aux2NameInput.sendKeys("Tiempo");
+
+            WebElement aux2ChatCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'aux2']//input[@class = 'chat']", firefoxDriver);
+            WebElement aux2SearchableCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'aux2']//input[@class = 'searchable']", firefoxDriver);
+            if(!aux2ChatCheckbox.isSelected()) SeleniumDAO.click(aux2ChatCheckbox);
+            if(!aux2SearchableCheckbox.isSelected()) SeleniumDAO.click(aux2SearchableCheckbox);
+
+            WebElement cityChatCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'city']//input[@class = 'chat']", firefoxDriver);
+            WebElement citySearchableCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'city']//input[@class = 'searchable']", firefoxDriver);
+            if(!cityChatCheckbox.isSelected()) SeleniumDAO.click(cityChatCheckbox);
+            if(!citySearchableCheckbox.isSelected()) SeleniumDAO.click(citySearchableCheckbox);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("submit-btn")));
+            WebElement nextButton = SeleniumDAO.selectElementBy("id", "submit-btn", firefoxDriver);
+            SeleniumDAO.click(nextButton);
+
+            return "Test OK. The contact data was configurated";
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. The contact data could not be configurated";
+        }
+    }
+
+    public String confirmService() {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@value = 'Confirm Service']")));
+            WebElement confirmServiceButton = SeleniumDAO.selectElementBy("xpath", "//input[@value = 'Confirm Service']", firefoxDriver);
+            SeleniumDAO.click(confirmServiceButton);
+
+            return "Test OK. The service was created";
         } catch(Exception e)
         {
-
+            e.printStackTrace();
+            return e.toString() + "\nERROR. The service could not be created";
         }
-    }*/
 
+    }
+
+    public String configureWebChat()
+    {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[contains(., 'Webchat')]")));
+            WebElement webchatTab = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'Webchat')]", firefoxDriver);
+            SeleniumDAO.click(webchatTab);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("createChannel")));
+            WebElement createChannelGroup = SeleniumDAO.selectElementBy("id", "createChannel", firefoxDriver);
+            SeleniumDAO.click(createChannelGroup);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("channelGroupName")));
+            WebElement groupNameInput = SeleniumDAO.selectElementBy("id", "channelGroupName", firefoxDriver);
+            groupNameInput.sendKeys("nuevo grupo selenium");
+
+            WebElement addChannelGroup = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
+            SeleniumDAO.click(addChannelGroup);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
+            WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            Thread.sleep(800);
+            SeleniumDAO.click(okButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[@class = 'associateChannels']")));
+            WebElement associateChannelButton = SeleniumDAO.selectElementBy("xpath", "//img[@class = 'associateChannels']", firefoxDriver);
+            SeleniumDAO.click(associateChannelButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., '" + chatChannelName + "')]/following-sibling::td//img[contains(@id, 'checkImg')]")));
+            WebElement chatChannelCheckbox = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + chatChannelName + "')]/following-sibling::td//img[contains(@id, 'checkImg')]",
+                    firefoxDriver);
+            SeleniumDAO.click(chatChannelCheckbox);
+
+            Thread.sleep(1000);
+            Actions actions = new Actions(firefoxDriver);
+            actions.sendKeys(Keys.ESCAPE).perform();
+
+            return "Test OK. The chat channel was associated to the new group webchat";
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. The chat channel could not be associated to a group webchat";
+        }
+    }
+
+    public String cloneService()
+    {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("clone-service")));
+            WebElement cloneServiceButton = SeleniumDAO.selectElementBy("id", "clone-service", firefoxDriver);
+            Thread.sleep(1000);
+            SeleniumDAO.click(cloneServiceButton);
+
+            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("service")));
+            WebElement serviceCopyNameInput = SeleniumDAO.selectElementBy("id", "service", firefoxDriver);
+            serviceCopyNameInput.clear();
+            serviceCopyNameInput.sendKeys(serviceSMCopyName);
+
+            WebElement selectOtherSFRadiobutton = SeleniumDAO.selectElementBy("xpath", "//input[@class = 'radioCloneType' and @value = 'select-other-showflow']", firefoxDriver);
+            SeleniumDAO.click(selectOtherSFRadiobutton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("select-other-showflow")));
+            Select otherSFSelector = SeleniumDAO.findSelectElementBy("id", "select-other-showflow", firefoxDriver);
+            otherSFSelector.selectByVisibleText(showflowSMCopyName);
+
+            WebElement cloneTelegramChannel = SeleniumDAO.selectElementBy("xpath", "//td[contains(., 'Telegram')]/following-sibling::td//input[@type = 'radio']", firefoxDriver);
+            SeleniumDAO.click(cloneTelegramChannel);
+
+            WebElement cloneChatChannel = SeleniumDAO.selectElementBy("xpath", "//td[contains(., 'Chat')]/following-sibling::td//input[@type = 'radio']", firefoxDriver);
+            SeleniumDAO.click(cloneChatChannel);
+
+            WebElement cloneTwitterChannel = SeleniumDAO.selectElementBy("xpath", "//td[contains(., 'Twitter DM')]/following-sibling::td//input[@type = 'radio']", firefoxDriver);
+            SeleniumDAO.click(cloneTwitterChannel);
+
+            Thread.sleep(500);
+
+            WebElement submitButton = SeleniumDAO.selectElementBy("id", "sendButton", firefoxDriver);
+            SeleniumDAO.click(submitButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
+            WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            Thread.sleep(800);
+            SeleniumDAO.click(okButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
+            okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            Thread.sleep(800);
+            SeleniumDAO.click(okButton);
+
+            return "Test OK";
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. ";
+        }
+    }
 
     public void selectAllGroups()
     {
@@ -861,6 +1091,7 @@ public class ParteDeSocialmedia extends TestWithConfig {
 
         firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[@class = 'boton-calendario']")));
         WebElement calendarButton = SeleniumDAO.selectElementBy("xpath", "//img[@class = 'boton-calendario']", firefoxDriver);
+        Thread.sleep(1500);
         SeleniumDAO.click(calendarButton);
 
         firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[@class = 'day selected today']")));
@@ -887,4 +1118,92 @@ public class ParteDeSocialmedia extends TestWithConfig {
 
         return "";
     }
+
+    public String configureEmailSignature()
+    {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'admin-contactCenter.php']")));
+            WebElement contactCenterTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'admin-contactCenter.php']", firefoxDriver);
+            SeleniumDAO.click(contactCenterTab);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'mailSignatures.php']")));
+            WebElement mailSignaturesButton = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'mailSignatures.php']", firefoxDriver);
+            SeleniumDAO.click(mailSignaturesButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("newButton")));
+            WebElement createNewSignature = SeleniumDAO.selectElementBy("id", "newButton", firefoxDriver);
+            SeleniumDAO.click(createNewSignature);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("signatureName")));
+            WebElement signatureNameInput = SeleniumDAO.selectElementBy("id", "signatureName", firefoxDriver);
+            signatureNameInput.sendKeys("firmaEmailSelenium");
+
+            SeleniumDAO.switchToFrame("textEditor_ifr", firefoxDriver);
+            WebElement bodyText = SeleniumDAO.selectElementBy("id", "tinymce", firefoxDriver);
+            bodyText.sendKeys(" DIAL_SERVICEID  DIAL_TICKET_NUMBER  DIAL_AUX1 ");
+
+            SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+            WebElement saveButton = SeleniumDAO.selectElementBy("id", "saveSignature", firefoxDriver);
+            SeleniumDAO.click(saveButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
+            WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            Thread.sleep(800);
+            SeleniumDAO.click(okButton);
+
+            return "";
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. Could not create email signatures";
+        }
+    }
+
+
+    public String configureEmailTemplate()
+    {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'admin-contactCenter.php']")));
+            WebElement contactCenterTab = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'admin-contactCenter.php']", firefoxDriver);
+            SeleniumDAO.click(contactCenterTab);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'MailTemplates.php']")));
+            WebElement mailTemplates = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'MailTemplates.php']", firefoxDriver);
+            SeleniumDAO.click(mailTemplates);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("newButton")));
+            WebElement createNewTemplate = SeleniumDAO.selectElementBy("id", "newButton", firefoxDriver);
+            SeleniumDAO.click(createNewTemplate);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@name = 'name']")));
+            WebElement templateNameInput = SeleniumDAO.selectElementBy("xpath", "//input[@name = 'name']", firefoxDriver);
+            templateNameInput.sendKeys("plantillaSelenium");
+
+            SeleniumDAO.switchToFrame("textEditor_ifr", firefoxDriver);
+
+            WebElement bodyText = SeleniumDAO.selectElementBy("id", "tinymce", firefoxDriver);
+            bodyText.sendKeys(" DIAL_NAME  DIAL_EMAIL  DIAL_ADDRESS  DIAL_AGENT_USERNAME  DIAL_ORIGINAL_SUBJECT ");
+
+            SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+            WebElement saveButton = SeleniumDAO.selectElementBy("id", "savebutton", firefoxDriver);
+            SeleniumDAO.click(saveButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
+            WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            Thread.sleep(800);
+            SeleniumDAO.click(okButton);
+
+            return "";
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. Could not create the email template";
+        }
+    }
+
+
 }
