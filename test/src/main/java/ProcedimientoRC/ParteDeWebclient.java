@@ -517,6 +517,8 @@ public class ParteDeWebclient extends TestWithConfig {
             if(callRes.contains("ERROR")) return callRes;
 
             WebElement transferButton = SeleniumDAO.selectElementBy("xpath", "//a[@id = 'atransferCall']/img", firefoxDriver);
+            Thread.sleep(800);
+            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(transferButton));
             SeleniumDAO.click(transferButton);
 
             SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
@@ -578,8 +580,8 @@ public class ParteDeWebclient extends TestWithConfig {
             WebElement removeTab = SeleniumDAO.selectElementBy("xpath", "//span[@class = 'ui-icon ui-icon-close']", firefoxDriver);
             SeleniumDAO.click(removeTab);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'swal2-icon swal2-warning pulse-warning']")));
-            WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'swal2-confirm swal2-styled']", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
+            WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
             SeleniumDAO.click(confirmButton);
 
             //Go available

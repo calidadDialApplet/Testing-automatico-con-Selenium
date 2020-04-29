@@ -20,6 +20,7 @@ import java.util.*;
 //TODO cambiar en predictive callback agendada a manual y no auto
 //TODO cambiar en el modo de llamada manual, en el telefonito, assign to -> user
 //TODO Revisar las colas
+//TODO elegir callmode for callback en manual
 public class ParteDeServicioTest extends TestWithConfig {
 
     static String url;
@@ -896,17 +897,17 @@ public class ParteDeServicioTest extends TestWithConfig {
             WebElement editService = SeleniumDAO.selectElementBy("xpath", "//p[@id = 'edit-service']/a", firefoxDriver);
             SeleniumDAO.click(editService);
 
-            if(!checkClonedBasicData()) res = createResponse(res, "The basic data is different from the original service.");
-            if(!checkShowflow()) res = createResponse(res, "The showflow config is different from the original service");
-            if(!checkCallmodes()) res = createResponse(res, "The callmode config is different from the original service");
-            if(!checkCoordinators()) res = createResponse(res, "The coordinators config is different from the original service");
-            if(!checkContactData()) res = createResponse(res, "The contact data config is different from the original service");
-            if(!checkImportContacts()) res = createResponse(res, "The imported contact data config is different from the original service");
-            if(!checkKPI()) res = createResponse(res, "The KPI-SLA config is different from the original service");
+            if(!checkClonedBasicData()) res = Utils.createResponse(res, "The basic data is different from the original service.");
+            if(!checkShowflow()) res = Utils.createResponse(res, "The showflow config is different from the original service");
+            if(!checkCallmodes()) res = Utils.createResponse(res, "The callmode config is different from the original service");
+            if(!checkCoordinators()) res = Utils.createResponse(res, "The coordinators config is different from the original service");
+            if(!checkContactData()) res = Utils.createResponse(res, "The contact data config is different from the original service");
+            if(!checkImportContacts()) res = Utils.createResponse(res, "The imported contact data config is different from the original service");
+            if(!checkKPI()) res = Utils.createResponse(res, "The KPI-SLA config is different from the original service");
 
 
             if(res.equals("")) return "Test OK. The cloned service has the same config as the original";
-            else return createResponse(res, "ERROR");
+            else return Utils.createResponse(res, "ERROR");
         } catch (Exception e) {
             e.printStackTrace();
             return e.toString() + "\nERROR.";
@@ -1810,10 +1811,6 @@ public class ParteDeServicioTest extends TestWithConfig {
         }
     }
 
-    public String createResponse(String response, String responseToAdd)
-    {
-        response = response.concat(responseToAdd + "\n");
-        return response;
-    }
+
 
 }

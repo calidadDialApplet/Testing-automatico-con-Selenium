@@ -419,7 +419,7 @@ public class CleanParteDeServicio extends CleanTest {
                     Thread.sleep(1000);
                     SeleniumDAO.click(deleteButton);
 
-                    if(callmodeName.equals("PREDICTIVA RCV8.3.5 Callback"))
+                    if(callmodeName.contains("Callback"))
                     {
                         firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
                         deleteButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);

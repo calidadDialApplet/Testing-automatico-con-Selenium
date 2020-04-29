@@ -130,7 +130,7 @@ public class ParteDeSocialmedia extends TestWithConfig {
             firefoxDriver = DriversConfig.headlessOrNot(headless);
             firefoxWaiting = new WebDriverWait(firefoxDriver, 5);
 
-            results.put("Create a showflow ticket and check the states  ->  ", newShowflowTicket());
+           /* results.put("Create a showflow ticket and check the states  ->  ", newShowflowTicket());
             results.put("Create action fields  ->  ", createContactFields());
             results.put("Create questions  ->  ", createQuestions());
             results.put("Import states by CSV  ->  ", importStates());
@@ -146,7 +146,7 @@ public class ParteDeSocialmedia extends TestWithConfig {
             results.put("Configure service coordinators  ->  ", configureServiceCoordinators());
             results.put("Configure contact data  ->  ", configureContactData());
             results.put("Confirm service  ->  ", confirmService());
-            results.put("Configure web chat  ->  ", configureWebChat());
+            results.put("Configure web chat  ->  ", configureWebChat());*/
             results.put("Clone service and check it  ->  ", cloneService());
 
             return results;
@@ -922,6 +922,8 @@ public class ParteDeSocialmedia extends TestWithConfig {
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., '" + chatChannelName + "')]/following-sibling::td//img[contains(@id, 'checkImg')]")));
             WebElement chatChannelCheckbox = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + chatChannelName + "')]/following-sibling::td//img[contains(@id, 'checkImg')]",
                     firefoxDriver);
+            Thread.sleep(1500);
+
             SeleniumDAO.click(chatChannelCheckbox);
 
             Thread.sleep(1000);
@@ -938,9 +940,25 @@ public class ParteDeSocialmedia extends TestWithConfig {
 
     public String cloneService()
     {
+        //Login on dialapplet web
+        firefoxDriver.get(url + "dialapplet-web");
+        Utils.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
+        try {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("mainMenu")));
+        } catch (Exception e) {
+            //System.err.println("ERROR: Login failed");
+            return e.toString() + "\n ERROR: Login failed";
+        }
+
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., '" + serviceSMName + "')]")));
+        WebElement service = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + serviceSMName + "')]", firefoxDriver);
+        SeleniumDAO.click(service);
+
+
         try
         {
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("clone-service")));
+            Thread.sleep(1000);
             WebElement cloneServiceButton = SeleniumDAO.selectElementBy("id", "clone-service", firefoxDriver);
             Thread.sleep(1000);
             SeleniumDAO.click(cloneServiceButton);
@@ -952,12 +970,9 @@ public class ParteDeSocialmedia extends TestWithConfig {
             serviceCopyNameInput.clear();
             serviceCopyNameInput.sendKeys(serviceSMCopyName);
 
-            WebElement selectOtherSFRadiobutton = SeleniumDAO.selectElementBy("xpath", "//input[@class = 'radioCloneType' and @value = 'select-other-showflow']", firefoxDriver);
-            SeleniumDAO.click(selectOtherSFRadiobutton);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("select-other-showflow")));
-            Select otherSFSelector = SeleniumDAO.findSelectElementBy("id", "select-other-showflow", firefoxDriver);
-            otherSFSelector.selectByVisibleText(showflowSMCopyName);
+            WebElement showflowNameInput = SeleniumDAO.selectElementBy("id", "clone-current-showflow", firefoxDriver);
+            showflowNameInput.clear();
+            showflowNameInput.sendKeys(showflowSMCopyName + "forService");
 
             WebElement cloneTelegramChannel = SeleniumDAO.selectElementBy("xpath", "//td[contains(., 'Telegram')]/following-sibling::td//input[@type = 'radio']", firefoxDriver);
             SeleniumDAO.click(cloneTelegramChannel);
@@ -971,23 +986,247 @@ public class ParteDeSocialmedia extends TestWithConfig {
             Thread.sleep(500);
 
             WebElement submitButton = SeleniumDAO.selectElementBy("id", "sendButton", firefoxDriver);
+            Thread.sleep(500);
             SeleniumDAO.click(submitButton);
+
+            SeleniumDAO.switchToDefaultContent(firefoxDriver);
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
             WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
             Thread.sleep(800);
             SeleniumDAO.click(okButton);
 
+            Thread.sleep(2500);
+
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
             okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
-            Thread.sleep(800);
+            Thread.sleep(1500);
+            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(okButton));
             SeleniumDAO.click(okButton);
 
-            return "Test OK";
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'services.php']")));
+            Thread.sleep(1500);
+            WebElement servicePanel = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'services.php']", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(servicePanel);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., '" + serviceSMCopyName + "')]")));
+            WebElement serviceCopy = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + serviceSMCopyName + "')]", firefoxDriver);
+            SeleniumDAO.click(serviceCopy);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//p[@id = 'edit-service']")));
+            WebElement editService = SeleniumDAO.selectElementBy("xpath", "//p[@id = 'edit-service']", firefoxDriver);
+            SeleniumDAO.click(editService);
+
+            String res = "";
+            if(!checkClonedBasicData()) res = Utils.createResponse(res, "The basic data is different from the original service.");
+            if(!checkClonedTicketData()) res = Utils.createResponse(res, "The ticket data is different from the original service");
+            if(!checkClonedCallmodes()) res = Utils.createResponse(res, "The callmodes are different from the original service");
+            if(!checkClonedChannels()) res = Utils.createResponse(res, "The channels configuration is wrong");
+            if(!checkClonedCoordinators()) res = Utils.createResponse(res, "The coordinators configuration is different from the original service");
+            if(!checkClonedContactData()) res = Utils.createResponse(res, "The contact data is different from the original service");
+            if(!checkClonedWebchat()) res = Utils.createResponse(res, "The cloned webchat configuration is different from the original service");
+
+
+            if(res.equals("")) return "Test OK. The cloned service has the same config as the original";
+            else return Utils.createResponse(res, "ERROR");
         } catch (Exception e)
         {
             e.printStackTrace();
-            return e.toString() + "\nERROR. ";
+            return e.toString() + "\nERROR. Trying to clone the service";
+        }
+    }
+
+    public boolean checkClonedBasicData()
+    {
+        boolean res = true;
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@id = 'workflow']//option[contains(., '" + showflowSMCopyName + "')]")));
+
+            Select recordingRateSelector = SeleniumDAO.findSelectElementBy("id", "recordingrate", firefoxDriver);
+            if(!recordingRateSelector.getFirstSelectedOption().getText().equals("100")) res = false;
+
+            WebElement recordLabel = SeleniumDAO.selectElementBy("id", "audioformat", firefoxDriver);
+            if(!recordLabel.getAttribute("value").equals("RCNvXYZ%20-%21-%1-%9-%8-%6")) res = false;
+
+            WebElement beginningPeriod = SeleniumDAO.selectElementBy("id","periodbegin_1", firefoxDriver);
+            if(!beginningPeriod.getAttribute("value").equals("2020-03-15")) res = false;
+            WebElement endPeriod = SeleniumDAO.selectElementBy("id", "periodend_1", firefoxDriver);
+            if(!endPeriod.getAttribute("value").equals("2022-07-25")) res = false;
+
+            List<WebElement> assignableGroups = firefoxDriver.findElements(By.xpath("//table[@id = 'groups']/tbody/tr/td[1]/input[@type = 'checkbox']"));
+            for(WebElement assignableGroup : assignableGroups)
+            {
+                if(!assignableGroup.isSelected()) res = false;
+            }
+
+            Utils.takeScreenshot("./ParteDeSocialmediaOut/ClonedServiceOut/basicDataScreenshot", firefoxDriver);
+
+            return res;
+        } catch (Exception e)
+        {
+            res = false;
+            e.printStackTrace();
+            return res;
+        }
+    }
+
+    public boolean checkClonedTicketData()
+    {
+        boolean res = true;
+        try
+        {
+            WebElement nextButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
+            SeleniumDAO.click(nextButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@name = 'alloweditclosedtickets' and @value = 'all']")));
+            WebElement allowAllEditClosedTickets = SeleniumDAO.selectElementBy("xpath", "//input[@name = 'alloweditclosedtickets' and @value = 'all']", firefoxDriver);
+            if(!allowAllEditClosedTickets.isSelected()) res = false;
+
+            return res;
+        } catch (Exception e)
+        {
+            res = false;
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean checkClonedCallmodes()
+    {
+        try
+        {
+            WebElement nextButton = SeleniumDAO.selectElementBy("id", "submit", firefoxDriver);
+            SeleniumDAO.click(nextButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., '" + incomingCallModeName + "')]/following-sibling::td[contains(., 'Incoming')]")));
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., '" + manualCallModeName + "')]/following-sibling::td[contains(., 'Manual')]")));
+
+            return true;
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean checkClonedChannels()
+    {
+        try
+        {
+            WebElement nextButton = SeleniumDAO.selectElementBy("id", "next", firefoxDriver);
+            SeleniumDAO.click(nextButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., '" + chatChannelName + "')]")));
+
+            WebElement editTelegramChannel = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + telegramChannelName + "')]/following-sibling::td//img[@class = 'editChannel']",
+                    firefoxDriver);
+            SeleniumDAO.click(editTelegramChannel);
+
+            //suponemos que ha elegido bien la cuenta ya que solo hay una que puede elegir y el selector aparece desactivado
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@id = 'accounttelegram' and @disabled = '']")));
+            //Si no encuentra estos elementos es que se ha clonado mal
+            SeleniumDAO.selectElementBy("xpath", "//input[@id = 'periodbegin_1' and @data-default = '2020-03-15']", firefoxDriver);
+            SeleniumDAO.selectElementBy("xpath", "//input[@id = 'periodend_1' and @data-default = '2022-07-25']", firefoxDriver);
+
+            WebElement editTwitterChannel = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + twitterChannelName + "')]/following-sibling::td//img[@class = 'editChannel']",
+                    firefoxDriver);
+            SeleniumDAO.click(editTwitterChannel);
+
+            //suponemos que ha elegido bien la cuenta ya que solo hay una que puede elegir y el selector aparece desactivado
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@id = 'twitteraccounts' and @disabled = 'disabled']")));
+            SeleniumDAO.selectElementBy("xpath", "//input[@id = 'periodbegin_1' and @data-default = '2020-03-15']", firefoxDriver);
+            SeleniumDAO.selectElementBy("xpath", "//input[@id = 'periodend_1' and @data-default = '2022-07-25']", firefoxDriver);
+
+            WebElement saveButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
+            SeleniumDAO.click(saveButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
+            WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(okButton);
+
+            return true;
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean checkClonedCoordinators()
+    {
+        try
+        {
+            WebElement nextButton = SeleniumDAO.selectElementBy("id", "next", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(nextButton));
+            SeleniumDAO.click(nextButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'midContenido']//td[contains(., '" + agentCoordName + "')]")));
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'midContenido']//td[contains(., '" + groupName1y2 + "')]")));
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'midContenido']//td[contains(., '" + agentName4 + "')]")));
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'midContenido']//td[contains(., '" + agentName5 + "')]")));
+
+            return true;
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean checkClonedContactData()
+    {
+        try
+        {
+            WebElement nextButton = SeleniumDAO.selectElementBy("xpath", "//input[@type = 'submit']", firefoxDriver);
+            SeleniumDAO.click(nextButton);
+
+            //Si no los encuentra es que no estan marcados los checkbox
+            SeleniumDAO.selectElementBy("xpath", "//td[input[@value = 'phone']]/preceding-sibling::td/input[@type = 'checkbox' and @checked  = '']", firefoxDriver);
+            SeleniumDAO.selectElementBy("xpath", "//td[input[@value = 'city']]/preceding-sibling::td/input[@type = 'checkbox' and @checked  = '']", firefoxDriver);
+            SeleniumDAO.selectElementBy("xpath", "//td[input[@value = 'country']]/preceding-sibling::td/input[@type = 'checkbox' and @checked  = '']", firefoxDriver);
+            SeleniumDAO.selectElementBy("xpath", "//td[input[@value = 'aux1']]/preceding-sibling::td/input[@type = 'checkbox' and @checked  = '']", firefoxDriver);
+            SeleniumDAO.selectElementBy("xpath", "//td[input[@value = 'aux2']]/preceding-sibling::td/input[@type = 'checkbox' and @checked  = '']", firefoxDriver);
+
+            //Busca que el type de aux1 sea radioButton
+            SeleniumDAO.selectElementBy("xpath", "//td[input[@value = 'aux1']]/following-sibling::td/select[@class = 'type' and @data-oridata = 'radiobutton']", firefoxDriver);
+
+            //Comprueba que estan marcados los checkbox chat y searchable de city y aux2
+            SeleniumDAO.selectElementBy("xpath", "//td[input[@value = 'city']]/following-sibling::td/input[@class = 'chat' and @checked = '']", firefoxDriver);
+            SeleniumDAO.selectElementBy("xpath", "//td[input[@value = 'city']]/following-sibling::td/input[@class = 'searchable' and @checked = '']", firefoxDriver);
+            SeleniumDAO.selectElementBy("xpath", "//td[input[@value = 'aux2']]/following-sibling::td/input[@class = 'chat' and @checked = '']", firefoxDriver);
+            SeleniumDAO.selectElementBy("xpath", "//td[input[@value = 'aux2']]/following-sibling::td/input[@class = 'searchable' and @checked = '']", firefoxDriver);
+
+            return true;
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean checkClonedWebchat()
+    {
+        try
+        {
+            WebElement webchatTab = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'Webchat')]", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(webchatTab);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., 'nuevo grupo selenium')]")));
+
+            WebElement associatedChannelButton = SeleniumDAO.selectElementBy("xpath", "//img[@class = 'associateChannels']", firefoxDriver);
+            SeleniumDAO.click(associatedChannelButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., '" + chatChannelName + "')]/following-sibling::td//img[contains(@src, 'Check')]")));
+
+            return true;
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
         }
     }
 

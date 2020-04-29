@@ -554,27 +554,25 @@ public class ParteDeShowflowTest extends TestWithConfig {
             SeleniumDAO.switchToFrame("detail", firefoxDriver);
 
             //go to dialapplet database
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'redirect.php?subject=database&server=localhost%3A5432%3Aallow&database=dialapplet&']")));
-            WebElement dialappletDB = SeleniumDAO.selectElementBy("xpath","//a[@href = 'redirect.php?subject=database&server=localhost%3A5432%3Aallow&database=dialapplet&']",
+            WebElement dialappletDB = SeleniumDAO.selectElementBy("xpath","//a[contains(., 'dialapplet')]",
                     firefoxDriver);
             SeleniumDAO.click(dialappletDB);
 
             //Click on Schema->public
-            WebElement publicSchema = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'redirect.php?subject=schema&server=localhost%3A5432%3Aallow&database=dialapplet&schema=public&']",
-                    firefoxDriver);
+            WebElement publicSchema = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'public')]", firefoxDriver);
             SeleniumDAO.click(publicSchema);
 
             WebElement typologiesTable = SeleniumDAO.selectElementBy("xpath", "//a[contains(., '" + bdTypologiesTable + "')]", firefoxDriver);
             SeleniumDAO.click(typologiesTable);
 
             //Click on browse
-            WebElement browseButton = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'display.php?server=localhost%3A5432%3Aallow&database=dialapplet&schema=public&table=dialapplet_predictivedialer_decisiontipology&subject=table&return=table']", firefoxDriver);
+            WebElement browseButton = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'Browse')]", firefoxDriver);
             SeleniumDAO.click(browseButton);
 
             //Click 2 times on id column to order the rows by id
-            WebElement idColumn = SeleniumDAO.selectElementBy("xpath", "//a[@href = '?server=localhost%3A5432%3Aallow&database=dialapplet&schema=public&table=dialapplet_predictivedialer_decisiontipology&subject=table&return=table&sortkey=1&sortdir=asc&strings=collapsed&page=1']", firefoxDriver);
+            WebElement idColumn = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'id')]", firefoxDriver);
             SeleniumDAO.click(idColumn);
-            idColumn = SeleniumDAO.selectElementBy("xpath", "//a[@href = '?server=localhost%3A5432%3Aallow&database=dialapplet&schema=public&table=dialapplet_predictivedialer_decisiontipology&subject=table&return=table&sortkey=1&sortdir=desc&strings=collapsed&page=1']", firefoxDriver);
+            idColumn = SeleniumDAO.selectElementBy("xpath", "//a[contains(., 'id')]", firefoxDriver);
             Thread.sleep(500);
             SeleniumDAO.click(idColumn);
 
