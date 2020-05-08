@@ -386,7 +386,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
             Thread.sleep(1000);
             WebElement showflow = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'showflows']//td[contains(., '" + showflowName + "')]", firefoxDriver);
-            Thread.sleep(500);
+            Thread.sleep(200);
             SeleniumDAO.click(showflow);
 
             ShowflowUtils.configurePages(firefoxDriver, firefoxWaiting, false);

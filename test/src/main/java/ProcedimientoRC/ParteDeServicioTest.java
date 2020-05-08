@@ -21,6 +21,8 @@ import java.util.*;
 //TODO cambiar en el modo de llamada manual, en el telefonito, assign to -> user
 //TODO Revisar las colas
 //TODO elegir callmode for callback en manual
+//TODO en predictiva callback en tipologia agendada poner a manual
+//TODO en predictiva callback en tipologia agendada poner user y no all
 public class ParteDeServicioTest extends TestWithConfig {
 
     static String url;
@@ -185,9 +187,10 @@ public class ParteDeServicioTest extends TestWithConfig {
             WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
             Thread.sleep(500);
             SeleniumDAO.click(confirmButton);
-            confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            //Creo que en la 8.3.9 no es necesario
+            /*confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
             Thread.sleep(500);
-            SeleniumDAO.click(confirmButton);
+            SeleniumDAO.click(confirmButton);*/
 
             //Callmode tab
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("campaigns")));
@@ -1362,7 +1365,7 @@ public class ParteDeServicioTest extends TestWithConfig {
             WebElement saveButton = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'fancybox-content']//input[@type = 'button' and @value = 'Save']", firefoxDriver);
             SeleniumDAO.click(saveButton);
 
-
+            Thread.sleep(500);
             WebElement connectElementsButton = SeleniumDAO.selectElementBy("id", "conectIcono", firefoxDriver);
             SeleniumDAO.click(connectElementsButton);
 

@@ -208,10 +208,13 @@ public class ShowflowUtils {
             Thread.sleep(1000);
             Select questionType = SeleniumDAO.findSelectElementBy("xpath", "//table[@id = 'workflow_fields']//tr[@id = 'new-field']//select[@class = 'type']", driver);
             if(i == 0) questionType.selectByVisibleText("Checkbox");
-            else questionType.selectByVisibleText("Text");
+            else questionType.selectByVisibleText("Radiobutton");
+
 
             Select optionGroup = SeleniumDAO.findSelectElementBy("xpath", "//tr[@id = 'new-field']//select[@class = 'optiongroup']", driver);
+            Thread.sleep(500);
             optionGroup.selectByVisibleText(showflowOptionsGroupName);
+
 
             WebElement addNewQuestionButton = SeleniumDAO.selectElementBy("id", "add_new_field", driver);
             SeleniumDAO.click(addNewQuestionButton);
@@ -420,9 +423,13 @@ public class ShowflowUtils {
         {
             waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("workflow_fields")));
 
-            WebElement aux1Checkbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'aux1' and contains(@class, 'contact-field visible isactive')]", driver);
+            SeleniumDAO.selectElementBy("xpath", "//td[input[@value = 'aux1']]/preceding-sibling::td/input[@type = 'checkbox' and @checked  = '']", driver);
+            SeleniumDAO.selectElementBy("xpath", "//td[input[@value = 'city']]/preceding-sibling::td/input[@type = 'checkbox' and @checked  = '']", driver);
+            SeleniumDAO.selectElementBy("xpath", "//td[input[@value = 'country']]/preceding-sibling::td/input[@type = 'checkbox' and @checked  = '']", driver);
+
+            /*WebElement aux1Checkbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'aux1' and contains(@class, 'contact-field visible isactive')]", driver);
             WebElement cityCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'city' and contains(@class, 'contact-field visible isactive')]", driver);
-            WebElement clienteCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'country' and contains(@class, 'contact-field visible isactive')]", driver);
+            WebElement clienteCheckbox = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'country' and contains(@class, 'contact-field visible isactive')]", driver);*/
 
             WebElement aux1NameInput = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'aux1']//td/input[@value = '" + showflowAuxField + "']", driver);
             WebElement aux1TypeSelected = SeleniumDAO.selectElementBy("xpath", "//tr[@data-fieldname = 'aux1']//select[@class = 'type']" +
@@ -440,6 +447,7 @@ public class ShowflowUtils {
         }
     }
 
+    //TODO refactorizar
     public static String checkShowflowFields(WebDriver driver, WebDriverWait waiting, String showflowQuestion1, String showflowQuestion2, String showflowOptionsGroupName, boolean ticket)
     {
         try
@@ -464,7 +472,7 @@ public class ShowflowUtils {
             WebElement question2Name = SeleniumDAO.selectElementBy("xpath", "//input[@value = '" + showflowQuestion2 + "']", driver);
 
             WebElement question1Type = SeleniumDAO.selectElementBy("xpath", "//select[@class = 'type']" +
-                    "//option[@value = 'text' and @selected = '']", driver);
+                    "//option[@value = 'radiobutton' and @selected = '']", driver);
             WebElement question2Type = SeleniumDAO.selectElementBy("xpath", "//select[@class = 'type']" +
                     "//option[@value = 'checkbox' and @selected = '']", driver);
 

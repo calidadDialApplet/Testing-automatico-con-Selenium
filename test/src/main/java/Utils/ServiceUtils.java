@@ -35,7 +35,7 @@ public class ServiceUtils {
 
     public static void recordRateTo100(WebDriver driver){
         Select recordingRateSelector = SeleniumDAO.findSelectElementBy("id", "recordingrate", driver);
-        recordingRateSelector.selectByValue("100");
+        recordingRateSelector.selectByValue("99");
     }
 
     public static void setRecordMap(WebDriver driver)

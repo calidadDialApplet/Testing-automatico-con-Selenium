@@ -145,11 +145,11 @@ public class CleanParteDeAgentes extends CleanTest {
             SeleniumDAO.click(modAgentsGroups);
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("contenido")));
-            for (int i = 1; i <= groupsToClean.size(); i++)
+            for (int i = 0; i < groupsToClean.size(); i++)
             {
                 try{
-                    firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//tr[1]/td[8]")));
-                    WebElement deleteButton = SeleniumDAO.selectElementBy("xpath", "//tr[1]/td[8]", firefoxDriver);
+                    firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., '" + groupsToClean.get(i) + "')]/following-sibling::td//img[@src = 'imagenes/delete2.png']")));
+                    WebElement deleteButton = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + groupsToClean.get(i) + "')]/following-sibling::td//img[@src = 'imagenes/delete2.png']", firefoxDriver);
                     firefoxWaiting.until(ExpectedConditions.elementToBeClickable(deleteButton));
                     Thread.sleep(250);
                     SeleniumDAO.click(deleteButton);

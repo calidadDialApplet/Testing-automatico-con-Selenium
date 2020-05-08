@@ -23,7 +23,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class ParteDeWebclient extends TestWithConfig {
+//TODO revisar el test de la llamada abandonada
+
+public class ParteDeWebclientTest extends TestWithConfig {
     static String url;
     static String headless;
     static String adminName;
@@ -62,7 +64,7 @@ public class ParteDeWebclient extends TestWithConfig {
     HashMap<String, String> results = new HashMap<>();
 
 
-    public ParteDeWebclient(Wini commonIni) {
+    public ParteDeWebclientTest(Wini commonIni) {
         super(commonIni);
     }
 
@@ -481,6 +483,7 @@ public class ParteDeWebclient extends TestWithConfig {
             waitingIncomingCall.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@role = 'presentation' and contains(., '" + number + "')]")));
 
             WebElement parkCallButton = SeleniumDAO.selectElementBy("xpath", "//a[@id = 'aparkCall']/img", firefoxDriver);
+            Thread.sleep(500);
             SeleniumDAO.click(parkCallButton);
 
             Thread.sleep(2000);
@@ -578,10 +581,11 @@ public class ParteDeWebclient extends TestWithConfig {
             SeleniumDAO.switchToDefaultContent(firefoxDriver);
 
             WebElement removeTab = SeleniumDAO.selectElementBy("xpath", "//span[@class = 'ui-icon ui-icon-close']", firefoxDriver);
+            Thread.sleep(500);
             SeleniumDAO.click(removeTab);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
-            WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[contains(@class, 'confirm')]")));
+            WebElement confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[contains(@class, 'confirm')]", firefoxDriver);
             SeleniumDAO.click(confirmButton);
 
             //Go available
@@ -606,6 +610,7 @@ public class ParteDeWebclient extends TestWithConfig {
             connectAndAvailable(chromeDriver, chromeWaiting, agentName5, extension2);
 
             WebElement transferButton = SeleniumDAO.selectElementBy("xpath", "//a[@id = 'atransferCall']/img", firefoxDriver);
+            Thread.sleep(500);
             SeleniumDAO.click(transferButton);
 
             SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
@@ -812,7 +817,7 @@ public class ParteDeWebclient extends TestWithConfig {
             connectAndAvailable(firefoxDriver, firefoxWaiting, adminName, extension);
 
             openSFRes = openSF();
-            if(openSFRes.contains("ERROR")) return openSFRes; //Comprueba que puede buscar showflows del servicio
+            if(openSFRes.contains("ERROR") || openSFRes.contains("OK")) return "ERROR. Al admin no le deja abrir showflows cerrados"; //Comprueba que puede buscar showflows del servicio
 
             //Comprueba que el coordinador puede editar el showflow
             checkOpenSFAdminCoordRes = checkOpenSFEditable();
@@ -1011,6 +1016,7 @@ public class ParteDeWebclient extends TestWithConfig {
             //Marcar llamada
             if(dialCall(driver, waiting, callmode, number).contains("ERROR")) return "ERROR. The callmode selected does not exist";
 
+            Thread.sleep(500);
             waiting.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@class='contactCall']")));
 
             if(newContact)
@@ -1241,6 +1247,7 @@ public class ParteDeWebclient extends TestWithConfig {
             if(url.contains("8"))
             {
                 SeleniumDAO.switchToFrame("frmcontent-", firefoxDriver);
+
             } else
             {
                 Thread.sleep(1500);

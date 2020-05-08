@@ -1,15 +1,13 @@
 package ProcedimientoRC;
 
-import CheckListRafa.*;
 import ProcedimientoRC.ParteDeAgentes.CleanParteDeAgentes;
 import ProcedimientoRC.ParteDeServicio.CleanParteDeServicio;
 import ProcedimientoRC.ParteDeShowflow.CleanParteDeShowflow;
+import ProcedimientoRC.ParteDeSocialmedia.CleanParteDeSocialmedia;
 import Utils.CleanTest;
 import Utils.Color;
 import Utils.Test;
-import Utils.TestWithConfig;
 import exceptions.MissingParameterException;
-import org.apache.commons.collections.map.HashedMap;
 import org.ini4j.Profile;
 import org.ini4j.Wini;
 
@@ -60,6 +58,7 @@ public class main {
         testsToClean.put("parteDeAgentes", new CleanParteDeAgentes(commonIni));
         testsToClean.put("parteDeShowflow", new CleanParteDeShowflow(commonIni));
         testsToClean.put("parteDeServicio", new CleanParteDeServicio(commonIni));
+        testsToClean.put("parteDeSocialmedia", new CleanParteDeSocialmedia(commonIni));
 
         return testsToClean;
     }
@@ -86,8 +85,9 @@ public class main {
         tests.put("parteDeAgentes", new ParteDeAgentesTest(commonIni));
         tests.put("parteDeShowflow", new ParteDeShowflowTest(commonIni));
         tests.put("parteDeServicio", new ParteDeServicioTest(commonIni));
-        tests.put("parteDeWebclient", new ParteDeWebclient(commonIni));
-        tests.put("parteDeSocialmedia", new ParteDeSocialmedia(commonIni));
+        tests.put("parteDeWebclient", new ParteDeWebclientTest(commonIni));
+        tests.put("parteDeSocialmedia", new ParteDeSocialmediaTest(commonIni));
+        tests.put("parteDeWebclientSocialmedia", new ParteDeWebclientSocialmediaTest(commonIni));
 
         return tests;
     }

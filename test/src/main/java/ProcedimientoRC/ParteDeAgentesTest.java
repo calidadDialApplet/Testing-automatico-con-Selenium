@@ -147,6 +147,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
             return "Test OK";
         } catch (Exception e) {
             //System.err.println("ERROR: Login failed");
+            e.printStackTrace();
             return e.toString();
         }
     }
@@ -227,6 +228,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
             return "Test OK. " + pilotAgentName1 + " and " + pilotAgentName2 + " added to " + groupName + "with id = " + idNewGroupAdded;
         } catch (Exception e) {
             //System.err.println("Failed while adding " + pilotAgentName1 + " and " + pilotAgentName2 + " to " + groupName);
+            e.printStackTrace();
             return e.toString() + "\n Failed while adding " + pilotAgentName1 + " and " + pilotAgentName2 + " to " + groupName;
         }
 
@@ -271,6 +273,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
             return "Test OK. " + groupName1y2 + " added successfully with id = " + idNewGroupAdded;
 
         } catch (Exception e) {
+            e.printStackTrace();
             return e.toString();
         }
     }
@@ -373,6 +376,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
             else return "ERROR: The agent role could not be assigned correctly";
 
         } catch (Exception e) {
+            e.printStackTrace();
             return e.toString();
         }
 
@@ -447,6 +451,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
             return "Test OK. The agent: " + agentName1 + " was created.";
 
         } catch (Exception e) {
+            e.printStackTrace();
             return e.toString();
         }
     }
@@ -523,6 +528,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
             return "Test OK. The agent: " + agentName2 + " was created.";
         } catch (Exception e) {
+            e.printStackTrace();
             return e.toString();
         }
     }
@@ -595,6 +601,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
             return "Test OK. The agent: " + agentName3 + " was created.";
         } catch (Exception e) {
+            e.printStackTrace();
             return e.toString();
         }
     }
@@ -639,6 +646,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
             return "Test OK. " + groupName3 + " added successfully with id = " + idNewGroupAdded;
         } catch (Exception e) {
+            e.printStackTrace();
             return e.toString();
         }
 
@@ -716,6 +724,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
             return "Test OK. The agent: " + agentName4 + " was created.";
         } catch (Exception e) {
+            e.printStackTrace();
             return e.toString();
         }
     }
@@ -748,6 +757,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
             // Set agent role
             WebElement agent = SeleniumDAO.selectElementBy("id", "isagent", firefoxDriver);
+            Thread.sleep(500);
             SeleniumDAO.click(agent);
 
             // Click on submit button
@@ -806,7 +816,8 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
             return "Test OK. The agent: " + agentName5 + " was created.";
         } catch (Exception e) {
-            return e.toString();
+            e.printStackTrace();
+            return e.toString() + "\nERROR. No se ha podido crear el agente";
         }
     }
 
@@ -882,6 +893,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
             return "Test OK. The agent: " + agentName4 + " was created.";
         } catch (Exception e) {
+            e.printStackTrace();
             return e.toString();
         }
     }
@@ -965,6 +977,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
             return "Test OK. The agent: " + agentCoordName6 + " was created.";
         } catch (Exception e) {
+            e.printStackTrace();
             return e.toString();
         }
     }
@@ -1024,6 +1037,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
         } catch (Exception e)
         {
+            e.printStackTrace();
             return e.toString();
         }
     }
@@ -1059,6 +1073,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
 
         WebElement states = SeleniumDAO.selectElementBy("id", "agent-name", firefoxDriver);
+        Thread.sleep(500);
         SeleniumDAO.click(states);
 
         SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
@@ -1089,6 +1104,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
         return "Test OK. Login successfully. The agent stayed 60 seconds in rest state";
         } catch (Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR. Unexpected exception";
         }
 
@@ -1146,6 +1162,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
         return "Test OK. Login successfully. The agent stayed 60 seconds on pre-sift state";
         } catch (Exception e)
         {
+            e.printStackTrace();
             return e.toString() + "\nERROR. Unexpected exception";
         }
 

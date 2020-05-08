@@ -5,9 +5,6 @@ import Utils.TestWithConfig;
 import Utils.Utils;
 import Utils.ShowflowUtils;
 import Utils.ServiceUtils;
-import Utils.ServicioUtils;
-import exceptions.MissingParameterException;
-import org.apache.commons.collections.ArrayStack;
 import org.ini4j.Wini;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -24,7 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class ParteDeSocialmedia extends TestWithConfig {
+public class ParteDeSocialmediaTest extends TestWithConfig {
 
     static String url;
     static String headless;
@@ -64,7 +61,7 @@ public class ParteDeSocialmedia extends TestWithConfig {
     HashMap<String, String> results = new HashMap<>();
 
 
-    public ParteDeSocialmedia(Wini commonIni) {
+    public ParteDeSocialmediaTest(Wini commonIni) {
         super(commonIni);
     }
 
@@ -130,7 +127,7 @@ public class ParteDeSocialmedia extends TestWithConfig {
             firefoxDriver = DriversConfig.headlessOrNot(headless);
             firefoxWaiting = new WebDriverWait(firefoxDriver, 5);
 
-           /* results.put("Create a showflow ticket and check the states  ->  ", newShowflowTicket());
+            results.put("Create a showflow ticket and check the states  ->  ", newShowflowTicket());
             results.put("Create action fields  ->  ", createContactFields());
             results.put("Create questions  ->  ", createQuestions());
             results.put("Import states by CSV  ->  ", importStates());
@@ -146,7 +143,7 @@ public class ParteDeSocialmedia extends TestWithConfig {
             results.put("Configure service coordinators  ->  ", configureServiceCoordinators());
             results.put("Configure contact data  ->  ", configureContactData());
             results.put("Confirm service  ->  ", confirmService());
-            results.put("Configure web chat  ->  ", configureWebChat());*/
+            results.put("Configure web chat  ->  ", configureWebChat());
             results.put("Clone service and check it  ->  ", cloneService());
 
             return results;
@@ -337,7 +334,9 @@ public class ParteDeSocialmedia extends TestWithConfig {
                 return e.toString() + "ERROR: Something went wrong. The copy of the showflow does not appear on the showflows table";
             }
 
+            Thread.sleep(1500);
             WebElement showflowCopy = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'showflows']//td[contains(., '" + showflowSMCopyName + "')]", firefoxDriver);
+            Thread.sleep(500);
             SeleniumDAO.click(showflowCopy);
 
             WebElement contactFieldsTab = SeleniumDAO.selectElementBy("xpath", "//p[@id = 'edit_showflow_contact']/a", firefoxDriver);
@@ -863,6 +862,37 @@ public class ParteDeSocialmedia extends TestWithConfig {
             if(!cityChatCheckbox.isSelected()) SeleniumDAO.click(cityChatCheckbox);
             if(!citySearchableCheckbox.isSelected()) SeleniumDAO.click(citySearchableCheckbox);
 
+            WebElement aux3NameInput = SeleniumDAO.selectElementBy("xpath", "//p[contains(., 'aux3')]/following-sibling::input", firefoxDriver);
+            WebElement aux4NameInput = SeleniumDAO.selectElementBy("xpath", "//p[contains(., 'aux4')]/following-sibling::input", firefoxDriver);
+            WebElement aux5NameInput = SeleniumDAO.selectElementBy("xpath", "//p[contains(., 'aux5')]/following-sibling::input", firefoxDriver);
+            WebElement aux6NameInput = SeleniumDAO.selectElementBy("xpath", "//p[contains(., 'aux6')]/following-sibling::input", firefoxDriver);
+
+            aux3NameInput.sendKeys("auxTextArea");
+            Select aux3TypeSelector = SeleniumDAO.findSelectElementBy("xpath", "//td[p[contains(., 'aux3')]]/following-sibling::td/select[@class = 'type']", firefoxDriver);
+            aux3TypeSelector.selectByValue("textarea");
+
+            aux4NameInput.sendKeys("auxDate");
+            Select aux4TypeSelector = SeleniumDAO.findSelectElementBy("xpath", "//td[p[contains(., 'aux4')]]/following-sibling::td/select[@class = 'type']", firefoxDriver);
+            aux4TypeSelector.selectByValue("date");
+
+            aux5NameInput.sendKeys("auxSelector");
+            Select aux5TypeSelector = SeleniumDAO.findSelectElementBy("xpath", "//td[p[contains(., 'aux5')]]/following-sibling::td/select[@class = 'type']", firefoxDriver);
+            aux5TypeSelector.selectByValue("select");
+
+            aux6NameInput.sendKeys("auxRadiobutton");
+            Select aux6TypeSelector = SeleniumDAO.findSelectElementBy("xpath", "//td[p[contains(., 'aux6')]]/following-sibling::td/select[@class = 'type']", firefoxDriver);
+            aux6TypeSelector.selectByValue("radiobutton");
+
+            WebElement aux3ChatCheckbox = SeleniumDAO.selectElementBy("xpath", "//td[p[contains(., 'aux3')]]/following-sibling::td/input[@class = 'chat']", firefoxDriver);
+            WebElement aux4ChatCheckbox = SeleniumDAO.selectElementBy("xpath", "//td[p[contains(., 'aux4')]]/following-sibling::td/input[@class = 'chat']", firefoxDriver);
+            WebElement aux5ChatCheckbox = SeleniumDAO.selectElementBy("xpath", "//td[p[contains(., 'aux5')]]/following-sibling::td/input[@class = 'chat']", firefoxDriver);
+            WebElement aux6ChatCheckbox = SeleniumDAO.selectElementBy("xpath", "//td[p[contains(., 'aux6')]]/following-sibling::td/input[@class = 'chat']", firefoxDriver);
+
+            SeleniumDAO.click(aux3ChatCheckbox);
+            SeleniumDAO.click(aux4ChatCheckbox);
+            SeleniumDAO.click(aux5ChatCheckbox);
+            SeleniumDAO.click(aux6ChatCheckbox);
+
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("submit-btn")));
             WebElement nextButton = SeleniumDAO.selectElementBy("id", "submit-btn", firefoxDriver);
             SeleniumDAO.click(nextButton);
@@ -940,7 +970,7 @@ public class ParteDeSocialmedia extends TestWithConfig {
 
     public String cloneService()
     {
-        //Login on dialapplet web
+        /*//Login on dialapplet web
         firefoxDriver.get(url + "dialapplet-web");
         Utils.loginDialappletWeb(adminName, adminPassword, firefoxDriver);
         try {
@@ -952,7 +982,7 @@ public class ParteDeSocialmedia extends TestWithConfig {
 
         firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., '" + serviceSMName + "')]")));
         WebElement service = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + serviceSMName + "')]", firefoxDriver);
-        SeleniumDAO.click(service);
+        SeleniumDAO.click(service);*/
 
 
         try
@@ -1045,7 +1075,7 @@ public class ParteDeSocialmedia extends TestWithConfig {
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@id = 'workflow']//option[contains(., '" + showflowSMCopyName + "')]")));
 
             Select recordingRateSelector = SeleniumDAO.findSelectElementBy("id", "recordingrate", firefoxDriver);
-            if(!recordingRateSelector.getFirstSelectedOption().getText().equals("100")) res = false;
+            if(!recordingRateSelector.getFirstSelectedOption().getText().equals("99")) res = false;
 
             WebElement recordLabel = SeleniumDAO.selectElementBy("id", "audioformat", firefoxDriver);
             if(!recordLabel.getAttribute("value").equals("RCNvXYZ%20-%21-%1-%9-%8-%6")) res = false;
@@ -1429,6 +1459,7 @@ public class ParteDeSocialmedia extends TestWithConfig {
             SeleniumDAO.switchToDefaultContent(firefoxDriver);
 
             WebElement saveButton = SeleniumDAO.selectElementBy("id", "savebutton", firefoxDriver);
+            Thread.sleep(500);
             SeleniumDAO.click(saveButton);
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
