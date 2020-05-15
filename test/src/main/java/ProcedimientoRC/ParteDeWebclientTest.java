@@ -244,6 +244,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         try
         {
             //Do a call creating a contact
+            System.out.println("Se va a hacer una llamada al numero: " + number + ". Cuelga la llamada.");
             String callRes = doACall(firefoxDriver, firefoxWaiting, manualCallModeName, number, true);
             if(callRes.contains("ERROR")) return callRes;
             selectTypology(firefoxDriver, firefoxWaiting, "VENTA", "ADSL");
@@ -280,6 +281,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
             Thread.sleep(1500);
 
             //Do a call selecting the contact created before
+            System.out.println("Se va a hacer una llamada al numero: " + number + ". Cuelga la llamada.");
             String callRes = doACall(firefoxDriver, firefoxWaiting, manualCallModeName, number, false);
             if(callRes.contains("ERROR")) return callRes;
 
@@ -349,6 +351,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
     {
         try
         {
+            System.out.println("Se va a hacer una llamada al numero: " + number + ". Cuelga la llamada.");
             String callRes = doACall(firefoxDriver, firefoxWaiting, manualCallModeName, number, false);
             if(callRes.contains("ERROR")) return callRes;
 
@@ -516,6 +519,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
             chromeWaiting = new WebDriverWait(chromeDriver, 60);
             connectAndAvailable(chromeDriver, chromeWaiting, agentName5, extension2);
 
+            System.out.println("Se va a hacer una llamada al numero: " + number + ". Coge la llamada y espera hasta que el programa te diga que puedes colgar.");
             String callRes = doACall(firefoxDriver, firefoxWaiting, manualCallModeName, number, false);
             if(callRes.contains("ERROR")) return callRes;
 
@@ -1480,6 +1484,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
 
             Utils.takeScreenshot("./ParteDeWebClientOut/OutgoingPanel2", firefoxDriver);
 
+            System.out.println("Se va a hacer una llamada al numero: " + number + ". Cuelga la llamada.");
             doACall(chromeDriver, chromeWaiting, manualCallModeName, number, false);
 
             Utils.takeScreenshot("./ParteDeWebClientOut/OutgoingPanel3", firefoxDriver);

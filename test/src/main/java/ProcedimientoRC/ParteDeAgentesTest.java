@@ -8,9 +8,12 @@ import Utils.DriversConfig;
 
 import main.SeleniumDAO;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.text.ParseException;
@@ -74,58 +77,51 @@ public class ParteDeAgentesTest extends TestWithConfig {
     public HashMap<String, String> check() throws MissingParameterException {
         super.checkParameters();
 
-        //TODO El try catch de los ini.get no es necesario
+        url = commonIni.get("General", "url");
+        headless = commonIni.get("General", "headless");
+        adminName = commonIni.get("Admin", "adminName");
+        adminPassword = commonIni.get("Admin", "adminPassword");
+
+        groupName = commonIni.get("Group", "groupName");
+        groupName1y2 = commonIni.get("Group", "groupName1y2");
+        groupName3 = commonIni.get("Group", "groupName3");
+
+        agentName1 = commonIni.get("Agent", "agentName1");
+        agentName2 = commonIni.get("Agent", "agentName2");
+        agentName3 = commonIni.get("Agent", "agentName3");
+        agentName4 = commonIni.get("Agent", "agentName4");
+        agentName5 = commonIni.get("Agent", "agentName5");
+        agentName7 = commonIni.get("Agent", "agentName7");
+        agentPassword = commonIni.get("Agent", "agentPassword");
+        pilotAgentName1 = commonIni.get("Agent", "pilotAgentName1");
+        pilotAgentName2 = commonIni.get("Agent", "pilotAgentName2");
+
+        agentCoordName1 = commonIni.get("Coordinator", "agentCoordName1");
+        agentCoordName6 = commonIni.get("Coordinator", "agentCoordName6");
+        coordinatorPassword = commonIni.get("Coordinator", "coordinatorPassword");
+
+        agentsCsvPath = commonIni.get("CSV", "agentsCsvPath");
+
         try {
-            try {
-                url = commonIni.get("General", "url");
-                headless = commonIni.get("General", "headless");
-                adminName = commonIni.get("Admin", "adminName");
-                adminPassword = commonIni.get("Admin", "adminPassword");
-
-                groupName = commonIni.get("Group", "groupName");
-                groupName1y2 = commonIni.get("Group", "groupName1y2");
-                groupName3 = commonIni.get("Group", "groupName3");
-
-                agentName1 = commonIni.get("Agent", "agentName1");
-                agentName2 = commonIni.get("Agent", "agentName2");
-                agentName3 = commonIni.get("Agent", "agentName3");
-                agentName4 = commonIni.get("Agent", "agentName4");
-                agentName5 = commonIni.get("Agent", "agentName5");
-                agentName7 = commonIni.get("Agent", "agentName7");
-                agentPassword = commonIni.get("Agent", "agentPassword");
-                pilotAgentName1 = commonIni.get("Agent", "pilotAgentName1");
-                pilotAgentName2 = commonIni.get("Agent", "pilotAgentName2");
-
-                agentCoordName1 = commonIni.get("Coordinator", "agentCoordName1");
-                agentCoordName6 = commonIni.get("Coordinator", "agentCoordName6");
-                coordinatorPassword = commonIni.get("Coordinator", "coordinatorPassword");
-
-                agentsCsvPath = commonIni.get("CSV", "agentsCsvPath");
-                serviceID = commonIni.get("Service", "serviceID");
-
-            } catch (Exception e) {
-                results.put(e.toString() + "\nERROR. The inicialization file can't be loaded", "Tests can't be runned");
-                return results;
-            }
-
             firefoxDriver = DriversConfig.headlessOrNot(headless);
             firefoxWaiting = new WebDriverWait(firefoxDriver, 6);
 
             results.put("--Connection Test  ->  ", connectionTest());
-            results.put("\n--Import agents with CSV  ->  ", importCSV());
-            results.put("\n--Add agents to a new group  ->  ", addAgentsToNewGroup());
-            results.put("\n--Add new group: " + groupName1y2 + "  ->  ", newGroup1y2());
-            results.put("\n--Create a Coordinator + Agent user: " + agentCoordName1 + "  ->  ", newCoordAgent());
-            results.put("\n--Create a Agent user with name: " + agentName1 + "  ->  ", newAgent1());
-            results.put("\n--Create a Agent user with name: " + agentName2 + "  ->  ", newAgent2());
-            results.put("\n--Create a Agent user with name: " + agentName3 + "  ->  ", newAgent3());
-            results.put("\n--Add new group: " + groupName3 + "  ->  ", newGroup3());
-            results.put("\n--Create a Agent user with name: " + agentName4 + "  ->  ", newAgent4());
-            results.put("\n--Create a Agent user with name: " + agentName5 + "  ->  ", newAgent5());
-            results.put("\n--Create a Agent user with name: " + agentCoordName6 + "  ->  ", newAgentC6());
-            results.put("\n--Create a Agent user with name: " + agentName7 + "  ->  ", newAgent7toGroup1y2());
-            results.put("\n--Login with agent: " + agentName1 + "test  ->  ", agent1LoginTest());
-            results.put("\n--Login with agent: " + agentName2 + "test  ->  ", agent2LoginTest());
+            results.put("--Create a service  ->  ", createService());
+            results.put("--Import agents with CSV  ->  ", importCSV());
+            results.put("--Add agents to a new group  ->  ", addAgentsToNewGroup());
+            results.put("--Add new group: " + groupName1y2 + "  ->  ", newGroup1y2());
+            results.put("--Create a Coordinator + Agent user: " + agentCoordName1 + "  ->  ", newCoordAgent());
+            results.put("--Create a Agent user with name: " + agentName1 + "  ->  ", newAgent1());
+            results.put("--Create a Agent user with name: " + agentName2 + "  ->  ", newAgent2());
+            results.put("--Create a Agent user with name: " + agentName3 + "  ->  ", newAgent3());
+            results.put("--Add new group: " + groupName3 + "  ->  ", newGroup3());
+            results.put("--Create a Agent user with name: " + agentName4 + "  ->  ", newAgent4());
+            results.put("--Create a Agent user with name: " + agentName5 + "  ->  ", newAgent5());
+            results.put("--Create a Agent user with name: " + agentCoordName6 + "  ->  ", newAgentC6());
+            results.put("--Create a Agent user with name: " + agentName7 + "  ->  ", newAgent7toGroup1y2());
+            results.put("--Login with agent: " + agentName1 + "test  ->  ", agent1LoginTest());
+            results.put("--Login with agent: " + agentName2 + "test  ->  ", agent2LoginTest());
 
             return results;
 
@@ -149,6 +145,96 @@ public class ParteDeAgentesTest extends TestWithConfig {
             //System.err.println("ERROR: Login failed");
             e.printStackTrace();
             return e.toString();
+        }
+    }
+
+    public String createService()
+    {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'createService.php']")));
+            WebElement createService = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'createService.php']", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(createService);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@type = 'submit']")));
+            WebElement acceptButton = SeleniumDAO.selectElementBy("xpath", "//input[@type = 'submit']", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(acceptButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id = 'name']")));
+            WebElement nameInput = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'name']", firefoxDriver);
+            nameInput.sendKeys("servicioSelenium");
+
+            WebElement nextButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
+            SeleniumDAO.click(nextButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
+            WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(okButton);
+
+            //Se necesita este modo de llamada para facilitar las cosas en el parte de servicio en el tema de los modos de llamada favoritos.
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("createCampaign")));
+            WebElement createCallmode = SeleniumDAO.selectElementBy("id", "createCampaign", firefoxDriver);
+            SeleniumDAO.click(createCallmode);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("name")));
+            nameInput = SeleniumDAO.selectElementBy("id", "name", firefoxDriver);
+            nameInput.sendKeys("auxiliarCallmode");
+
+            Select dialingMode = SeleniumDAO.findSelectElementBy("id", "dialingmode", firefoxDriver);
+            dialingMode.selectByValue("manual");
+
+            WebElement addCallmode = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
+            SeleniumDAO.click(addCallmode);
+
+            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("send")));
+            Actions actions = new Actions(firefoxDriver);
+            actions.sendKeys(Keys.ESCAPE).perform();
+            SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("next")));
+            nextButton = SeleniumDAO.selectElementBy("id", "next", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(nextButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@type = 'submit']")));
+            nextButton = SeleniumDAO.selectElementBy("xpath", "//input[@type = 'submit']", firefoxDriver);
+            SeleniumDAO.click(nextButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("submit-btn")));
+            nextButton = SeleniumDAO.selectElementBy("id", "submit-btn", firefoxDriver);
+            SeleniumDAO.click(nextButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("submit")));
+            nextButton = SeleniumDAO.selectElementBy("id", "submit", firefoxDriver);
+            Thread.sleep(400);
+            SeleniumDAO.click(nextButton);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@type = 'submit']")));
+            nextButton = SeleniumDAO.selectElementBy("xpath", "//input[@type = 'submit']", firefoxDriver);
+            Thread.sleep(1500);
+            SeleniumDAO.click(nextButton);
+            //SeleniumDAO.click(nextButton);
+
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'services.php']")));
+            WebElement services = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'services.php']", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(services);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., 'servicioSelenium')]")));
+            serviceID = SeleniumDAO.selectElementBy("xpath", "//td[contains(., 'servicioSelenium')]/preceding-sibling::td", firefoxDriver).getText();
+            commonIni.put("Service", "serviceID", serviceID);
+            commonIni.store();
+
+            return "Test OK. Se ha creado un servicio con el ID: " + serviceID;
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return e.toString() + "\nERROR. No se ha podido crear el servicio";
         }
     }
 

@@ -397,10 +397,10 @@ public class ShowflowUtils {
         SeleniumDAO.click(backButton);
     }
 
-    public static void configureJoints(WebDriver driver, WebDriverWait waiting)
-    {
+    public static void configureJoints(WebDriver driver, WebDriverWait waiting) throws InterruptedException {
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//p[@id = 'edit_showflow_joints']")));
         WebElement configureJoints = SeleniumDAO.selectElementBy("xpath", "//p[@id = 'edit_showflow_joints']", driver);
+        Thread.sleep(300);
         SeleniumDAO.click(configureJoints);
 
         waiting.until(ExpectedConditions.presenceOfElementLocated(By.id("add-input-field")));
@@ -476,9 +476,11 @@ public class ShowflowUtils {
             WebElement question2Type = SeleniumDAO.selectElementBy("xpath", "//select[@class = 'type']" +
                     "//option[@value = 'checkbox' and @selected = '']", driver);
 
-            WebElement question2OptionGroup = SeleniumDAO.selectElementBy("xpath", "//select[@class = 'optiongroup']" +
+            WebElement question1OptionGroup = SeleniumDAO.selectElementBy("xpath", "//td[input[@value = '" + showflowQuestion1 + "']]/following-sibling::td//select[@class = 'optiongroup']" +
                     "//option[contains(., '" + showflowOptionsGroupName + "')]", driver);
-            boolean res = question2OptionGroup.isSelected();
+            WebElement question2OptionGroup = SeleniumDAO.selectElementBy("xpath", "//td[input[@value = '" + showflowQuestion2 + "']]/following-sibling::td//select[@class = 'optiongroup']" +
+                    "//option[contains(., '" + showflowOptionsGroupName + "')]", driver);
+            boolean res = question2OptionGroup.isSelected() && question1OptionGroup.isSelected();
             if(!res) throw new Exception();
 
             return "Check OK. The showflow fields of the cloned showflow match with the original";

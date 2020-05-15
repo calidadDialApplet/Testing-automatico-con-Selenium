@@ -181,6 +181,45 @@ public class CleanParteDeServicio extends CleanTest {
             e.printStackTrace();
         }
     }
+
+    public void deleteService()
+    {
+        try
+        {
+            try {
+                WebElement searcher = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'search']", firefoxDriver);
+                searcher.sendKeys(serviceID);
+                Thread.sleep(1000);
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'services']//td[contains(., '" + serviceID + "')]")));
+            } catch (Exception e) {
+                System.out.println("Clean ERROR: The service: " + serviceID + "does not appears on the services table");
+                e.printStackTrace();
+                throw e;
+            }
+
+            WebElement service = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'services']//td[contains(., '" + serviceID + "')]", firefoxDriver);
+            SeleniumDAO.click(service);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//p[@id = 'delete-service']/a")));
+            WebElement deleteServiceTab = SeleniumDAO.selectElementBy("xpath", "//p[@id = 'delete-service']/a", firefoxDriver);
+            SeleniumDAO.click(deleteServiceTab);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+            WebElement deleteButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(deleteButton);
+
+            Thread.sleep(3000);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-success animate']")));
+            WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            SeleniumDAO.click(okButton);
+        } catch (Exception e)
+        {
+            System.err.println("Clean ERROR trying to delete the service");
+            e.printStackTrace();
+        }
+    }
     public void deleteShowflowCopy() throws  InterruptedException
     {
         try
@@ -202,9 +241,10 @@ public class CleanParteDeServicio extends CleanTest {
             Thread.sleep(1500);
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'showflows']//td[contains(., '" + showflowCopyName +
                     "forService')]/following-sibling::td//img[@src = 'imagenes/delete2.png']")));
+            Thread.sleep(2200);
             WebElement showflowDeleteButton = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'showflows']//td[contains(., '" + showflowCopyName +
                     "forService')]/following-sibling::td//img[@src = 'imagenes/delete2.png']", firefoxDriver);
-            Thread.sleep(1000);
+            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(showflowDeleteButton));
             SeleniumDAO.click(showflowDeleteButton);
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
@@ -392,8 +432,8 @@ public class CleanParteDeServicio extends CleanTest {
         {
             try
             {
-                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., 'auxiliarCallMode')]/following-sibling::td//img[@class = 'baseStarOff']")));
-                WebElement auxiliarStarButton = SeleniumDAO.selectElementBy("xpath", "//td[contains(., 'auxiliarCallMode')]/following-sibling::td//img[@class = 'baseStarOff']", firefoxDriver);
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., 'auxiliarCallmode')]/following-sibling::td//img[@class = 'baseStarOff']")));
+                WebElement auxiliarStarButton = SeleniumDAO.selectElementBy("xpath", "//td[contains(., 'auxiliarCallmode')]/following-sibling::td//img[@class = 'baseStarOff']", firefoxDriver);
                 SeleniumDAO.click(auxiliarStarButton);
 
                 firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-success animate']")));
@@ -401,7 +441,7 @@ public class CleanParteDeServicio extends CleanTest {
                 SeleniumDAO.click(okButton);
             } catch (Exception e)
             {
-                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., 'auxiliarCallMode')]/following-sibling::td//img[@class = 'baseStarOn']")));
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., 'auxiliarCallmode')]/following-sibling::td//img[@class = 'baseStarOn']")));
             }
 
 
@@ -410,13 +450,14 @@ public class CleanParteDeServicio extends CleanTest {
             for(int i = 0; i < callmodes.size(); i++)
             {
                 String callmodeName = callmodes.get(i).getText();
-                if(!callmodeName.equals("auxiliarCallMode"))
+                if(!callmodeName.equals("auxiliarCallmode"))
                 {
                     WebElement deleteCallmode = callmodes.get(i).findElement(By.xpath("following-sibling::td//img[@class = 'deleteCampaign']"));
                     SeleniumDAO.click(deleteCallmode);
                     firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
                     WebElement deleteButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
-                    Thread.sleep(1000);
+                    Thread.sleep(1200);
+                    firefoxWaiting.until(ExpectedConditions.elementToBeClickable(deleteButton));
                     SeleniumDAO.click(deleteButton);
 
                     if(callmodeName.contains("Callback"))

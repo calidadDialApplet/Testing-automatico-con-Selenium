@@ -163,10 +163,56 @@ public class CleanParteDeAgentes extends CleanTest {
                     e.printStackTrace();
                 }
             }
+
+            deleteService();
         } catch (Exception e){
 
         } finally {
             firefoxDriver.close();
+        }
+    }
+
+    public void deleteService()
+    {
+        try
+        {
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("OPERATION")));
+            WebElement operationsTab = SeleniumDAO.selectElementBy("id", "OPERATION", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(operationsTab);
+
+            try {
+                WebElement searcher = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'search']", firefoxDriver);
+                searcher.sendKeys(serviceID);
+                Thread.sleep(1000);
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//table[@id = 'services']//td[contains(., '" + serviceID + "')]")));
+            } catch (Exception e) {
+                System.out.println("Clean ERROR: The service: " + serviceID + "does not appears on the services table");
+                e.printStackTrace();
+                throw e;
+            }
+
+            WebElement service = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'services']//td[contains(., '" + serviceID + "')]", firefoxDriver);
+            SeleniumDAO.click(service);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//p[@id = 'delete-service']/a")));
+            WebElement deleteServiceTab = SeleniumDAO.selectElementBy("xpath", "//p[@id = 'delete-service']/a", firefoxDriver);
+            SeleniumDAO.click(deleteServiceTab);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-warning pulseWarning']")));
+            WebElement deleteButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            Thread.sleep(500);
+            SeleniumDAO.click(deleteButton);
+
+            Thread.sleep(3000);
+
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sa-icon sa-success animate']")));
+            WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            SeleniumDAO.click(okButton);
+        } catch (Exception e)
+        {
+            System.err.println("Clean ERROR trying to delete the service");
+            e.printStackTrace();
         }
     }
 }

@@ -188,9 +188,9 @@ public class ParteDeServicioTest extends TestWithConfig {
             Thread.sleep(500);
             SeleniumDAO.click(confirmButton);
             //Creo que en la 8.3.9 no es necesario
-            /*confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            confirmButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
             Thread.sleep(500);
-            SeleniumDAO.click(confirmButton);*/
+            SeleniumDAO.click(confirmButton);
 
             //Callmode tab
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("campaigns")));
@@ -300,186 +300,18 @@ public class ParteDeServicioTest extends TestWithConfig {
         }
     }
 
-    public String callModeTest() { //TODO refactor en metodos aparte para algunas acciones
+    public String callModeTest() {
         try {
-            //Create new callmode: manual transferencia
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("createCampaign")));
-            WebElement createCallModeButton = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'createCampaign']", firefoxDriver);
-            SeleniumDAO.click(createCallModeButton);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("name")));
-            Select dialingModeSelector = SeleniumDAO.findSelectElementBy("xpath", "//table[@id = 'createCampaignTable']//select[@id = 'dialingmode']", firefoxDriver);
-            dialingModeSelector.selectByValue("manual");
+            createTransfCallmode();
+            createManualCallmode();
+            createPredictiveCallmode();
+            createCallbackCallmode();
 
-            WebElement nameInput = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'createCampaignTable']//input[@id = 'name']", firefoxDriver);
-            nameInput.sendKeys(transfCallModeName);
+            configurePredictiveCallback();
+            configureManualCallmode();
+            configureCallbackCallmode();
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("campaignfortransfersyes")));
-            WebElement transferRadioButton = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'campaignfortransfersyes']", firefoxDriver);
-            SeleniumDAO.click(transferRadioButton);
-
-            //Se deja unicamente el grupo1y2 dentro para comprobar mas adelante en el parte de webclient el panel de extensiones
-            WebElement grupo3Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName3 + "')]", firefoxDriver);
-            SeleniumDAO.click(grupo3Checkbox);
-            WebElement gropoCheckbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName + "')]", firefoxDriver);
-            SeleniumDAO.click(gropoCheckbox);
-
-            WebElement addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
-            SeleniumDAO.click(addCallModeButton);
-
-            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("send")));
-            Actions actions = new Actions(firefoxDriver);
-            actions.sendKeys(Keys.ESCAPE).perform();
-            SeleniumDAO.switchToDefaultContent(firefoxDriver);
-
-            //Create new callMode: manual
-            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.id("createCampaign")));
-            createCallModeButton = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'createCampaign']", firefoxDriver);
-            Thread.sleep(1200);
-            SeleniumDAO.click(createCallModeButton);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("name")));
-            dialingModeSelector = SeleniumDAO.findSelectElementBy("xpath", "//table[@id = 'createCampaignTable']//select[@id = 'dialingmode']", firefoxDriver);
-            dialingModeSelector.selectByValue("manual");
-
-            nameInput = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'createCampaignTable']//input[@id = 'name']", firefoxDriver);
-            nameInput.sendKeys(manualCallModeName);
-
-            //Este grupo solo estará en la de transferencia para comprobar los filtros del panel de extensiones en el parte de webclient
-            WebElement grupo1y2Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName1y2 + "')]", firefoxDriver);
-            SeleniumDAO.click(grupo1y2Checkbox);
-
-            addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
-            SeleniumDAO.click(addCallModeButton);
-
-            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("send")));
-            actions.sendKeys(Keys.ESCAPE).perform();
-            SeleniumDAO.switchToDefaultContent(firefoxDriver);
-
-            //Create callMode: predictive
-            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.id("createCampaign")));
-            createCallModeButton = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'createCampaign']", firefoxDriver);
-            Thread.sleep(1000);
-            SeleniumDAO.click(createCallModeButton);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("name")));
-            dialingModeSelector = SeleniumDAO.findSelectElementBy("xpath", "//table[@id = 'createCampaignTable']//select[@id = 'dialingmode']", firefoxDriver);
-            dialingModeSelector.selectByValue("predictive");
-
-            nameInput = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'createCampaignTable']//input[@id = 'name']", firefoxDriver);
-            nameInput.sendKeys(predictCallModeName);
-
-            //Este grupo solo estará en la de transferencia para comprobar los filtros del panel de extensiones en el parte de webclient
-            grupo1y2Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName1y2 + "')]", firefoxDriver);
-            Thread.sleep(1000);
-            SeleniumDAO.click(grupo1y2Checkbox);
-
-            addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
-            Thread.sleep(500);
-            SeleniumDAO.click(addCallModeButton);
-
-            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("send")));
-            actions.sendKeys(Keys.ESCAPE).perform();
-            SeleniumDAO.switchToDefaultContent(firefoxDriver);
-
-            //Create callBack for predictive callMode
-            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.id("createCampaign")));
-
-            WebElement favouriteCallModeButton = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + predictCallModeName + "')]/following-sibling::td/img[@class = 'baseStarOff']",
-                    firefoxDriver);
-            Thread.sleep(800);
-            SeleniumDAO.click(favouriteCallModeButton);
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
-            WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
-            SeleniumDAO.click(okButton);
-
-            //Add callback to the recently added predictive callmode
-            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.xpath("//tr/td[contains(., '" + predictCallModeName + "')]/following-sibling::td/img[@class = 'editCampaign']")));
-            WebElement editCallMode = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + predictCallModeName + "')]/following-sibling::td/img[@class = 'editCampaign']",
-                    firefoxDriver);
-            SeleniumDAO.click(editCallMode);
-
-            Select callbackSelector = SeleniumDAO.findSelectElementBy("id", "campaigncallback", firefoxDriver);
-            firefoxWaiting.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//option[contains(., '" + predictCallModeName + " Callback" + "')]")));
-            callbackSelector.selectByVisibleText(predictCallModeName + " Callback");
-
-            //Este grupo solo estará en la de transferencia para comprobar los filtros del panel de extensiones en el parte de webclient
-            grupo1y2Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName1y2 + "')]", firefoxDriver);
-            if(grupo1y2Checkbox.isSelected()) SeleniumDAO.click(grupo1y2Checkbox);
-
-
-            addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
-            SeleniumDAO.click(addCallModeButton);
-
-            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("send")));
-            actions.sendKeys(Keys.ESCAPE).perform();
-            Thread.sleep(1000);
-            SeleniumDAO.switchToDefaultContent(firefoxDriver);
-
-
-            //line 84 from Procedimiento RC
-            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.xpath("//tr/td[contains(., '" + manualCallModeName + "')]/following-sibling::td/img[@class = 'editCampaign']")));
-            editCallMode = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + manualCallModeName + "')]/following-sibling::td/img[@class = 'editCampaign']",
-                    firefoxDriver);
-            SeleniumDAO.click(editCallMode);
-
-            firefoxWaiting.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//option[contains(., '" + predictCallModeName + " Callback')]")));
-            Select campaignCallback = SeleniumDAO.findSelectElementBy("id", "campaigncallback", firefoxDriver);
-            campaignCallback.selectByVisibleText(predictCallModeName + " Callback");
-
-            addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
-            SeleniumDAO.click(addCallModeButton);
-
-            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("send")));
-            actions.sendKeys(Keys.ESCAPE).perform();
-            Thread.sleep(1000);
-            SeleniumDAO.switchToDefaultContent(firefoxDriver);
-
-
-            //Configure predictive callmode callback
-            WebElement phoneCallModeButton = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + predictCallModeName + " Callback')]/following-sibling::td/a[@class = 'maximumControl iframe']",
-                    firefoxDriver);
-            SeleniumDAO.click(phoneCallModeButton);
-            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id = 'tipology']/table[2]//input[@value = '1']")));
-            WebElement manualRadioButton = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'tipology']/table[2]//input[@value = '1']", firefoxDriver);
-            SeleniumDAO.click(manualRadioButton);
-
-            WebElement sendButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
-            SeleniumDAO.click(sendButton);
-
-            SeleniumDAO.switchToDefaultContent(firefoxDriver);
-
-            //Configure predictive callmode
-            Thread.sleep(2000);
-            phoneCallModeButton = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + predictCallModeName + "')]/following-sibling::td/a[@class = 'maximumControl iframe']",
-                    firefoxDriver);
-            firefoxWaiting.until(ExpectedConditions.elementToBeClickable(phoneCallModeButton));
-            SeleniumDAO.click(phoneCallModeButton);
-
-            SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
-
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("maximumtype")));
-            Select calltypeSelector = SeleniumDAO.findSelectElementBy("id", "maximumtype", firefoxDriver);
-            calltypeSelector.selectByVisibleText("Combined (Delay - Typology)"); //TODO refactor byValue
-
-
-            Thread.sleep(1000);
-            //Configuration for the phone button
-            configureDelaysNoContacted();
-            configureDelaysContacted();
-            configureTypologies();
-
-            Utils.takeScreenshot("./ParteDeServicioOut/predictiveConfigScreenshot", firefoxDriver);
-
-            sendButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
-            SeleniumDAO.click(sendButton);
 
             createIncomingRoute();
             createIncomingCampaign();
@@ -1256,7 +1088,8 @@ public class ParteDeServicioTest extends TestWithConfig {
             WebElement autoRadioButton = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'tipology']//table[2]//label[1]/input[@type = 'radio']", firefoxDriver);
             SeleniumDAO.click(autoRadioButton);
 
-            Select destinyCallmodeSelector = SeleniumDAO.findSelectElementBy("xpath", "//div[@id = 'tipology']//table[2]//select[contains(@name, 'campaigndest_')]", firefoxDriver);
+            Select destinyCallmodeSelector = SeleniumDAO.findSelectElementBy("xpath", "//tr[td[strong[contains(., 'PENDIENTE - AGENDADA2')]]]/following-sibling::tr" +
+                    "//select[contains(@name, 'campaigndest_')]", firefoxDriver);
             destinyCallmodeSelector.selectByVisibleText(predictCallModeName + " Callback");
 
         } catch (Exception e) {
@@ -1464,8 +1297,7 @@ public class ParteDeServicioTest extends TestWithConfig {
         }
     }
 
-    public void cloneService()
-    {
+    public void cloneService() throws InterruptedException {
         try
         {
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//p[@id = 'clone-service']/a")));
@@ -1526,6 +1358,7 @@ public class ParteDeServicioTest extends TestWithConfig {
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class = 'sweet-alert showSweetAlert visible']")));
             WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+            Thread.sleep(500);
             SeleniumDAO.click(okButton);
 
             //TODO borrar este if cuando desaparezca la version 7
@@ -1551,7 +1384,7 @@ public class ParteDeServicioTest extends TestWithConfig {
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//select[@id = 'workflow']//option[contains(., '" + showflowCopyName + "')]")));
 
             Select recordingRateSelector = SeleniumDAO.findSelectElementBy("id", "recordingrate", firefoxDriver);
-            if(!recordingRateSelector.getFirstSelectedOption().getText().equals("100")) res = false;
+            if(!recordingRateSelector.getFirstSelectedOption().getText().equals("99")) res = false;
 
             WebElement recordLabel = SeleniumDAO.selectElementBy("id", "audioformat", firefoxDriver);
             if(!recordLabel.getAttribute("value").equals("RCNvXYZ%20-%21-%1-%9-%8-%6")) res = false;
@@ -1637,7 +1470,7 @@ public class ParteDeServicioTest extends TestWithConfig {
             //Comprueba si en la tabla de modos de llamada estan los nombres que utilizamos para crearlos
             List<WebElement> callmodeNames = firefoxDriver.findElements(By.xpath("//tbody[@class = 'ui-sortable']/tr/td[3]"));
             List<String> callmodeStringNames = new ArrayList<>(Arrays.asList(predictCallModeName + "forService", predictCallModeName + " CallbackforService", incomingCallModeName + "forService",
-                    manualCallModeName + "forService", transfCallModeName + "forService", "auxiliarCallMode"));
+                    manualCallModeName + "forService", transfCallModeName + "forService", "auxiliarCallmode"));
             for(WebElement callmodeName : callmodeNames)
             {
                 if(!callmodeStringNames.contains(callmodeName.getText())) res = false;
@@ -1671,16 +1504,17 @@ public class ParteDeServicioTest extends TestWithConfig {
             if(!contactedStopCallingCheckbox.isSelected()) res = false;
 
             //PENDIENTE - AGENDADA
-            WebElement manualRadioButton = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'tipology']//table[1]//label[2]/input[@type = 'radio']", firefoxDriver);
+            WebElement manualRadioButton = SeleniumDAO.selectElementBy("xpath", "//tr[td[strong[contains(., 'PENDIENTE - AGENDADA')]]]/following-sibling::tr//label[2]/input[@type = 'radio']", firefoxDriver);
             if(!manualRadioButton.isSelected()) res = false;
             Select callbackAssignmentSelector = SeleniumDAO.findSelectElementBy("xpath", "//div[@id = 'tipology']//table[1]//select[contains(@id, 'agent_')]", firefoxDriver);
             if(!callbackAssignmentSelector.getFirstSelectedOption().getAttribute("value").equals("user")) res = false;
             WebElement defaultDelay = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'defaultDelayST' and @value = '0']", firefoxDriver);
 
             //PENDIENTE - AGENDADA2
-            WebElement autoRadioButton = SeleniumDAO.selectElementBy("xpath", "//div[@id = 'tipology']//table[2]//label[1]/input[@type = 'radio']", firefoxDriver);
+            WebElement autoRadioButton = SeleniumDAO.selectElementBy("xpath", "//tr[td[strong[contains(., 'PENDIENTE - AGENDADA2')]]]/following-sibling::tr//label[1]/input[@type = 'radio']", firefoxDriver);
             if(!autoRadioButton.isSelected()) res = false;
-            Select destinyCallmodeSelector = SeleniumDAO.findSelectElementBy("xpath", "//div[@id = 'tipology']//table[2]//select[contains(@name, 'campaigndest_')]", firefoxDriver);
+            Select destinyCallmodeSelector = SeleniumDAO.findSelectElementBy("xpath", "//tr[td[strong[contains(., 'PENDIENTE - AGENDADA2')]]]/following-sibling::tr" +
+                    "//select[contains(@name, 'campaigndest_')]", firefoxDriver);
             if(!destinyCallmodeSelector.getFirstSelectedOption().getText().equals(predictCallModeName + " CallbackforService")) res = false;
 
             WebElement sendButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
@@ -1812,8 +1646,222 @@ public class ParteDeServicioTest extends TestWithConfig {
             e.printStackTrace();
             return res;
         }
+
     }
 
 
+    public void createTransfCallmode()
+    {
+        //Create new callmode: manual transferencia
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("createCampaign")));
+        WebElement createCallModeButton = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'createCampaign']", firefoxDriver);
+        SeleniumDAO.click(createCallModeButton);
 
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("name")));
+        Select dialingModeSelector = SeleniumDAO.findSelectElementBy("xpath", "//table[@id = 'createCampaignTable']//select[@id = 'dialingmode']", firefoxDriver);
+        dialingModeSelector.selectByValue("manual");
+
+        WebElement nameInput = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'createCampaignTable']//input[@id = 'name']", firefoxDriver);
+        nameInput.sendKeys(transfCallModeName);
+
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("campaignfortransfersyes")));
+        WebElement transferRadioButton = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'campaignfortransfersyes']", firefoxDriver);
+        SeleniumDAO.click(transferRadioButton);
+
+        //Se deja unicamente el grupo1y2 dentro para comprobar mas adelante en el parte de webclient el panel de extensiones
+        WebElement grupo3Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName3 + "')]", firefoxDriver);
+        SeleniumDAO.click(grupo3Checkbox);
+        WebElement gropoCheckbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName + "')]", firefoxDriver);
+        SeleniumDAO.click(gropoCheckbox);
+
+        WebElement addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
+        SeleniumDAO.click(addCallModeButton);
+
+        SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("send")));
+        Actions actions = new Actions(firefoxDriver);
+        actions.sendKeys(Keys.ESCAPE).perform();
+        SeleniumDAO.switchToDefaultContent(firefoxDriver);
+    }
+
+    public void createManualCallmode() throws InterruptedException {
+        //Create new callMode: manual
+        firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.id("createCampaign")));
+        WebElement createCallModeButton = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'createCampaign']", firefoxDriver);
+        Thread.sleep(1200);
+        SeleniumDAO.click(createCallModeButton);
+
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("name")));
+        Select dialingModeSelector = SeleniumDAO.findSelectElementBy("xpath", "//table[@id = 'createCampaignTable']//select[@id = 'dialingmode']", firefoxDriver);
+        dialingModeSelector.selectByValue("manual");
+
+        WebElement nameInput = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'createCampaignTable']//input[@id = 'name']", firefoxDriver);
+        nameInput.sendKeys(manualCallModeName);
+
+        //Este grupo solo estará en la de transferencia para comprobar los filtros del panel de extensiones en el parte de webclient
+        WebElement grupo1y2Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName1y2 + "')]", firefoxDriver);
+        SeleniumDAO.click(grupo1y2Checkbox);
+
+        WebElement addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
+        SeleniumDAO.click(addCallModeButton);
+
+        SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("send")));
+        Actions actions = new Actions(firefoxDriver);
+        actions.sendKeys(Keys.ESCAPE).perform();
+        SeleniumDAO.switchToDefaultContent(firefoxDriver);
+    }
+
+    public void createPredictiveCallmode() throws InterruptedException {
+        //Create callMode: predictive
+        firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.id("createCampaign")));
+        WebElement createCallModeButton = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'createCampaign']", firefoxDriver);
+        Thread.sleep(1000);
+        SeleniumDAO.click(createCallModeButton);
+
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("name")));
+        Select dialingModeSelector = SeleniumDAO.findSelectElementBy("xpath", "//table[@id = 'createCampaignTable']//select[@id = 'dialingmode']", firefoxDriver);
+        dialingModeSelector.selectByValue("predictive");
+
+        WebElement nameInput = SeleniumDAO.selectElementBy("xpath", "//table[@id = 'createCampaignTable']//input[@id = 'name']", firefoxDriver);
+        nameInput.sendKeys(predictCallModeName);
+
+        //Este grupo solo estará en la de transferencia para comprobar los filtros del panel de extensiones en el parte de webclient
+        WebElement grupo1y2Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName1y2 + "')]", firefoxDriver);
+        Thread.sleep(1000);
+        SeleniumDAO.click(grupo1y2Checkbox);
+
+        WebElement addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
+        Thread.sleep(500);
+        SeleniumDAO.click(addCallModeButton);
+
+        SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("send")));
+        Actions actions = new Actions(firefoxDriver);
+        actions.sendKeys(Keys.ESCAPE).perform();
+        SeleniumDAO.switchToDefaultContent(firefoxDriver);
+    }
+
+    public void createCallbackCallmode() throws InterruptedException {
+        //Create callBack for predictive callMode
+        firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.id("createCampaign")));
+
+        WebElement favouriteCallModeButton = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + predictCallModeName + "')]/following-sibling::td/img[@class = 'baseStarOff']",
+                firefoxDriver);
+        Thread.sleep(800);
+        SeleniumDAO.click(favouriteCallModeButton);
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@class = 'confirm']")));
+        WebElement okButton = SeleniumDAO.selectElementBy("xpath", "//button[@class = 'confirm']", firefoxDriver);
+        SeleniumDAO.click(okButton);
+
+        //Add callback to the recently added predictive callmode
+        firefoxWaiting.until(ExpectedConditions.elementToBeClickable(By.xpath("//tr/td[contains(., '" + predictCallModeName + "')]/following-sibling::td/img[@class = 'editCampaign']")));
+        WebElement editCallMode = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + predictCallModeName + "')]/following-sibling::td/img[@class = 'editCampaign']",
+                firefoxDriver);
+        SeleniumDAO.click(editCallMode);
+
+        Select callbackSelector = SeleniumDAO.findSelectElementBy("id", "campaigncallback", firefoxDriver);
+        firefoxWaiting.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//option[contains(., '" + predictCallModeName + " Callback" + "')]")));
+        callbackSelector.selectByVisibleText(predictCallModeName + " Callback");
+
+        //Este grupo solo estará en la de transferencia para comprobar los filtros del panel de extensiones en el parte de webclient
+        WebElement grupo1y2Checkbox = SeleniumDAO.selectElementBy("xpath", "//label[contains(., '" + groupName1y2 + "')]", firefoxDriver);
+        if(grupo1y2Checkbox.isSelected()) SeleniumDAO.click(grupo1y2Checkbox);
+
+
+        WebElement addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
+        SeleniumDAO.click(addCallModeButton);
+
+        SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("send")));
+        Actions actions = new Actions(firefoxDriver);
+        actions.sendKeys(Keys.ESCAPE).perform();
+        Thread.sleep(1000);
+        SeleniumDAO.switchToDefaultContent(firefoxDriver);
+    }
+
+    public void configureManualCallmode() throws InterruptedException {
+        SeleniumDAO.switchToDefaultContent(firefoxDriver);
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//tr/td[contains(., '" + manualCallModeName + "')]/following-sibling::td/img[@class = 'editCampaign']")));
+        WebElement editCallMode = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + manualCallModeName + "')]/following-sibling::td/img[@class = 'editCampaign']",
+                firefoxDriver);
+        SeleniumDAO.click(editCallMode);
+
+        firefoxWaiting.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//option[contains(., '" + predictCallModeName + " Callback')]")));
+        Select campaignCallback = SeleniumDAO.findSelectElementBy("id", "campaigncallback", firefoxDriver);
+        campaignCallback.selectByVisibleText(predictCallModeName + " Callback");
+
+        WebElement addCallModeButton = SeleniumDAO.selectElementBy("id", "add", firefoxDriver);
+        SeleniumDAO.click(addCallModeButton);
+
+        SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("send")));
+        Actions actions = new Actions(firefoxDriver);
+        actions.sendKeys(Keys.ESCAPE).perform();
+        Thread.sleep(1000);
+        SeleniumDAO.switchToDefaultContent(firefoxDriver);
+
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//tr/td[contains(., '" + manualCallModeName + "')]/following-sibling::td/a[@class = 'maximumControl iframe']")));
+        WebElement phoneCallModeButton = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + manualCallModeName + "')]/following-sibling::td/a[@class = 'maximumControl iframe']",
+                firefoxDriver);
+        SeleniumDAO.click(phoneCallModeButton);
+        SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//tr[td[strong[contains(., 'PENDIENTE - AGENDADA')]]]/following-sibling::tr//input[@value = '1']")));
+        WebElement manualRadioButton = SeleniumDAO.selectElementBy("xpath", "//tr[td[strong[contains(., 'PENDIENTE - AGENDADA')]]]/following-sibling::tr//input[@value = '1']", firefoxDriver);
+        SeleniumDAO.click(manualRadioButton);
+
+        WebElement sendButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
+        SeleniumDAO.click(sendButton);
+
+        SeleniumDAO.switchToDefaultContent(firefoxDriver);
+    }
+
+    public void configureCallbackCallmode() throws InterruptedException {
+        //Configure predictive callmode callback
+        WebElement phoneCallModeButton = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + predictCallModeName + " Callback')]/following-sibling::td/a[@class = 'maximumControl iframe']",
+                firefoxDriver);
+        Thread.sleep(1000);
+        SeleniumDAO.click(phoneCallModeButton);
+        SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+
+        /*firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//tr[td[strong[contains(., 'PENDIENTE - AGENDADA')]]]/following-sibling::tr//input[@value = '1']")));
+        WebElement manualRadioButton = SeleniumDAO.selectElementBy("xpath", "//tr[td[strong[contains(., 'PENDIENTE - AGENDADA')]]]/following-sibling::tr//input[@value = '1']", firefoxDriver);
+        Thread.sleep(500);
+        SeleniumDAO.click(manualRadioButton);*/
+
+        WebElement sendButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
+        SeleniumDAO.click(sendButton);
+
+        SeleniumDAO.switchToDefaultContent(firefoxDriver);
+    }
+
+    public void configurePredictiveCallback() throws InterruptedException, IOException {
+        //Configure predictive callmode
+        Thread.sleep(2000);
+        WebElement phoneCallModeButton = SeleniumDAO.selectElementBy("xpath", "//tr/td[contains(., '" + predictCallModeName + "')]/following-sibling::td/a[@class = 'maximumControl iframe']",
+                firefoxDriver);
+        firefoxWaiting.until(ExpectedConditions.elementToBeClickable(phoneCallModeButton));
+        SeleniumDAO.click(phoneCallModeButton);
+
+        SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
+
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("maximumtype")));
+        Select calltypeSelector = SeleniumDAO.findSelectElementBy("id", "maximumtype", firefoxDriver);
+        calltypeSelector.selectByVisibleText("Combined (Delay - Typology)"); //TODO refactor byValue
+
+
+        Thread.sleep(1000);
+        //Configuration for the phone button
+        configureDelaysNoContacted();
+        configureDelaysContacted();
+        configureTypologies();
+
+        Utils.takeScreenshot("./ParteDeServicioOut/predictiveConfigScreenshot", firefoxDriver);
+
+        WebElement sendButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
+        SeleniumDAO.click(sendButton);
+
+        Thread.sleep(500);
+    }
 }
