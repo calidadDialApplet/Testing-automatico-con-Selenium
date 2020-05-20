@@ -145,6 +145,8 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+
+    //Borra todos los contactos para hacer el test desde 0
     public void deleteContacts() throws InterruptedException {
         //Login on dialapplet web
         firefoxDriver.get(url + "dialapplet-web");
@@ -186,6 +188,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         Thread.sleep(2500);
     }
 
+    //Loggin en el web client y poner en estado disponible
     public String connectAndAvailable(WebDriver driver, WebDriverWait driverWaiting, String agentName, String extension)
     {
         try
@@ -239,6 +242,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Se realiza una llamada manual y se tipifica como positiva
     public String manualToVentaADSL()
     {
         try
@@ -273,6 +277,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Se hace una llamada manual y se tipifica como pendiente
     public String manualToPendienteAgendada()
     {
         try
@@ -322,6 +327,8 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+
+    //Comprueba que la llamada reprogramada aparece en la vista del agente
     public String checkScheduledCallback()
     {
         try
@@ -347,6 +354,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Hace una llamada manual y la tipifica como positiva
     public String reManualToVentaADSL()
     {
         try
@@ -387,6 +395,8 @@ public class ParteDeWebclientTest extends TestWithConfig {
 
     }
 
+
+    //Comprueba la llamada reprogramada en la base de datos
     public String checkCallbackOnDB()
     {
         try
@@ -475,6 +485,8 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+
+    //Espera una llamada entrante y la aparca
     public String incomingCall()
     {
         try
@@ -509,6 +521,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Se realiza una llamada manual que debe ser respondida para que se compruebe la transferencia entre agentes
     public String manualCallAndTransfer()
     {
         try
@@ -578,6 +591,8 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+
+    //Se espera a que entre una llamada y se transfiere a otro agente
     public String incomingAndTransfer()
     {
         try
@@ -673,6 +688,8 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+
+    //Se pone al agente en ocupado para realizar una llamada entrante, entrar en cola y colgar para que las abandonadas aumenten
     public String abandonedCall()
     {
         try
@@ -732,6 +749,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Crea un nuevo estado: merendando
     public String createNewState()
     {
         try
@@ -774,6 +792,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Comprueba las casuisticas para abrir un showflow cerrado: 1. No se permite abrir 2. Solo lectura 3.Solo admins y coordinadores 4. Sí para agentes
     public String checkOpenSF()
     {
         try
@@ -851,6 +870,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Comprueba el panel del coordinador
     public String checkCoordinator()
     {
         try
@@ -901,6 +921,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Hace los pasos necesarios para marcar una llamada con el modo de llamada callmode y al numero number
     public String dialCall(WebDriver driver, WebDriverWait waiting, String callmode, String number) throws InterruptedException
     {
         //Do a call
@@ -931,6 +952,8 @@ public class ParteDeWebclientTest extends TestWithConfig {
         return "";
     }
 
+
+    //Selecciona una tipologia
     public void selectTypology(WebDriver driver, WebDriverWait waiting, String typology, String subtypology)
     {
         driver.switchTo().frame(driver.findElement(By.xpath("//iframe[@class = 'frmcontent']")));
@@ -952,6 +975,9 @@ public class ParteDeWebclientTest extends TestWithConfig {
         subtypologySelector.selectByVisibleText(subtypology);
     }
 
+
+    //Este metodo se llama despues de tipificar una llamada para comprobar que si se tipifica como pendiente, el numero de tocadas aumenta en 1 o, si se
+    //tipifica como postiva, las llamadas positivas aumentan
     public String getTouchedAndPositives(boolean after)
     {
         try
@@ -1013,6 +1039,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Hace una llamada
     public String doACall(WebDriver driver, WebDriverWait waiting, String callmode, String number, boolean newContact)
     {
         try
@@ -1049,6 +1076,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Completa los pasos necesarios para programar una llamada a las 16:00
     public void programCallback()
     {
         try
@@ -1084,6 +1112,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Inicia sesión y comprueba que aparece el estado que se ha creado previamente
     public String connectAndCheckNewState(WebDriver driver, WebDriverWait driverWaiting, String agentName, String extension)
     {
         try
@@ -1139,6 +1168,8 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+
+    //Metodo para elegir quien puede abrir/editar showflows cerrados.
     public String loginAndChangeShowflowInteraction(String selectValue)
     {
         try
@@ -1243,6 +1274,8 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+
+    //Metodo para comprobar si el showflow cerrado es editable.
     public String checkOpenSFEditable()
     {
         try
@@ -1293,6 +1326,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Realiza los pasos necesarios para abrir un showflow cerrado desde el cliente web
     public String openSF()
     {
         try
@@ -1344,6 +1378,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Se toma una captura que deberá ser revisada cuando finalice el test para comprobar que los valores del panel kpi cambian correctamente
     public void checkKPIPanel()
     {
         try
@@ -1363,6 +1398,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Comprueba que desde la vista del coordinador se muestran los agentes conectados
     public String checkAgentsOnCoordView()
     {
         try
@@ -1395,6 +1431,8 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+
+    //Comprueba el panel de extensiones
     //Para comprobar el funcionamiento, unicamente el agente7 esta asignado al modo de llamada de transferencia. SI aparece en cualquier otro modo, el test falla.
     public String checkExtensionPanel()
     {
@@ -1441,6 +1479,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Se comprueba el panel de llamadas haciendo una manual y una, donde se toman capturas de pantalla para comprobar las graficas cambian eventualmente
     public String checkCallsPanel()
     {
         try
@@ -1466,6 +1505,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+    //Se realiza una llamada manual para comprobar la grafica de llamadas salientes
     public String checkOutgoingCallsPanel() {
         try
         {
@@ -1501,6 +1541,8 @@ public class ParteDeWebclientTest extends TestWithConfig {
 
     }
 
+
+    //Se realiza una llamada entrante para comprobar la gradica de las llamadas entrantes
     public String checkIncomingCallsPanel()
     {
         try
@@ -1540,6 +1582,8 @@ public class ParteDeWebclientTest extends TestWithConfig {
         }
     }
 
+
+    //Se toma una captura de pantalla del panel de estados
     public String checkStatusPanel()
     {
         try

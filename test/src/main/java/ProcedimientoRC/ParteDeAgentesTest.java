@@ -133,6 +133,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
     }
 
+    //Inicio de sesion en dialapplet-web y comprobación
     public String connectionTest()
     {
         firefoxDriver.get(url + "dialapplet-web");
@@ -148,6 +149,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
         }
     }
 
+    //Crea un servicio sin configuración para asignar los agentes que se crean a continuación
     public String createService()
     {
         try
@@ -225,6 +227,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
             Thread.sleep(500);
             SeleniumDAO.click(services);
 
+            //Coge el id de servicio y lo sobrescribe en el fichero de inicializacion
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[contains(., 'servicioSelenium')]")));
             serviceID = SeleniumDAO.selectElementBy("xpath", "//td[contains(., 'servicioSelenium')]/preceding-sibling::td", firefoxDriver).getText();
             commonIni.put("Service", "serviceID", serviceID);
@@ -238,6 +241,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
         }
     }
 
+    //Crea un grupo y añade los agentes que han sido importados por csv
     public String addAgentsToNewGroup() throws InterruptedException
     {
         try {
@@ -321,6 +325,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
     }
 
+    //Crea un grupo
     public String newGroup1y2() throws InterruptedException
     {
         try {
@@ -364,6 +369,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
         }
     }
 
+    //Crea un agente coordinador
     public String newCoordAgent() throws InterruptedException
     {
         try {
@@ -468,6 +474,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
     }
 
+    //Crea un nuevo agente
     public String newAgent1() throws InterruptedException
     {
         try {
@@ -542,6 +549,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
         }
     }
 
+    
     public String newAgent2() throws InterruptedException
     {
         try {
@@ -907,6 +915,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
         }
     }
 
+    //Crea un agente y lo añade al grupo1y2
     public String newAgent7toGroup1y2()
     {
         try {
@@ -984,6 +993,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
         }
     }
 
+    //Crea un agente coordinador
     public String newAgentC6()
     {
         try {
@@ -1068,6 +1078,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
         }
     }
 
+    //importa agentes por medio de un csv ubicado en agentsCsvPath
     public String importCSV() throws InterruptedException
     {
         try
@@ -1128,6 +1139,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
         }
     }
 
+    //Comprueba si puede loggearse con el agente creado
     public String agent1LoginTest() throws ParseException {
         try
         {
@@ -1196,6 +1208,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
     }
 
+    //Comprueba si puede loggearse con el agente creado
     public String agent2LoginTest() throws ParseException {
         try
         {

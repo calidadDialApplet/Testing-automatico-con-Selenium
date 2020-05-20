@@ -130,6 +130,8 @@ public class ParteDeServicioTest extends TestWithConfig {
     }
 
     //MAIN TESTS
+
+    //Configura los datos basicos del servicio creado en ParteDeAgentesTest
     public String basicDataTest() {
         try {
             //Login on dialapplet web
@@ -237,6 +239,7 @@ public class ParteDeServicioTest extends TestWithConfig {
         }
     }
 
+    //Configura el apartado de showflow de la configuración del servicio
     public String showflowTest() {
         try {
             WebElement basicDataTab = SeleniumDAO.selectElementBy("xpath", "//li[contains(@class, 'tab_service_productivity')]//a[contains(., 'Basic data')]", firefoxDriver);
@@ -300,6 +303,7 @@ public class ParteDeServicioTest extends TestWithConfig {
         }
     }
 
+    //Crea y configura modos de llamada
     public String callModeTest() {
         try {
 
@@ -323,6 +327,7 @@ public class ParteDeServicioTest extends TestWithConfig {
         }
     }
 
+    //Asigna coordinador y agentes a un grupo
     public String assignCoordToGroupTest() {
         try {
             //TODO borrar if cuando la 7 desaparezca
@@ -368,6 +373,7 @@ public class ParteDeServicioTest extends TestWithConfig {
         }
     }
 
+    //Configura los datos de contacto del servicio
     public String configureContactDataTest() {
         try {
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@class = 'name']")));
@@ -397,6 +403,7 @@ public class ParteDeServicioTest extends TestWithConfig {
         }
     }
 
+    //importa una lista robinson por medio de un csv ubicado en robinsonListPath
     public String insertRobinsonListTest() {
         try {
             //TODO eliminar if cuando desaparezca la version 7
@@ -454,6 +461,7 @@ public class ParteDeServicioTest extends TestWithConfig {
         }
     }
 
+    //importa contactos por medio de un csv ubicado en importContactsPath
     public String importContactsTest() {
         try {
             WebElement importContactsTab;
@@ -627,6 +635,7 @@ public class ParteDeServicioTest extends TestWithConfig {
         }
     }
 
+    //Crea 10 modos KPI y los configura
     public String createKPITest() {
         try {
             ArrayList<String> kpiNames = new ArrayList<>(){{
@@ -690,6 +699,7 @@ public class ParteDeServicioTest extends TestWithConfig {
         }
     }
 
+    //Clona el servicio y comprueba que la configuracion es identica a la del original
     public String cloneServiceTest() {
         //Login on dialapplet web
         firefoxDriver.get(url + "dialapplet-web");
@@ -1222,6 +1232,7 @@ public class ParteDeServicioTest extends TestWithConfig {
         }
     }
 
+    //Crea un modo de llamada entrante con la cola creada
     public void createIncomingCampaign() throws InterruptedException
     {
         try {
@@ -1297,6 +1308,8 @@ public class ParteDeServicioTest extends TestWithConfig {
         }
     }
 
+
+    //Este metodo hace la accion de clonar el servicio, el test es el encargado de llamarlo y de llamar a los métodos que comprueban la configuración
     public void cloneService() throws InterruptedException {
         try
         {
@@ -1829,6 +1842,10 @@ public class ParteDeServicioTest extends TestWithConfig {
         WebElement manualRadioButton = SeleniumDAO.selectElementBy("xpath", "//tr[td[strong[contains(., 'PENDIENTE - AGENDADA')]]]/following-sibling::tr//input[@value = '1']", firefoxDriver);
         Thread.sleep(500);
         SeleniumDAO.click(manualRadioButton);*/
+
+        firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//tr[td[strong[contains(., 'PENDIENTE - AGENDADA')]]]/following-sibling::tr//select")));
+        Select callbackAssignmentSelector = SeleniumDAO.findSelectElementBy("xpath", "//tr[td[strong[contains(., 'PENDIENTE - AGENDADA')]]]/following-sibling::tr//select", firefoxDriver);
+        callbackAssignmentSelector.selectByValue("user");
 
         WebElement sendButton = SeleniumDAO.selectElementBy("id", "send", firefoxDriver);
         SeleniumDAO.click(sendButton);

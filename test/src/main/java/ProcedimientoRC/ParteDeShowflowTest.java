@@ -122,6 +122,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
     }
 
+    //crea un showflow de tipo ticket
     public String createShowflow()
     {
         try
@@ -146,6 +147,8 @@ public class ParteDeShowflowTest extends TestWithConfig {
             return e.toString() + "\nERROR: Test failed";
         }
     }
+
+    //Crea un grupo de opciones y activa campos de contacto
     public static String activateContactFields()
     {
         //List with the options of the options group
@@ -158,13 +161,15 @@ public class ParteDeShowflowTest extends TestWithConfig {
             String activateShowflowFieldsRes = ShowflowUtils.createContactFields(firefoxDriver, firefoxWaiting, options, showflowName, showflowOptionsGroupName, showflowAuxField, false);
             if(activateShowflowFieldsRes.contains("ERROR")) return activateShowflowFieldsRes;
 
-            return "Test OK. The showflow fields name, phone, city, country and aux field: \" + showflowAuxField + \", have been activated.";
+            return "Test OK. The showflow fields name, phone, city, country and aux field: " + showflowAuxField + ", have been activated.";
         } catch(Exception e)
         {
             e.printStackTrace();
             return e.toString() + "\nERROR. Unexpected exception";
         }
     }
+
+    //Crea dos preguntas
     public String createQuestions()
     {
         List<String> questions = new ArrayList<>();
@@ -182,6 +187,8 @@ public class ParteDeShowflowTest extends TestWithConfig {
             return e.toString() + "\nERROR. Something went wrong";
         }
     }
+
+    //crea 4 tipologias con sus subtipologias
     public String createTypologies()
     {
         HashMap<String, List<Subtypology>> typologiesData = new HashMap<>();
@@ -264,6 +271,8 @@ public class ParteDeShowflowTest extends TestWithConfig {
             return e.toString() + "\nERROR";
         }
     }
+
+    //importa dos tipologias por csv ubicado en typologiesCsvPath
     public String importTypologiesCSV()
     {
         try
@@ -298,6 +307,8 @@ public class ParteDeShowflowTest extends TestWithConfig {
             return e.toString() + "\nERROR. Unexpected exception";
         }
     }
+
+    //Comprueba que las tipologias son guardadas en la base de datos tomando una captura
     public String checkDB(){
         try
         {
@@ -356,6 +367,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
         }
     }
 
+    //Vuelve a loggearse en dialapplet web y navega hasta configurar paginas
     public String configurePages()
     {
         try
@@ -389,6 +401,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
             Thread.sleep(200);
             SeleniumDAO.click(showflow);
 
+            //configura una pagina final, inicial e intermedia
             ShowflowUtils.configurePages(firefoxDriver, firefoxWaiting, false);
 
 
@@ -402,6 +415,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
         }
     }
 
+    //une dos paginas
     public String jointTwoPages() {
         try {
             ShowflowUtils.configureJoints(firefoxDriver, firefoxWaiting);
@@ -413,6 +427,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
         }
     }
 
+    //clona el showflow y comprueba que los datos son identicos al original
     public String cloneShowflow()
     {
         try
@@ -586,6 +601,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
 
 
 
+    //crea y devuelve un hashmap con las tipologias y subtipologias
     public HashMap<String, List<Subtypology>> loadTypologiesAttributes()
     {
         HashMap<String, List<Subtypology>> result = new HashMap<>();
@@ -613,6 +629,7 @@ public class ParteDeShowflowTest extends TestWithConfig {
         return result;
     }
 
+    //Crea las subtipologias
     public void fillSubtypologies(List<Subtypology> subtypologies) throws InterruptedException
     {
         for(Subtypology subtypology : subtypologies) {

@@ -157,6 +157,8 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+
+    //Crea un showflow de tipo ticket
     public String newShowflowTicket()
     {
         try
@@ -188,6 +190,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+    //Crea los campos de contacto del showflow
     public String createContactFields()
     {
         List<String> options = new ArrayList<>();
@@ -207,6 +210,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+    //Crea las preguntas del showflow
     public String createQuestions(){
         List<String> questions = new ArrayList<>();
         questions.add(showflowQuestion1);
@@ -225,6 +229,8 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+
+    //Importa por medio de un csv los estados del showflow ubicado en statesCsvpath
     public String importStates()
     {
         try
@@ -269,6 +275,8 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+
+    //Configura las paginas del showflow: inicial intermedia y final
     public String configurePages()
     {
         try
@@ -283,6 +291,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+    //Junta la pagina inicial y la final
     public String jointTwoPages() {
         try {
             Thread.sleep(1000);
@@ -295,6 +304,8 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+
+    //Clona el showflow y comprueba que la configuración no ha cambiado
     public String cloneShowflow()
     {
         try
@@ -365,7 +376,9 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
             return e.toString() + "\nERROR. Unexpected exception. Could not check if the showflow was cloned OK";
         }
     }
-    //Auxiliar methods
+
+
+    //Comprueba que los estados creados quedan guardados correctamente
     public String checkShowflowStates(String showflowName)
     {
         try
@@ -403,6 +416,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+    //Accede al contact center y configura una cuenta de email, una firma y una plantilla
     public String configureContactCenter(){
         try
         {
@@ -435,7 +449,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
-
+    //Crea un servicio de tipo ticket configurando los datos basicos y creando dos modos de llamada: manual y entrante
     public String createTicketService()
     {
         try
@@ -516,6 +530,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+    //Crea un modo de llamada
     public String createCallmode(String dialingMode, String callmodeName)
     {
         try
@@ -550,6 +565,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+    //configura una cuenta de email
     public String configureEmailAcount(){
         try
         {
@@ -633,6 +649,8 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+
+    //Configura un canal de email del servicio con la cuenta de email creada en el contact center
     public String configureEmailChannel()
     {
         try
@@ -676,6 +694,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+    //Configura un canal de telegram a partir de la cuenta que debe ser configurada manualmente
     public String configureTelegramChannel(){
         try
         {
@@ -712,6 +731,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+    //Configura un canal de twitter a partir de la cuenta que debe ser configurada manualmente
     public String configureTwitterChannel()
     {
         try
@@ -749,6 +769,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+    //Configura un canal de chat
     public String configureChatChannel()
     {
         try
@@ -806,6 +827,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
     }
 
 
+    //Asigna agentes y coordinador a un grupo en el servicio
     public String configureServiceCoordinators()
     {
         try
@@ -843,6 +865,8 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+
+    //Configura los datos de contacto añadiendo 5 campos auxiliares y marcando la opcion de chat y buscable para dos de ellos
     public String configureContactData()
     {
         try
@@ -905,6 +929,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+    //Confirma el servicio
     public String confirmService() {
         try
         {
@@ -921,6 +946,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
 
     }
 
+    //Configura el web chat
     public String configureWebChat()
     {
         try
@@ -968,6 +994,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+    //Clona el servicio
     public String cloneService()
     {
         /*//Login on dialapplet web
@@ -1260,6 +1287,8 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+
+    //Metodo para marcar los grupos en los datos basicos del servicio
     public void selectAllGroups()
     {
         List<WebElement> agentGroups = firefoxDriver.findElements(By.xpath("//table[@id = 'groups']/tbody/tr//input"));
@@ -1268,6 +1297,8 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         }
     }
 
+
+    //Comprueba que si el limite de fechas del canal esta fuera de rango aparece una alerta
     public String checkChannelOutOfRange()
     {
         WebElement endDateInput = SeleniumDAO.selectElementBy("id", "periodend_1", firefoxDriver);
@@ -1291,6 +1322,8 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         return "";
     }
 
+
+    //comprueba que un canal esta deshabilitado buscando el icono que lo indica
     public String checkChannelDissabled(String channelName) throws InterruptedException {
         //Restablecemos la fecha de fin a la anterior
         WebElement endDateInput = SeleniumDAO.selectElementBy("id", "periodend_1", firefoxDriver);
@@ -1322,6 +1355,8 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         return "";
     }
 
+
+    //Comprueba que un canal esta habilitado
     public String checkChannelEnabled(String channelName) throws InterruptedException {
         //Cambiamos la fecha inicial para comprobar que queda activado
         WebElement configureChannel = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + channelName + "')]/following-sibling::td/img[@src = 'imagenes/edit2.png']", firefoxDriver);
@@ -1354,6 +1389,8 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         return "";
     }
 
+
+    //Comprueba que al poner un dia festivo el canal aparece con el icono de festividad
     public String checkHolidayDay(String channelName) throws InterruptedException {
         WebElement configureChannel = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + channelName + "')]/following-sibling::td/img[@src = 'imagenes/edit2.png']", firefoxDriver);
         SeleniumDAO.click(configureChannel);
@@ -1388,6 +1425,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         return "";
     }
 
+    //Configura una firma de email
     public String configureEmailSignature()
     {
         try
@@ -1431,6 +1469,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
     }
 
 
+    //Configura la plantilla del email
     public String configureEmailTemplate()
     {
         try
