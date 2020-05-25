@@ -600,7 +600,7 @@ public class ParteDeWebclientTest extends TestWithConfig {
             SeleniumDAO.switchToDefaultContent(firefoxDriver);
 
             WebElement removeTab = SeleniumDAO.selectElementBy("xpath", "//span[@class = 'ui-icon ui-icon-close']", firefoxDriver);
-            Thread.sleep(500);
+            Thread.sleep(1000);
             SeleniumDAO.click(removeTab);
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[contains(@class, 'confirm')]")));

@@ -613,6 +613,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
             //outgoing email
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id = 'address']")));
             emailAddressInput = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'address']", firefoxDriver);
+            emailAddressInput.clear();
             emailAddressInput.sendKeys("socialmediadialapplet@gmail.com");
 
             passwordInput = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'pass']", firefoxDriver);
@@ -622,9 +623,11 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
             repeatPasswordInput.sendKeys("semana78ya");
 
             serverAddressInput = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'server']", firefoxDriver);
+            serverAddressInput.clear();
             serverAddressInput.sendKeys("smtp.gmail.com");
 
             emailPortInput = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'port']", firefoxDriver);
+            emailPortInput.clear();
             emailPortInput.sendKeys("465");
 
             emailProtocolRadioButton = SeleniumDAO.selectElementBy("xpath", "//input[@value = 'SMTP']", firefoxDriver);
@@ -710,7 +713,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
             channelNameInput.sendKeys(telegramChannelName);
 
             Select telegramAccountSelector = SeleniumDAO.findSelectElementBy("id", "accounttelegram", firefoxDriver);
-            telegramAccountSelector.selectByVisibleText("+34662179631");
+            telegramAccountSelector.selectByVisibleText("+34630486148");
 
             selectAllGroups();
 
@@ -748,7 +751,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
             channelNameInput.sendKeys(twitterChannelName);
 
             Select twitterAccountSelector = SeleniumDAO.findSelectElementBy("id", "twitteraccounts", firefoxDriver);
-            twitterAccountSelector.selectByVisibleText("PruebasSelenium");
+            twitterAccountSelector.selectByVisibleText("pruebaspbx84");
 
             selectAllGroups();
 
@@ -785,6 +788,7 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
             WebElement channelNameInput = SeleniumDAO.selectElementBy("id", "name", firefoxDriver);
             channelNameInput.sendKeys(chatChannelName);
 
+            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("day1")));
             WebElement mondayCheckbox = SeleniumDAO.selectElementBy("id", "day1", firefoxDriver);
             SeleniumDAO.click(mondayCheckbox);
 
@@ -1014,11 +1018,24 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
 
         try
         {
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("clone-service")));
-            Thread.sleep(1000);
-            WebElement cloneServiceButton = SeleniumDAO.selectElementBy("id", "clone-service", firefoxDriver);
-            Thread.sleep(1000);
-            SeleniumDAO.click(cloneServiceButton);
+            try
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("clone-service")));
+                Thread.sleep(1000);
+                WebElement cloneServiceButton = SeleniumDAO.selectElementBy("id", "clone-service", firefoxDriver);
+                Thread.sleep(1000);
+                SeleniumDAO.click(cloneServiceButton);
+            } catch (Exception e) //A veces la pestaña lateral aparece cerrada
+            {
+                WebElement pestañaLateral = SeleniumDAO.selectElementBy("id", "toggler", firefoxDriver);
+                SeleniumDAO.click(pestañaLateral);
+
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("clone-service")));
+                Thread.sleep(1000);
+                WebElement cloneServiceButton = SeleniumDAO.selectElementBy("id", "clone-service", firefoxDriver);
+                Thread.sleep(1000);
+                SeleniumDAO.click(cloneServiceButton);
+            }
 
             SeleniumDAO.switchToFrame("fancybox-frame", firefoxDriver);
 
@@ -1395,9 +1412,11 @@ public class ParteDeSocialmediaTest extends TestWithConfig {
         WebElement configureChannel = SeleniumDAO.selectElementBy("xpath", "//td[contains(., '" + channelName + "')]/following-sibling::td/img[@src = 'imagenes/edit2.png']", firefoxDriver);
         SeleniumDAO.click(configureChannel);
 
+        Thread.sleep(2000);
+
         firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//img[@class = 'boton-calendario']")));
         WebElement calendarButton = SeleniumDAO.selectElementBy("xpath", "//img[@class = 'boton-calendario']", firefoxDriver);
-        Thread.sleep(1500);
+        firefoxWaiting.until(ExpectedConditions.visibilityOf(calendarButton));
         SeleniumDAO.click(calendarButton);
 
         firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//td[@class = 'day selected today']")));

@@ -29,7 +29,7 @@ public class ShowflowUtils {
         WebElement showflowNameInput = SeleniumDAO.selectElementBy("id", "workflow-name", driver);
         showflowNameInput.sendKeys(showflowName);
 
-        if(url.contains("8")){ //TODO borrar este if, solo es para la 7rc de momento
+        if(url.contains("8")  || url.contains("pbx")){ //TODO borrar este if, solo es para la 7rc de momento
             Select showflowTypeSelector = SeleniumDAO.findSelectElementBy("id", "workflow-type", driver);
             showflowTypeSelector.selectByValue(showflowType);
         }

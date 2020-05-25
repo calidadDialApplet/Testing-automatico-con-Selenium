@@ -154,15 +154,25 @@ public class ParteDeAgentesTest extends TestWithConfig {
     {
         try
         {
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'createService.php']")));
-            WebElement createService = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'createService.php']", firefoxDriver);
-            Thread.sleep(500);
-            SeleniumDAO.click(createService);
+            if(url.contains("8"))
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'createService.php']")));
+                WebElement createService = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'createService.php']", firefoxDriver);
+                Thread.sleep(500);
+                SeleniumDAO.click(createService);
 
-            firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@type = 'submit']")));
-            WebElement acceptButton = SeleniumDAO.selectElementBy("xpath", "//input[@type = 'submit']", firefoxDriver);
-            Thread.sleep(500);
-            SeleniumDAO.click(acceptButton);
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@type = 'submit']")));
+                WebElement acceptButton = SeleniumDAO.selectElementBy("xpath", "//input[@type = 'submit']", firefoxDriver);
+                Thread.sleep(500);
+                SeleniumDAO.click(acceptButton);
+
+            } else
+            {
+                firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@href = 'newServiceAssistant.php']")));
+                WebElement createService = SeleniumDAO.selectElementBy("xpath", "//a[@href = 'newServiceAssistant.php']", firefoxDriver);
+                Thread.sleep(500);
+                SeleniumDAO.click(createService);
+            }
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id = 'name']")));
             WebElement nameInput = SeleniumDAO.selectElementBy("xpath", "//input[@id = 'name']", firefoxDriver);
@@ -199,7 +209,7 @@ public class ParteDeAgentesTest extends TestWithConfig {
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.id("next")));
             nextButton = SeleniumDAO.selectElementBy("id", "next", firefoxDriver);
-            Thread.sleep(500);
+            Thread.sleep(1000);
             SeleniumDAO.click(nextButton);
 
             firefoxWaiting.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@type = 'submit']")));
