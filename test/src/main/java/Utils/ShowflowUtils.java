@@ -103,6 +103,8 @@ public class ShowflowUtils {
 
                 SeleniumDAO.switchToFrame("fancybox-frame", driver);
 
+                Thread.sleep(1000);
+
                 for(int i = 0; i < options.size(); i++)
                 {
                     WebElement newOptionNameInput = SeleniumDAO.selectElementBy("id", "new-option-name", driver);
